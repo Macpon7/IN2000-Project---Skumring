@@ -1,0 +1,25 @@
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeScreen
+
+@Composable
+fun SkumringNavHost(
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
+    NavHost(
+        navController = navController,
+        startDestination = HomeDestination.route,
+        modifier = modifier
+    ) {
+        composable(route = HomeDestination.route) {
+            HomeScreen()
+        }
+    }
+}
