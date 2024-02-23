@@ -6,4 +6,5 @@
 
 - Adrian Emil Chambe-Eng
 - Mari Svennevik Notland
+- Viljar Drevland Hardersen
 - Anna Hansgård 
