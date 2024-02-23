@@ -5,3 +5,4 @@
 ### Gruppemedlemmer
 
 - Adrian Emil Chambe-Eng
+- Mari Svennevik Notland
