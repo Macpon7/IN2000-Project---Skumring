@@ -1,6 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast
 
-data class Details(
+data class WeatherDetails(
     val air_pressure_at_sea_level: Double,
     val air_temperature: Double,
     val air_temperature_percentile_10: Double,

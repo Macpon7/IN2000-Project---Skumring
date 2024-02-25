@@ -1,6 +1,6 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.model
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast
 
 data class Next12Hours(
-    val details: DetailsX,
-    val summary: Summary
+    val details: Next12HoursDetails,
+    val summary: SummaryLong
 )

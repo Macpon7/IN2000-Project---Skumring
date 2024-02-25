@@ -1,6 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast
 
-data class DetailsXX(
+data class Next1HoursDetails(
     val precipitation_amount: Double,
     val precipitation_amount_max: Double,
     val precipitation_amount_min: Double,

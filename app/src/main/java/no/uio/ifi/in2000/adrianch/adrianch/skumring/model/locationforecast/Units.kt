@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.model
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast
 
 data class Units(
     val air_pressure_at_sea_level: String,
