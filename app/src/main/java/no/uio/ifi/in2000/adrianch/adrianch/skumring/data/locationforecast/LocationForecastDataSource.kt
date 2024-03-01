@@ -10,7 +10,7 @@ import io.ktor.serialization.gson.gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.Properties
 
 
-class LocationForecastDataSource (private val path: String = "https://api.met.no/weatherapi/locationforecast/2.0/edr/collections/complete/position?coords=POINT%2810%2060%29"){
+class LocationForecastDataSource (private val path: String = "https://api.met.no/weatherapi/locationforecast/2.0/edr/collections/complete/position?coords=POINT%2810%2060%29\n"){
     private val client = HttpClient {
         install(ContentNegotiation) {
             gson()
