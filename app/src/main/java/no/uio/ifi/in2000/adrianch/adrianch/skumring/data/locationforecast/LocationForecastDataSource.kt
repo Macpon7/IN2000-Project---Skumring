@@ -20,6 +20,10 @@ class LocationForecastDataSource (private val path: String = "https://api.met.no
         }
     }
 
+    /*
+    TODO{    Bryte opp URL-en basert på hva man trenger å gi mot hva bruker vil ha   }
+    */
+
     /**
      * Returnerer et LocationForecastInfo-objekt som har timeseriesobjektene med
      * værdata etter gitt tid og gitte koordinater.
@@ -30,6 +34,9 @@ class LocationForecastDataSource (private val path: String = "https://api.met.no
     }
 }
 
+/**
+ * Testfunksjon som printer alle timestamps til APIen
+ */
 //suspend fun main() {
 //    val forecast = LocationForecastDataSource()
 //    val response = forecast.fetchLocationForecastData()
