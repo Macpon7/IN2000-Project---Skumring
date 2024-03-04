@@ -7,6 +7,7 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import java.net.UnknownHostException
 import io.ktor.serialization.gson.gson
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.Properties
 
 
@@ -17,6 +18,14 @@ class LocationForecastDataSource (private val path: String = "https://api.met.no
         }
     }
 
-    /* TODO fetch weather data */
+    suspend fun fetchLocationForecastData(): LocationForecastInfo {
+        val response: HttpResponse = client.get(path)
+        return response.body()
+    }
+}
+
+suspend fun main() {
+    val source = LocationForecastDataSource()
+    print(source.fetchLocationForecastData())
 
 }
