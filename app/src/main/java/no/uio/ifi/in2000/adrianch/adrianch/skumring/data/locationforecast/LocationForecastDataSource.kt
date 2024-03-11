@@ -33,12 +33,13 @@ class LocationForecastDataSource (){
 
     suspend fun fetchWeatherData(latitude: String, longitude: String): List<WeatherPerHour> {
         val dataFromAPI = fetchLocationForecastData(latitude = latitude, longitude = longitude)
+        return convertResponseToWeatherPerHour(dataFromAPI)
+    }
 
-        return dataFromAPI.properties.timeseries.map {
-            var icon: String?
-            if (it.data.next_1_hours == null) {
-                icon = null
-            } else {
+    fun convertResponseToWeatherPerHour(res: LocationForecastInfo): List<WeatherPerHour> {
+        return res.properties.timeseries.map {
+            var icon: String? = null
+            if (it.data.next_1_hours != null) {
                 icon = it.data.next_1_hours.summary.symbol_code
             }
 
