@@ -18,8 +18,7 @@ class LocationForecastDataSource (){
     }
 
     /**
-     * Returnerer et LocationForecastInfo-objekt som har timeseriesobjektene med
-     * værdata etter gitt tid og gitte koordinater.
+     * Sends an http request to the locationforecast API, converts the JSON response to a LocationForecastInfo object and returns it
      */
     private suspend fun fetchLocationForecastData(longitude: String, latitude: String): LocationForecastInfo {
         this.path += "coords=POINT($longitude+$latitude)"
@@ -32,13 +31,21 @@ class LocationForecastDataSource (){
     }
 
     /**
-     * Making the WeatherPerHour object containing only the relevant data
-     * from the API
+     * Gets the forecast for the specified coordinates from MET API, and converts the response data to
+     * our own WeatherPerHour objects
      */
     suspend fun fetchWeatherData(latitude: String, longitude: String): List<WeatherPerHour> {
         val dataFromAPI = fetchLocationForecastData(latitude = latitude, longitude = longitude)
+        return convertResponseToWeatherPerHour(dataFromAPI)
+    }
 
-        return dataFromAPI.properties.timeseries.map {
+    /**
+     * Converts the API response into our own WeatherPerHour data classes, discarding all the information
+     * in the response that we are not interested in.
+     */
+    fun convertResponseToWeatherPerHour(res: LocationForecastInfo): List<WeatherPerHour> {
+        return res.properties.timeseries.map {
+            //the next_1_hours object is only available in the short term forecast. After that we need to get the icon from next_6_hours
             var icon: String?
             icon = if (it.data.next_1_hours == null) {
                 it.data.next_6_hours.summary.symbol_code
