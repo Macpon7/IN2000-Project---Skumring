@@ -51,9 +51,13 @@ class SunriseDataSource() {
 
 //Test that should be moved to a test file
 
-//suspend fun main() {
- //   val source = SunriseDataSource()
-  //  var test_date = "2024-03-10"
-   // val sunset = source.fetchSunActivity("10", "60", test_date)
+/*
+suspend fun main() {
+    val source = SunriseDataSource()
+    var test_date = "2024-03-10"
+    val sunset = source.fetchSunActivity("10", "60", test_date)
+    println(sunset)
 
-//}
+}
+
+ */
