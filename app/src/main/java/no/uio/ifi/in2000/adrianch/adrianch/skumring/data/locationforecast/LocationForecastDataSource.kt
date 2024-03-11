@@ -31,17 +31,20 @@ class LocationForecastDataSource (){
         }
     }
 
+    /**
+     * Making the WeatherPerHour object containing only the relevant data
+     * from the API
+     */
     suspend fun fetchWeatherData(latitude: String, longitude: String): List<WeatherPerHour> {
         val dataFromAPI = fetchLocationForecastData(latitude = latitude, longitude = longitude)
 
         return dataFromAPI.properties.timeseries.map {
             var icon: String?
-            if (it.data.next_1_hours == null) {
-                icon = null
+            icon = if (it.data.next_1_hours == null) {
+                it.data.next_6_hours.summary.symbol_code
             } else {
-                icon = it.data.next_1_hours.summary.symbol_code
+                it.data.next_1_hours.summary.symbol_code
             }
-
             WeatherPerHour(it.time, it.data.instant.details, icon)
         }
     }
