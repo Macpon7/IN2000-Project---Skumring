@@ -2,7 +2,6 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi.WeatherPerHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 
 class PlaceInfoRepository {
@@ -11,7 +10,7 @@ class PlaceInfoRepository {
 
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo {
         //contains data for 10 days currently - might change
-        val fullForecast = locationDataSource.fetchWeatherData(latitude = lat, longitude = long)
+        val fullForecast = locationDataSource.fetchWeatherData(lat = lat, long = long)
         val forecastGroupedByDate = fullForecast.groupBy { it.time.take(10) }
 
         forecastGroupedByDate.forEach{
