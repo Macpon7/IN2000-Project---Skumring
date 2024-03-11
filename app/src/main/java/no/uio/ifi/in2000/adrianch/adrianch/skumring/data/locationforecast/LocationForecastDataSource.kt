@@ -31,11 +31,19 @@ class LocationForecastDataSource (){
         }
     }
 
+    /**
+     * Gets the forecast for the specified coordinates from MET API, and converts the response data to
+     * our own WeatherPerHour objects
+     */
     suspend fun fetchWeatherData(latitude: String, longitude: String): List<WeatherPerHour> {
         val dataFromAPI = fetchLocationForecastData(latitude = latitude, longitude = longitude)
         return convertResponseToWeatherPerHour(dataFromAPI)
     }
 
+    /**
+     * Returns a list of WeatherPerHour objects, using map to convert from the JSON structure og the API
+     * response
+     */
     fun convertResponseToWeatherPerHour(res: LocationForecastInfo): List<WeatherPerHour> {
         return res.properties.timeseries.map {
             var icon: String? = null

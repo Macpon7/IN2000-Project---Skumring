@@ -9,6 +9,11 @@ import org.junit.Test
 
 class LocationForecastDataSourceTest {
 
+    /**
+     * Tests that the conversion from JSON data structure to our own WeatherPerHour objects works correctly,
+     * using a dummy JSON string contained in the file LocationForecastDummyData.kt which is part of the same
+     * package as this test file
+     */
     @Test
     fun dataClassesMatchValuesInJSON() {
         val gson = Gson()
