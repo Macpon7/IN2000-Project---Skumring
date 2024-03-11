@@ -52,7 +52,6 @@ class LocationForecastDataSource (){
             } else {
                 it.data.next_1_hours.summary.symbol_code
             }
-
             WeatherPerHour(it.time, it.data.instant.details, icon)
         }
     }

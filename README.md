@@ -9,3 +9,4 @@
 - Viljar Drevland Hardersen
 - Anna Hansgård
 - Synnøve Nordvik Helgesen
+- Sara Sverdrup-Thygeson
