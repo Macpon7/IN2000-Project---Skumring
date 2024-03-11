@@ -40,7 +40,7 @@ class SunriseDataSource() {
      *
      * date: String - ISO formatted date (YYYY-MM-DD)
      */
-    suspend fun fetchSunActivity(lat: String, long: String, date: String?): SunActivity {
+    suspend fun fetchSunActivity(lat: String, long: String, date: String): SunActivity {
 
         val path = "https://api.met.no/weatherapi/sunrise/3.0/edr/collections/sun/position?coords=POINT%28${lat}%20${long}%29&datetime=${date}"
 
