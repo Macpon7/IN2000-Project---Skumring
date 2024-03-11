@@ -1,23 +1,29 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi
 
 data class LocationForecastInfo(
-    val geometry: Geometry, val properties: Properties, val type: String
+    val geometry: Geometry,
+    val properties: Properties,
+    val type: String
 )
 
 data class Geometry(
-    val coordinates: List<Float>, val type: String
+    val coordinates: List<Float>,
+    val type: String
 )
 
 data class Properties(
-    val meta: Meta, val timeseries: List<Timeseries>
+    val meta: Meta,
+    val timeseries: List<Timeseries>
 )
 
 data class Meta(
-    val units: Units, val updated_at: String
+    val units: Units,
+    val updated_at: String
 )
 
 data class Timeseries(
-    val data: ForecastData, val time: String
+    val data: ForecastData,
+    val time: String
 )
 
 data class Units(
@@ -59,7 +65,8 @@ data class Instant(
 )
 
 data class Next1Hours(
-    val details: Next1HoursDetails, val summary: SummaryShort
+    val details: Next1HoursDetails,
+    val summary: SummaryShort
 )
 
 data class Next1HoursDetails(
@@ -71,7 +78,8 @@ data class Next1HoursDetails(
 )
 
 data class Next6Hours(
-    val details: Next6HoursDetails, val summary: SummaryShort
+    val details: Next6HoursDetails,
+    val summary: SummaryShort
 )
 
 data class Next6HoursDetails(
@@ -84,7 +92,8 @@ data class Next6HoursDetails(
 )
 
 data class Next12Hours(
-    val details: Next12HoursDetails, val summary: SummaryLong
+    val details: Next12HoursDetails,
+    val summary: SummaryLong
 )
 
 data class Next12HoursDetails(
@@ -96,7 +105,8 @@ data class SummaryShort(
 )
 
 data class SummaryLong(
-    val symbol_code: String, val symbol_confidence: String
+    val symbol_code: String,
+    val symbol_confidence: String
 )
 
 data class WeatherDetails(
