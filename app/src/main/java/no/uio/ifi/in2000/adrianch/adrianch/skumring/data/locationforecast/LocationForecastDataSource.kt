@@ -5,8 +5,8 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi.LocationForecastInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi.WeatherPerHour
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
 import java.time.LocalDateTime
 
 
