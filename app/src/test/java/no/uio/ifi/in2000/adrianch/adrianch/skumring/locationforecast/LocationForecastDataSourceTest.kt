@@ -67,7 +67,7 @@ class LocationForecastDataSourceTest {
                     wind_speed_percentile_10 = 1.7,
                     wind_speed_percentile_90 = 2.5
                 ),
-                icon=null
+                icon="cloudy"
             )
         )
 
