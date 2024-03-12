@@ -10,6 +10,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunriseapi.SunActivity
 
 interface PlaceInfoRepository {
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
+    suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean
 }
 class PlaceInfoRepositoryImpl (
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
@@ -63,5 +64,9 @@ class PlaceInfoRepositoryImpl (
             longitude = long,
             sunEvents = sunEventsList.toList()
         )
+    }
+
+    suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
+        return true
     }
 }
