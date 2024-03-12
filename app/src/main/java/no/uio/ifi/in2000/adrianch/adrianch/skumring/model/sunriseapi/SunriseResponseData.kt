@@ -10,19 +10,15 @@ data class Properties(val solarnoon: Solarnoon,
                       val solarmidnight: Solarmidnight)
 
 data class Solarmidnight(val visible: Boolean = false,
-                         val time: String = "",
+                         val time: String,
                          val discCentreElevation: Double = 0.0)
 
 data class Solarnoon(val visible: Boolean = false,
-                     val time: String = "",
+                     val time: String,
                      val discCentreElevation: Double = 0.0)
 
-data class SunActivity (
-    val sunset: String
-)
-
 data class Sunrise(val azimuth: Double = 0.0,
-                   val time: String = "")
+                   val time: String)
 
 data class SunriseInfo(val licenseURL: String = "",
                        val copyright: String = "",
@@ -32,6 +28,10 @@ data class SunriseInfo(val licenseURL: String = "",
                        val properties: Properties)
 
 data class Sunset(val azimuth: Double = 0.0,
-                  val time: String = "")
+                  val time: String,
+)
 
 data class When(val interval: List<String>?)
+
+
+

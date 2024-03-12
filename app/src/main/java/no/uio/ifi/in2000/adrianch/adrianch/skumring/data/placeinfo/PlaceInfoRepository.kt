@@ -2,6 +2,7 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.DailyEvents
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 
 class PlaceInfoRepository {
@@ -21,6 +22,7 @@ class PlaceInfoRepository {
             )
 
         }
+        return PlaceInfo("", "", "", "", emptyList<DailyEvents>())
 
     }
 }
