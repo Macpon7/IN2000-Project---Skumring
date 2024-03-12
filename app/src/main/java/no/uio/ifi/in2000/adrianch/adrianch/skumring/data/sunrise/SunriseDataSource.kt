@@ -10,6 +10,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunriseapi.SunActivity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunriseapi.SunriseInfo
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -43,14 +44,15 @@ class SunriseDataSource() {
      *
      * date: String - ISO formatted date (YYYY-MM-DD)
      */
-    suspend fun fetchSunActivity(lat: String, long: String, date: String): SunActivity {
-        val path = "https://api.met.no/weatherapi/sunrise/3.0/edr/collections/sun/position?coords=POINT%28${lat}%20${long}%29&datetime=${date}"
+    suspend fun fetchSunActivity(lat: String, long: String, date: LocalDate): SunActivity {
+        val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        val path = "https://api.met.no/weatherapi/sunrise/3.0/edr/collections/sun/position?coords=POINT%28${lat}%20${long}%29&datetime=${dateString}"
         val response = fetchSunriseData(path)
-        val sunset_time: String = response.properties.sunset.time  //output: 2024-03-07T17:03+00:00
+        val sunsetTime: String = response.properties.sunset.time  //output: 2024-03-07T17:03+00:00
         val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME //Offsett is in timezone 0 so add 1 in line below
-        val time_formatted = LocalDateTime.parse(sunset_time, formatter).plusHours(1)
+        val timeFormatted = LocalDateTime.parse(sunsetTime, formatter).plusHours(1)
 
-        return SunActivity(time_formatted)
+        return SunActivity(timeFormatted)
     }
 }
 
