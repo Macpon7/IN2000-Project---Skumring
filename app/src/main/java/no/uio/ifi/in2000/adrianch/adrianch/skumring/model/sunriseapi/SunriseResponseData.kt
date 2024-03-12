@@ -1,7 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunriseapi
 
-import java.time.LocalDateTime
-
 data class Geometry(val coordinates: List<Int>,
                     val type: String = "")
 
