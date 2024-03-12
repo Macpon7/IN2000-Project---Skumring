@@ -46,10 +46,12 @@ class LocationForecastDataSource (){
     fun convertResponseToWeatherPerHour(res: LocationForecastInfo): List<WeatherPerHour> {
         return res.properties.timeseries.map {
             //the next_1_hours object is only available in the short term forecast. After that we need to get the icon from next_6_hours
-            var icon: String? = if (it.data.next_1_hours == null) {
+            var icon: String? = if (it.data.next_1_hours != null) {
+                it.data.next_1_hours.summary.symbol_code
+            } else if (it.data.next_6_hours != null) {
                 it.data.next_6_hours.summary.symbol_code
             } else {
-                it.data.next_1_hours.summary.symbol_code
+                null
             }
             WeatherPerHour(it.time, it.data.instant.details, icon)
         }
