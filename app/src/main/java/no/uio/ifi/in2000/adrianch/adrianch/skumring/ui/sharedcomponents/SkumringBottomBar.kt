@@ -23,6 +23,7 @@ fun SkumringBottomBar (
         HomeDestination
     )
 
+    // Kommentar
     NavigationBar(
         modifier = modifier,
         containerColor = Color.LightGray,
