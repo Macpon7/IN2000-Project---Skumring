@@ -7,12 +7,16 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.DailyEvents
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
+import java.time.LocalDate
 
 interface PlaceInfoRepository {
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
-    suspend fun filterWeatherBySunActivity(weather: List<WeatherPerHour>, events: SunActivity): List<WeatherPerHour>
+    suspend fun makeDailyEvents(
+        forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>,
+        lat: String, long: String): List<DailyEvents>
     suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean
 }
+
 class PlaceInfoRepositoryImpl (
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
     private val locationDataSource: LocationForecastDataSource = LocationForecastDataSource()
@@ -26,12 +30,38 @@ class PlaceInfoRepositoryImpl (
         // Group all the forecast data by date
         val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
 
-        /* For each date we have forecast data on, find out the time of sunset/rise
+        // Send our map to a function which will return a list of DailyEvents
+        val dailyEventsList = makeDailyEvents(forecastGroupedByDate = forecastGroupedByDate, lat = lat, long = long)
+
+        //TODO: get name and description from PlaceDetailsDataSource
+
+        return PlaceInfo(
+            name = "",
+            description = "",
+            latitude = lat,
+            longitude = long,
+            sunEvents = dailyEventsList
+        )
+    }
+
+    /**
+     * Given a map containing lists of weather forecast data (where the key is the date and the values
+     * are the lists), this function creates our simple DailyEvents objects for each date, containing
+     * the time of the solar events, and a statement on the conditions for photography at each event
+     */
+    override suspend fun makeDailyEvents(
+        forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>,
+        lat: String,
+        long: String
+    ): List<DailyEvents> {
+        // The list we will eventually return
+        val sunEventsList = mutableListOf<DailyEvents>()
+
+        /* For each date in the map, find out the time of sunset/rise
            For each sunset/rise, make a new SunEvent object and check if the conditions will be good
            Make a DailyEvents object for each date and add that to our sunEventsList
         */
-        val sunEventsList: MutableList<DailyEvents> = emptyList<DailyEvents>().toMutableList()
-        forecastGroupedByDate.forEach{
+        forecastGroupedByDate.forEach {
             // SunActivity is a list of times. One for each event we are interested in
             // In MVP this is only sunset, but we will add sunrise at a later date
             val sunActivity: SunActivity = sunriseDataSource.fetchSunActivity(
@@ -46,32 +76,26 @@ class PlaceInfoRepositoryImpl (
                 true
             }
 
-            //TODO: actually check the conditions using the list of WeatherPerHour objects
+            val sunriseWeather = it.value.filter {
+                //TODO after MVP: filter sunriseWeather as well
+                true
+            }
 
-            sunEventsList.add(
-                DailyEvents(
-                    sunset = SunEvent(
-                        time = sunActivity.sunset,
-                        conditions = true
-                    )
-                )
+            DailyEvents(
+                sunset = SunEvent(
+                    time = sunActivity.sunset,
+                    conditions = checkConditions(sunsetWeather)
+                ),
+                /*
+                sunrise = SunEvent(
+                    time = sunActivity.sunrise,
+                    conditions = checkConditions(sunriseWeather)
+                 */
             )
+
         }
 
-        return PlaceInfo(
-            name = "",
-            description = "",
-            latitude = lat,
-            longitude = long,
-            sunEvents = sunEventsList.toList()
-        )
-    }
-
-    override suspend fun filterWeatherBySunActivity(
-        weather: List<WeatherPerHour>,
-        events: SunActivity
-    ): List<WeatherPerHour> {
-        TODO("Not yet implemented")
+        return sunEventsList.toList()
     }
 
     override suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
