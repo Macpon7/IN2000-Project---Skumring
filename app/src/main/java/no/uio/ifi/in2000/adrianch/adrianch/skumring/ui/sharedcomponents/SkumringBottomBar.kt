@@ -37,7 +37,7 @@ fun SkumringBottomBar (
                     Text(text = screen.titleRes.toString())
                 },
                 icon = {
-                    Icon(imageVector = screen.icon!!, contentDescription = "")
+                    Icon(imageVector = screen.icon, contentDescription = "")
                 },
                 selected = currentRoute == screen.route,
                 onClick = {
