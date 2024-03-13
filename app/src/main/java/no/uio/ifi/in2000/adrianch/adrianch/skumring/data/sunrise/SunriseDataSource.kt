@@ -8,8 +8,8 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunriseapi.SunActivity
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunriseapi.SunriseInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunriseInfo
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

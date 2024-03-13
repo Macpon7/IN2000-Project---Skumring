@@ -2,11 +2,11 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi.WeatherPerHour
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.DailyEvents
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunriseapi.SunActivity
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
 
 interface PlaceInfoRepository {
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
