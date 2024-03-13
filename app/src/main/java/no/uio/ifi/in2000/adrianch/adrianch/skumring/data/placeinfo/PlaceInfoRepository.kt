@@ -10,14 +10,15 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
 
 interface PlaceInfoRepository {
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
+    suspend fun filterWeatherBySunActivity(weather: List<WeatherPerHour>, events: SunActivity): List<WeatherPerHour>
     suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean
 }
 class PlaceInfoRepositoryImpl (
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
     private val locationDataSource: LocationForecastDataSource = LocationForecastDataSource()
     //private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
-) {
-    suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo {
+): PlaceInfoRepository {
+    override suspend fun getPlaceInfo(lat: String, long: String, id: Int): PlaceInfo {
         // Get the forecasted weather at this place
         //contains data for 10 days currently - might change
         val fullForecast = locationDataSource.fetchWeatherData(lat = lat, long = long)
@@ -66,7 +67,14 @@ class PlaceInfoRepositoryImpl (
         )
     }
 
-    suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
+    override suspend fun filterWeatherBySunActivity(
+        weather: List<WeatherPerHour>,
+        events: SunActivity
+    ): List<WeatherPerHour> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
         return true
     }
 }
