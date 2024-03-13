@@ -2,10 +2,11 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.locationforecast
 
 import com.google.gson.Gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi.LocationForecastInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi.WeatherDetails
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi.WeatherPerHour
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherDetails
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
 import org.junit.Test
+import java.time.LocalDateTime
 
 class LocationForecastDataSourceTest {
 
@@ -24,7 +25,8 @@ class LocationForecastDataSourceTest {
 
         val expected = listOf(
             WeatherPerHour(
-                time = "2024-03-08T12:00:00Z",
+                //"2024-03-08T12:00:00Z"
+                time = LocalDateTime.of(2024, 3, 8, 12, 0),
                 instant = WeatherDetails(
                     air_pressure_at_sea_level = 1027.1,
                     air_temperature = 2.3,
@@ -47,7 +49,8 @@ class LocationForecastDataSourceTest {
                 icon="clearsky_day"
             ),
             WeatherPerHour(
-                time = "2024-03-11T00:00:00Z",
+                //"2024-03-11T00:00:00Z"
+                time = LocalDateTime.of(2024, 3,11, 0, 0, 0),
                 instant = WeatherDetails(
                     air_pressure_at_sea_level = 1022.7,
                     air_temperature = -0.1,

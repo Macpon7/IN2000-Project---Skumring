@@ -5,8 +5,9 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi.LocationForecastInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi.WeatherPerHour
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
+import java.time.LocalDateTime
 
 
 class LocationForecastDataSource (){
@@ -53,7 +54,9 @@ class LocationForecastDataSource (){
             } else {
                 null
             }
-            WeatherPerHour(it.time, it.data.instant.details, icon)
+            // We use subsequence of the time string to get rid of the Z character at the end. Other than that Z,
+            // The string we get from the api is in ISO format
+            WeatherPerHour(LocalDateTime.parse(it.time.subSequence(0, 19)), it.data.instant.details, icon)
         }
     }
 }

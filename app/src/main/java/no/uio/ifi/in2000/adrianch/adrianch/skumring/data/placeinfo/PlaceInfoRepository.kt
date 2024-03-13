@@ -2,11 +2,11 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecastapi.WeatherPerHour
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.DailyEvents
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunriseapi.SunActivity
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
 
 interface PlaceInfoRepository {
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
@@ -20,10 +20,10 @@ class PlaceInfoRepositoryImpl (
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo {
         // Get the forecasted weather at this place
         //contains data for 10 days currently - might change
-        val fullForecast = locationDataSource.fetchWeatherData(latitude = lat, longitude = long)
+        val fullForecast = locationDataSource.fetchWeatherData(lat = lat, long = long)
 
         // Group all the forecast data by date
-        val forecastGroupedByDate = fullForecast.groupBy { it.time.take(10) }
+        val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
 
         /* For each date we have forecast data on, find out the time of sunset/rise
            For each sunset/rise, make a new SunEvent object and check if the conditions will be good
@@ -36,7 +36,7 @@ class PlaceInfoRepositoryImpl (
             val sunActivity: SunActivity = sunriseDataSource.fetchSunActivity(
                 lat = lat,
                 long = long,
-                date = it.value[0].time.take(10)
+                date = it.key
             )
 
             // Filters away all the WeatherPerHour objects whose time is too far from sunset
