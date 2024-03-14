@@ -66,7 +66,23 @@ class PlaceInfoRepositoryImpl (
         )
     }
 
-    suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
+    /**
+     * Takes list of WeatherPerHour objects, goes through each of them and
+     * checks instant.cloud_area_fraction of a given timestamp. If any of them
+     * are above a certain threshold (arbitrarily chosen to be 25  %), it will
+     * return "False" as we deem it to be too cloudy. If all timestamps are below,
+     * we deem conditions to be good enough.
+     */
+    fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
+        val cloudAreaFractionThreshold: Float = 25.0F
+        weatherData.forEach {
+            // cloudAreaFraction is the percentage of pixels in a satellite photo
+            // over an area judged to be clouds.
+            val cloudAreaFraction: Float = it.instant.cloud_area_fraction.toFloat()
+            if (cloudAreaFraction > cloudAreaFractionThreshold) {
+                return false
+            }
+        }
         return true
     }
 }
