@@ -6,7 +6,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
 import org.junit.Test
 
-class checkConditionsTest {
+class CheckConditionsTest {
     /**
      * Testing the function in PlaceInfoRepository that lets us check if
      * the cloud conditions are adequate for photography.
