@@ -73,7 +73,7 @@ class PlaceInfoRepositoryImpl (
      * return "False" as we deem it to be too cloudy. If all timestamps are below,
      * we deem conditions to be good enough.
      */
-    suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
+    fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
         weatherData.forEach {
             // cloudAreaFraction is the percentage of pixels in a satellite photo
             // over an area judged to be clouds.
