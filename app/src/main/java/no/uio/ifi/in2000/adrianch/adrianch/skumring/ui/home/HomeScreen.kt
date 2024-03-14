@@ -1,10 +1,14 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -19,14 +23,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
@@ -51,9 +56,12 @@ fun HomeScreen(
                 scrollBehavior = scrollBehavior
             )
         }
-
     ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
-        ContentHomeScreen()
+        Column (modifier = Modifier.padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            ContentHomeScreen()
+        }
     }
 }
 
@@ -63,15 +71,15 @@ fun HomeScreen(
  */
 @Composable
 fun ContentHomeScreen() {
-    Column {
+    Column (verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
 
         SunTempAndTime()
 
         SunDown()
 
-        Text(text = SunCheck(Good = false))
+        Text(text = WeatherCheck(Good = false))
 
-        //This should be at the Bottom, with padding:
         MapBox()
     }
 
@@ -84,35 +92,52 @@ fun ContentHomeScreen() {
 fun SunTempAndTime() {
     Box(
         modifier = Modifier
-            .width(500.dp)
-            .height(600.dp)
-            .padding(6.dp)
-            .background(Color.LightGray, RoundedCornerShape((16.dp))),
+            .size(150.dp) // Choose the wanted size of the picture
     ) {
+        Image(
+            painterResource(R.drawable.sol),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center)
+        )
         Text(
-            text = "Map Display Placeholder",
-            modifier = Modifier.align(Alignment.Center)
+            text = "Tid: 12:00\nTemperatur: 25°C",
+            color = Color.White,
+            modifier = Modifier.align(Alignment.Center) // Place the text in the middle of the sun
         )
     }
 }
 
 /**
- * Shows icon of the sun going down
+ * Shows icon of the sun going down -> Need for MVP
  * Show text of when the sun goes down
+ * Have also text of when it goes down and up for each icon
  */
 @Composable
 fun SunDown() {
     Box(
-        modifier = Modifier,
+        modifier = Modifier
+            .size(50.dp) // Choose the wanted size of the picture
+            .background(Color.LightGray) //It doesnt show in darkmode without this, need to fix
     ) {
-        Text(
-            text = "Map Display Placeholder",
-            modifier = Modifier.align(Alignment.Center)
+        Image(
+            painterResource(R.drawable.solnedgang),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center)
         )
     }
+    Text(
+        text = "Solnedgang 18:30",
+        color = Color.Black,
+        modifier = Modifier,
+        fontSize = 12.sp
+    )
 }
 
-fun SunCheck(Good : Boolean) : String {
+fun WeatherCheck(Good : Boolean) : String {
     return if (Good) {
         "Det er gode forhold for solnedgang idag!"
     }
@@ -135,7 +160,7 @@ fun MapBox() {
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
         Text(
-            text = "Sun display placeholder",
+            text = "Map Displayholder",
             modifier = Modifier.align(Alignment.Center)
         )
     }
