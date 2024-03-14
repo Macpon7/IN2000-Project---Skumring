@@ -15,6 +15,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mapandlist.MapListDestination
 
 
 @Composable
@@ -25,7 +26,7 @@ fun SkumringBottomBar (
 ) {
     //List with the screens, will be updated when we have more screens:
     val screens = listOf(
-        HomeDestination
+        HomeDestination, MapListDestination
     )
 
     NavigationBar(
@@ -42,7 +43,7 @@ fun SkumringBottomBar (
                     Text(text = stringResource(screen.buttonTitle)) //Have to use StringResource to make the resource to String
                 },
                 icon = {
-                    Icon(imageVector = screen.icon, contentDescription = "")
+                    screen.icon?.let { Icon(imageVector = it, contentDescription = "") }
                 },
                 selected = currentRoute == screen.route,
                 onClick = {
