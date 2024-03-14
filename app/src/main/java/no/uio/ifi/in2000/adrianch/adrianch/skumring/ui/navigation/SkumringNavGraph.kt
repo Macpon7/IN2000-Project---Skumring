@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeScreen
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mapandlist.MapAndListScreen
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mapandlist.MapListDestination
 
 @Composable
 fun SkumringNavHost(
@@ -20,6 +22,9 @@ fun SkumringNavHost(
     ) {
         composable(route = HomeDestination.route) {
             HomeScreen()
+        }
+        composable(route = MapListDestination.route) {
+            MapAndListScreen()
         }
     }
 }
