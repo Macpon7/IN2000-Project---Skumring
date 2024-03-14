@@ -8,8 +8,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 interface NavigationDestination {
     /**
      * Unique icon for the destination
+     * Used for the icon in SkumringButtonBar
      */
     val icon: ImageVector?
+
+
+    /**
+     * Unique title for the destination,
+     * Used for the title in SkumringButtonBar
+     */
+    val buttonTitle : Int
 
     /**
      * Unique name to define the path for a composable
