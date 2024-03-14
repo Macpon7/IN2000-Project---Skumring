@@ -10,20 +10,24 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 
+
 @Composable
 fun SkumringBottomBar (
-    navController: NavHostController, state: MutableState<Boolean>, modifier: Modifier = Modifier
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    state: MutableState<Boolean> //Should show what screen you are on
 ) {
+    //List with the screens, will be updated when we have more screens:
     val screens = listOf(
         HomeDestination
     )
 
-    // Kommentar
     NavigationBar(
         modifier = modifier,
         containerColor = Color.LightGray,
@@ -35,7 +39,7 @@ fun SkumringBottomBar (
 
             NavigationBarItem(
                 label = {
-                    Text(text = screen.titleRes.toString())
+                    Text(text = stringResource(screen.buttonTitle)) //Have to use StringResource to make the resource to String
                 },
                 icon = {
                     Icon(imageVector = screen.icon, contentDescription = "")
@@ -56,5 +60,4 @@ fun SkumringBottomBar (
             )
         }
     }
-
 }
