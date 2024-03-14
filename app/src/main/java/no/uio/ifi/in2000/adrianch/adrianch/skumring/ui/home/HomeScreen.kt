@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,6 +21,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 
 object HomeDestination : NavigationDestination {
     override val icon = Icons.Outlined.Home
+    override val buttonTitle = R.string.nav_home_button //This is in Int, have to use stringResource to get the String from string.xml
     override val route = "home"
     override val titleRes = R.string.app_name
 }
