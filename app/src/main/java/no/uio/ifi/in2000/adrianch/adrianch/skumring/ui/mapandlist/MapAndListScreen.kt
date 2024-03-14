@@ -52,8 +52,8 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringApp
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 
 
-/*
-Main composable function for displaying the map screen
+/**
+ * Main composable function for displaying the map screen
  */
         @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
         @OptIn(ExperimentalMaterial3Api::class)
@@ -80,8 +80,8 @@ fun MapAndListScreenTheme() {
 }
 
 
-/*
-Creates a button with two states, list view and map view
+/**
+ * Creates a button with two states, list view and map view
  */
 @Composable
 fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
@@ -103,8 +103,8 @@ fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
     }
 }
 
-/*
-Creates the toggle button. Switches between list view and map view
+/**
+ * Creates the toggle button. Switches between list view and map view
  */
 @Composable
 fun ThemeSwitcher(
@@ -204,8 +204,8 @@ fun ThemeSwitcher(
 }
 
 
-/*
-Placeholder for the map display area
+/**
+ * Placeholder for the map display area
  */
 @Composable
 fun MapArea() {
@@ -223,8 +223,8 @@ fun MapArea() {
     }
 }
 
-/*
-For å teste koden
+/**
+ * For å teste koden
  */
 /*
 class MainActivity : ComponentActivity() {
@@ -245,9 +245,12 @@ class MainActivity : ComponentActivity() {
 }
  */
 
+/**
+ * Preview of the screen
+ */
 @Preview
 @Composable
-fun ButtonPreview() {
+fun MapAndListPreview() {
     MapAndListScreenTheme()
 
 }
