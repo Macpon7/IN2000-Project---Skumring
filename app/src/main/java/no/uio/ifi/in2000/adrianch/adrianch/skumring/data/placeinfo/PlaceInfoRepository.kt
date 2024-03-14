@@ -74,11 +74,12 @@ class PlaceInfoRepositoryImpl (
      * we deem conditions to be good enough.
      */
     fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
+        val cloudAreaFractionThreshold: Float = 25.0F
         weatherData.forEach {
             // cloudAreaFraction is the percentage of pixels in a satellite photo
             // over an area judged to be clouds.
             val cloudAreaFraction: Float = it.instant.cloud_area_fraction.toFloat()
-            if (cloudAreaFraction > 25) {
+            if (cloudAreaFraction > cloudAreaFractionThreshold) {
                 return false
             }
         }
