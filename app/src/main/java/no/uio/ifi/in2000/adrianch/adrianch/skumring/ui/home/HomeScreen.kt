@@ -33,6 +33,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
+
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
     override val buttonTitle = R.string.nav_home_button //This is in Int, have to use stringResource to get the String from string.xml
@@ -159,10 +160,13 @@ fun MapBox() {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-        Text(
-            text = "Map Displayholder",
-            modifier = Modifier.align(Alignment.Center)
+        MapboxMap(
+
         )
+//        Text(
+//            text = "Map Displayholder",
+//            modifier = Modifier.align(Alignment.Center)
+//        )
     }
 }
 

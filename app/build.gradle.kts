@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+
 android {
     namespace = "no.uio.ifi.in2000.adrianch.adrianch.skumring"
     compileSdk = 34
@@ -89,4 +90,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-gson:$ktorVersion")
     implementation("io.ktor:ktor-client-android:$ktorVersion")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
+
+    // Mapbox
+    implementation("com.mapbox.maps:android:11.2.0")
+    implementation("com.mapbox.extension:maps-compose:11.2.0")
 }

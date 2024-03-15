@@ -219,8 +219,6 @@ fun ThemeSwitcher(
         }
     }
 }
-
-
 /**
  * Placeholder for the map display area
  */
