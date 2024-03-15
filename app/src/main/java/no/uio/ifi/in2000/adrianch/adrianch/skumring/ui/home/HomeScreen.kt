@@ -160,9 +160,6 @@ fun MapBox() {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-        MapboxMap(
-
-        )
 //        Text(
 //            text = "Map Displayholder",
 //            modifier = Modifier.align(Alignment.Center)
