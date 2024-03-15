@@ -29,10 +29,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mapbox.geojson.Point
+import com.mapbox.maps.MapboxExperimental
+import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
-
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
@@ -151,8 +154,11 @@ fun WeatherCheck(Good : Boolean) : String {
  * Function with the map inside
  * Should be put inside the contentHomeScreen
  */
+@OptIn(MapboxExperimental::class)
 @Composable
 fun MapBox() {
+
+
     Box(
         modifier = Modifier
             .width(500.dp)
@@ -160,10 +166,11 @@ fun MapBox() {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-//        Text(
-//            text = "Map Displayholder",
-//            modifier = Modifier.align(Alignment.Center)
-//        )
+
+        Text(
+            text = "Map Displayholder",
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
 }
 
