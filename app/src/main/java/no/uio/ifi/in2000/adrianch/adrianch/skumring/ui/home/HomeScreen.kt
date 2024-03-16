@@ -30,7 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
+import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
@@ -157,8 +160,6 @@ fun WeatherCheck(Good : Boolean) : String {
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapBox() {
-
-
     Box(
         modifier = Modifier
             .width(500.dp)
@@ -166,11 +167,23 @@ fun MapBox() {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-
-        Text(
-            text = "Map Displayholder",
-            modifier = Modifier.align(Alignment.Center)
+        MapboxMap(
+            modifier = Modifier.fillMaxSize(),
+            mapInitOptionsFactory = { context ->
+                MapInitOptions(
+                    context = context,
+                    styleUri = Style.LIGHT,
+                    cameraOptions = CameraOptions.Builder()
+                        .center(Point.fromLngLat(60.0, 10.0))
+                        .zoom(12.0)
+                        .build()
+                )
+            }
         )
+//        Text(
+//            text = "Map Displayholder",
+//            modifier = Modifier.align(Alignment.Center)
+//        )
     }
 }
 
