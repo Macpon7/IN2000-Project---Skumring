@@ -91,8 +91,18 @@ fun MapAndListScreen() {
             onThemeUpdated = { mapTheme = !mapTheme }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-        MapArea()
+        if (mapTheme) {
+            // Column for map view
+            Column(Modifier.fillMaxSize()) {
+                // Content for map view
+            }
+        } else {
+            // Column for list view
+            Column(Modifier.fillMaxSize()) {
+                // Content for list view
+            }
+        }
+
     }
 }
 
@@ -116,6 +126,7 @@ fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
             size = 65.dp, //Size of the button
             padding = 3.dp,
             onClick = onThemeUpdated
+
         )
     }
 }
