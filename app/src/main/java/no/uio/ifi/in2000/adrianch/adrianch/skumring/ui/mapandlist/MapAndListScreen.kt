@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -91,11 +93,23 @@ fun MapAndListScreen() {
             onThemeUpdated = { mapTheme = !mapTheme }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-        MapArea()
+        if (mapTheme) {
+            // Column for map view
+            Column(Modifier.fillMaxSize()) {
+                MapArea()
+            }
+        } else {
+            // Column for list view
+            Column(Modifier.fillMaxSize()) {
+                ListCard()
+                ListCard()
+                ListCard()
+
+            }
+        }
+
     }
 }
-
 
 /**
  * Creates a button with two states, list view and map view
@@ -116,6 +130,7 @@ fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
             size = 65.dp, //Size of the button
             padding = 3.dp,
             onClick = onThemeUpdated
+
         )
     }
 }
@@ -237,6 +252,52 @@ fun MapArea() {
         )
     }
 }
+
+/**
+ * Cards with information about places
+ */
+@Composable
+fun ListCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            //.clickable(onClick = onItemClick) //Click on the card to go to the specific card and see more information
+    ){
+
+        //Box for picture:
+        Box(
+            modifier = Modifier
+                .height(150.dp)
+                .padding(6.dp)
+                .background(Color.LightGray, RoundedCornerShape((16.dp)))
+                .fillMaxWidth(),
+        ) {
+            Text(
+                text = "Place Display Placeholder",
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+
+        //Text for name of place
+        Text(
+            text = "Monrads gate 33, Oslo",
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center,
+        )
+
+        //Text for weather-condition
+        Text(
+            text = "Det er fint vær",
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center,)
+    }
+}
+
 
 
 /**

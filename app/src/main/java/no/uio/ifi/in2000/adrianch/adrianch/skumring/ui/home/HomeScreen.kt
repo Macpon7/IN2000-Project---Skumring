@@ -90,7 +90,7 @@ fun ContentHomeScreen() {
 
         SunDown()
 
-        Text(text = WeatherCheck(Good = false))
+        Text(text = weatherCheck(Good = false))
 
         MapBox()
     }
@@ -149,7 +149,7 @@ fun SunDown() {
     )
 }
 
-fun WeatherCheck(Good : Boolean) : String {
+fun weatherCheck(Good : Boolean) : String {
     return if (Good) {
         "Det er gode forhold for solnedgang idag!"
     }
