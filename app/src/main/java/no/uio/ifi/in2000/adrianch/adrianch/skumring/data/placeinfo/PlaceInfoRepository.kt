@@ -20,8 +20,8 @@ interface PlaceInfoRepository {
 
 class PlaceInfoRepositoryImpl (
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
-    private val locationDataSource: LocationForecastDataSource = LocationForecastDataSource()
-    //private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
+    private val locationDataSource: LocationForecastDataSource = LocationForecastDataSource(),
+    private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
 ): PlaceInfoRepository {
     override suspend fun getPlaceInfo(lat: String, long: String, id: Int): PlaceInfo {
         // Get the forecasted weather at this place
@@ -34,11 +34,11 @@ class PlaceInfoRepositoryImpl (
         // Send our map to a function which will return a list of DailyEvents
         val dailyEventsList = makeDailyEvents(forecastGroupedByDate = forecastGroupedByDate, lat = lat, long = long)
 
-        //TODO: get name and description from PlaceDetailsDataSource
+        val details = placeDetailsDataSource.fetchPlaceDetails(id = id)
 
         return PlaceInfo(
-            name = "",
-            description = "",
+            name = details.name,
+            description = details.description,
             latitude = lat,
             longitude = long,
             sunEvents = dailyEventsList
