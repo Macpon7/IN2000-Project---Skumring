@@ -255,6 +255,9 @@ fun MapArea() {
     }
 }
 
+/**
+ * Cards with information about places
+ */
 @Composable
 fun ListCard() {
     Card(
