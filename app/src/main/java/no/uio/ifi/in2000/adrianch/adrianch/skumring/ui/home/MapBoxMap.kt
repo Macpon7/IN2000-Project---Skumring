@@ -23,33 +23,33 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 
+/**
+ * MapBoxMap composable - A mapbox with saveable state we can squish and
+ * squeeze into the boxes and screens as we see fit.
+ * Takes modifier as such and a point we want to start it on
+ */
 @Composable
 fun MapBoxMap(
     modifier: Modifier = Modifier,
     point: Point?,
 ) {
-
+    // Keep track of context, markers and points to improve performance
     val context = LocalContext.current
-
     val marker = remember(context) {
         context.getDrawable(R.drawable.solnedgang)!!.toBitmap()
     }
-
+    // Manages point annotations on the mapscreen - Descriptions of the pins
     var pointAnnotationManager: PointAnnotationManager? by remember {
         mutableStateOf(null)
     }
 
+    // Basically a function that wraps
     AndroidView(
         factory = {
             MapView(it).also { mapView ->
                 mapView.getMapboxMap().loadStyleUri(Style.TRAFFIC_DAY)
                 val annotationApi = mapView.annotations
                 pointAnnotationManager = annotationApi.createPointAnnotationManager()
-
-                mapView.getMapboxMap().addOnMapClickListener { p ->
-                    //onPointChange(p)
-                    true
-                }
             }
         },
         update = { mapView ->
