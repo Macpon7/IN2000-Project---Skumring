@@ -94,7 +94,7 @@ fun MapAndListScreen() {
         if (mapTheme) {
             // Column for map view
             Column(Modifier.fillMaxSize()) {
-                // Content for map view
+                MapArea()
             }
         } else {
             // Column for list view
