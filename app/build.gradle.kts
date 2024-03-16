@@ -71,6 +71,7 @@ dependencies {
 
     // Jetpack Compose ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
 
     // Testing stuff
     testImplementation("junit:junit:4.13.2")

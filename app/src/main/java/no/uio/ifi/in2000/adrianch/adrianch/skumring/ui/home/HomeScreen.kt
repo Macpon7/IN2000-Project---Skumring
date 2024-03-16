@@ -20,9 +20,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +39,7 @@ import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.MapView
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
@@ -160,6 +165,9 @@ fun WeatherCheck(Good : Boolean) : String {
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapBox() {
+    var point: Point? by remember { mutableStateOf(null) }
+    var relaunch by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .width(500.dp)
@@ -167,23 +175,10 @@ fun MapBox() {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-        MapboxMap(
+        MapBoxMap(
+            point = Point.fromLngLat(10.0, 60.0),
             modifier = Modifier.fillMaxSize(),
-            mapInitOptionsFactory = { context ->
-                MapInitOptions(
-                    context = context,
-                    styleUri = Style.LIGHT,
-                    cameraOptions = CameraOptions.Builder()
-                        .center(Point.fromLngLat(60.0, 10.0))
-                        .zoom(12.0)
-                        .build()
-                )
-            }
         )
-//        Text(
-//            text = "Map Displayholder",
-//            modifier = Modifier.align(Alignment.Center)
-//        )
     }
 }
 

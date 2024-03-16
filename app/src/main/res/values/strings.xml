@@ -5,5 +5,4 @@
     <string name="nav_home_button">Hjem</string>
     <string name="nav_fav_button">Favoritter</string>
     <string name="nav_personal_button">Min side</string>
-    <string name="access_token">pk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0c3EyenM3MG5wMDJsbmpobHczMWliayJ9.b3_WrpV-QFUfehruitjgVg</string>
 </resources>
