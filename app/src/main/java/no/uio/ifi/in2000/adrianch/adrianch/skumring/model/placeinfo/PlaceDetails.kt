@@ -7,6 +7,7 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo
  * photos from.
  */
 data class PlaceDetails(
+    val id: Int,
     val name: String,
     val description: String
 )
