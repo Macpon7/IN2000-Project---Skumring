@@ -43,16 +43,21 @@ fun MapBoxMap(
         mutableStateOf(null)
     }
 
-    // Basically a function that wraps
+    // AndroidView is a wrapper that takes the object we want to initialize
+    // as a factory argument.
     AndroidView(
         factory = {
             MapView(it).also { mapView ->
-                mapView.getMapboxMap().loadStyleUri(Style.TRAFFIC_DAY)
+                mapView.getMapboxMap().loadStyleUri(Style.LIGHT)
+                // Fetching and managing the annotations
                 val annotationApi = mapView.annotations
                 pointAnnotationManager = annotationApi.createPointAnnotationManager()
             }
         },
+        // Updates when recomposed
         update = { mapView ->
+            // If a point is provided, it updates the manager by deleting
+            // existing annotations and making a new one with the provided point
             if (point != null) {
                 pointAnnotationManager?.let {
                     it.deleteAll()
@@ -62,6 +67,7 @@ fun MapBoxMap(
 
                     it.create(pointAnnotationOptions)
                     mapView.getMapboxMap()
+                        // Built in function has the camera fly nicely to the new point
                         .flyTo(CameraOptions.Builder().zoom(5.0).center(point).build())
                 }
             }
