@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +34,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mapbox.common.location.AccuracyLevel
+import com.mapbox.common.location.DeviceLocationProvider
+import com.mapbox.common.location.IntervalSettings
+import com.mapbox.common.location.LocationProviderRequest
+import com.mapbox.common.location.LocationService
+import com.mapbox.common.location.LocationServiceFactory
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapInitOptions
@@ -41,6 +48,7 @@ import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.MapView
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
+
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
@@ -165,9 +173,26 @@ fun weatherCheck(Good : Boolean) : String {
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapBox() {
+    val locationService : LocationService = LocationServiceFactory.getOrCreate()
+    var locationProvider: DeviceLocationProvider? = null
+
+    val request = LocationProviderRequest.Builder()
+        .interval(IntervalSettings.Builder().interval(0L).minimumInterval(0L).maximumInterval(0L).build())
+        .displacement(0F)
+        .accuracy(AccuracyLevel.HIGHEST)
+        .build();
+
+    val result = locationService.getDeviceLocationProvider(request)
+    if (result.isValue) {
+        locationProvider = result.value!!
+    } else {
+        Log.d("Homescreen","Failed to get device location provider")
+    }
     var point: Point? by remember { mutableStateOf(null) }
     var relaunch by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    //val location =
+
     Box(
         modifier = Modifier
             .width(500.dp)
