@@ -21,12 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
-/*
 object InfoScreenDestination : NavigationDestination {
-    //TODO, unsure if we need this?
+    override val icon = null
+    override val buttonTitle = null
+    override val route = "infoscreen"
+    override val titleRes = null
+
 }
- */
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
