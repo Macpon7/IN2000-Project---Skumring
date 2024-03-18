@@ -22,6 +22,8 @@ import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+
+// Testing purposes only, please ignore
 private class testPin(lat: Double, long: Double, val name: String) {
     val point: Point = Point.fromLngLat(long, lat)
 }
@@ -30,7 +32,7 @@ private val kollen = testPin(59.9640303, 10.6651817, "Holmenkollen")
 private val hellerud = testPin(59.9121057,10.8547637, "Hellerudtoppen")
 private val huk = testPin(59.8953493,10.6754127, "Huk Strand")
 
-private val testList = listOf<testPin>(varden, kollen, hellerud, huk)
+private val testList = listOf(varden, kollen, hellerud, huk)
 
 /**
  * MapBoxMap composable - A mapbox with saveable state we can squish and
@@ -54,15 +56,16 @@ fun MapBoxMap(
     }
     // AndroidView is a wrapper that takes the object we want to initialize
     // as a factory argument.
-    // "factory" launches only during first composition, update keeps track
+    // "factory" launches only during first composition, update keeps track of changes.
     AndroidView(
         factory = {
             MapView(it).also { mapView ->
-                mapView.mapboxMap.loadStyleUri(Style.LIGHT)
+                mapView.mapboxMap.loadStyleUri(Style.OUTDOORS)
                 // Fetching and managing the annotations
                 val annotationApi = mapView.annotations
                 pointAnnotationManager = annotationApi.createPointAnnotationManager()
                 pointAnnotationManager?.let { pam ->
+                    // TODO Have it fetch from local data with favourites
                     testList.forEach { pin ->
                         makeAnnotation(pam, marker, pin.point, pin.name)
                     }
@@ -84,7 +87,6 @@ fun MapBoxMap(
                         .flyTo(CameraOptions.Builder().zoom(10.0).center(point).build())
                 }
             }
-
             // Tells AndroidView that it doesn't need additional updates
             NoOpUpdate
         },
@@ -92,7 +94,13 @@ fun MapBoxMap(
     )
 }
 
-private fun makeAnnotation(pointAnnotationManager: PointAnnotationManager, marker: Bitmap, point: Point, description: String) {
+// Function for making more pins on the map
+// known to mapbox as annotations
+private fun makeAnnotation(
+    pointAnnotationManager: PointAnnotationManager,
+    marker: Bitmap,
+    point: Point,
+    description: String) {
     val pointAnnotationOptions = PointAnnotationOptions()
         .withPoint(point)
         .withIconImage(marker)
