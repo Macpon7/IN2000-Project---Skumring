@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,23 +33,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mapbox.common.location.AccuracyLevel
-import com.mapbox.common.location.DeviceLocationProvider
-import com.mapbox.common.location.IntervalSettings
-import com.mapbox.common.location.LocationProviderRequest
-import com.mapbox.common.location.LocationService
-import com.mapbox.common.location.LocationServiceFactory
 import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
-import com.mapbox.maps.Style
-import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.MapView
-import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxMap
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
@@ -188,10 +176,10 @@ fun MapBox() {
 //    } else {
 //        Log.d("Homescreen","Failed to get device location provider")
 //    }
+    // Can declare point to contain current location of user
     var point: Point? by remember { mutableStateOf(null) }
     var relaunch by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    //val location =
 
     Box(
         modifier = Modifier

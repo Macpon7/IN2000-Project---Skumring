@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 
@@ -21,7 +21,6 @@ import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
-import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 
 /**
  * MapBoxMap composable - A mapbox with saveable state we can squish and
@@ -46,6 +45,7 @@ fun MapBoxMap(
 
     // AndroidView is a wrapper that takes the object we want to initialize
     // as a factory argument.
+    // "factory" launches only during first composition, update keeps track
     AndroidView(
         factory = {
             MapView(it).also { mapView ->
