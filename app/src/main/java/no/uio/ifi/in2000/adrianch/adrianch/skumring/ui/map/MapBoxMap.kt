@@ -22,6 +22,15 @@ import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+private class testPin(lat: Double, long: Double, val name: String) {
+    val point: Point = Point.fromLngLat(long, lat)
+}
+private val varden = testPin(58.9516263, 5.7264998, "Vårlivarden")
+private val kollen = testPin(59.9640303, 10.6651817, "Holmenkollen")
+private val hellerud = testPin(59.9121057,10.8547637, "Hellerudtoppen")
+private val huk = testPin(59.8953493,10.6754127, "Huk Strand")
+
+private val testList = listOf<testPin>(varden, kollen, hellerud, huk)
 
 /**
  * MapBoxMap composable - A mapbox with saveable state we can squish and
@@ -43,7 +52,6 @@ fun MapBoxMap(
     var pointAnnotationManager: PointAnnotationManager? by remember {
         mutableStateOf(null)
     }
-
     // AndroidView is a wrapper that takes the object we want to initialize
     // as a factory argument.
     // "factory" launches only during first composition, update keeps track
@@ -54,6 +62,11 @@ fun MapBoxMap(
                 // Fetching and managing the annotations
                 val annotationApi = mapView.annotations
                 pointAnnotationManager = annotationApi.createPointAnnotationManager()
+                pointAnnotationManager?.let { pam ->
+                    testList.forEach { pin ->
+                        makeAnnotation(pam, marker, pin.point, pin.name)
+                    }
+                }
             }
         },
         // Updates when recomposed
@@ -68,7 +81,7 @@ fun MapBoxMap(
 
                     mapView.mapboxMap
                         // Built in function has the camera fly nicely to the new point
-                        .flyTo(CameraOptions.Builder().zoom(15.0).center(point).build())
+                        .flyTo(CameraOptions.Builder().zoom(10.0).center(point).build())
                 }
             }
 
