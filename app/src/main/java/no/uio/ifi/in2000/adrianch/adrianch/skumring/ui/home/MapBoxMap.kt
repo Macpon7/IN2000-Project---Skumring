@@ -36,6 +36,7 @@ fun MapBoxMap(
     // Keep track of context, markers and points to improve performance
     val context = LocalContext.current
     val marker = remember(context) {
+        // We want to insert a custom marker here lol
         context.getDrawable(R.drawable.solnedgang)!!.toBitmap()
     }
     // Manages point annotations on the mapscreen - Descriptions of the pins
@@ -48,7 +49,7 @@ fun MapBoxMap(
     AndroidView(
         factory = {
             MapView(it).also { mapView ->
-                mapView.getMapboxMap().loadStyleUri(Style.LIGHT)
+                mapView.mapboxMap.loadStyleUri(Style.LIGHT)
                 // Fetching and managing the annotations
                 val annotationApi = mapView.annotations
                 pointAnnotationManager = annotationApi.createPointAnnotationManager()
@@ -66,9 +67,9 @@ fun MapBoxMap(
                         .withIconImage(marker)
 
                     it.create(pointAnnotationOptions)
-                    mapView.getMapboxMap()
+                    mapView.mapboxMap
                         // Built in function has the camera fly nicely to the new point
-                        .flyTo(CameraOptions.Builder().zoom(5.0).center(point).build())
+                        .flyTo(CameraOptions.Builder().zoom(15.0).center(point).build())
                 }
             }
             NoOpUpdate
