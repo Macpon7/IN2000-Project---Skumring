@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
@@ -17,6 +18,8 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.mapbox.maps.dsl.cameraOptions
+import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.animation.flyTo
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
@@ -48,15 +51,18 @@ fun MapBoxMap(
     val context = LocalContext.current
     val marker = remember(context) {
         // We want to insert a custom marker here lol
-        context.getDrawable(R.drawable.solnedgang)!!.toBitmap()
+        context.getDrawable(R.drawable.location_on)!!.toBitmap()
     }
     // Manages point annotations on the mapscreen - Descriptions of the pins
     var pointAnnotationManager: PointAnnotationManager? by remember {
         mutableStateOf(null)
     }
+    var center by remember { mutableStateOf(point) }
+
     // AndroidView is a wrapper that takes the object we want to initialize
     // as a factory argument.
     // "factory" launches only during first composition, update keeps track of changes.
+    @OptIn(ExperimentalComposeUiApi::class)
     AndroidView(
         factory = {
             MapView(it).also { mapView ->
@@ -70,6 +76,8 @@ fun MapBoxMap(
                         makeAnnotation(pam, marker, pin.point, pin.name)
                     }
                 }
+                var center = mapView.mapboxMap.cameraState.center
+
             }
         },
         // Updates when recomposed
@@ -90,6 +98,9 @@ fun MapBoxMap(
             // Tells AndroidView that it doesn't need additional updates
             NoOpUpdate
         },
+        onReset = {
+                  cameraOptions {  }
+        } ,
         modifier = modifier
     )
 }
