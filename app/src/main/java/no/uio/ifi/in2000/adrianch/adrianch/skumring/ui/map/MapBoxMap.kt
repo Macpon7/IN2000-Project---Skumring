@@ -57,11 +57,11 @@ fun MapBoxMap(
     var pointAnnotationManager: PointAnnotationManager? by remember {
         mutableStateOf(null)
     }
-    var center by remember { mutableStateOf(point) }
 
     // AndroidView is a wrapper that takes the object we want to initialize
     // as a factory argument.
     // "factory" launches only during first composition, update keeps track of changes.
+    // TODO Keep it composed lol
     @OptIn(ExperimentalComposeUiApi::class)
     AndroidView(
         factory = {
@@ -76,8 +76,6 @@ fun MapBoxMap(
                         makeAnnotation(pam, marker, pin.point, pin.name)
                     }
                 }
-                var center = mapView.mapboxMap.cameraState.center
-
             }
         },
         // Updates when recomposed
@@ -98,9 +96,6 @@ fun MapBoxMap(
             // Tells AndroidView that it doesn't need additional updates
             NoOpUpdate
         },
-        onReset = {
-                  cameraOptions {  }
-        } ,
         modifier = modifier
     )
 }
