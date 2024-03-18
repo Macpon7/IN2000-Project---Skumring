@@ -173,21 +173,21 @@ fun weatherCheck(Good : Boolean) : String {
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapBox() {
-    val locationService : LocationService = LocationServiceFactory.getOrCreate()
-    var locationProvider: DeviceLocationProvider? = null
-
-    val request = LocationProviderRequest.Builder()
-        .interval(IntervalSettings.Builder().interval(0L).minimumInterval(0L).maximumInterval(0L).build())
-        .displacement(0F)
-        .accuracy(AccuracyLevel.HIGHEST)
-        .build();
-
-    val result = locationService.getDeviceLocationProvider(request)
-    if (result.isValue) {
-        locationProvider = result.value!!
-    } else {
-        Log.d("Homescreen","Failed to get device location provider")
-    }
+//    val locationService : LocationService = LocationServiceFactory.getOrCreate()
+//    var locationProvider: DeviceLocationProvider? = null
+//
+//    val request = LocationProviderRequest.Builder()
+//        .interval(IntervalSettings.Builder().interval(0L).minimumInterval(0L).maximumInterval(0L).build())
+//        .displacement(0F)
+//        .accuracy(AccuracyLevel.HIGHEST)
+//        .build();
+//
+//    val result = locationService.getDeviceLocationProvider(request)
+//    if (result.isValue) {
+//        locationProvider = result.value!!
+//    } else {
+//        Log.d("Homescreen","Failed to get device location provider")
+//    }
     var point: Point? by remember { mutableStateOf(null) }
     var relaunch by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -201,7 +201,8 @@ fun MapBox() {
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
         MapBoxMap(
-            point = Point.fromLngLat(10.0, 60.0),
+            point = Point.fromLngLat(10.71839307051461, 59.943735106220444),
+            //59.943735106220444, 10.71839307051461
             modifier = Modifier.fillMaxSize(),
         )
     }
