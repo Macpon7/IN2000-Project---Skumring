@@ -161,23 +161,9 @@ fun weatherCheck(Good : Boolean) : String {
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapBox() {
-//    val locationService : LocationService = LocationServiceFactory.getOrCreate()
-//    var locationProvider: DeviceLocationProvider? = null
-//
-//    val request = LocationProviderRequest.Builder()
-//        .interval(IntervalSettings.Builder().interval(0L).minimumInterval(0L).maximumInterval(0L).build())
-//        .displacement(0F)
-//        .accuracy(AccuracyLevel.HIGHEST)
-//        .build();
-//
-//    val result = locationService.getDeviceLocationProvider(request)
-//    if (result.isValue) {
-//        locationProvider = result.value!!
-//    } else {
-//        Log.d("Homescreen","Failed to get device location provider")
-//    }
     // Can declare point to contain current location of user
     var point: Point? by remember { mutableStateOf(null) }
+    // In case of needing to recheck permissions
     var relaunch by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -190,7 +176,6 @@ fun MapBox() {
     ) {
         MapBoxMap(
             point = Point.fromLngLat(10.71839307051461, 59.943735106220444),
-            //59.943735106220444, 10.71839307051461
             modifier = Modifier.fillMaxSize(),
         )
     }

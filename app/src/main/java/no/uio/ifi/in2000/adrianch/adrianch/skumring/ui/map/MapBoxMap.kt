@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map
 
+import android.graphics.Bitmap
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 
 import androidx.compose.runtime.Composable
@@ -61,19 +62,28 @@ fun MapBoxMap(
             // existing annotations and making a new one with the provided point
             if (point != null) {
                 pointAnnotationManager?.let {
-                    it.deleteAll()
-                    val pointAnnotationOptions = PointAnnotationOptions()
-                        .withPoint(point)
-                        .withIconImage(marker)
+                    //it.deleteAll()
 
-                    it.create(pointAnnotationOptions)
+                    makeAnnotation(it, marker, point, "Ole-Johan Dahls Hus")
+
                     mapView.mapboxMap
                         // Built in function has the camera fly nicely to the new point
                         .flyTo(CameraOptions.Builder().zoom(15.0).center(point).build())
                 }
             }
+
+            // Tells AndroidView that it doesn't need additional updates
             NoOpUpdate
         },
         modifier = modifier
     )
+}
+
+private fun makeAnnotation(pointAnnotationManager: PointAnnotationManager, marker: Bitmap, point: Point, description: String) {
+    val pointAnnotationOptions = PointAnnotationOptions()
+        .withPoint(point)
+        .withIconImage(marker)
+        .withTextField(description)
+
+    pointAnnotationManager.create(pointAnnotationOptions)
 }
