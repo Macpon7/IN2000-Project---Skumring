@@ -16,15 +16,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreenDestination
 
 
 @Composable
-fun SkumringBottomBar (
+fun SkumringBottomBar(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    state: MutableState<Boolean> //Should show what screen you are on
+    state: MutableState<Boolean> // Should show what screen you are on
 ) {
-    //List with the screens, will be updated when we have more screens:
+    // List with the screens, will be updated when we have more screens:
     val screens = listOf(
         HomeDestination, MapListDestination
     )
@@ -40,19 +41,33 @@ fun SkumringBottomBar (
 
             NavigationBarItem(
                 label = {
-                    Text(text = stringResource(screen.buttonTitle!!)) //Have to use StringResource to make the resource to String
+                    Text(text = stringResource(screen.buttonTitle!!)) // Have to use StringResource to make the resource to String
                 },
                 icon = {
                     screen.icon?.let { Icon(imageVector = it, contentDescription = "") }
                 },
                 selected = currentRoute == screen.route,
                 onClick = {
-                    navController.navigate(screen.route!!) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                    //when the current route is PlaceInfoScreen and you push the HomeDestinationButton,
+                    //go back to homeScreen, else go back to MapListScreen.
+                    // Else, proceed with regular navigation
+                    when {
+                        currentRoute == PlaceInfoScreenDestination.route -> {
+                            if (screen == HomeDestination) {
+                                navController.popBackStack(HomeDestination.route, false)
+                            } else {
+                                navController.popBackStack(MapListDestination.route, false)
+                            }
                         }
-                        launchSingleTop = true
-                        restoreState = true
+                        else -> {
+                            navController.navigate(screen.route!!) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
