@@ -10,12 +10,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class HomeUiState(
-    var title: String = "Home", // do we need this?
-    var time: String = "",
-    var temp: Int = 0,
-    var sunset: String = "",
+    var time: String = "18:30",
+    var temp: String = "25",
+    var sunset: String = "19:00",
     var weatherCheck: Boolean = false,
-    var weatherMessage: String = ""
+    var weatherMessage: String = "Dårlig vær"
 )
 
 private const val logTag = "HomeViewModel"

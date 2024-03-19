@@ -45,8 +45,18 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel()
 ) {
+    //Example
+    //expanded = homeScreenUiState.isDropdownExpanded,
+    //onDismissRequest = { homeScreenViewModel.closeDropDown() },
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //var her før
+
+   // var timeUiState: String = homeUiState.time
+    var time: String = homeUiState.time
+    var temp: String = homeUiState.temp
+    var sunset: String = homeUiState.sunset
+    var weatherCheck: Boolean = homeUiState.weatherCheck
+    var weatherMessage: String = homeUiState.weatherMessage
 
     Scaffold(
         topBar = {
@@ -60,7 +70,7 @@ fun HomeScreen(
         Column (modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ContentHomeScreen()
+            ContentHomeScreen(time, temp, sunset, weatherCheck)
         }
     }
 }
@@ -70,30 +80,31 @@ fun HomeScreen(
  * This exclude the top- and bottomBar
  */
 @Composable
-fun ContentHomeScreen() {
+fun ContentHomeScreen(time: String,
+                      temp: String,
+                      sunset: String,
+                      weatherCheck: Boolean
+) {
     Column (verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
 
-        SunTempAndTime()
-
-        SunDown()
-
-        Text(text = weatherCheck(Good = false))
-
+        SunTempAndTime(time, temp)
+        SunDown(sunset)
+        Text(text = "Været er bra: $weatherCheck")
         MapBox()
     }
-
 }
 
 /**
  * The sun is a picture and in front it should be text of the time and the temperature
  */
 @Composable
-fun SunTempAndTime() {
+fun SunTempAndTime(time: String, temp: String) {
     Box(
         modifier = Modifier
             .size(150.dp) // Choose the wanted size of the picture
     ) {
+
         Image(
             painterResource(R.drawable.sol),
             contentDescription = null,
@@ -102,7 +113,7 @@ fun SunTempAndTime() {
                 .align(Alignment.Center)
         )
         Text(
-            text = "Tid: 12:00\nTemperatur: 25°C",
+            text = "Tid: $time \nTemperatur: $temp°C",  //<------------------
             color = Color.White,
             modifier = Modifier.align(Alignment.Center) // Place the text in the middle of the sun
         )
@@ -115,7 +126,7 @@ fun SunTempAndTime() {
  * Have also text of when it goes down and up for each icon
  */
 @Composable
-fun SunDown() {
+fun SunDown(sunset: String) {
     Box(
         modifier = Modifier
             .size(50.dp) // Choose the wanted size of the picture
@@ -130,21 +141,14 @@ fun SunDown() {
         )
     }
     Text(
-        text = "Solnedgang 18:30",
+        text = "Solnedgang $sunset",
         color = Color.Black,
         modifier = Modifier,
         fontSize = 12.sp
     )
 }
 
-fun weatherCheck(Good : Boolean) : String {
-    return if (Good) {
-        "Det er gode forhold for solnedgang idag!"
-    }
-    else {
-        "Det er drittvær idag"
-    }
-}
+
 
 /**
  * Function with the map inside
