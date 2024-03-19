@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -240,6 +241,12 @@ fun ThemeSwitcher(
  */
 @Composable
 fun MapArea() {
+    // Can declare point to contain current location of user
+    val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
+    var point: Point? by remember { mutableStateOf(testPoint) }
+    // In case of needing to recheck permissions
+    var relaunch by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .width(500.dp)
@@ -248,8 +255,9 @@ fun MapArea() {
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
         MapBoxMap(
-            point = Point.fromLngLat(10.71839307051461, 59.943735106220444),
+            point = point,
             modifier = Modifier.fillMaxSize(),
+            context = context
         )
     }
 }

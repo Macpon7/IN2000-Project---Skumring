@@ -162,7 +162,8 @@ fun weatherCheck(Good : Boolean) : String {
 @Composable
 fun MapBox() {
     // Can declare point to contain current location of user
-    var point: Point? by remember { mutableStateOf(null) }
+    val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
+    var point: Point? by remember { mutableStateOf(testPoint) }
     // In case of needing to recheck permissions
     var relaunch by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -175,8 +176,9 @@ fun MapBox() {
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
         MapBoxMap(
-            point = Point.fromLngLat(10.71839307051461, 59.943735106220444),
+            point = point,
             modifier = Modifier.fillMaxSize(),
+            context = context
         )
     }
 }

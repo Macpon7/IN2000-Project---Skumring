@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map
 
+import android.content.Context
 import android.graphics.Bitmap
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 
@@ -44,9 +45,10 @@ private val testList = listOf(varden, kollen, hellerud, huk)
 fun MapBoxMap(
     modifier: Modifier = Modifier,
     point: Point?,
+    context: Context
 ) {
     // Keep track of context, markers and points to improve performance
-    val context = LocalContext.current
+    //val context = LocalContext.current
     val marker = remember(context) {
         // We want to insert a custom marker here lol
         context.getDrawable(R.drawable.location_on)!!.toBitmap()
