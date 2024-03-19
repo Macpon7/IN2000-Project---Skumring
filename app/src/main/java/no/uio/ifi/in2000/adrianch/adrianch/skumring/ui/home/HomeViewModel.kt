@@ -41,7 +41,16 @@ class HomeViewModel() : ViewModel() {
 
     fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
+        }
+    }
 
+
+    //data tovariables in parameters will come frome repository, not as parameter
+    fun updateWeather(temp: String, sunset: String){
+        _homeUiState.update{ currenthomeUiState->
+            currenthomeUiState.copy(
+                temp = temp,
+                sunset = sunset)
         }
     }
 }
