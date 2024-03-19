@@ -33,10 +33,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
@@ -62,8 +61,8 @@ object MapListDestination : NavigationDestination {
         @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
-fun MapListScreen(navController : NavController) {
-    var mapTheme by remember { mutableStateOf(false) }
+fun MapListScreen(navController : NavController, mapListViewModel: MapListViewModel = viewModel()) {
+    val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
     /*
     These belong to searchbar
@@ -89,11 +88,11 @@ fun MapListScreen(navController : NavController) {
         }
          */
         ListAndMapButton(
-            mapTheme = mapTheme,
-            onThemeUpdated = { mapTheme = !mapTheme }
+            mapTheme = mapListUiState.mapListToggle.stateAsBool,
+            onThemeUpdated = { mapListViewModel.toggleMapListState() }
         )
 
-        if (mapTheme) {
+        if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
             // Column for map view
             Column(Modifier.fillMaxSize()) {
                 MapArea()
