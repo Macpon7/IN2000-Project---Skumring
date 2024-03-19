@@ -4,5 +4,5 @@ data class PinInfo(
     val id: Int,
     val lat: String,
     val long: String,
-    val color: String
+    //val color: String
 )

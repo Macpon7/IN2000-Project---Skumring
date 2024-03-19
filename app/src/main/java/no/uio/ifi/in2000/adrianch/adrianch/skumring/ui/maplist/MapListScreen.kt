@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mapandlist
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.AnimationSpec
@@ -65,7 +65,7 @@ object MapListDestination : NavigationDestination {
         @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
-fun MapAndListScreen(navController : NavController) {
+fun MapListScreen(navController : NavController) {
     var mapTheme by remember { mutableStateOf(false) }
 
     /*
@@ -109,9 +109,9 @@ fun MapAndListScreen(navController : NavController) {
                 })
             }
         }
-
     }
 }
+
 
 /**
  * Creates a button with two states, list view and map view
@@ -132,7 +132,6 @@ fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
             size = 65.dp, //Size of the button
             padding = 3.dp,
             onClick = onThemeUpdated
-
         )
     }
 }
