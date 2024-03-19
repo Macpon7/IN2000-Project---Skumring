@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mapandlist
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.AnimationSpec
@@ -42,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -63,7 +62,7 @@ object MapListDestination : NavigationDestination {
         @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
-fun MapAndListScreen(navController : NavController) {
+fun MapListScreen(navController : NavController) {
     var mapTheme by remember { mutableStateOf(false) }
 
     /*
