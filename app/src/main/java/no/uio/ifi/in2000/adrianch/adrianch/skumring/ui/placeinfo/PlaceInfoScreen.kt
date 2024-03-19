@@ -12,8 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 object PlaceInfoScreenDestination : NavigationDestination {
@@ -31,9 +39,10 @@ object PlaceInfoScreenDestination : NavigationDestination {
 
 }
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun PlaceInfoScreen() {
+fun PlaceInfoScreen(navController: NavController) {
     Scaffold(
         topBar = {
             Box(
@@ -42,6 +51,12 @@ fun PlaceInfoScreen() {
                     .background(color = Color.White)
                     .padding(vertical = 16.dp) // Choose the size of the topbar
             ) {
+                    IconButton(onClick = {navController.popBackStack()}) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Arrow back"
+                        )
+                    }
                 Text(
                     text = "Infoskjerm ÅS",
                     textAlign = TextAlign.Center,
