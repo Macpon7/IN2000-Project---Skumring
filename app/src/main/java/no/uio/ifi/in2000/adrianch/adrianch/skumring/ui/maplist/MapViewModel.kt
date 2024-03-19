@@ -1,9 +1,10 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeUiState
 
 data class MapUiState(
     val title: String = "Home"
