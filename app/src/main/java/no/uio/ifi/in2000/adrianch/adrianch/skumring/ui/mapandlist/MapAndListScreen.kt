@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -106,9 +107,9 @@ fun MapAndListScreen(navController : NavController) {
                 })
             }
         }
-
     }
 }
+
 
 /**
  * Creates a button with two states, list view and map view
@@ -129,7 +130,6 @@ fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
             size = 65.dp, //Size of the button
             padding = 3.dp,
             onClick = onThemeUpdated
-
         )
     }
 }
