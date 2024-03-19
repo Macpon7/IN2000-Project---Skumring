@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
 
 enum class MapListToggleState (val stateAsBool: Boolean) {
     MAP(false),
@@ -18,16 +20,19 @@ enum class MapListToggleState (val stateAsBool: Boolean) {
 
 data class MapListUiState(
     val pins: List<PinInfo> = emptyList(),
+    val places: List<PlaceSummary> = emptyList(),
     var mapListToggle: MapListToggleState = MapListToggleState.MAP
 )
 
 class MapListViewModel: ViewModel() {
     private val mapRepository = MapRepositoryImpl()
+    private val placeListRepository = PlaceListRepositoryImpl()
     private val _mapListUiState = MutableStateFlow(MapListUiState())
     val mapListUiState: StateFlow<MapListUiState> = _mapListUiState.asStateFlow()
 
     init {
         loadMap()
+        loadList()
     }
 
     private fun loadMap(){
@@ -35,6 +40,15 @@ class MapListViewModel: ViewModel() {
             _mapListUiState.update { currentMapUiState ->
                 val mapInfoObject = mapRepository.getPins()
                 currentMapUiState.copy(pins = mapInfoObject)
+            }
+        }
+    }
+
+    private fun loadList(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _mapListUiState.update { currentMapListUiState ->
+                val placeSummaryList = placeListRepository.getPlaceList()
+                currentMapListUiState.copy(places = placeSummaryList)
             }
         }
     }
