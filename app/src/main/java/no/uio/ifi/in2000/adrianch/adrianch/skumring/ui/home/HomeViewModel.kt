@@ -8,14 +8,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
 
 data class HomeUiState(
-    var title: String = "Home", // do we need this?
-    var time: String = "",
-    var temp: Int = 0,
-    var sunset: String = "",
+    var time: String = "12:00",
+    var temp: Int = 25,
+    var sunset: String = "18:30",
     var weatherCheck: Boolean = false,
-    var weatherMessage: String = ""
+    var weatherMessage: String = "Det er drittvær i dag"
 )
 
 private const val logTag = "HomeViewModel"
@@ -24,7 +26,9 @@ private const val logTag = "HomeViewModel"
  * ViewModel for HomeScreen
  */
 class HomeViewModel() : ViewModel() {
-    //repository
+    private val mapRepository = MapRepositoryImpl()
+    private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
+
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
@@ -34,7 +38,8 @@ class HomeViewModel() : ViewModel() {
 
     fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-            //call function that updates time, temp, sunset, weatherMessage
+
+        //call function that updates time, temp, sunset, weatherMessage
             //the results will be used in functions in Homescreen
 
             //SunTempAndTime(){
@@ -46,6 +51,7 @@ class HomeViewModel() : ViewModel() {
            // }
 
             //weatherCheck
-                    }
+        //
+        }
     }
 }
