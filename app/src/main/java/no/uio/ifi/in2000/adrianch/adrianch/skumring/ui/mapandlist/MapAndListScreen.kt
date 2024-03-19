@@ -45,7 +45,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.mapbox.geojson.Point
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxMap
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 
@@ -245,9 +247,9 @@ fun MapArea() {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-        Text(
-            text = "Map Display Placeholder",
-            modifier = Modifier.align(Alignment.Center)
+        MapBoxMap(
+            point = Point.fromLngLat(10.71839307051461, 59.943735106220444),
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }

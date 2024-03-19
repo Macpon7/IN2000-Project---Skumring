@@ -18,8 +18,6 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
-import com.mapbox.maps.dsl.cameraOptions
-import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.animation.flyTo
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
@@ -27,13 +25,13 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 
 // Testing purposes only, please ignore
-private class testPin(lat: Double, long: Double, val name: String) {
+private class TestPin(lat: Double, long: Double, val name: String) {
     val point: Point = Point.fromLngLat(long, lat)
 }
-private val varden = testPin(58.9516263, 5.7264998, "Vårlivarden")
-private val kollen = testPin(59.9640303, 10.6651817, "Holmenkollen")
-private val hellerud = testPin(59.9121057,10.8547637, "Hellerudtoppen")
-private val huk = testPin(59.8953493,10.6754127, "Huk Strand")
+private val varden = TestPin(58.9516263, 5.7264998, "Vårlivarden")
+private val kollen = TestPin(59.9640303, 10.6651817, "Holmenkollen")
+private val hellerud = TestPin(59.9121057,10.8547637, "Hellerudtoppen")
+private val huk = TestPin(59.8953493,10.6754127, "Huk Strand")
 
 private val testList = listOf(varden, kollen, hellerud, huk)
 
@@ -66,7 +64,7 @@ fun MapBoxMap(
     AndroidView(
         factory = {
             MapView(it).also { mapView ->
-                mapView.mapboxMap.loadStyleUri(Style.OUTDOORS)
+                mapView.mapboxMap.loadStyle(Style.OUTDOORS)
                 // Fetching and managing the annotations
                 val annotationApi = mapView.annotations
                 pointAnnotationManager = annotationApi.createPointAnnotationManager()
@@ -111,6 +109,7 @@ private fun makeAnnotation(
         .withPoint(point)
         .withIconImage(marker)
         .withTextField(description)
+        .withIconOffset(listOf(0.0, 20.0))
 
     pointAnnotationManager.create(pointAnnotationOptions)
 }
