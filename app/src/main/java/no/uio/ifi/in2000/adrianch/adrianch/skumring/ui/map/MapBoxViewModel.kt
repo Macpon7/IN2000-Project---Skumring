@@ -9,10 +9,10 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 
 data class MapBoxUiState(
-    //val title: String = "MapBox"
-    val mapView : MapView? = null
+    val pins: List<PinInfo> = emptyList(),
 )
 
 private const val logTag = "MapBox"

@@ -173,11 +173,9 @@ fun weatherCheck(Good : Boolean) : String {
 fun MapBox() {
     // Can declare point to contain current location of user
     val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
-    var point: Point by remember { mutableStateOf(testPoint) }
+    val point: Point by remember { mutableStateOf(testPoint) }
     // In case of needing to recheck permissions
-    var relaunch by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val mapBoxViewModel = MapBoxViewModel()
 
     Box(
         modifier = Modifier
@@ -197,9 +195,7 @@ fun MapBox() {
                         .zoom(10.0)
                         .build()
                 )
-
             }
-
         ) {
             PointAnnotation(
                 point = point,
@@ -210,11 +206,6 @@ fun MapBox() {
                 }
             )
         }
-//        MapBoxMap(
-//            point = point,
-//            modifier = Modifier.fillMaxSize(),
-//            context = context
-//        )
     }
 }
 

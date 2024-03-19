@@ -1,13 +1,16 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +38,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,9 +49,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.MapInitOptions
+import com.mapbox.maps.MapboxExperimental
+import com.mapbox.maps.Style
+import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxMap
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
@@ -97,8 +110,13 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
 
         if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
             // Column for map view
-            Column(Modifier.fillMaxSize()) {
-                MapArea()
+            Column(
+                Modifier.fillMaxSize()) {
+                MapArea(
+                    onItemClick = {
+                    navController.navigate("infoscreen")
+                },
+                    mapListUiState = mapListUiState)
             }
         } else {
             // Column for list view
@@ -243,26 +261,57 @@ fun ThemeSwitcher(
 /**
  * Placeholder for the map display area
  */
+@OptIn(MapboxExperimental::class)
 @Composable
-fun MapArea() {
+fun MapArea(mapListUiState: MapListUiState, onItemClick: () -> Unit) {
     // Can declare point to contain current location of user
     val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
-    var point: Point? by remember { mutableStateOf(testPoint) }
-    // In case of needing to recheck permissions
-    var relaunch by remember { mutableStateOf(false) }
+    var point: Point by remember { mutableStateOf(testPoint) }
     val context = LocalContext.current
     Box(
         modifier = Modifier
             .width(500.dp)
-            .height(600.dp)
+            .height(500.dp)
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-        MapBoxMap(
-            point = point,
-            modifier = Modifier.fillMaxSize(),
-            context = context
-        )
+        MapboxMap(
+            Modifier.fillMaxSize(),
+            mapInitOptionsFactory = { context ->
+                MapInitOptions(
+                    context = context,
+                    styleUri = Style.OUTDOORS,
+                    cameraOptions = CameraOptions.Builder()
+                        .center(point)
+                        .zoom(10.0)
+                        .build()
+                )
+            }
+        ) {
+            PointAnnotation(
+                point = point,
+                iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+                onClick = {
+                    onItemClick()
+                    Log.d("Home", "Click!")
+                    true
+                }
+            )
+            mapListUiState.pins.forEach {
+                val long = it.long.toDouble()
+                val lat = it.lat.toDouble()
+                point = Point.fromLngLat(long, lat)
+                PointAnnotation(
+                    point = point,
+                    iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+                    onClick = {
+                        onItemClick()
+                        Log.d("Home", "Click!")
+                        true
+                    }
+                )
+            }
+        }
     }
 }
 
