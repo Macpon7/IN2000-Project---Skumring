@@ -15,7 +15,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mapandlist.MapListDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListDestination
 
 
 @Composable
