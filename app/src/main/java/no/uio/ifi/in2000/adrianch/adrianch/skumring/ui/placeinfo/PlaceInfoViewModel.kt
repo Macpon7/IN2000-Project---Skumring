@@ -26,6 +26,7 @@ class PlaceInfoViewModel : ViewModel() {
 
     init {
         //loadgr
+        //init will be removed
     }
 
     private fun loadPlaceInfo(lat: String, long: String, id: Int = 0){
