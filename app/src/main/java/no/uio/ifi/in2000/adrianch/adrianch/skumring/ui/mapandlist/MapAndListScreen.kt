@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,14 +41,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 
 object MapListDestination : NavigationDestination {
+    override val icon = Icons.Outlined.Place
+    override val buttonTitle = R.string.nav_map_button
     override val route = "maplist"
     override val titleRes = R.string.app_name
 }
@@ -56,7 +62,7 @@ object MapListDestination : NavigationDestination {
         @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
-fun MapAndListScreen() {
+fun MapAndListScreen(navController : NavController) {
     var mapTheme by remember { mutableStateOf(false) }
 
     /*
@@ -87,11 +93,22 @@ fun MapAndListScreen() {
             onThemeUpdated = { mapTheme = !mapTheme }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-        MapArea()
+        if (mapTheme) {
+            // Column for map view
+            Column(Modifier.fillMaxSize()) {
+                MapArea()
+            }
+        } else {
+            // Column for list view
+            Column(Modifier.fillMaxSize()) {
+                ListCard(onItemClick = { //Navigate when it is clicked on
+                    navController.navigate("infoscreen")
+                })
+            }
+        }
+
     }
 }
-
 
 /**
  * Creates a button with two states, list view and map view
@@ -112,6 +129,7 @@ fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
             size = 65.dp, //Size of the button
             padding = 3.dp,
             onClick = onThemeUpdated
+
         )
     }
 }
@@ -236,12 +254,47 @@ fun MapArea() {
     }
 }
 
-
 /**
- * Preview of the screen
+ * Cards with information about places
  */
-@Preview
 @Composable
-fun MapAndListPreview() {
-    MapAndListScreen()
+fun ListCard(onItemClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable(onClick = onItemClick) //Click to infoscreen
+    ){
+
+        //Box for picture:
+        Box(
+            modifier = Modifier
+                .height(150.dp)
+                .padding(6.dp)
+                .background(Color.LightGray, RoundedCornerShape((16.dp)))
+                .fillMaxWidth(),
+        ) {
+            Text(
+                text = "Place Display Placeholder",
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+
+        //Text for name of place
+        Text(
+            text = "Monrads gate 33, Oslo",
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center,
+        )
+
+        //Text for weather-condition
+        Text(
+            text = "Det er fint vær",
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center,)
+    }
 }
