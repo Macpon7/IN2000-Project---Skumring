@@ -100,9 +100,15 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
         } else {
             // Column for list view
             Column(Modifier.fillMaxSize()) {
-                ListCard(onItemClick = { //Navigate when it is clicked on
-                    navController.navigate("infoscreen")
-                })
+                mapListUiState.places.forEach {place ->
+                    ListCard(
+                        name = place.name,
+                        description = place.description,
+                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                            navController.navigate("infoscreen")
+                        }
+                    )
+                }
             }
         }
     }
@@ -256,7 +262,7 @@ fun MapArea() {
  * Cards with information about places
  */
 @Composable
-fun ListCard(onItemClick: () -> Unit) {
+fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -273,23 +279,23 @@ fun ListCard(onItemClick: () -> Unit) {
                 .fillMaxWidth(),
         ) {
             Text(
-                text = "Place Display Placeholder",
+                text = "Image Placeholder",
                 modifier = Modifier.align(Alignment.Center)
             )
         }
 
         //Text for name of place
         Text(
-            text = "Monrads gate 33, Oslo",
+            text = name,
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             textAlign = TextAlign.Center,
         )
 
-        //Text for weather-condition
+        //Text for description. Do we want weather condition in the future?
         Text(
-            text = "Det er fint vær",
+            text = description,
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
