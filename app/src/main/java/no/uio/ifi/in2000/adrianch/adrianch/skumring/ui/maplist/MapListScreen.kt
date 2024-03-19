@@ -55,6 +55,7 @@ import androidx.navigation.NavController
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapInitOptions
+import com.mapbox.maps.MapView
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
@@ -275,6 +276,12 @@ fun MapArea(mapListUiState: MapListUiState, onItemClick: () -> Unit) {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
+
+//        MapBoxMap(
+//            point = point,
+//            modifier = Modifier.fillMaxSize(),
+//            context = context
+//        )
         MapboxMap(
             Modifier.fillMaxSize(),
             mapInitOptionsFactory = { context ->
@@ -288,15 +295,15 @@ fun MapArea(mapListUiState: MapListUiState, onItemClick: () -> Unit) {
                 )
             }
         ) {
-            PointAnnotation(
-                point = point,
-                iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-                onClick = {
-                    onItemClick()
-                    Log.d("Home", "Click!")
-                    true
-                }
-            )
+            // Annotation showing custom coordinate should be here
+//            PointAnnotation(
+//                point = point,
+//                iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+//                onClick = {
+//                    Log.d("Home", "Click!")
+//                    true
+//                },
+//            )
             mapListUiState.pins.forEach {
                 val long = it.long.toDouble()
                 val lat = it.lat.toDouble()

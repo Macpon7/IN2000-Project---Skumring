@@ -184,28 +184,38 @@ fun MapBox() {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-        MapboxMap(
-            Modifier.fillMaxSize(),
-            mapInitOptionsFactory = { context ->
-                MapInitOptions(
-                    context = context,
-                    styleUri = Style.OUTDOORS,
-                    cameraOptions = CameraOptions.Builder()
-                        .center(point)
-                        .zoom(10.0)
-                        .build()
-                )
-            }
-        ) {
-            PointAnnotation(
-                point = point,
-                iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-                onClick = {
-                    Log.d("Home", "Click!")
-                    true
-                }
-            )
-        }
+        // Reintroducing placeholder text until I can figure this out
+//        MapBoxMap(
+//            point = point,
+//            modifier = Modifier.fillMaxSize(),
+//            context = context
+//        )
+        Text(
+            text = "Map Displayholder",
+            modifier = Modifier.align(Alignment.Center)
+        )
+//        MapboxMap(
+//            Modifier.fillMaxSize(),
+//            mapInitOptionsFactory = { context ->
+//                MapInitOptions(
+//                    context = context,
+//                    styleUri = Style.OUTDOORS,
+//                    cameraOptions = CameraOptions.Builder()
+//                        .center(point)
+//                        .zoom(10.0)
+//                        .build()
+//                )
+//            }
+//        ) {
+//            PointAnnotation(
+//                point = point,
+//                iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+//                onClick = {
+//                    Log.d("Home", "Click!")
+//                    true
+//                }
+//            )
+//        }
     }
 }
 
