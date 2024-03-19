@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.infoscreen
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
-object InfoScreenDestination : NavigationDestination {
+object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
     override val buttonTitle = null
     override val route = "infoscreen"
@@ -33,7 +33,7 @@ object InfoScreenDestination : NavigationDestination {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun InfoScreen() {
+fun PlaceInfoScreen() {
     Scaffold(
         topBar = {
             Box(
