@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
@@ -11,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.viewinterop.NoOpUpdate
 import androidx.core.graphics.drawable.toBitmap
@@ -41,6 +41,7 @@ private val testList = listOf(varden, kollen, hellerud, huk)
  * squeeze into the boxes and screens as we see fit.
  * Takes modifier as such and a point we want to start it on
  */
+@SuppressLint("UseCompatLoadingForDrawables")
 @Composable
 fun MapBoxMap(
     modifier: Modifier = Modifier,
@@ -73,7 +74,7 @@ fun MapBoxMap(
                 pointAnnotationManager?.let { pam ->
                     // TODO Have it fetch from local data with favourites
                     testList.forEach { pin ->
-                        makeAnnotation(pam, marker, pin.point, pin.name)
+                        makeAnnotation(pam, marker, pin.point)
                     }
                 }
             }
@@ -86,7 +87,7 @@ fun MapBoxMap(
                 pointAnnotationManager?.let {
                     //it.deleteAll()
 
-                    makeAnnotation(it, marker, point, "Ole-Johan Dahls Hus")
+                    makeAnnotation(it, marker, point)
 
                     mapView.mapboxMap
                         // Built in function has the camera fly nicely to the new point
@@ -105,13 +106,13 @@ fun MapBoxMap(
 private fun makeAnnotation(
     pointAnnotationManager: PointAnnotationManager,
     marker: Bitmap,
-    point: Point,
-    description: String) {
+    point: Point
+) {
     val pointAnnotationOptions = PointAnnotationOptions()
         .withPoint(point)
         .withIconImage(marker)
-        .withTextField(description)
-        .withIconOffset(listOf(0.0, 20.0))
+        //.withTextField(description)
+        //.withIconOffset(listOf(0.0, 20.0))
 
     pointAnnotationManager.create(pointAnnotationOptions)
 }

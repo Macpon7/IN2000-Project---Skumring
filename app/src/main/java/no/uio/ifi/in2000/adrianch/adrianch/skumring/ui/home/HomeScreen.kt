@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,13 +34,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
+import com.mapbox.maps.Style
+import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
+import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxMap
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
@@ -163,10 +174,11 @@ fun weatherCheck(Good : Boolean) : String {
 fun MapBox() {
     // Can declare point to contain current location of user
     val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
-    var point: Point? by remember { mutableStateOf(testPoint) }
+    var point: Point by remember { mutableStateOf(testPoint) }
     // In case of needing to recheck permissions
     var relaunch by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val mapBoxViewModel = MapBoxViewModel()
 
     Box(
         modifier = Modifier
@@ -175,11 +187,35 @@ fun MapBox() {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-        MapBoxMap(
-            point = point,
-            modifier = Modifier.fillMaxSize(),
-            context = context
-        )
+        MapboxMap(
+            Modifier.fillMaxSize(),
+            mapInitOptionsFactory = { context ->
+                MapInitOptions(
+                    context = context,
+                    styleUri = Style.OUTDOORS,
+                    cameraOptions = CameraOptions.Builder()
+                        .center(point)
+                        .zoom(10.0)
+                        .build()
+                )
+
+            }
+
+        ) {
+            PointAnnotation(
+                point = point,
+                iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+                onClick = {
+                    Log.d("Home", "Click!")
+                    true
+                }
+            )
+        }
+//        MapBoxMap(
+//            point = point,
+//            modifier = Modifier.fillMaxSize(),
+//            context = context
+//        )
     }
 }
 
