@@ -17,15 +17,15 @@ interface NavigationDestination {
      * Unique title for the destination,
      * Used for the title in SkumringButtonBar
      */
-    val buttonTitle : Int
+    val buttonTitle : Int?
 
     /**
      * Unique name to define the path for a composable
      */
-    val route: String
+    val route: String?
 
     /**
      * String resource id to that contains title to be displayed for the screen.
      */
-    val titleRes: Int
+    val titleRes: Int?
 }

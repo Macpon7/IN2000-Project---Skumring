@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
@@ -62,7 +63,7 @@ object MapListDestination : NavigationDestination {
         @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
-fun MapAndListScreen() {
+fun MapAndListScreen(navController : NavController) {
     var mapTheme by remember { mutableStateOf(false) }
 
     /*
@@ -101,15 +102,14 @@ fun MapAndListScreen() {
         } else {
             // Column for list view
             Column(Modifier.fillMaxSize()) {
-                ListCard()
-                ListCard()
-                ListCard()
-
+                ListCard(onItemClick = { //Navigate when it is clicked on
+                    navController.navigate("infoscreen")
+                })
             }
         }
-
     }
 }
+
 
 /**
  * Creates a button with two states, list view and map view
@@ -130,7 +130,6 @@ fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
             size = 65.dp, //Size of the button
             padding = 3.dp,
             onClick = onThemeUpdated
-
         )
     }
 }
@@ -259,12 +258,12 @@ fun MapArea() {
  * Cards with information about places
  */
 @Composable
-fun ListCard() {
+fun ListCard(onItemClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            //.clickable(onClick = onItemClick) //Click on the card to go to the specific card and see more information
+            .clickable(onClick = onItemClick) //Click to infoscreen
     ){
 
         //Box for picture:
@@ -298,15 +297,4 @@ fun ListCard() {
                 .fillMaxWidth(),
             textAlign = TextAlign.Center,)
     }
-}
-
-
-
-/**
- * Preview of the screen
- */
-@Preview
-@Composable
-fun MapAndListPreview() {
-    MapAndListScreen()
 }

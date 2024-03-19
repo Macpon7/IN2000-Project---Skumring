@@ -40,14 +40,14 @@ fun SkumringBottomBar (
 
             NavigationBarItem(
                 label = {
-                    Text(text = stringResource(screen.buttonTitle)) //Have to use StringResource to make the resource to String
+                    Text(text = stringResource(screen.buttonTitle!!)) //Have to use StringResource to make the resource to String
                 },
                 icon = {
                     screen.icon?.let { Icon(imageVector = it, contentDescription = "") }
                 },
                 selected = currentRoute == screen.route,
                 onClick = {
-                    navController.navigate(screen.route) {
+                    navController.navigate(screen.route!!) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
