@@ -11,16 +11,18 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
+import java.time.LocalDate
 
 data class HomeUiState(
-    var time: String = "12:00",
-    var temp: Int = 25,
-    var sunset: String = "18:30",
+    var date: LocalDate = LocalDate.of(2024,3,7),
+    var time: String = "18:30",
+    var temp: String = "25",
+    var sunset: String = "19:00",
     var weatherCheck: Boolean = false,
-    var weatherMessage: String = "Det er drittvær i dag"
+    var weatherMessage: String = "Dårlig vær"
 )
 
-private const val logTag = "HomeViewModel"
+private const val logTag = "HomeViewModel" //for logging
 
 /**
  * ViewModel for HomeScreen
@@ -33,25 +35,39 @@ class HomeViewModel() : ViewModel() {
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
     init {
-        //loadHomeScreen()
+        loadHomeScreen()
+        updateSunset()
     }
 
     fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-
         //call function that updates time, temp, sunset, weatherMessage
             //the results will be used in functions in Homescreen
 
-            //SunTempAndTime(){
-            //    text = "Tid: 12:00\nTemperatur: 25°C",
-            //}
-
-            //SunDown(){
-            //    text = "Solnedgang 18:30",
-           // }
-
-            //weatherCheck
-        //
         }
+    }
+
+
+    //data to variables in parameters will come frome repository, not as parameter
+
+    fun updateWeather(temp: String, sunset: String){
+        viewModelScope.launch(Dispatchers.IO){
+            _homeUiState.update{ currenthomeUiState->
+                currenthomeUiState.copy(
+                    temp = temp,
+                    sunset = sunset)
+            }
+        }
+    }
+
+     fun updateSunset(){
+         viewModelScope.launch(Dispatchers.IO){
+             val sunset = placeInfo.getSunset("10", "60", homeUiState.value.date)
+             _homeUiState.update { currenthomeUiState ->
+                 currenthomeUiState.copy(
+                     sunset = sunset
+                 )
+             }
+         }
     }
 }

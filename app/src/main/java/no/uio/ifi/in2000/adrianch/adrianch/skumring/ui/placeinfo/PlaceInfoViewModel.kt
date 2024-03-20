@@ -15,6 +15,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 
 data class PlaceInfoUiState(
     var placeInfo: PlaceInfo = PlaceInfo("","","","", emptyList())
+
 )
 
 class PlaceInfoViewModel : ViewModel() {
@@ -23,11 +24,6 @@ class PlaceInfoViewModel : ViewModel() {
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
 
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
-
-    init {
-        //loadgr
-        //init will be removed
-    }
 
     private fun loadPlaceInfo(lat: String, long: String, id: Int = 0){
         viewModelScope.launch(Dispatchers.IO){
