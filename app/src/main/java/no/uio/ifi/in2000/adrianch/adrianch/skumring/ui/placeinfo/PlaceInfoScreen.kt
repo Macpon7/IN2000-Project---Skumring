@@ -15,12 +15,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 object PlaceInfoScreenDestination : NavigationDestination {
@@ -33,7 +37,16 @@ object PlaceInfoScreenDestination : NavigationDestination {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun PlaceInfoScreen() {
+fun PlaceInfoScreen(
+    placeViewModel: PlaceInfoViewModel = viewModel()
+) {
+
+    val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
+
+    var placename: String = placeUiState.placeInfo.name
+    var description: String = placeUiState.placeInfo.description
+
+    var placeInfo: PlaceInfo = PlaceInfo("","","","", emptyList())
     Scaffold(
         topBar = {
             Box(
@@ -43,7 +56,7 @@ fun PlaceInfoScreen() {
                     .padding(vertical = 16.dp) // Choose the size of the topbar
             ) {
                 Text(
-                    text = "Infoskjerm ÅS",
+                    text = "Infoskjerm $placename",
                     textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                     modifier = Modifier.fillMaxWidth()
@@ -67,7 +80,7 @@ fun PlaceInfoScreen() {
                             .fillMaxSize()
                             .background(color = Color.White)
                     ) {
-                        ContentInfoScreen()
+                        ContentInfoScreen(description)
                     }
                 }
             }
@@ -80,7 +93,7 @@ fun PlaceInfoScreen() {
  * This exclude the top- and bottomBar
  */
 @Composable
-fun ContentInfoScreen() {
+fun ContentInfoScreen(description: String) {
     Column (verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -92,7 +105,8 @@ fun ContentInfoScreen() {
 
 
         //Description of the place:
-        Text(text = "På blindern er det dårlig vær")
+        Text(text = description)
+        //Text(text = "På blindern er det dårlig vær")
 
         Spacer(modifier = Modifier.height(50.dp))
 

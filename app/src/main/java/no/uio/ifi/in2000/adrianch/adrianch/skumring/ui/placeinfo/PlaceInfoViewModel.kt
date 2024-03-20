@@ -15,6 +15,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 
 data class PlaceInfoUiState(
     var placeInfo: PlaceInfo = PlaceInfo("","","","", emptyList())
+
 )
 
 class PlaceInfoViewModel : ViewModel() {
