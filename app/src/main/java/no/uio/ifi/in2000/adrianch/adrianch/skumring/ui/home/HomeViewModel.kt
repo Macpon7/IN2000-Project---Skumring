@@ -45,7 +45,8 @@ class HomeViewModel() : ViewModel() {
     }
 
 
-    //data tovariables in parameters will come frome repository, not as parameter
+    //data to variables in parameters will come frome repository, not as parameter
+    /*
     fun updateWeather(temp: String, sunset: String){
         _homeUiState.update{ currenthomeUiState->
             currenthomeUiState.copy(
@@ -53,5 +54,7 @@ class HomeViewModel() : ViewModel() {
                 sunset = sunset)
         }
     }
+     */
+
 }
 
