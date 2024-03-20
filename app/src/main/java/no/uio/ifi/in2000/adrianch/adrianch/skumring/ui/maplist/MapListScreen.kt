@@ -46,9 +46,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -94,7 +96,7 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
         Column (modifier = Modifier
             .padding(innerPadding)
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(8.dp),
             verticalArrangement = Arrangement.Top
         ) {
             MapListContent(navController = navController, mapListViewModel = mapListViewModel)
@@ -342,7 +344,7 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(top = 12.dp)
             .clickable(onClick = onItemClick) //Click to infoscreen
     ){
 
@@ -364,16 +366,19 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
         Text(
             text = name,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(vertical = 2.dp)
                 .fillMaxWidth(),
             textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp
         )
 
         //Text for description. Do we want weather condition in the future?
         Text(
             text = description,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(vertical = 2.dp)
+                .padding(bottom = 4.dp)
                 .fillMaxWidth(),
             textAlign = TextAlign.Center,)
     }
