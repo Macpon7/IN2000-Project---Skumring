@@ -20,23 +20,23 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
+import androidx.navigation.NavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
     override val buttonTitle = null
-    override val route = "infoscreen"
+    override val route = "infoscreen/{lat}/{long}/{id}"
     override val titleRes = null
 
 }
@@ -44,15 +44,22 @@ object PlaceInfoScreenDestination : NavigationDestination {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PlaceInfoScreen(
-    placeViewModel: PlaceInfoViewModel = viewModel()
+    placeViewModel: PlaceInfoViewModel = viewModel(),
+    lat: String,
+    long: String,
+    id: Int,
+    navController: NavController
 ) {
+
+    LaunchedEffect(key1 = id) {
+        placeViewModel.loadPlaceInfo(lat = lat, long = long, id = id)
+    }
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
     var placename: String = placeUiState.placeInfo.name
     var description: String = placeUiState.placeInfo.description
 
-    var placeInfo: PlaceInfo = PlaceInfo("","","","", emptyList())
 
     Scaffold(
         topBar = {
@@ -71,7 +78,7 @@ fun PlaceInfoScreen(
                         )
                     }
                 Text(
-                    text = "Infoskjerm $placename",
+                    text = "Infoskjerm ${placeUiState.placeInfo.name}",
                     textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                     modifier = Modifier.fillMaxWidth()
@@ -95,7 +102,7 @@ fun PlaceInfoScreen(
                             .fillMaxSize()
                             .background(color = Color.White)
                     ) {
-                        ContentInfoScreen(description)
+                        ContentInfoScreen(placeUiState.placeInfo.description)
                     }
                 }
             }
