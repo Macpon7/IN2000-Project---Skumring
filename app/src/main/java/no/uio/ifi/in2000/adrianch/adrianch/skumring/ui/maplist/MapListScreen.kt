@@ -105,47 +105,47 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
 @Composable
 fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
-        /*
-        SearchBar(query = text,
-            onQueryChange = {text = it} ,
-            onSearch = {active = false },
-            active = active,
-            onActiveChange =  {active = it}
-        ) {
-         //TODO legge til søkefelt
-        }
-         */
+    /*
+    SearchBar(query = text,
+        onQueryChange = {text = it} ,
+        onSearch = {active = false },
+        active = active,
+        onActiveChange =  {active = it}
+    ) {
+     //TODO legge til søkefelt
+    }
+     */
 
 
-        ThemeSwitcher (
-            mapTheme = mapListUiState.mapListToggle.stateAsBool,
-            size = 65.dp, //Size of the button
-            padding = 3.dp,
-            onClick = { mapListViewModel.toggleMapListState() }
-        )
+    ThemeSwitcher (
+        mapTheme = mapListUiState.mapListToggle.stateAsBool,
+        size = 65.dp, //Size of the button
+        padding = 3.dp,
+        onClick = { mapListViewModel.toggleMapListState() }
+    )
 
-        if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
-            // Column for map view
-            MapArea(
-                onItemClick = {
-                    navController.navigate("infoscreen")
-                },
-                mapListUiState = mapListUiState)
+    if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
+        // Column for map view
+        MapArea(
+            onItemClick = {
+                navController.navigate("infoscreen")
+            },
+            mapListUiState = mapListUiState)
 
-        } else {
-            // Column for list view
-            Column (Modifier.verticalScroll(rememberScrollState())) {
-                mapListUiState.places.forEach {place ->
-                    ListCard(
-                        name = place.name,
-                        description = place.description,
-                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                            navController.navigate("infoscreen")
-                        }
-                    )
-                }
+    } else {
+        // Column for list view
+        Column (Modifier.verticalScroll(rememberScrollState())) {
+            mapListUiState.places.forEach {place ->
+                ListCard(
+                    name = place.name,
+                    description = place.description,
+                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                        navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                    }
+                )
             }
         }
+    }
     //}
 }
 
