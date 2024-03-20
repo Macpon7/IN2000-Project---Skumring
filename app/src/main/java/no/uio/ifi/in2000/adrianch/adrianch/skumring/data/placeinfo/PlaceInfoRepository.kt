@@ -8,7 +8,10 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.abs
+
 
 interface PlaceInfoRepository {
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
@@ -16,6 +19,10 @@ interface PlaceInfoRepository {
         forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>,
         lat: String, long: String): List<DailyEvents>
     suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean
+
+    suspend fun getSunsetLocalDateTime(lat: String, long: String, date: LocalDate): LocalDateTime
+    suspend fun convertLocalDatetoString(dateTime: LocalDateTime): String
+    suspend fun getSunset(lat: String, long: String, date: LocalDate): String
 }
 
 class PlaceInfoRepositoryImpl (
@@ -128,4 +135,19 @@ class PlaceInfoRepositoryImpl (
         }
         return true
     }
+
+    //fetchSunActivity(lat: String, long: String, date: LocalDate)
+    override suspend fun getSunsetLocalDateTime(lat: String, long: String, date: LocalDate): LocalDateTime {
+        return sunriseDataSource.fetchSunActivity(lat, long, date).sunset
+    }
+
+    override suspend fun convertLocalDatetoString(dateTime: LocalDateTime): String {
+        val ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE
+        return dateTime.format(ISO_FORMATTER)
+    }
+
+    override suspend fun getSunset(lat: String, long: String, date: LocalDate): String{
+        return convertLocalDatetoString(getSunsetLocalDateTime(lat, long, date))
+    }
+
 }
