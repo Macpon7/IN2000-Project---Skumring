@@ -129,9 +129,7 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
         // Column for map view
         MapArea(
-            onItemClick = {
-                navController.navigate("infoscreen")
-            },
+            navController = navController,
             mapListUiState = mapListUiState)
 
     } else {
@@ -278,7 +276,7 @@ fun ThemeSwitcher(
  */
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapArea(mapListUiState: MapListUiState, onItemClick: () -> Unit) {
+fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
     // Can declare point to contain current location of user
     val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
     var point: Point by remember { mutableStateOf(testPoint) }
@@ -309,15 +307,15 @@ fun MapArea(mapListUiState: MapListUiState, onItemClick: () -> Unit) {
                 )
             }
         ) {
-            mapListUiState.pins.forEach {
-                val long = it.long.toDouble()
-                val lat = it.lat.toDouble()
+            mapListUiState.pins.forEach { pinfo ->
+                val long = pinfo.long.toDouble()
+                val lat = pinfo.lat.toDouble()
                 point = Point.fromLngLat(long, lat)
                 PointAnnotation(
                     point = point,
                     iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
                     onClick = {
-                        onItemClick()
+                        navController.navigate("infoscreen/${pinfo.lat}/${pinfo.long}/${pinfo.id}")
                         Log.d("Home", "Click!")
                         true
                     }
