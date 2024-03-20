@@ -277,48 +277,48 @@ fun MapArea(mapListUiState: MapListUiState, onItemClick: () -> Unit) {
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
 
-//        MapBoxMap(
-//            point = point,
-//            modifier = Modifier.fillMaxSize(),
-//            context = context
-//        )
-        MapboxMap(
-            Modifier.fillMaxSize(),
-            mapInitOptionsFactory = { context ->
-                MapInitOptions(
-                    context = context,
-                    styleUri = Style.OUTDOORS,
-                    cameraOptions = CameraOptions.Builder()
-                        .center(point)
-                        .zoom(10.0)
-                        .build()
-                )
-            }
-        ) {
-            // Annotation showing custom coordinate should be here
-//            PointAnnotation(
-//                point = point,
-//                iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-//                onClick = {
-//                    Log.d("Home", "Click!")
-//                    true
-//                },
-//            )
-            mapListUiState.pins.forEach {
-                val long = it.long.toDouble()
-                val lat = it.lat.toDouble()
-                point = Point.fromLngLat(long, lat)
-                PointAnnotation(
-                    point = point,
-                    iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-                    onClick = {
-                        onItemClick()
-                        Log.d("Home", "Click!")
-                        true
-                    }
-                )
-            }
-        }
+        MapBoxMap(
+            point = point,
+            modifier = Modifier.fillMaxSize(),
+            context = context
+        )
+//        MapboxMap.(
+//            Modifier.fillMaxSize(),
+//            mapInitOptionsFactory = { context ->
+//                MapInitOptions(
+//                    context = context,
+//                    styleUri = Style.OUTDOORS,
+//                    cameraOptions = CameraOptions.Builder()
+//                        .center(point)
+//                        .zoom(10.0)
+//                        .build()
+//                )
+//            }
+//        ) {
+//            mapListUiState.pins.forEach {
+//                val long = it.long.toDouble()
+//                val lat = it.lat.toDouble()
+//                point = Point.fromLngLat(long, lat)
+//                PointAnnotation(
+//                    point = point,
+//                    iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+//                    onClick = {
+//                        onItemClick()
+//                        Log.d("Home", "Click!")
+//                        true
+//                    }
+//                )
+//            }
+//            // Annotation showing custom coordinate should be here
+////            PointAnnotation(
+////                point = point,
+////                iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+////                onClick = {
+////                    Log.d("Home", "Click!")
+////                    true
+////                },
+////            )
+//        }
     }
 }
 
