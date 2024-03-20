@@ -46,9 +46,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -94,7 +96,7 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
         Column (modifier = Modifier
             .padding(innerPadding)
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(8.dp),
             verticalArrangement = Arrangement.Top
         ) {
             MapListContent(navController = navController, mapListViewModel = mapListViewModel)
@@ -105,47 +107,45 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
 @Composable
 fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
-        /*
-        SearchBar(query = text,
-            onQueryChange = {text = it} ,
-            onSearch = {active = false },
-            active = active,
-            onActiveChange =  {active = it}
-        ) {
-         //TODO legge til søkefelt
-        }
-         */
+    /*
+    SearchBar(query = text,
+        onQueryChange = {text = it} ,
+        onSearch = {active = false },
+        active = active,
+        onActiveChange =  {active = it}
+    ) {
+     //TODO legge til søkefelt
+    }
+     */
 
 
-        ThemeSwitcher (
-            mapTheme = mapListUiState.mapListToggle.stateAsBool,
-            size = 65.dp, //Size of the button
-            padding = 3.dp,
-            onClick = { mapListViewModel.toggleMapListState() }
-        )
+    ThemeSwitcher (
+        mapTheme = mapListUiState.mapListToggle.stateAsBool,
+        size = 65.dp, //Size of the button
+        padding = 3.dp,
+        onClick = { mapListViewModel.toggleMapListState() }
+    )
 
-        if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
-            // Column for map view
-            MapArea(
-                onItemClick = {
-                    navController.navigate("infoscreen")
-                },
-                mapListUiState = mapListUiState)
+    if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
+        // Column for map view
+        MapArea(
+            navController = navController,
+            mapListUiState = mapListUiState)
 
-        } else {
-            // Column for list view
-            Column (Modifier.verticalScroll(rememberScrollState())) {
-                mapListUiState.places.forEach {place ->
-                    ListCard(
-                        name = place.name,
-                        description = place.description,
-                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                            navController.navigate("infoscreen")
-                        }
-                    )
-                }
+    } else {
+        // Column for list view
+        Column (Modifier.verticalScroll(rememberScrollState())) {
+            mapListUiState.places.forEach {place ->
+                ListCard(
+                    name = place.name,
+                    description = place.description,
+                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                        navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                    }
+                )
             }
         }
+    }
     //}
 }
 
@@ -276,7 +276,7 @@ fun ThemeSwitcher(
  */
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapArea(mapListUiState: MapListUiState, onItemClick: () -> Unit) {
+fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
     // Can declare point to contain current location of user
     val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
     var point: Point by remember { mutableStateOf(testPoint) }
@@ -307,15 +307,15 @@ fun MapArea(mapListUiState: MapListUiState, onItemClick: () -> Unit) {
                 )
             }
         ) {
-            mapListUiState.pins.forEach {
-                val long = it.long.toDouble()
-                val lat = it.lat.toDouble()
+            mapListUiState.pins.forEach { pinfo ->
+                val long = pinfo.long.toDouble()
+                val lat = pinfo.lat.toDouble()
                 point = Point.fromLngLat(long, lat)
                 PointAnnotation(
                     point = point,
                     iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
                     onClick = {
-                        onItemClick()
+                        navController.navigate("infoscreen/${pinfo.lat}/${pinfo.long}/${pinfo.id}")
                         Log.d("Home", "Click!")
                         true
                     }
@@ -342,7 +342,7 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(top = 12.dp)
             .clickable(onClick = onItemClick) //Click to infoscreen
     ){
 
@@ -364,16 +364,19 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
         Text(
             text = name,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(vertical = 2.dp)
                 .fillMaxWidth(),
             textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp
         )
 
         //Text for description. Do we want weather condition in the future?
         Text(
             text = description,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(vertical = 2.dp)
+                .padding(bottom = 4.dp)
                 .fillMaxWidth(),
             textAlign = TextAlign.Center,)
     }

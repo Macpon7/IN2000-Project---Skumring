@@ -22,9 +22,9 @@ class LocationForecastDataSource (){
      * Sends an http request to the locationforecast API, converts the JSON response to a LocationForecastInfo object and returns it
      */
     private suspend fun fetchLocationForecastData(long: String, lat: String): LocationForecastInfo {
-        this.path += "coords=POINT($long+$lat)"
+        val newpath = this.path + "coords=POINT($long+$lat)"
          try {
-            val response: HttpResponse = client.get(this.path)
+            val response: HttpResponse = client.get(newpath)
             return response.body()
         } catch(e: Exception) {
             throw e

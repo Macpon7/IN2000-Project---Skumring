@@ -99,16 +99,18 @@ class PlaceInfoRepositoryImpl (
                 true
             }
 
-            DailyEvents(
-                sunset = SunEvent(
-                    time = sunActivity.sunset,
-                    conditions = checkConditions(sunsetWeather)
-                ),
-                /*
-                sunrise = SunEvent(
-                    time = sunActivity.sunrise,
-                    conditions = checkConditions(sunriseWeather)
-                 */
+            sunEventsList.add(
+                DailyEvents(
+                    sunset = SunEvent(
+                        time = sunActivity.sunset,
+                        conditions = checkConditions(sunsetWeather)
+                    ),
+                    /*
+                    sunrise = SunEvent(
+                        time = sunActivity.sunrise,
+                        conditions = checkConditions(sunriseWeather)
+                     */
+                    )
             )
 
         }
@@ -124,7 +126,7 @@ class PlaceInfoRepositoryImpl (
      * we deem conditions to be good enough.
      */
     override suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
-        val cloudAreaFractionThreshold: Float = 25.0F
+        val cloudAreaFractionThreshold: Float = 70.0F
         weatherData.forEach {
             // cloudAreaFraction is the percentage of pixels in a satellite photo
             // over an area judged to be clouds.

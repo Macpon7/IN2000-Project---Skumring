@@ -46,7 +46,7 @@ class SunriseDataSource() {
      */
     suspend fun fetchSunActivity(lat: String, long: String, date: LocalDate): SunActivity {
         val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
-        val path = "https://api.met.no/weatherapi/sunrise/3.0/edr/collections/sun/position?coords=POINT%28${lat}%20${long}%29&datetime=${dateString}"
+        val path = "https://api.met.no/weatherapi/sunrise/3.0/edr/collections/sun/position?coords=POINT%28${long}%20${lat}%29&datetime=${dateString}"
         val response = fetchSunriseData(path)
         val sunsetTime: String = response.properties.sunset.time  //output: 2024-03-07T17:03+00:00
         val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME //Offsett is in timezone 0 so add 1 in line below

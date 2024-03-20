@@ -11,8 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -20,24 +21,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
     override val buttonTitle = null
-    override val route = "infoscreen"
+    override val route = "infoscreen/{lat}/{long}/{id}"
     override val titleRes = null
 
 }
@@ -46,15 +50,22 @@ object PlaceInfoScreenDestination : NavigationDestination {
 @Composable
 fun PlaceInfoScreen(
     placeViewModel: PlaceInfoViewModel = viewModel(),
+    lat: String,
+    long: String,
+    id: Int,
     navController: NavController
 ) {
+
+    LaunchedEffect(key1 = id) {
+        placeViewModel.loadPlaceInfo(lat = lat, long = long, id = id)
+        Locale.setDefault(Locale("no", ))
+    }
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
     var placename: String = placeUiState.placeInfo.name
     var description: String = placeUiState.placeInfo.description
 
-    var placeInfo: PlaceInfo = PlaceInfo("","","","", emptyList())
 
     Scaffold(
         topBar = {
@@ -73,33 +84,20 @@ fun PlaceInfoScreen(
                         )
                     }
                 Text(
-                    text = "Infoskjerm $placename",
+                    text = placeUiState.placeInfo.name,
                     textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
         },
-        content = {
+        content = {innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = Color.Gray)
-                    .padding(top = 64.dp) // Padding for topbar
+                    .padding(innerPadding) // Padding for topbar
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp) // Padding to show the grey box
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color = Color.White)
-                    ) {
-                        ContentInfoScreen(description)
-                    }
-                }
+                ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
             }
         }
     )
@@ -110,10 +108,11 @@ fun PlaceInfoScreen(
  * This exclude the top- and bottomBar
  */
 @Composable
-fun ContentInfoScreen(description: String) {
-    Column (verticalArrangement = Arrangement.Center,
+fun ContentInfoScreen(description: String, placeInfoUiState: PlaceInfoUiState) {
+    Column (
+        modifier = Modifier.padding(8.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-
         //Picture of the place:
         PlacePicture()
 
@@ -122,13 +121,31 @@ fun ContentInfoScreen(description: String) {
 
 
         //Description of the place:
-        Text(text = description)
-        //Text(text = "På blindern er det dårlig vær")
+        Column(
+            modifier = Modifier
+                .padding()
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.Start,
 
-        Spacer(modifier = Modifier.height(50.dp))
+            ) {
+            Text(text = description, modifier = Modifier.padding(bottom = 4.dp), fontSize = 20.sp)
 
-        //Sundown of the place:
-        Text(text = "Sola går ned 18:30")
+            Column (modifier = Modifier.verticalScroll(state = rememberScrollState(), enabled = true).fillMaxWidth()) {
+                //The accurately forecast sunsets
+                if (placeInfoUiState.placeInfo.sunEvents.size > 3) {
+                    placeInfoUiState.placeInfo.sunEvents.subList(0, 3).forEach {
+                        SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
+                    }
+
+                    //And now the less accurate ones
+                    Text(text = "Langtidsvarsel:", modifier = Modifier.padding(top = 6.dp), fontSize = 20.sp)
+
+                    placeInfoUiState.placeInfo.sunEvents.subList(3, placeInfoUiState.placeInfo.sunEvents.size).forEach {
+                        SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -139,9 +156,8 @@ fun ContentInfoScreen(description: String) {
 fun PlacePicture() {
     Box(
         modifier = Modifier
-            .width(500.dp)
-            .height(400.dp)
-            .padding(6.dp)
+            .fillMaxWidth()
+            .height(300.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
         Text(
@@ -149,4 +165,29 @@ fun PlacePicture() {
             modifier = Modifier.align(Alignment.Center)
         )
     }
+}
+
+@Composable
+fun SunEventInfo(time: LocalDateTime, conditions: Boolean) {
+    val dateString = if (time.dayOfYear == LocalDateTime.now().dayOfYear) {
+        // The current date we are formatting is today
+        "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+    } else if (time.dayOfYear == LocalDateTime.now().plusDays(1).dayOfYear) {
+        // The current date we are formatting is tomorrow
+        "I Morgen ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+    } else {
+        // The current date we are formatting is after tomorrow
+        time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+    }
+
+    val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+
+    val conditionsString = if (conditions) {
+        "Det blir gode forhold!"
+    } else {
+        "Det blir dårlige forhold..."
+    }
+    Text(text = "${dateString.capitalize()} $timeString", fontWeight = FontWeight.SemiBold)
+    Text(text = conditionsString, modifier = Modifier.padding(bottom = 4.dp))
+
 }
