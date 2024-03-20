@@ -1,16 +1,13 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +31,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -55,13 +55,12 @@ import androidx.navigation.NavController
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapInitOptions
-import com.mapbox.maps.MapView
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxMap
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 
@@ -75,25 +74,37 @@ object MapListDestination : NavigationDestination {
 /**
  * Main composable function for displaying the map screen
  */
-        @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
 fun MapListScreen(navController : NavController, mapListViewModel: MapListViewModel = viewModel()) {
-    val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     /*
     These belong to searchbar
      */
     //var text by remember { mutableStateOf("") }
     //var active by remember { mutableStateOf(false) }
-    Column(
-        modifier = Modifier
+    Scaffold (topBar = {
+        SkumringTopAppBar(
+            title = stringResource(id = MapListDestination.titleRes),
+            canNavigateBack = false,
+            scrollBehavior = scrollBehavior
+        )
+    }) {innerPadding ->
+        Column (modifier = Modifier
+            .padding(innerPadding)
             .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()), // Enable scrolling
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+            .padding(16.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
+            MapListContent(navController = navController, mapListViewModel = mapListViewModel)
+        }
+    }
+}
+
+@Composable
+fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
+    val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
         /*
         SearchBar(query = text,
             onQueryChange = {text = it} ,
@@ -104,24 +115,26 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
          //TODO legge til søkefelt
         }
          */
-        ListAndMapButton(
+
+
+        ThemeSwitcher (
             mapTheme = mapListUiState.mapListToggle.stateAsBool,
-            onThemeUpdated = { mapListViewModel.toggleMapListState() }
+            size = 65.dp, //Size of the button
+            padding = 3.dp,
+            onClick = { mapListViewModel.toggleMapListState() }
         )
 
         if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
             // Column for map view
-            Column(
-                Modifier.fillMaxSize()) {
-                MapArea(
-                    onItemClick = {
+            MapArea(
+                onItemClick = {
                     navController.navigate("infoscreen")
                 },
-                    mapListUiState = mapListUiState)
-            }
+                mapListUiState = mapListUiState)
+
         } else {
             // Column for list view
-            Column(Modifier.fillMaxSize()) {
+            Column (Modifier.verticalScroll(rememberScrollState())) {
                 mapListUiState.places.forEach {place ->
                     ListCard(
                         name = place.name,
@@ -133,7 +146,7 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
                 }
             }
         }
-    }
+    //}
 }
 
 
@@ -142,7 +155,6 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
  */
 @Composable
 fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
-    Spacer(modifier = Modifier.height(40.dp))
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -277,48 +289,48 @@ fun MapArea(mapListUiState: MapListUiState, onItemClick: () -> Unit) {
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
 
-        MapBoxMap(
-            point = point,
-            modifier = Modifier.fillMaxSize(),
-            context = context
-        )
-//        MapboxMap.(
-//            Modifier.fillMaxSize(),
-//            mapInitOptionsFactory = { context ->
-//                MapInitOptions(
-//                    context = context,
-//                    styleUri = Style.OUTDOORS,
-//                    cameraOptions = CameraOptions.Builder()
-//                        .center(point)
-//                        .zoom(10.0)
-//                        .build()
-//                )
-//            }
-//        ) {
-//            mapListUiState.pins.forEach {
-//                val long = it.long.toDouble()
-//                val lat = it.lat.toDouble()
-//                point = Point.fromLngLat(long, lat)
-//                PointAnnotation(
-//                    point = point,
-//                    iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-//                    onClick = {
-//                        onItemClick()
-//                        Log.d("Home", "Click!")
-//                        true
-//                    }
-//                )
-//            }
-//            // Annotation showing custom coordinate should be here
-////            PointAnnotation(
-////                point = point,
-////                iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-////                onClick = {
-////                    Log.d("Home", "Click!")
-////                    true
-////                },
-////            )
-//        }
+//        MapBoxMap(
+//            point = point,
+//            modifier = Modifier.fillMaxSize(),
+//            context = context
+//        )
+        MapboxMap(
+            Modifier.fillMaxSize(),
+            mapInitOptionsFactory = { context ->
+                MapInitOptions(
+                    context = context,
+                    styleUri = Style.OUTDOORS,
+                    cameraOptions = CameraOptions.Builder()
+                        .center(point)
+                        .zoom(10.0)
+                        .build()
+                )
+            }
+        ) {
+            mapListUiState.pins.forEach {
+                val long = it.long.toDouble()
+                val lat = it.lat.toDouble()
+                point = Point.fromLngLat(long, lat)
+                PointAnnotation(
+                    point = point,
+                    iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+                    onClick = {
+                        onItemClick()
+                        Log.d("Home", "Click!")
+                        true
+                    }
+                )
+            }
+            // Annotation showing custom coordinate should be here
+//            PointAnnotation(
+//                point = point,
+//               iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+//                onClick = {
+//                   Log.d("Home", "Click!")
+//                   true
+//                },
+//            )
+        }
     }
 }
 
@@ -330,7 +342,7 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(vertical = 16.dp)
             .clickable(onClick = onItemClick) //Click to infoscreen
     ){
 
