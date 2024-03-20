@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -78,33 +77,20 @@ fun PlaceInfoScreen(
                         )
                     }
                 Text(
-                    text = "Infoskjerm ${placeUiState.placeInfo.name}",
+                    text = placeUiState.placeInfo.name,
                     textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
         },
-        content = {
+        content = {innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = Color.Gray)
-                    .padding(top = 64.dp) // Padding for topbar
+                    .padding(innerPadding) // Padding for topbar
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp) // Padding to show the grey box
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color = Color.White)
-                    ) {
-                        ContentInfoScreen(placeUiState.placeInfo.description)
-                    }
-                }
+                ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
             }
         }
     )
@@ -115,10 +101,11 @@ fun PlaceInfoScreen(
  * This exclude the top- and bottomBar
  */
 @Composable
-fun ContentInfoScreen(description: String) {
-    Column (verticalArrangement = Arrangement.Center,
+fun ContentInfoScreen(description: String, placeInfoUiState: PlaceInfoUiState) {
+    Column (
+        modifier = Modifier.padding(8.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
-
         //Picture of the place:
         PlacePicture()
 
@@ -130,9 +117,11 @@ fun ContentInfoScreen(description: String) {
         Text(text = description)
         //Text(text = "På blindern er det dårlig vær")
 
-        Spacer(modifier = Modifier.height(50.dp))
-
         //Sundown of the place:
+        placeInfoUiState.placeInfo.sunEvents.forEach {
+            SunEventInfo(time = it.sunset.time.toString(), conditions = it.sunset.conditions)
+        }
+
         Text(text = "Sola går ned 18:30")
     }
 }
@@ -144,9 +133,8 @@ fun ContentInfoScreen(description: String) {
 fun PlacePicture() {
     Box(
         modifier = Modifier
-            .width(500.dp)
-            .height(400.dp)
-            .padding(6.dp)
+            .fillMaxWidth()
+            .height(300.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
         Text(
@@ -154,4 +142,16 @@ fun PlacePicture() {
             modifier = Modifier.align(Alignment.Center)
         )
     }
+}
+
+@Composable
+fun SunEventInfo(time: String, conditions: Boolean) {
+    var conditionsText = if (conditions) {
+        "Gode :)"
+    } else {
+        "Dårlige :("
+    }
+    Text(text = "Neste solnedgang: $time")
+    Text(text = "Forholdene er: $conditionsText")
+
 }
