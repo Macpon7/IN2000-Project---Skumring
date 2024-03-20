@@ -24,11 +24,6 @@ class PlaceInfoViewModel : ViewModel() {
 
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
 
-    init {
-        //loadgr
-        //init will be removed
-    }
-
     private fun loadPlaceInfo(lat: String, long: String, id: Int = 0){
         viewModelScope.launch(Dispatchers.IO){
             _placeInfoUiState.update { currentPlaceInfoUiState ->
