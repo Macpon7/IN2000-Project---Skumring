@@ -29,7 +29,7 @@ fun SkumringNavHost(
             MapListScreen(navController = navController)
         }
         composable(route = PlaceInfoScreenDestination.route) {
-            PlaceInfoScreen()
+            PlaceInfoScreen(navController = navController)
         }
     }
 }
