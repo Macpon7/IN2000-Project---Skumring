@@ -45,9 +45,7 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel()
 ) {
-    //Example
-    //expanded = homeScreenUiState.isDropdownExpanded,
-    //onDismissRequest = { homeScreenViewModel.closeDropDown() },
+
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //var her før
 
@@ -57,6 +55,7 @@ fun HomeScreen(
     var sunset: String = homeUiState.sunset
     var weatherCheck: Boolean = homeUiState.weatherCheck
     var weatherMessage: String = homeUiState.weatherMessage
+
 
     Scaffold(
         topBar = {

@@ -31,30 +31,45 @@ class HomeViewModel() : ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
 
-    //repository
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
     init {
         loadHomeScreen()
+        updateSunset()
     }
 
     fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
+
         }
     }
 
 
     //data to variables in parameters will come frome repository, not as parameter
-    /*
+
     fun updateWeather(temp: String, sunset: String){
-        _homeUiState.update{ currenthomeUiState->
-            currenthomeUiState.copy(
-                temp = temp,
-                sunset = sunset)
+        viewModelScope.launch(Dispatchers.IO){
+            _homeUiState.update{ currenthomeUiState->
+                currenthomeUiState.copy(
+                    temp = temp,
+                    sunset = sunset)
+            }
         }
     }
-     */
+
+     fun updateSunset(){
+         viewModelScope.launch(Dispatchers.IO){
+             val sunset = placeInfo.getSunset("10", "60", homeUiState.value.date)
+             _homeUiState.update { currenthomeUiState ->
+                 currenthomeUiState.copy(
+                     sunset = sunset
+                 )
+             }
+         }
+
+    }
+
 
 }
 
