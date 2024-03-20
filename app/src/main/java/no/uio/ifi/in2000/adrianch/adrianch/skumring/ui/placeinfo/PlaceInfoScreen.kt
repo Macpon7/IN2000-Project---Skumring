@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -25,12 +27,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
@@ -52,6 +58,7 @@ fun PlaceInfoScreen(
 
     LaunchedEffect(key1 = id) {
         placeViewModel.loadPlaceInfo(lat = lat, long = long, id = id)
+        Locale.setDefault(Locale("no", ))
     }
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
@@ -114,15 +121,31 @@ fun ContentInfoScreen(description: String, placeInfoUiState: PlaceInfoUiState) {
 
 
         //Description of the place:
-        Text(text = description)
-        //Text(text = "På blindern er det dårlig vær")
+        Column(
+            modifier = Modifier
+                .padding()
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.Start,
 
-        //Sundown of the place:
-        placeInfoUiState.placeInfo.sunEvents.forEach {
-            SunEventInfo(time = it.sunset.time.toString(), conditions = it.sunset.conditions)
+            ) {
+            Text(text = description, modifier = Modifier.padding(bottom = 4.dp), fontSize = 20.sp)
+
+            Column (modifier = Modifier.verticalScroll(state = rememberScrollState(), enabled = true).fillMaxWidth()) {
+                //The accurately forecast sunsets
+                if (placeInfoUiState.placeInfo.sunEvents.size > 3) {
+                    placeInfoUiState.placeInfo.sunEvents.subList(0, 3).forEach {
+                        SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
+                    }
+
+                    //And now the less accurate ones
+                    Text(text = "Langtidsvarsel:", modifier = Modifier.padding(top = 6.dp), fontSize = 20.sp)
+
+                    placeInfoUiState.placeInfo.sunEvents.subList(3, placeInfoUiState.placeInfo.sunEvents.size).forEach {
+                        SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
+                    }
+                }
+            }
         }
-
-        Text(text = "Sola går ned 18:30")
     }
 }
 
@@ -145,13 +168,26 @@ fun PlacePicture() {
 }
 
 @Composable
-fun SunEventInfo(time: String, conditions: Boolean) {
-    var conditionsText = if (conditions) {
-        "Gode :)"
+fun SunEventInfo(time: LocalDateTime, conditions: Boolean) {
+    val dateString = if (time.dayOfYear == LocalDateTime.now().dayOfYear) {
+        // The current date we are formatting is today
+        "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+    } else if (time.dayOfYear == LocalDateTime.now().plusDays(1).dayOfYear) {
+        // The current date we are formatting is tomorrow
+        "I Morgen ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
     } else {
-        "Dårlige :("
+        // The current date we are formatting is after tomorrow
+        time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
     }
-    Text(text = "Neste solnedgang: $time")
-    Text(text = "Forholdene er: $conditionsText")
+
+    val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+
+    val conditionsString = if (conditions) {
+        "Det blir gode forhold!"
+    } else {
+        "Det blir dårlige forhold..."
+    }
+    Text(text = "${dateString.capitalize()} $timeString", fontWeight = FontWeight.SemiBold)
+    Text(text = conditionsString, modifier = Modifier.padding(bottom = 4.dp))
 
 }
