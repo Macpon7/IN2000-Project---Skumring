@@ -41,6 +41,8 @@ class HomeViewModel() : ViewModel() {
 
     fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
+        //call function that updates time, temp, sunset, weatherMessage
+            //the results will be used in functions in Homescreen
 
         }
     }
@@ -67,9 +69,5 @@ class HomeViewModel() : ViewModel() {
                  )
              }
          }
-
     }
-
-
 }
-

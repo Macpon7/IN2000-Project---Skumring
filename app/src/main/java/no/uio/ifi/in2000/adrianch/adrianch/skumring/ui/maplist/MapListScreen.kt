@@ -1,6 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
-import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -31,8 +31,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,11 +44,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.MapInitOptions
+import com.mapbox.maps.MapboxExperimental
+import com.mapbox.maps.Style
+import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 
@@ -59,25 +74,37 @@ object MapListDestination : NavigationDestination {
 /**
  * Main composable function for displaying the map screen
  */
-        @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
-fun MapListScreen(navController : NavController) {
-    var mapTheme by remember { mutableStateOf(false) }
+fun MapListScreen(navController : NavController, mapListViewModel: MapListViewModel = viewModel()) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     /*
     These belong to searchbar
      */
     //var text by remember { mutableStateOf("") }
     //var active by remember { mutableStateOf(false) }
-    Column(
-        modifier = Modifier
+    Scaffold (topBar = {
+        SkumringTopAppBar(
+            title = stringResource(id = MapListDestination.titleRes),
+            canNavigateBack = false,
+            scrollBehavior = scrollBehavior
+        )
+    }) {innerPadding ->
+        Column (modifier = Modifier
+            .padding(innerPadding)
             .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()), // Enable scrolling
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+            .padding(16.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
+            MapListContent(navController = navController, mapListViewModel = mapListViewModel)
+        }
+    }
+}
+
+@Composable
+fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
+    val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
         /*
         SearchBar(query = text,
             onQueryChange = {text = it} ,
@@ -88,25 +115,38 @@ fun MapListScreen(navController : NavController) {
          //TODO legge til søkefelt
         }
          */
-        ListAndMapButton(
-            mapTheme = mapTheme,
-            onThemeUpdated = { mapTheme = !mapTheme }
+
+
+        ThemeSwitcher (
+            mapTheme = mapListUiState.mapListToggle.stateAsBool,
+            size = 65.dp, //Size of the button
+            padding = 3.dp,
+            onClick = { mapListViewModel.toggleMapListState() }
         )
 
-        if (mapTheme) {
+        if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
             // Column for map view
-            Column(Modifier.fillMaxSize()) {
-                MapArea()
-            }
+            MapArea(
+                onItemClick = {
+                    navController.navigate("infoscreen")
+                },
+                mapListUiState = mapListUiState)
+
         } else {
             // Column for list view
-            Column(Modifier.fillMaxSize()) {
-                ListCard(onItemClick = { //Navigate when it is clicked on
-                    navController.navigate("infoscreen")
-                })
+            Column (Modifier.verticalScroll(rememberScrollState())) {
+                mapListUiState.places.forEach {place ->
+                    ListCard(
+                        name = place.name,
+                        description = place.description,
+                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                            navController.navigate("infoscreen")
+                        }
+                    )
+                }
             }
         }
-    }
+    //}
 }
 
 
@@ -115,7 +155,6 @@ fun MapListScreen(navController : NavController) {
  */
 @Composable
 fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
-    Spacer(modifier = Modifier.height(40.dp))
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -232,24 +271,66 @@ fun ThemeSwitcher(
         }
     }
 }
-
-
 /**
  * Placeholder for the map display area
  */
+@OptIn(MapboxExperimental::class)
 @Composable
-fun MapArea() {
+fun MapArea(mapListUiState: MapListUiState, onItemClick: () -> Unit) {
+    // Can declare point to contain current location of user
+    val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
+    var point: Point by remember { mutableStateOf(testPoint) }
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .width(500.dp)
-            .height(600.dp)
+            .height(500.dp)
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-        Text(
-            text = "Map Display Placeholder",
-            modifier = Modifier.align(Alignment.Center)
-        )
+
+//        MapBoxMap(
+//            point = point,
+//            modifier = Modifier.fillMaxSize(),
+//            context = context
+//        )
+        MapboxMap(
+            Modifier.fillMaxSize(),
+            mapInitOptionsFactory = { context ->
+                MapInitOptions(
+                    context = context,
+                    styleUri = Style.OUTDOORS,
+                    cameraOptions = CameraOptions.Builder()
+                        .center(point)
+                        .zoom(10.0)
+                        .build()
+                )
+            }
+        ) {
+            mapListUiState.pins.forEach {
+                val long = it.long.toDouble()
+                val lat = it.lat.toDouble()
+                point = Point.fromLngLat(long, lat)
+                PointAnnotation(
+                    point = point,
+                    iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+                    onClick = {
+                        onItemClick()
+                        Log.d("Home", "Click!")
+                        true
+                    }
+                )
+            }
+            // Annotation showing custom coordinate should be here
+//            PointAnnotation(
+//                point = point,
+//               iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
+//                onClick = {
+//                   Log.d("Home", "Click!")
+//                   true
+//                },
+//            )
+        }
     }
 }
 
@@ -257,11 +338,11 @@ fun MapArea() {
  * Cards with information about places
  */
 @Composable
-fun ListCard(onItemClick: () -> Unit) {
+fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(vertical = 16.dp)
             .clickable(onClick = onItemClick) //Click to infoscreen
     ){
 
@@ -274,23 +355,23 @@ fun ListCard(onItemClick: () -> Unit) {
                 .fillMaxWidth(),
         ) {
             Text(
-                text = "Place Display Placeholder",
+                text = "Image Placeholder",
                 modifier = Modifier.align(Alignment.Center)
             )
         }
 
         //Text for name of place
         Text(
-            text = "Monrads gate 33, Oslo",
+            text = name,
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             textAlign = TextAlign.Center,
         )
 
-        //Text for weather-condition
+        //Text for description. Do we want weather condition in the future?
         Text(
-            text = "Det er fint vær",
+            text = description,
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
