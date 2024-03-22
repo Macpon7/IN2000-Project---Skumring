@@ -31,16 +31,33 @@ class PlaceListRepositoryImpl(
         //For each pin, get the corresponding details, and add a new PlaceSummary to our output list
         listOfPins.forEach {
             val details = placeDetailsDataSource.fetchPlaceDetails(it.id)
-            outList.add(PlaceSummary(
-                id = it.id,
-                lat = it.lat,
-                long = it.long,
-                name = details.name,
-                description = details.description
-            )
-            )
+            outList.add(combinePinAndDetails(it, details))
         }
 
         return outList.toList()
+    }
+
+    /**
+     * Combines information from a [PinInfo] and [PlaceDetails] object
+     * @property pinInfo the coordinates and id of a place
+     * @property placeDetails the id, name and description of a place
+     * @return [PlaceSummary] a combination object, containing the id, coordinates, name and description of a place
+     * @throws IllegalArgumentException if the id's of these two arguments do not match
+     */
+    private fun combinePinAndDetails(
+        pinInfo: PinInfo,
+        placeDetails: PlaceDetails
+    ): PlaceSummary {
+        if (pinInfo.id != placeDetails.id) {
+            throw IllegalArgumentException("The id's of pinInfo and placeDetails are different")
+        }
+
+        return PlaceSummary(
+            id = pinInfo.id,
+            lat = pinInfo.lat,
+            long = pinInfo.long,
+            name = placeDetails.name,
+            description = placeDetails.description
+        )
     }
 }
