@@ -4,6 +4,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.gson.gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
@@ -23,12 +24,16 @@ class LocationForecastDataSource (){
      */
     private suspend fun fetchLocationForecastData(long: String, lat: String): LocationForecastInfo {
         val newpath = this.path + "coords=POINT($long+$lat)"
-         try {
+         return try {
             val response: HttpResponse = client.get(newpath)
-            return response.body()
-        } catch(e: Exception) {
-            throw e
+             when (response.status) { //Check the status-code of the HTTP-request
+                 HttpStatusCode.OK -> response.body()
+                 else -> throw DataSourceException("Failed to fetch data from server. Status: ${response.status.description}")
+             }
         }
+         catch (e: Exception) {
+             throw DataSourceException("An error occurred while fetching data: ${e.message}")
+         }
     }
 
     /**
@@ -61,3 +66,5 @@ class LocationForecastDataSource (){
     }
 }
 
+//Handle the different exceptions of ktor ?
+class DataSourceException(message: String, cause: Throwable? = null) : Exception(message, cause)
