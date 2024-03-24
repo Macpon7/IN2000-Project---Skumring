@@ -8,6 +8,8 @@ interface MapRepository {
     suspend fun getPins(): List<PinInfo>
 }
 
+    private const val logTag = "MapRepo" //for logging
+
 
 class MapRepositoryImpl(
     private val mapPinsDataSource: MapPinsDataSource = MapPinsDataSource()
@@ -17,8 +19,8 @@ class MapRepositoryImpl(
         try {
             return mapPinsDataSource.fetchMapPins()
         } catch (e: Exception) {
-            e.message?.let { Log.e( "MapRepo", it) }
-            throw(e)
+            Log.e(logTag, e.message, e)
+            throw e
         }
     }
 }
