@@ -6,8 +6,10 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.gson.gson
+import io.ktor.utils.io.errors.IOException
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
+import org.json.JSONException
 import java.time.LocalDateTime
 
 
@@ -36,13 +38,31 @@ class LocationForecastDataSource (){
          }
     }
 
+
+    //Handle the different exceptions of ktor ?
+    class DataSourceException(message: String, cause: Throwable? = null) : Exception(message, cause)
+
     /**
      * Gets the forecast for the specified coordinates from MET API, and converts the response data to
      * our own WeatherPerHour objects
      */
     suspend fun fetchWeatherData(lat: String, long: String): List<WeatherPerHour> {
-        val dataFromAPI = fetchLocationForecastData(lat = lat, long = long)
-        return convertResponseToWeatherPerHour(dataFromAPI)
+        try {
+            val dataFromAPI = fetchLocationForecastData(lat = lat, long = long)
+            return convertResponseToWeatherPerHour(dataFromAPI)
+        } catch (e: IOException) { // Handle network or connection error
+            e.printStackTrace()
+            return emptyList()
+        } catch (e: JSONException) { // Handle error in JSON-parsing
+            e.printStackTrace()
+            return emptyList()
+        } catch (e: NullPointerException) { // Handle NullPointerException -> null values from the API
+            e.printStackTrace()
+            return emptyList()
+        } catch (e: Exception) { // Handle any type of exception
+            e.printStackTrace()
+            return emptyList()
+        }
     }
 
     /**
@@ -51,7 +71,7 @@ class LocationForecastDataSource (){
      */
     fun convertResponseToWeatherPerHour(res: LocationForecastInfo): List<WeatherPerHour> {
         return res.properties.timeseries.map {
-            //the next_1_hours object is only available in the short term forecast. After that we need to get the icon from next_6_hours
+            // The next_1_hours object is only available in the short term forecast. After that we need to get the icon from next_6_hours
             var icon: String? = if (it.data.next_1_hours != null) {
                 it.data.next_1_hours.summary.symbol_code
             } else if (it.data.next_6_hours != null) {
@@ -65,6 +85,3 @@ class LocationForecastDataSource (){
         }
     }
 }
-
-//Handle the different exceptions of ktor ?
-class DataSourceException(message: String, cause: Throwable? = null) : Exception(message, cause)
