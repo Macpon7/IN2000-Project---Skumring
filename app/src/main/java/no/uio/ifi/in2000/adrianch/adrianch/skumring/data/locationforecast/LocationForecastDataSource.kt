@@ -48,21 +48,21 @@ class LocationForecastDataSource (){
      * our own WeatherPerHour objects
      */
     suspend fun fetchWeatherData(lat: String, long: String): List<WeatherPerHour> {
-        try {
+        return try {
             val dataFromAPI = fetchLocationForecastData(lat = lat, long = long)
-            return convertResponseToWeatherPerHour(dataFromAPI)
+            convertResponseToWeatherPerHour(dataFromAPI)
         } catch (e: IOException) { // Handle network or connection error
             e.printStackTrace()
-            return emptyList()
+            emptyList()
         } catch (e: JSONException) { // Handle error in JSON-parsing
             e.printStackTrace()
-            return emptyList()
+            emptyList()
         } catch (e: NullPointerException) { // Handle NullPointerException -> null values from the API
             e.printStackTrace()
-            return emptyList()
+            emptyList()
         } catch (e: Exception) { // Handle any type of exception
             e.printStackTrace()
-            return emptyList()
+            emptyList()
         }
     }
 
