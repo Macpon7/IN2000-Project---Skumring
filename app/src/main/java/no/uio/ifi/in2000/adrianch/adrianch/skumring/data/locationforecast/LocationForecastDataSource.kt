@@ -32,14 +32,15 @@ class LocationForecastDataSource (){
                  HttpStatusCode.OK -> response.body()
                  else -> throw DataSourceException("Failed to fetch data from server. Status: ${response.status.description}")
              }
-        }
-         catch (e: Exception) {
+        } catch (e: IOException) { // Handle IOException, error with network or connection
+          e.printStackTrace()
+          throw DataSourceException("Failed to fetch data from server. Error: ${e.message}")
+        } catch (e: Exception) {
              throw DataSourceException("An error occurred while fetching data: ${e.message}")
          }
     }
 
-
-    //Handle the different exceptions of ktor ?
+    //Handle the individual different exceptions of ktor ?
     class DataSourceException(message: String, cause: Throwable? = null) : Exception(message, cause)
 
     /**
@@ -70,18 +71,38 @@ class LocationForecastDataSource (){
      * in the response that we are not interested in.
      */
     fun convertResponseToWeatherPerHour(res: LocationForecastInfo): List<WeatherPerHour> {
-        return res.properties.timeseries.map {
-            // The next_1_hours object is only available in the short term forecast. After that we need to get the icon from next_6_hours
-            var icon: String? = if (it.data.next_1_hours != null) {
-                it.data.next_1_hours.summary.symbol_code
-            } else if (it.data.next_6_hours != null) {
-                it.data.next_6_hours.summary.symbol_code
-            } else {
-                null
+        // A list of the weatherPerHour-objects:
+        val weatherPerHourList = mutableListOf<WeatherPerHour>()
+
+        try {
+            res.properties.timeseries.map {
+                var icon: String? = null
+
+                try {
+                    icon = if (it.data.next_1_hours != null) {
+                        it.data.next_1_hours.summary.symbol_code
+                    } else if (it.data.next_6_hours != null) {
+                        it.data.next_6_hours.summary.symbol_code
+                    } else {
+                        null
+                    }
+
+                    // We use subsequence of the time string to get rid of the Z character at the end. Other than that Z,
+                    // The string we get from the api is in ISO format
+                    val dateTime = LocalDateTime.parse(it.time.subSequence(0, 19))
+                    val weatherPerHour = WeatherPerHour(dateTime, it.data.instant.details, icon)
+
+                    // Add the weatherPerHour object to the list:
+                    weatherPerHourList.add(weatherPerHour)
+                } catch (e: Exception) {
+                    // Check for any exceptions with each loop of the data
+                    e.printStackTrace()
+                }
             }
-            // We use subsequence of the time string to get rid of the Z character at the end. Other than that Z,
-            // The string we get from the api is in ISO format
-            WeatherPerHour(LocalDateTime.parse(it.time.subSequence(0, 19)), it.data.instant.details, icon)
+        } catch (e: Exception) {
+            // Check for any exceptions when the loop is done
+            e.printStackTrace()
         }
+        return weatherPerHourList
     }
 }
