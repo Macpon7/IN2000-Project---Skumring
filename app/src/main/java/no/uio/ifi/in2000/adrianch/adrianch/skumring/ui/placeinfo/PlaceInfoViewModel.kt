@@ -32,11 +32,6 @@ class PlaceInfoViewModel : ViewModel() {
             }
         }
     }
-
-
-
-
-
 }
 
 

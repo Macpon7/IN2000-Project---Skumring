@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -63,10 +64,6 @@ fun PlaceInfoScreen(
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
-    var placename: String = placeUiState.placeInfo.name
-    var description: String = placeUiState.placeInfo.description
-
-
     Scaffold(
         topBar = {
             Box(
@@ -97,7 +94,17 @@ fun PlaceInfoScreen(
                     .fillMaxSize()
                     .padding(innerPadding) // Padding for topbar
             ) {
-                ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
+                when {
+                    // The content won't load before the content is ready
+                    placeUiState.placeInfo.name.isEmpty() -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                    else -> {
+                        ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
+                    }
+                }
             }
         }
     )
