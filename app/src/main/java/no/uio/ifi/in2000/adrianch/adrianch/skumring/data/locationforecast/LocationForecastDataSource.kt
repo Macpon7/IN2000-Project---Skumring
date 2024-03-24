@@ -1,4 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast
+import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -14,6 +15,10 @@ import java.time.LocalDateTime
 
 
 class LocationForecastDataSource (){
+
+    // Constant for logging errors:
+    private val logTag : String = ""
+
     private var path: String = "https://api.met.no/weatherapi/locationforecast/2.0/edr/collections/complete/position?"
     private val client = HttpClient {
         install(ContentNegotiation) {
@@ -26,22 +31,18 @@ class LocationForecastDataSource (){
      */
     private suspend fun fetchLocationForecastData(long: String, lat: String): LocationForecastInfo {
         val newpath = this.path + "coords=POINT($long+$lat)"
-         return try {
+        try {
             val response: HttpResponse = client.get(newpath)
-             when (response.status) { //Check the status-code of the HTTP-request
-                 HttpStatusCode.OK -> response.body()
-                 else -> throw DataSourceException("Failed to fetch data from server. Status: ${response.status.description}")
-             }
-        } catch (e: IOException) { // Handle IOException, error with network or connection
-          e.printStackTrace()
-          throw DataSourceException("Failed to fetch data from server. Error: ${e.message}")
-        } catch (e: Exception) {
-             throw DataSourceException("An error occurred while fetching data: ${e.message}")
-         }
+            return response.body()
+        } catch (e: IOException) {
+            Log.e(logTag, "Network error: ${e.message}", e)
+            // Handle network error, e.g. return a default value or specific error code
+            throw e
+        }catch (e: Exception) {
+            Log.e(logTag, e.message, e)
+            throw e
+        }
     }
-
-    //Handle the individual different exceptions of ktor ?
-    class DataSourceException(message: String, cause: Throwable? = null) : Exception(message, cause)
 
     /**
      * Gets the forecast for the specified coordinates from MET API, and converts the response data to
@@ -52,17 +53,17 @@ class LocationForecastDataSource (){
             val dataFromAPI = fetchLocationForecastData(lat = lat, long = long)
             convertResponseToWeatherPerHour(dataFromAPI)
         } catch (e: IOException) { // Handle network or connection error
-            e.printStackTrace()
-            emptyList()
+            Log.e(logTag, "An error with network or connection with fetchWeatherData", e)
+            throw e
         } catch (e: JSONException) { // Handle error in JSON-parsing
-            e.printStackTrace()
-            emptyList()
+            Log.e(logTag, e.message, e)
+            throw e
         } catch (e: NullPointerException) { // Handle NullPointerException -> null values from the API
-            e.printStackTrace()
-            emptyList()
+            Log.e(logTag, e.message, e)
+            throw e
         } catch (e: Exception) { // Handle any type of exception
-            e.printStackTrace()
-            emptyList()
+            Log.e(logTag, e.message, e)
+            throw e
         }
     }
 
@@ -96,12 +97,13 @@ class LocationForecastDataSource (){
                     weatherPerHourList.add(weatherPerHour)
                 } catch (e: Exception) {
                     // Check for any exceptions with each loop of the data
-                    e.printStackTrace()
-                }
+                    Log.e(logTag, e.message, e)
+                    throw e                }
             }
         } catch (e: Exception) {
             // Check for any exceptions when the loop is done
-            e.printStackTrace()
+            Log.e(logTag, e.message, e)
+            throw e
         }
         return weatherPerHourList
     }
