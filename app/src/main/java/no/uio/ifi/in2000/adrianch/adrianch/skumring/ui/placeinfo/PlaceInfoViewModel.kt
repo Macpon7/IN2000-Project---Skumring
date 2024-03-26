@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -12,13 +13,15 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 
+private const val logTag = "PlaceInfoViewModel"
+
 data class PlaceInfoUiState(
     var placeInfo: PlaceInfo = PlaceInfo("","","","", emptyList())
 
 )
 
 class PlaceInfoViewModel : ViewModel() {
-    private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
+    private val placeInfoRepository: PlaceInfoRepository = PlaceInfoRepositoryImpl()
 
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
 
@@ -26,8 +29,9 @@ class PlaceInfoViewModel : ViewModel() {
 
     fun loadPlaceInfo(lat: String, long: String, id: Int = 0){
         viewModelScope.launch(Dispatchers.IO){
+            Log.d(logTag, "loadPlaceInfo called")
             _placeInfoUiState.update { currentPlaceInfoUiState ->
-                val placeInfoObject = placeInfo.getPlaceInfo(lat, long, id)
+                val placeInfoObject = placeInfoRepository.getPlaceInfo(lat, long, id)
                 currentPlaceInfoUiState.copy(placeInfo = placeInfoObject)
             }
         }

@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +40,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+private const val logTag = "PlaceInfoScreen"
+
 object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
     override val buttonTitle = null
@@ -58,6 +61,7 @@ fun PlaceInfoScreen(
 ) {
 
     LaunchedEffect(key1 = id) {
+        Log.d(logTag, "LaunchedEffect launched with key $id")
         placeViewModel.loadPlaceInfo(lat = lat, long = long, id = id)
         Locale.setDefault(Locale("no", ))
     }

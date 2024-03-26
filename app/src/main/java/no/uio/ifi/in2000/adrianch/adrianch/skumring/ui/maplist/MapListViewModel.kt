@@ -47,7 +47,7 @@ class MapListViewModel: ViewModel() {
     private fun loadList(){
         viewModelScope.launch(Dispatchers.IO) {
             _mapListUiState.update { currentMapListUiState ->
-                val placeSummaryList = placeListRepository.getPlaceList()
+                val placeSummaryList = placeListRepository.getPresetPlaceList()
                 currentMapListUiState.copy(places = placeSummaryList)
             }
         }
