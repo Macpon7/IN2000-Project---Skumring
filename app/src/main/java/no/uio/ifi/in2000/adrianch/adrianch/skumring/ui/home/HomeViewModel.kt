@@ -71,7 +71,7 @@ class HomeViewModel() : ViewModel() {
                     )
                 }
              } catch (e: Exception) {
-                 Log.e(logTag, "Error getting sunset", e)
+                 Log.e(logTag, "Error getting sunset, failed updating state", e)
              }
          }
     }
