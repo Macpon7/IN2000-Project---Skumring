@@ -12,14 +12,15 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 
-/**
- * Description goes here
- */
 interface PlaceInfoRepository {
     /**
-     * Description
-     *
-     *
+     * Creates and returns a [PlaceInfo] object containing all the details about the place matching the
+     * given coordinates and id. If no ID is given, then no name or description can be retrieved, since
+     * this means that the coordinates given do not correspond with a place in our database. In this cases
+     * the descriptive fields are left blank in the returned object.
+     * @param lat String containing the latitude coordinate
+     * @param long String containing the longitude coordinate
+     * @param id Optional parameter. If id is not 0 then we will fetch details like name and description
      */
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
 
@@ -44,24 +45,16 @@ interface PlaceInfoRepository {
     suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean
 
     /**
-     *
-     */
-    suspend fun getSunsetLocalDateTime(lat: String, long: String, date: LocalDate): LocalDateTime
-
-    /**
-     *
-     */
-    suspend fun convertLocalDateToString(dateTime: LocalDateTime): String
-
-    /**
-     *
+     * Returns a string containing the time of sunset on the given date at the given coordinates.
      */
     suspend fun getSunset(lat: String, long: String, date: LocalDate): String
 }
 
 /**
  * An implementation of [PlaceInfoRepository].
- * @property sunriseDataSource an instance of [SunriseDataSource]
+ * @property sunriseDataSource instance of [SunriseDataSource]
+ * @property locationDataSource instance of [LocationForecastDataSource]
+ * @property placeDetailsDataSource instance of [PlaceDetailsDataSource]
  */
 class PlaceInfoRepositoryImpl (
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
@@ -164,17 +157,9 @@ class PlaceInfoRepositoryImpl (
         return true
     }
 
-    //fetchSunActivity(lat: String, long: String, date: LocalDate)
-    override suspend fun getSunsetLocalDateTime(lat: String, long: String, date: LocalDate): LocalDateTime {
-        return sunriseDataSource.fetchSunActivity(lat, long, date).sunset
-    }
-
-    override suspend fun convertLocalDateToString(dateTime: LocalDateTime): String {
-        return dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
-    }
-
     override suspend fun getSunset(lat: String, long: String, date: LocalDate): String{
-        return convertLocalDateToString(getSunsetLocalDateTime(lat, long, date))
+        val sunsetDateTime = sunriseDataSource.fetchSunActivity(lat, long, date).sunset
+        return sunsetDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
     }
 
 }
