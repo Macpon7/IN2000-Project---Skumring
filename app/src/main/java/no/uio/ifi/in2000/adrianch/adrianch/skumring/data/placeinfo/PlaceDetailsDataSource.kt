@@ -16,10 +16,15 @@ class PlaceDetailsDataSource {
                 name = "",
                 description = ""
             )
+        } catch (e : NoSuchElementException) {
+            Log.e(logTag, "Element not found: ${e.message} in fetchPlaceDetails" , e)
+            throw e
+        } catch (e : IndexOutOfBoundsException) {
+            Log.e(logTag, "Index out of bounds: ${e.message} in fetchPlaceDetails" , e)
+            throw e
         } catch (e : Exception) {
-            Log.e(logTag, "Unknown error: ${e.message} in fetchPlaceDetails" , e)
+            Log.e(logTag, "An unexpected error: ${e.message} in fetchPlaceDetails" , e)
             throw e
         }
-
     }
 }

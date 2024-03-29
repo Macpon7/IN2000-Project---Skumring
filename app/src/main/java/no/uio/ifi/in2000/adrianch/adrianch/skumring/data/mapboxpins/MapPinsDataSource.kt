@@ -11,8 +11,14 @@ class MapPinsDataSource {
     suspend fun fetchMapPins(): List<PinInfo> {
         try {
             return presetPinsInfo
+        } catch (e : NoSuchElementException) {
+            Log.e(logTag, "Element not found: ${e.message} in fetchMapPins" , e)
+            throw e
+        } catch (e : IndexOutOfBoundsException) {
+            Log.e(logTag, "Index out of bounds: ${e.message} in fetchMapPins" , e)
+            throw e
         } catch (e : Exception) {
-            Log.e(logTag, "Unknown error: ${e.message} in fetchMapPins" , e)
+            Log.e(logTag, "An unexpected error: ${e.message} in fetchMapPins" , e)
             throw e
         }
     }
