@@ -2,10 +2,12 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast
 import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.RedirectResponseException
+import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.gson.gson
 import io.ktor.utils.io.errors.IOException
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
@@ -35,11 +37,29 @@ class LocationForecastDataSource (){
             val response: HttpResponse = client.get(newpath)
             return response.body()
         } catch (e: IOException) {
-            Log.e(logTag, "Network error: ${e.message}", e)
+            Log.e(logTag, "Network error: ${e.message} in fetchLocationForcastData", e)
             // Handle network error, e.g. return a default value or specific error code
             throw e
+        }catch (e: JSONException) { // Handle error in JSON-parsing
+            Log.e(logTag, "An error with handling JSON-parsing: ${e.message} in fetchWeatherdata", e)
+            throw e
+        } catch (e: NullPointerException) { // Handle NullPointerException -> null values from the API
+            Log.e(logTag, "An error with null values from the API: ${e.message}, in fetchWeatherData", e)
+            throw e
+        }catch (e: RedirectResponseException) {
+            // 3xx - responses
+            Log.e(logTag, "Error redirect response: ${e.response.status.description} in fetchLocationForcastData" , e)
+            throw e
+        }catch (e: ClientRequestException) {
+            //4xx - responses
+            Log.e(logTag, "Error with client request: ${e.response.status.description} in fetchLocationForcastData" , e)
+            throw e
+        }catch (e: ServerResponseException) {
+            //5xx - responses
+            Log.e(logTag, "Error with server respons: ${e.response.status.description} in fetchLocationForcastData" , e)
+            throw e
         }catch (e: Exception) {
-            Log.e(logTag, e.message, e)
+            Log.e(logTag, "Error: ${e.message} in fetchLocationForcastData" , e)
             throw e
         }
     }
@@ -53,16 +73,28 @@ class LocationForecastDataSource (){
             val dataFromAPI = fetchLocationForecastData(lat = lat, long = long)
             convertResponseToWeatherPerHour(dataFromAPI)
         } catch (e: IOException) { // Handle network or connection error
-            Log.e(logTag, "An error with network or connection with fetchWeatherData", e)
+            Log.e(logTag, "An error with network or connection with fetchWeatherData: ${e.message}", e)
             throw e
         } catch (e: JSONException) { // Handle error in JSON-parsing
-            Log.e(logTag, e.message, e)
+            Log.e(logTag, "An error with handling JSON-parsing: ${e.message} in fetchWeatherdata", e)
             throw e
         } catch (e: NullPointerException) { // Handle NullPointerException -> null values from the API
-            Log.e(logTag, e.message, e)
+            Log.e(logTag, "An error with null values from the API: ${e.message}, in fetchWeatherData", e)
             throw e
-        } catch (e: Exception) { // Handle any type of exception
-            Log.e(logTag, e.message, e)
+        } catch (e: RedirectResponseException) {
+            // 3xx - responses
+            Log.e(logTag, "Error redirect response: ${e.response.status.description} in fetchWeatherData" , e)
+            throw e
+        }catch (e: ClientRequestException) {
+            //4xx - responses
+            Log.e(logTag, "Error with client request: ${e.response.status.description} in fetchWeatherData" , e)
+            throw e
+        }catch (e: ServerResponseException) {
+            //5xx - responses
+            Log.e(logTag, "Error with server respons: ${e.response.status.description} in fetchWeatherData" , e)
+            throw e
+        }catch (e: Exception) { // Handle any type of exception
+            Log.e(logTag, "An unknown error: ${e.message} in fetchWeatherData", e)
             throw e
         }
     }
@@ -95,16 +127,62 @@ class LocationForecastDataSource (){
 
                     // Add the weatherPerHour object to the list:
                     weatherPerHourList.add(weatherPerHour)
-                } catch (e: Exception) {
+                } catch (e: IOException) {
+                    Log.e(logTag, "Network error: ${e.message} in the inner-loop of convertResponseToWeatherPerHour", e)
+                    // Handle network error, e.g. return a default value or specific error code
+                    throw e
+                }catch (e: JSONException) { // Handle error in JSON-parsing
+                    Log.e(logTag, "An error with handling JSON-parsing: ${e.message} in the inner-loop of convertResponseToWeatherPerHour", e)
+                    throw e
+                } catch (e: NullPointerException) { // Handle NullPointerException -> null values from the API
+                    Log.e(logTag, "An error with null values from the API: ${e.message}, in the inner-loop of convertResponseToWeatherPerHour", e)
+                    throw e
+                }catch (e: RedirectResponseException) {
+                    // 3xx - responses
+                    Log.e(logTag, "Error redirect response: ${e.response.status.description} in the inner-loop of convertResponseToWeatherPerHour" , e)
+                    throw e
+                }catch (e: ClientRequestException) {
+                    //4xx - responses
+                    Log.e(logTag, "Error with client request: ${e.response.status.description} in the inner-loop of convertResponseToWeatherPerHour" , e)
+                    throw e
+                }catch (e: ServerResponseException) {
+                    //5xx - responses
+                    Log.e(logTag, "Error with server respons: ${e.response.status.description} in the inner-loop of convertResponseToWeatherPerHour" , e)
+                    throw e
+                }catch (e: Exception) {
                     // Check for any exceptions with each loop of the data
-                    Log.e(logTag, e.message, e)
+                    Log.e(logTag, "An error in the inner-loop of convertResponseToWeatherPerHour: ${e.message}", e)
                     throw e                }
             }
-        } catch (e: Exception) {
+        }catch (e: IOException) {
+            Log.e(logTag, "Network error: ${e.message} in the outer-loop of converterResponseToWeatherPerHour", e)
+            // Handle network error, e.g. return a default value or specific error code
+            throw e
+        }catch (e: JSONException) { // Handle error in JSON-parsing
+            Log.e(logTag, "An error with handling JSON-parsing: ${e.message} in the outer-loop of converterResponseToWeatherPerHour", e)
+            throw e
+        } catch (e: NullPointerException) { // Handle NullPointerException -> null values from the API
+            Log.e(logTag, "An error with null values from the API: ${e.message}, in the outer-loop of converterResponseToWeatherPerHour", e)
+            throw e
+        }catch (e: RedirectResponseException) {
+            // 3xx - responses
+            Log.e(logTag, "Error redirect response: ${e.response.status.description} in the outer-loop of converterResponseToWeatherPerHour" , e)
+            throw e
+        }catch (e: ClientRequestException) {
+            //4xx - responses
+            Log.e(logTag, "Error with client request: ${e.response.status.description} in the outer-loop of converterResponseToWeatherPerHour" , e)
+            throw e
+        }catch (e: ServerResponseException) {
+            //5xx - responses
+            Log.e(logTag, "Error with server respons: ${e.response.status.description} in the outer-loop of converterResponseToWeatherPerHour" , e)
+            throw e
+        }catch (e: Exception) {
             // Check for any exceptions when the loop is done
-            Log.e(logTag, e.message, e)
+            Log.e(logTag, "An error in the outer-loop of converterResponseToWeatherPerHour: ${e.message}", e)
             throw e
         }
         return weatherPerHourList
     }
 }
+
+
