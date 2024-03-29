@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
+import android.accounts.NetworkErrorException
+import android.util.Log
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
@@ -7,11 +9,16 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.DailyEvents
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
+import org.json.JSONException
+import java.io.IOException
+import java.lang.IllegalArgumentException
+import java.time.DateTimeException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 
+class PlaceDetailsNotFoundException(message: String) : Exception(message)
 
 interface PlaceInfoRepository {
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
@@ -25,32 +32,74 @@ interface PlaceInfoRepository {
     suspend fun getSunset(lat: String, long: String, date: LocalDate): String
 }
 
+private const val logTag = "PlaceInfoRepository" //log for error-handling
+
 class PlaceInfoRepositoryImpl (
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
     private val locationDataSource: LocationForecastDataSource = LocationForecastDataSource(),
     private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
 ): PlaceInfoRepository {
     override suspend fun getPlaceInfo(lat: String, long: String, id: Int): PlaceInfo {
-        // Get the forecasted weather at this place
-        //contains data for 10 days currently - might change
-        val fullForecast = locationDataSource.fetchWeatherData(lat = lat, long = long)
+        try {
 
-        // Group all the forecast data by date
-        val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
+            // Get the forecasted weather at this place
+            //contains data for 10 days currently - might change
+            val fullForecast = locationDataSource.fetchWeatherData(lat = lat, long = long)
 
-        // Send our map to a function which will return a list of DailyEvents
-        val dailyEventsList = makeDailyEvents(forecastGroupedByDate = forecastGroupedByDate, lat = lat, long = long)
+            // Group all the forecast data by date
+            val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
 
-        val details = placeDetailsDataSource.fetchPlaceDetails(id = id)
+            // Send our map to a function which will return a list of DailyEvents
+            val dailyEventsList = makeDailyEvents(
+                forecastGroupedByDate = forecastGroupedByDate,
+                lat = lat,
+                long = long
+            )
 
-        return PlaceInfo(
-            name = details.name,
-            description = details.description,
-            latitude = lat,
-            longitude = long,
-            sunEvents = dailyEventsList
-        )
+            val details = placeDetailsDataSource.fetchPlaceDetails(id = id)
+
+            //check if details is null or empty
+            if (details.name.isEmpty() || details.description.isEmpty()) {
+                val errorMessage = "Failed to fetch valid place details for id: $id"
+                Log.e(logTag, errorMessage) //logging error
+                throw PlaceDetailsNotFoundException(errorMessage) //throws custom exception
+            }
+
+            //return PlaceInfo with fetched details
+            return PlaceInfo(
+                name = details.name,
+                description = details.description,
+                latitude = lat,
+                longitude = long,
+                sunEvents = dailyEventsList
+            )
+        } catch (e: IOException) {
+            //Handle IOException, generally for I/O operations
+            Log.e(logTag, "IOException occured: ${e.message}", e)
+            throw e
+        } catch (e: JSONException) {
+            //Handle JSONException
+            Log.e(logTag, "JSONException occured: ${e.message}", e)
+            throw e
+        } catch (e: NullPointerException) {
+            //Handle NullPointerException
+            Log.e(logTag,"NullPointerException occured: ${e.message}", e)
+            throw e
+        } catch (e: IllegalArgumentException) {
+            // Handle IllegalArgumentException
+            Log.e(logTag, "IllegalArgumentException occured: ${e.message}", e)
+            throw e
+        } catch (e: NetworkErrorException) {
+            //Handle NetworkErrorException, specifically for networkerrors
+            Log.e(logTag, "NetworkErrorException occured: ${e.message}", e)
+            throw e
+        } catch (e: Exception) {
+            //Handle any other unexpected exceptions
+            Log.e(logTag, "Error fetching placeinfo:" + (e.message ?: ""), e)
+            throw e
+        }
     }
+
 
     /**
      * Given a map containing lists of weather forecast data (where the key is the date and the values
@@ -70,51 +119,78 @@ class PlaceInfoRepositoryImpl (
            Make a DailyEvents object for each date and add that to our sunEventsList
         */
         forecastGroupedByDate.forEach {
-            // SunActivity is a list of times. One for each event we are interested in
-            // In MVP this is only sunset, but we will add sunrise at a later date
-            val sunActivity: SunActivity = sunriseDataSource.fetchSunActivity(
-                lat = lat,
-                long = long,
-                date = it.key
-            )
+            try {
+                // SunActivity is a list of times. One for each event we are interested in
+                // In MVP this is only sunset, but we will add sunrise at a later date
+                val sunActivity: SunActivity = sunriseDataSource.fetchSunActivity(
+                    lat = lat,
+                    long = long,
+                    date = it.key
+                )
 
-            // Filters away all the WeatherPerHour objects whose time is too far from sunset
-            var sunsetWeather: List<WeatherPerHour> = emptyList()
-            if (it.value.size == 24) {
-                sunsetWeather = it.value.filter { forecastObject ->
-                    abs(sunActivity.sunset.hour - forecastObject.time.hour) < 2
-                }
-            } else {
-                var closestForecast: WeatherPerHour = it.value[0]
-                it.value.forEach { forecastObject ->
-                    if (abs(sunActivity.sunset.hour - forecastObject.time.hour) < abs(sunActivity.sunset.hour - closestForecast.time.hour)) {
-                        closestForecast = forecastObject
+                // Filters away all the WeatherPerHour objects whose time is too far from sunset
+                var sunsetWeather: List<WeatherPerHour> = emptyList()
+                if (it.value.size == 24) {
+                    sunsetWeather = it.value.filter { forecastObject ->
+                        abs(sunActivity.sunset.hour - forecastObject.time.hour) < 2
                     }
+                } else {
+                    var closestForecast: WeatherPerHour = it.value[0]
+                    it.value.forEach { forecastObject ->
+                        if (abs(sunActivity.sunset.hour - forecastObject.time.hour) < abs(
+                                sunActivity.sunset.hour - closestForecast.time.hour
+                            )
+                        ) {
+                            closestForecast = forecastObject
+                        }
+                    }
+                    sunsetWeather = listOf<WeatherPerHour>(closestForecast)
                 }
-                sunsetWeather = listOf<WeatherPerHour>(closestForecast)
-            }
 
-            val sunriseWeather = it.value.filter {
-                //TODO after MVP: filter sunriseWeather as well
-                true
-            }
+                val sunriseWeather = it.value.filter {
+                    //TODO after MVP: filter sunriseWeather as well
+                    true
+                }
 
-            sunEventsList.add(
-                DailyEvents(
-                    sunset = SunEvent(
-                        time = sunActivity.sunset,
-                        conditions = checkConditions(sunsetWeather)
-                    ),
-                    /*
+                sunEventsList.add(
+                    DailyEvents(
+                        sunset = SunEvent(
+                            time = sunActivity.sunset,
+                            conditions = checkConditions(sunsetWeather)
+                        ),
+                        /*
                     sunrise = SunEvent(
                         time = sunActivity.sunrise,
                         conditions = checkConditions(sunriseWeather)
                      */
                     )
-            )
-
+                )
+            } catch (e: IOException) {
+                //Handle IOException, generally for I/O operations
+                Log.e(logTag, "IOException occured: ${e.message}", e)
+                throw e
+            } catch (e: JSONException) {
+                //Handle JSONException
+                Log.e(logTag, "JSONException occured: ${e.message}", e)
+                throw e
+            } catch (e: NullPointerException) {
+                //Handle NullPointerException, for cases where null references are encountered
+                Log.e(logTag, "NullPointerException occured: ${e.message}", e)
+                throw e
+            } catch (e: IllegalArgumentException) {
+                // Handle IllegalArgumentException, for invalid method arguments
+                Log.e(logTag, "IllegalArgumentException occured: ${e.message}", e)
+                throw e
+            } catch (e: NetworkErrorException) {
+                //Handle NetworkErrorException, specifically for networkerrors
+                Log.e(logTag, "NetworkErrorException occured: ${e.message}", e)
+                throw e
+            } catch (e: Exception) {
+                //Handle any other unexpected exceptions
+                Log.e(logTag, "Error fetching sun activity:" + (e.message ?: ""), e)
+                throw e
+            }
         }
-
         return sunEventsList.toList()
     }
 
@@ -126,30 +202,121 @@ class PlaceInfoRepositoryImpl (
      * we deem conditions to be good enough.
      */
     override suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
-        val cloudAreaFractionThreshold: Float = 70.0F
-        weatherData.forEach {
-            // cloudAreaFraction is the percentage of pixels in a satellite photo
-            // over an area judged to be clouds.
-            val cloudAreaFraction: Float = it.instant.cloud_area_fraction.toFloat()
-            if (cloudAreaFraction > cloudAreaFractionThreshold) {
-                return false
+        try {
+            val cloudAreaFractionThreshold: Float = 70.0F
+            weatherData.forEach {
+
+                // cloudAreaFraction is the percentage of pixels in a satellite photo
+                // over an area judged to be clouds.
+                val cloudAreaFraction: Float = it.instant.cloud_area_fraction.toFloat()
+                if (cloudAreaFraction > cloudAreaFractionThreshold) {
+                    return false
+                }
             }
+            //if no cloud area fraction exceeded the threshold, return true
+            return true
+        } catch (e: IOException) {
+            //Handle IOException, for errors related to I/O operations
+            Log.e(logTag, "IOException occured: ${e.message}")
+            throw e
+        } catch (e: NullPointerException) {
+            //Handle NullPointerException, for cases where null references are encountered
+            Log.e(logTag, "NullPointerException occured: ${e.message}")
+            throw e
+        } catch (e: IllegalArgumentException) {
+            // Handle IllegalArgumentException, for invalid method arguments
+            Log.e(logTag, "IllegalArgumentException occured: ${e.message}")
+            throw e
+        } catch (e: NetworkErrorException) {
+            //Handle NetworkErrorException, specifically for networkerrors
+            Log.e(logTag, "NetworkErrorException occured: ${e.message}")
+            throw e
+        } catch (e: Exception) {
+            //Handle any other unexpected exceptions
+            Log.e(logTag, "Error porcessing weather data: ${e.message ?: "Unknown error"}")
+            throw e
         }
-        return true
     }
 
+
     //fetchSunActivity(lat: String, long: String, date: LocalDate)
-    override suspend fun getSunsetLocalDateTime(lat: String, long: String, date: LocalDate): LocalDateTime {
-        return sunriseDataSource.fetchSunActivity(lat, long, date).sunset
+    override suspend fun getSunsetLocalDateTime(
+        lat: String,
+        long: String,
+        date: LocalDate
+    ): LocalDateTime {
+        try {
+            return sunriseDataSource.fetchSunActivity(lat, long, date).sunset
+        } catch (e: IOException) {
+            //Handle IOException, for errors related to I/O operations
+            Log.e(logTag, "IOException occured: ${e.message}")
+            throw e
+        } catch (e: JSONException) {
+            //Handle JSONException
+            Log.e(logTag, "JSONException occured: ${e.message}")
+            throw e
+        } catch (e: NullPointerException) {
+            //Handle NullPointerException, for cases where null references are encountered
+            Log.e(logTag, "NullPointerException occured: ${e.message}")
+            throw e
+        } catch (e: IllegalArgumentException) {
+            //Handle IllegalArgumentException, for invalid method arguments
+            Log.e(logTag,"IllegalArgumentException occured: ${e.message}")
+            throw e
+        } catch (e: NetworkErrorException) {
+            //Handle NetworkErrorException, specifically for networkerrors
+            Log.e(logTag, "NetworkErrorException occured: ${e.message}")
+            throw e
+        } catch (e: Exception) {
+            //Handle any other unexpected Exception
+            Log.e(logTag, "Error porcessing weather data: ${e.message ?: "Unknown error"}")
+            throw e
+        }
     }
 
     override suspend fun convertLocalDatetoString(dateTime: LocalDateTime): String {
-        val ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE
-        return dateTime.format(ISO_FORMATTER)
+        try {
+            val ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE
+            return dateTime.format(ISO_FORMATTER)
+        } catch (e: DateTimeException) {
+            //Handle error in manipulation of date_time objects, timezone issues etc
+            Log.e(logTag, "DateTimeException occured: ${e.message}", e)
+            throw e
+        } catch (e: Exception) {
+            //Handle any other unexpected Exception
+            Log.e(logTag, "Some Exception happened:" + (e.message ?: ""), e)
+            throw e
+        }
     }
 
-    override suspend fun getSunset(lat: String, long: String, date: LocalDate): String{
-        return convertLocalDatetoString(getSunsetLocalDateTime(lat, long, date))
-    }
+    override suspend fun getSunset(lat: String, long: String, date: LocalDate): String {
+        try {
+            return convertLocalDatetoString(getSunsetLocalDateTime(lat, long, date))
 
+        } catch (e: IOException) {
+            //Handle IOException, for errors related to I/O operations
+            Log.e(logTag, "IOException in getSunset occured, ${e.message}", e)
+            throw e
+        } catch (e: DateTimeException) {
+            //Handle DateTimeException, for cases where invalid date or time values are given
+            Log.e(logTag, "DateTimeException in getSunset occured, ${e.message}", e)
+            throw e
+        } catch (e: NullPointerException) {
+            //Handle NullPointerException, for cases where null references are encountered
+            Log.e(logTag, "NullPointerException in getSunset occured, ${e.message}", e)
+            throw e
+        } catch (e: IllegalArgumentException) {
+            //Handle IllegalArgumentException, for invalid method arguments
+            Log.e(logTag, "IllegalArgument in getSunset occured, ${e.message}", e)
+            throw e
+        } catch (e: NetworkErrorException) {
+            //Handle NetworkErrorException, for network connectivity problems
+            Log.e(logTag, "NetworkError in getSunset occured, ${e.message}", e)
+            throw e
+        } catch (e: Exception) {
+            //Handle any other unexpected Exception
+            Log.e(logTag, "Error processing sunset data:" + (e.message ?: ""))
+            throw e
+        }
+    }
 }
