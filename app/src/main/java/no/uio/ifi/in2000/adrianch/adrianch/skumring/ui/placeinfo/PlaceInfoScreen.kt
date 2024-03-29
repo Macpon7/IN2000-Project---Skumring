@@ -17,7 +17,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -115,6 +117,25 @@ fun PlaceInfoScreen(
 }
 
 /**
+ * Picture of the place
+ */
+@Composable
+fun PlacePicture() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .background(Color.LightGray, RoundedCornerShape((16.dp))),
+    ) {
+        Text(
+            text = "Place Display Placeholder",
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+
+
+/**
  * Function with alle the content of the homescreen
  * This exclude the top- and bottomBar
  */
@@ -141,40 +162,35 @@ fun ContentInfoScreen(description: String, placeInfoUiState: PlaceInfoUiState) {
             ) {
             Text(text = description, modifier = Modifier.padding(bottom = 4.dp), fontSize = 20.sp)
 
-            Column (modifier = Modifier.verticalScroll(state = rememberScrollState(), enabled = true).fillMaxWidth()) {
-                //The accurately forecast sunsets
-                if (placeInfoUiState.placeInfo.sunEvents.size > 3) {
-                    placeInfoUiState.placeInfo.sunEvents.subList(0, 3).forEach {
-                        SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
-                    }
-
-                    //And now the less accurate ones
-                    Text(text = "Langtidsvarsel:", modifier = Modifier.padding(top = 6.dp), fontSize = 20.sp)
-
-                    placeInfoUiState.placeInfo.sunEvents.subList(3, placeInfoUiState.placeInfo.sunEvents.size).forEach {
-                        SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
-                    }
-                }
-            }
+            SunEventInfoContent(placeInfoUiState)
         }
     }
 }
 
-/**
- * Picture of the place
- */
 @Composable
-fun PlacePicture() {
-    Box(
+fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
+    Column(
         modifier = Modifier
+            .verticalScroll(state = rememberScrollState(), enabled = true)
             .fillMaxWidth()
-            .height(300.dp)
-            .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-        Text(
-            text = "Place Display Placeholder",
-            modifier = Modifier.align(Alignment.Center)
-        )
+        //The accurately forecast sunsets
+        if (placeInfoUiState.placeInfo.sunEvents.size > 3) {
+            placeInfoUiState.placeInfo.sunEvents.subList(0, 3).forEach {
+                SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
+            }
+
+            //And now the less accurate ones
+            Text(
+                text = "Langtidsvarsel:",
+                modifier = Modifier.padding(top = 6.dp),
+                fontSize = 20.sp
+            )
+
+            placeInfoUiState.placeInfo.sunEvents.subList(3, placeInfoUiState.placeInfo.sunEvents.size).forEach {
+                SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
+            }
+        }
     }
 }
 
@@ -198,7 +214,50 @@ fun SunEventInfo(time: LocalDateTime, conditions: Boolean) {
     } else {
         "Det blir dårlige forhold..."
     }
-    Text(text = "${dateString.capitalize()} $timeString", fontWeight = FontWeight.SemiBold)
-    Text(text = conditionsString, modifier = Modifier.padding(bottom = 4.dp))
 
+    SunEventInfoCard(
+        dateString = dateString,
+        timeString = timeString,
+        conditionsString = conditionsString
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: String) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+        onClick = { /* Click listener goes here */ } // TODO Make a button to show more
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            // Date and time:
+            Text(
+                text = dateString,
+                textAlign = TextAlign.Start,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+
+            // Time for sundown:
+            Text(
+                text = "Solnedgang: ${timeString}",
+                textAlign = TextAlign.Start,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+
+            // Good vs. bad weather:
+            Text(
+                text = conditionsString,
+                textAlign = TextAlign.Start,
+                fontSize = 14.sp
+            )
+        }
+    }
 }
