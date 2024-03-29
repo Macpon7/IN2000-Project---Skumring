@@ -12,7 +12,7 @@ class MapPinsDataSource {
         try {
             return presetPinsInfo
         } catch (e : Exception) {
-            Log.e(logTag, e.message, e)
+            Log.e(logTag, "Unknown error: ${e.message} in fetchMapPins" , e)
             throw e
         }
     }

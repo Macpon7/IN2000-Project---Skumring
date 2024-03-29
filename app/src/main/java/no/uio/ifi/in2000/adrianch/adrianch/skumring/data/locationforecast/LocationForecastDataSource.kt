@@ -59,7 +59,7 @@ class LocationForecastDataSource (){
             Log.e(logTag, "Error with server respons: ${e.response.status.description} in fetchLocationForcastData" , e)
             throw e
         }catch (e: Exception) {
-            Log.e(logTag, "Error: ${e.message} in fetchLocationForcastData" , e)
+            Log.e(logTag, "Unknown error: ${e.message} in fetchLocationForcastData" , e)
             throw e
         }
     }
