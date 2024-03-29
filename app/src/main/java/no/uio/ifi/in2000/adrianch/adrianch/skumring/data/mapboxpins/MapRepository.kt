@@ -8,7 +8,7 @@ interface MapRepository {
     suspend fun getPins(): List<PinInfo>
 }
 
-    private const val logTag = "MapRepo" //for logging
+    private const val logTag = "MapRepository" //for logging
 
 
 class MapRepositoryImpl(
