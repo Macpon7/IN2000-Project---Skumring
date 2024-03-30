@@ -1,7 +1,10 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
 import android.accounts.NetworkErrorException
+import android.net.http.HttpException
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresExtension
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
@@ -18,6 +21,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 
+private const val logTag = "PlaceInfoRepository" //log for error-handling
 class PlaceDetailsNotFoundException(message: String) : Exception(message)
 
 interface PlaceInfoRepository {
@@ -32,13 +36,12 @@ interface PlaceInfoRepository {
     suspend fun getSunset(lat: String, long: String, date: LocalDate): String
 }
 
-private const val logTag = "PlaceInfoRepository" //log for error-handling
-
 class PlaceInfoRepositoryImpl (
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
     private val locationDataSource: LocationForecastDataSource = LocationForecastDataSource(),
     private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
 ): PlaceInfoRepository {
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override suspend fun getPlaceInfo(lat: String, long: String, id: Int): PlaceInfo {
         try {
 
@@ -73,6 +76,9 @@ class PlaceInfoRepositoryImpl (
                 longitude = long,
                 sunEvents = dailyEventsList
             )
+        }catch (e: HttpException) {
+            Log.e(logTag, "HTTPException in getPlaceInfo() occured: ${e.message}", e)
+            throw e
         } catch (e: IOException) {
             //Handle IOException, generally for I/O operations
             Log.e(logTag, "IOException in getPlaceInfo() occured: ${e.message}", e)
@@ -95,7 +101,7 @@ class PlaceInfoRepositoryImpl (
             throw e
         } catch (e: Exception) {
             //Handle any other unexpected exceptions
-            Log.e(logTag, "Error fetching placeinfo:" + (e.message ?: ""), e)
+            Log.e(logTag, "Error when fetching placeinfo:" + (e.message ?: ""), e)
             throw e
         }
     }
@@ -171,11 +177,11 @@ class PlaceInfoRepositoryImpl (
                 throw e
             } catch (e: JSONException) {
                 //Handle JSONException
-                Log.e(logTag, "JSONException makeDailyEvents() occured: ${e.message}", e)
+                Log.e(logTag, "JSONException in makeDailyEvents() occured: ${e.message}", e)
                 throw e
             } catch (e: NullPointerException) {
                 //Handle NullPointerException, for cases where null references are encountered
-                Log.e(logTag, "NullPointerException makeDailyEvents() occured: ${e.message}", e)
+                Log.e(logTag, "NullPointerException in makeDailyEvents() occured: ${e.message}", e)
                 throw e
             } catch (e: IllegalArgumentException) {
                 // Handle IllegalArgumentException, for invalid method arguments
@@ -183,7 +189,7 @@ class PlaceInfoRepositoryImpl (
                 throw e
             } catch (e: NetworkErrorException) {
                 //Handle NetworkErrorException, specifically for networkerrors
-                Log.e(logTag, "NetworkErrorException makeDailyEvents() occured: ${e.message}", e)
+                Log.e(logTag, "NetworkErrorException in makeDailyEvents() occured: ${e.message}", e)
                 throw e
             } catch (e: Exception) {
                 //Handle any other unexpected exceptions
@@ -240,6 +246,7 @@ class PlaceInfoRepositoryImpl (
 
 
     //fetchSunActivity(lat: String, long: String, date: LocalDate)
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override suspend fun getSunsetLocalDateTime(
         lat: String,
         long: String,
@@ -247,25 +254,28 @@ class PlaceInfoRepositoryImpl (
     ): LocalDateTime {
         try {
             return sunriseDataSource.fetchSunActivity(lat, long, date).sunset
+        } catch (e: HttpException) {
+            Log.e(logTag, "HTTPException in getSunsetLocalDateTime() occured: ${e.message}", e)
+            throw e
         } catch (e: IOException) {
             //Handle IOException, for errors related to I/O operations
-            Log.e(logTag, "IOException in getSunsetLocalDateTime() occured: ${e.message}")
+            Log.e(logTag, "IOException in getSunsetLocalDateTime() occured: ${e.message}",e)
             throw e
         } catch (e: JSONException) {
             //Handle JSONException
-            Log.e(logTag, "JSONException in getSunsetLocalDateTime() occured: ${e.message}")
+            Log.e(logTag, "JSONException in getSunsetLocalDateTime() occured: ${e.message}", e)
             throw e
         } catch (e: NullPointerException) {
             //Handle NullPointerException, for cases where null references are encountered
-            Log.e(logTag, "NullPointerException in getSunsetLocalDateTime() occured: ${e.message}")
+            Log.e(logTag, "NullPointerException in getSunsetLocalDateTime() occured: ${e.message}", e)
             throw e
         } catch (e: IllegalArgumentException) {
             //Handle IllegalArgumentException, for invalid method arguments
-            Log.e(logTag,"IllegalArgumentException in getSunsetLocalDateTime() occured: ${e.message}")
+            Log.e(logTag,"IllegalArgumentException in getSunsetLocalDateTime() occured: ${e.message}", e)
             throw e
         } catch (e: NetworkErrorException) {
             //Handle NetworkErrorException, specifically for networkerrors
-            Log.e(logTag, "NetworkErrorException in getSunsetLocalDateTime() occured: ${e.message}")
+            Log.e(logTag, "NetworkErrorException in getSunsetLocalDateTime() occured: ${e.message}", e)
             throw e
         } catch (e: Exception) {
             //Handle any other unexpected Exception
@@ -289,6 +299,7 @@ class PlaceInfoRepositoryImpl (
         }
     }
 
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override suspend fun getSunset(lat: String, long: String, date: LocalDate): String {
         try {
             return convertLocalDatetoString(getSunsetLocalDateTime(lat, long, date))
