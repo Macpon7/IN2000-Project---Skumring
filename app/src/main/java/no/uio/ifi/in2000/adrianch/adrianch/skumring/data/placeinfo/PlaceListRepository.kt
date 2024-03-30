@@ -49,8 +49,8 @@ class PlaceListRepositoryImpl(
                     throw e
                 }
             }
-
             return outList.toList()
+
         } catch (e: IOException) {
             //Handle IOException, generally for I/O operations
             Log.e(logTag, "IOException occured in getPlaceList: ${e.message}", e)
