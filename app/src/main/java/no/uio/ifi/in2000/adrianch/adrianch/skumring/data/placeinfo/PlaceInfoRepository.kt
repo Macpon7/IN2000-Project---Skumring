@@ -147,24 +147,20 @@ class PlaceInfoRepositoryImpl (
      * return "False" as we deem it to be too cloudy. If all timestamps are below,
      * we deem conditions to be good enough.
      */
+
     override suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
-        try {
             val cloudAreaFractionThreshold: Float = 70.0F
             weatherData.forEach {
 
                 // cloudAreaFraction is the percentage of pixels in a satellite photo
                 // over an area judged to be clouds.
                 val cloudAreaFraction: Float = it.instant.cloud_area_fraction.toFloat()
-                if (cloudAreaFraction > cloudAreaFractionThreshold) {
+                        if (cloudAreaFraction > cloudAreaFractionThreshold) {
                     return false
                 }
             }
             //if no cloud area fraction exceeded the threshold, return true
             return true
-        } catch (e: Exception) {
-            Log.e(logTag, "Error processing weather data:" + (e.message ?: ""),e)
-            throw e
-        }
     }
 
 
@@ -175,22 +171,12 @@ class PlaceInfoRepositoryImpl (
         long: String,
         date: LocalDate
     ): LocalDateTime {
-        try {
             return sunriseDataSource.fetchSunActivity(lat, long, date).sunset
-        } catch (e: Exception) {
-            Log.e(logTag, "Error processing local sunset data:" + (e.message ?: ""), e)
-            throw e
-        }
     }
 
     override suspend fun convertLocalDatetoString(dateTime: LocalDateTime): String {
-        try {
             val ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE
             return dateTime.format(ISO_FORMATTER)
-        } catch (e: Exception) {
-            Log.e(logTag, "Error processing LocalDateToString:" + (e.message ?: ""), e)
-            throw e
-        }
     }
 
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
