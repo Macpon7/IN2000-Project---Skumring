@@ -144,6 +144,11 @@ class PlaceInfoRepositoryImpl (
         return sunEventsList.toList()
     }
 
+    /**
+     * Takes a list of [WeatherPerHour] objects and checks if any of them expects the cloud
+     * coverage in certain layers to be above certain thresholds (30 % for low clouds and
+     * 70 % for medium).
+     */
     override suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
         val cloudAreaFractionMediumThreshold = 70.0F
         val cloudAreaFractionLowThreshold = 30.0F
