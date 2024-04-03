@@ -1,7 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
-import android.accounts.NetworkErrorException
-import android.net.http.HttpException
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresExtension
@@ -12,17 +10,12 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.DailyEvents
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
-import org.json.JSONException
-import java.io.IOException
-import java.lang.IllegalArgumentException
-import java.time.DateTimeException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 
 private const val logTag = "PlaceInfoRepository" //log for error-handling
-class PlaceDetailsNotFoundException(message: String) : Exception(message)
 
 interface PlaceInfoRepository {
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
@@ -30,7 +23,6 @@ interface PlaceInfoRepository {
         forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>,
         lat: String, long: String): List<DailyEvents>
     suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean
-
     suspend fun getSunsetLocalDateTime(lat: String, long: String, date: LocalDate): LocalDateTime
     suspend fun convertLocalDatetoString(dateTime: LocalDateTime): String
     suspend fun getSunset(lat: String, long: String, date: LocalDate): String
@@ -61,13 +53,6 @@ class PlaceInfoRepositoryImpl (
 
             val details = placeDetailsDataSource.fetchPlaceDetails(id = id)
 
-            //check if details is null or empty
-            if (details.name.isEmpty() || details.description.isEmpty()) {
-                val errorMessage = "Failed to fetch valid place details for id: $id"
-                Log.e(logTag, errorMessage) //logging error
-                throw PlaceDetailsNotFoundException(errorMessage) //throws custom exception
-            }
-
             //return PlaceInfo with fetched details
             return PlaceInfo(
                 name = details.name,
@@ -76,29 +61,6 @@ class PlaceInfoRepositoryImpl (
                 longitude = long,
                 sunEvents = dailyEventsList
             )
-        }catch (e: HttpException) {
-            Log.e(logTag, "HTTPException in getPlaceInfo() occured: ${e.message}", e)
-            throw e
-        } catch (e: IOException) {
-            //Handle IOException, generally for I/O operations
-            Log.e(logTag, "IOException in getPlaceInfo() occured: ${e.message}", e)
-            throw e
-        } catch (e: JSONException) {
-            //Handle JSONException
-            Log.e(logTag, "JSONException in getPlaceInfo() occured: ${e.message}", e)
-            throw e
-        } catch (e: NullPointerException) {
-            //Handle NullPointerException
-            Log.e(logTag,"NullPointerException in getPlaceInfo() occured: ${e.message}", e)
-            throw e
-        } catch (e: IllegalArgumentException) {
-            // Handle IllegalArgumentException
-            Log.e(logTag, "IllegalArgumentException in getPlaceInfo() occured: ${e.message}", e)
-            throw e
-        } catch (e: NetworkErrorException) {
-            //Handle NetworkErrorException, specifically for networkerrors
-            Log.e(logTag, "NetworkErrorException in getPlaceInfo() occured: ${e.message}", e)
-            throw e
         } catch (e: Exception) {
             //Handle any other unexpected exceptions
             Log.e(logTag, "Error when fetching placeinfo:" + (e.message ?: ""), e)
@@ -171,26 +133,6 @@ class PlaceInfoRepositoryImpl (
                      */
                     )
                 )
-            } catch (e: IOException) {
-                //Handle IOException, generally for I/O operations
-                Log.e(logTag, "IOException in makeDailyEvents() occured: ${e.message}", e)
-                throw e
-            } catch (e: JSONException) {
-                //Handle JSONException
-                Log.e(logTag, "JSONException in makeDailyEvents() occured: ${e.message}", e)
-                throw e
-            } catch (e: NullPointerException) {
-                //Handle NullPointerException, for cases where null references are encountered
-                Log.e(logTag, "NullPointerException in makeDailyEvents() occured: ${e.message}", e)
-                throw e
-            } catch (e: IllegalArgumentException) {
-                // Handle IllegalArgumentException, for invalid method arguments
-                Log.e(logTag, "IllegalArgumentException in makeDailyEvents() occured : ${e.message}", e)
-                throw e
-            } catch (e: NetworkErrorException) {
-                //Handle NetworkErrorException, specifically for networkerrors
-                Log.e(logTag, "NetworkErrorException in makeDailyEvents() occured: ${e.message}", e)
-                throw e
             } catch (e: Exception) {
                 //Handle any other unexpected exceptions
                 Log.e(logTag, "Error fetching sun activity:" + (e.message ?: ""), e)
@@ -221,25 +163,9 @@ class PlaceInfoRepositoryImpl (
             }
             //if no cloud area fraction exceeded the threshold, return true
             return true
-        } catch (e: IOException) {
-            //Handle IOException, for errors related to I/O operations
-            Log.e(logTag, "IOException in checkConditions() occured: ${e.message}")
-            throw e
-        } catch (e: NullPointerException) {
-            //Handle NullPointerException, for cases where null references are encountered
-            Log.e(logTag, "NullPointerException in checkConditions() occured: ${e.message}")
-            throw e
-        } catch (e: IllegalArgumentException) {
-            // Handle IllegalArgumentException, for invalid method arguments
-            Log.e(logTag, "IllegalArgumentException in checkConditions() occured: ${e.message}")
-            throw e
-        } catch (e: NetworkErrorException) {
-            //Handle NetworkErrorException, specifically for networkerrors
-            Log.e(logTag, "NetworkErrorException in checkConditions() occured: ${e.message}")
-            throw e
         } catch (e: Exception) {
             //Handle any other unexpected exceptions
-            Log.e(logTag, "Error processing weather data: ${e.message ?: "Unknown error"}")
+            Log.e(logTag, "Error processing weather data:" + (e.message ?: ""),e)
             throw e
         }
     }
@@ -254,29 +180,6 @@ class PlaceInfoRepositoryImpl (
     ): LocalDateTime {
         try {
             return sunriseDataSource.fetchSunActivity(lat, long, date).sunset
-        } catch (e: HttpException) {
-            Log.e(logTag, "HTTPException in getSunsetLocalDateTime() occured: ${e.message}", e)
-            throw e
-        } catch (e: IOException) {
-            //Handle IOException, for errors related to I/O operations
-            Log.e(logTag, "IOException in getSunsetLocalDateTime() occured: ${e.message}",e)
-            throw e
-        } catch (e: JSONException) {
-            //Handle JSONException
-            Log.e(logTag, "JSONException in getSunsetLocalDateTime() occured: ${e.message}", e)
-            throw e
-        } catch (e: NullPointerException) {
-            //Handle NullPointerException, for cases where null references are encountered
-            Log.e(logTag, "NullPointerException in getSunsetLocalDateTime() occured: ${e.message}", e)
-            throw e
-        } catch (e: IllegalArgumentException) {
-            //Handle IllegalArgumentException, for invalid method arguments
-            Log.e(logTag,"IllegalArgumentException in getSunsetLocalDateTime() occured: ${e.message}", e)
-            throw e
-        } catch (e: NetworkErrorException) {
-            //Handle NetworkErrorException, specifically for networkerrors
-            Log.e(logTag, "NetworkErrorException in getSunsetLocalDateTime() occured: ${e.message}", e)
-            throw e
         } catch (e: Exception) {
             //Handle any other unexpected Exception
             Log.e(logTag, "Error processing local sunset data:" + (e.message ?: ""), e)
@@ -288,10 +191,6 @@ class PlaceInfoRepositoryImpl (
         try {
             val ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE
             return dateTime.format(ISO_FORMATTER)
-        } catch (e: DateTimeException) {
-            //Handle error in manipulation of date_time objects, timezone issues etc
-            Log.e(logTag, "DateTimeException in convertLocalDatetoString() occured: ${e.message}", e)
-            throw e
         } catch (e: Exception) {
             //Handle any other unexpected Exception
             Log.e(logTag, "Error processing LocalDateToString:" + (e.message ?: ""), e)
@@ -303,30 +202,9 @@ class PlaceInfoRepositoryImpl (
     override suspend fun getSunset(lat: String, long: String, date: LocalDate): String {
         try {
             return convertLocalDatetoString(getSunsetLocalDateTime(lat, long, date))
-
-        } catch (e: IOException) {
-            //Handle IOException, for errors related to I/O operations
-            Log.e(logTag, "IOException in getSunset() occured, ${e.message}", e)
-            throw e
-        } catch (e: DateTimeException) {
-            //Handle DateTimeException, for cases where invalid date or time values are given
-            Log.e(logTag, "DateTimeException in getSunset() occured, ${e.message}", e)
-            throw e
-        } catch (e: NullPointerException) {
-            //Handle NullPointerException, for cases where null references are encountered
-            Log.e(logTag, "NullPointerException in getSunset() occured, ${e.message}", e)
-            throw e
-        } catch (e: IllegalArgumentException) {
-            //Handle IllegalArgumentException, for invalid method arguments
-            Log.e(logTag, "IllegalArgument in getSunset() occured, ${e.message}", e)
-            throw e
-        } catch (e: NetworkErrorException) {
-            //Handle NetworkErrorException, for network connectivity problems
-            Log.e(logTag, "NetworkError in getSunset() occured, ${e.message}", e)
-            throw e
         } catch (e: Exception) {
             //Handle any other unexpected Exception
-            Log.e(logTag, "Error processing sunset() data:" + (e.message ?: ""))
+            Log.e(logTag, "Error processing sunset() data:" + (e.message ?: ""), e)
             throw e
         }
     }
