@@ -18,22 +18,54 @@ import kotlin.math.abs
 private const val logTag = "PlaceInfoRepository" //log for error-handling
 
 interface PlaceInfoRepository {
+    /**
+     * Creates and returns a [PlaceInfo] object containing all the details about the place matching the
+     * given coordinates and id. If no ID is given, then no name or description can be retrieved, since
+     * this means that the coordinates given do not correspond with a place in our database. In this cases
+     * the descriptive fields are left blank in the returned object.
+     * @param lat String containing the latitude coordinate
+     * @param long String containing the longitude coordinate
+     * @param id Optional parameter. If id is not 0 then we will fetch details like name and description
+     */
     suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
+
+    /**
+     * Makes a list of [DailyEvents] objects, one for each [date][LocalDateTime] key found in the map property.
+     *
+     * Given a map containing lists of weather forecast data (where the key is the date and the values
+     * are the lists), this function creates our simple DailyEvents objects for each date, containing
+     * the time of the solar events, and a statement on the conditions for photography at each event.
+     */
     suspend fun makeDailyEvents(
         forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>,
         lat: String, long: String): List<DailyEvents>
+
+    /**
+     * Takes list of WeatherPerHour objects, goes through each of them and
+     * checks instant.cloud_area_fraction of a given timestamp. If any of them
+     * are above a certain threshold (arbitrarily chosen to be 25  %), it will
+     * return "False" as we deem it to be too cloudy. If all timestamps are below,
+     * we deem conditions to be good enough.
+     */
     suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean
-    suspend fun getSunsetLocalDateTime(lat: String, long: String, date: LocalDate): LocalDateTime
-    suspend fun convertLocalDatetoString(dateTime: LocalDateTime): String
+
+    /**
+     * Returns a string containing the time of sunset on the given date at the given coordinates.
+     */
     suspend fun getSunset(lat: String, long: String, date: LocalDate): String
 }
 
+/**
+ * An implementation of [PlaceInfoRepository].
+ * @property sunriseDataSource instance of [SunriseDataSource]
+ * @property locationDataSource instance of [LocationForecastDataSource]
+ * @property placeDetailsDataSource instance of [PlaceDetailsDataSource]
+ */
 class PlaceInfoRepositoryImpl (
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
     private val locationDataSource: LocationForecastDataSource = LocationForecastDataSource(),
     private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
 ): PlaceInfoRepository {
-    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override suspend fun getPlaceInfo(lat: String, long: String, id: Int): PlaceInfo {
         try {
 
@@ -66,7 +98,6 @@ class PlaceInfoRepositoryImpl (
             throw e
         }
     }
-
 
     /**
      * Given a map containing lists of weather forecast data (where the key is the date and the values
@@ -140,47 +171,23 @@ class PlaceInfoRepositoryImpl (
         return sunEventsList.toList()
     }
 
-    /**
-     * Takes list of WeatherPerHour objects, goes through each of them and
-     * checks instant.cloud_area_fraction of a given timestamp. If any of them
-     * are above a certain threshold (arbitrarily chosen to be 25  %), it will
-     * return "False" as we deem it to be too cloudy. If all timestamps are below,
-     * we deem conditions to be good enough.
-     */
-
     override suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
-            val cloudAreaFractionThreshold: Float = 70.0F
-            weatherData.forEach {
-
-                // cloudAreaFraction is the percentage of pixels in a satellite photo
-                // over an area judged to be clouds.
-                val cloudAreaFraction: Float = it.instant.cloud_area_fraction.toFloat()
-                    return false
-                }
-            //if no cloud area fraction exceeded the threshold, return true
-            return true
+        val cloudAreaFractionThreshold: Float = 70.0F
+        weatherData.forEach {
+            // cloudAreaFraction is the percentage of pixels in a satellite photo
+            // over an area judged to be clouds.
+            val cloudAreaFraction: Float = it.instant.cloud_area_fraction.toFloat()
+            if (cloudAreaFraction > cloudAreaFractionThreshold) {
+                return false
+            }
+        }
+        return true
     }
 
-
-    //fetchSunActivity(lat: String, long: String, date: LocalDate)
-    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-    override suspend fun getSunsetLocalDateTime(
-        lat: String,
-        long: String,
-        date: LocalDate
-    ): LocalDateTime {
-            return sunriseDataSource.fetchSunActivity(lat, long, date).sunset
-    }
-
-    override suspend fun convertLocalDatetoString(dateTime: LocalDateTime): String {
-            val ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE
-            return dateTime.format(ISO_FORMATTER)
-    }
-
-    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-    override suspend fun getSunset(lat: String, long: String, date: LocalDate): String {
+    override suspend fun getSunset(lat: String, long: String, date: LocalDate): String{
         try {
-            return convertLocalDatetoString(getSunsetLocalDateTime(lat, long, date))
+            val sunsetDateTime = sunriseDataSource.fetchSunActivity(lat, long, date).sunset
+            return sunsetDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
         } catch (e: Exception) {
             Log.e(logTag, "Error processing sunset() data:" + (e.message ?: ""), e)
             throw e
