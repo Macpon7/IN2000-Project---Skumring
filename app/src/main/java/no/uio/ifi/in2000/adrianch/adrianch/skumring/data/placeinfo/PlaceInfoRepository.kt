@@ -9,6 +9,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.DailyEvents
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -175,11 +176,23 @@ class PlaceInfoRepositoryImpl (
     }
 
     suspend fun getWeatherConditions(weatherData: WeatherPerHour): WeatherConditions {
-        val cloudConditionsLow = interpretCloudCondition(weatherData.instant.cloud_area_fraction_low)
-        val cloudConditionsMedium = interpretCloudCondition(weatherData.instant.cloud_area_fraction_medium)
-        val cloudConditionsHigh = interpretCloudCondition(weatherData.instant.cloud_area_fraction_high)
-        val airConditions = interpretHumidity(weatherData.instant.relative_humidity)
+        val cloudConditionLow = interpretCloudCondition(weatherData.instant.cloud_area_fraction_low)
+        val cloudConditionMedium = interpretCloudCondition(weatherData.instant.cloud_area_fraction_medium)
+        val cloudConditionHigh = interpretCloudCondition(weatherData.instant.cloud_area_fraction_high)
+        val airCondition = interpretHumidity(weatherData.instant.relative_humidity)
 
+        return WeatherConditions(
+            weatherRating = getRating(
+                cloudConditionLow = cloudConditionLow,
+                cloudConditionMedium = cloudConditionMedium,
+                cloudConditionHigh = cloudConditionHigh,
+                airCondition = airCondition,
+            ),
+            cloudConditionLow = cloudConditionLow,
+            cloudConditionMedium = cloudConditionMedium,
+            cloudConditionHigh = cloudConditionHigh,
+            airCondition = airCondition
+        )
     }
     private fun interpretCloudCondition(cloudAreaFraction: Double): CloudConditions {
         return if (cloudAreaFraction > 67) {
@@ -190,6 +203,7 @@ class PlaceInfoRepositoryImpl (
             CloudConditions.CLEAR
         }
     }
+
     private fun interpretHumidity(humidity: Double): AirConditions {
         return if (humidity > 67) {
             AirConditions.HIGH
@@ -198,6 +212,15 @@ class PlaceInfoRepositoryImpl (
         } else {
             AirConditions.LOW
         }
+    }
+
+    private fun getRating(
+        cloudConditionLow: CloudConditions,
+        cloudConditionMedium: CloudConditions,
+        cloudConditionHigh: CloudConditions,
+        airCondition: AirConditions): WeatherConditionsRating {
+
+        return WeatherConditionsRating.ONE
     }
 
 }
