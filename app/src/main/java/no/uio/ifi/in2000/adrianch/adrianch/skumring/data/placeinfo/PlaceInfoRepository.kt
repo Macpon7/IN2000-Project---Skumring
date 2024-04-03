@@ -155,10 +155,8 @@ class PlaceInfoRepositoryImpl (
                 // cloudAreaFraction is the percentage of pixels in a satellite photo
                 // over an area judged to be clouds.
                 val cloudAreaFraction: Float = it.instant.cloud_area_fraction.toFloat()
-                        if (cloudAreaFraction > cloudAreaFractionThreshold) {
                     return false
                 }
-            }
             //if no cloud area fraction exceeded the threshold, return true
             return true
     }
