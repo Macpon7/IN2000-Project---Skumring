@@ -145,12 +145,16 @@ class PlaceInfoRepositoryImpl (
     }
 
     override suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
-        val cloudAreaFractionThreshold: Float = 70.0F
+        val cloudAreaFractionMediumThreshold = 70.0F
+        val cloudAreaFractionLowThreshold = 30.0F
         weatherData.forEach {
             // cloudAreaFraction is the percentage of pixels in a satellite photo
             // over an area judged to be clouds.
-            val cloudAreaFraction: Float = it.instant.cloud_area_fraction.toFloat()
-            if (cloudAreaFraction > cloudAreaFractionThreshold) {
+            // High and medium clouds allow for nice conditions within certain parameters
+            val cloudAreaFractionLow: Float = it.instant.cloud_area_fraction_low.toFloat()
+            val cloudAreaFractionMedium: Float = it.instant.cloud_area_fraction_medium.toFloat()
+            if (cloudAreaFractionLow > cloudAreaFractionLowThreshold &&
+                cloudAreaFractionMedium > cloudAreaFractionMediumThreshold) {
                 return false
             }
         }
@@ -160,6 +164,10 @@ class PlaceInfoRepositoryImpl (
     override suspend fun getSunset(lat: String, long: String, date: LocalDate): String{
         val sunsetDateTime = sunriseDataSource.fetchSunActivity(lat, long, date).sunset
         return sunsetDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
+    }
+
+    suspend fun getWeatherConditions(weatherData: WeatherPerHour) {
+
     }
 
 }
