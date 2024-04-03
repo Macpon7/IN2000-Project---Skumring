@@ -230,13 +230,10 @@ class PlaceInfoRepositoryImpl (
         cloudConditionMedium: CloudConditions,
         cloudConditionHigh: CloudConditions,
         airCondition: AirConditions): WeatherConditionsRating {
+
         var rating = 0
 
-        rating += when (cloudConditionLow) {
-            CloudConditions.CLOUDY -> 9
-            CloudConditions.FAIR -> 6
-            CloudConditions.CLEAR -> 0
-        }
+        rating += cloudConditionLow.weightLow
 
         rating += when (cloudConditionMedium) {
             CloudConditions.CLOUDY -> 0
