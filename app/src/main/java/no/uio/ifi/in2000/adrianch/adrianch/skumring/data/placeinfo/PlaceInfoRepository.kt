@@ -62,7 +62,6 @@ class PlaceInfoRepositoryImpl (
                 sunEvents = dailyEventsList
             )
         } catch (e: Exception) {
-            //Handle any other unexpected exceptions
             Log.e(logTag, "Error when fetching placeinfo:" + (e.message ?: ""), e)
             throw e
         }
@@ -134,7 +133,6 @@ class PlaceInfoRepositoryImpl (
                     )
                 )
             } catch (e: Exception) {
-                //Handle any other unexpected exceptions
                 Log.e(logTag, "Error fetching sun activity:" + (e.message ?: ""), e)
                 throw e
             }
@@ -164,7 +162,6 @@ class PlaceInfoRepositoryImpl (
             //if no cloud area fraction exceeded the threshold, return true
             return true
         } catch (e: Exception) {
-            //Handle any other unexpected exceptions
             Log.e(logTag, "Error processing weather data:" + (e.message ?: ""),e)
             throw e
         }
@@ -181,7 +178,6 @@ class PlaceInfoRepositoryImpl (
         try {
             return sunriseDataSource.fetchSunActivity(lat, long, date).sunset
         } catch (e: Exception) {
-            //Handle any other unexpected Exception
             Log.e(logTag, "Error processing local sunset data:" + (e.message ?: ""), e)
             throw e
         }
@@ -192,7 +188,6 @@ class PlaceInfoRepositoryImpl (
             val ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE
             return dateTime.format(ISO_FORMATTER)
         } catch (e: Exception) {
-            //Handle any other unexpected Exception
             Log.e(logTag, "Error processing LocalDateToString:" + (e.message ?: ""), e)
             throw e
         }
@@ -203,7 +198,6 @@ class PlaceInfoRepositoryImpl (
         try {
             return convertLocalDatetoString(getSunsetLocalDateTime(lat, long, date))
         } catch (e: Exception) {
-            //Handle any other unexpected Exception
             Log.e(logTag, "Error processing sunset() data:" + (e.message ?: ""), e)
             throw e
         }
