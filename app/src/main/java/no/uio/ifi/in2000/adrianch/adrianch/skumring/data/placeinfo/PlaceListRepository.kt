@@ -1,9 +1,14 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
+
+import android.util.Log
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapPinsDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
+
+
+private const val logTag = "PlaceListRepository"
 
 interface PlaceListRepository {
     /**
@@ -25,16 +30,21 @@ class PlaceListRepositoryImpl(
 ): PlaceListRepository {
 
     override suspend fun getPresetPlaceList(): List<PlaceSummary> {
-        val listOfPins = mapPinsDataSource.fetchMapPins()
-        val outList = mutableListOf<PlaceSummary>()
+        try {
+            val listOfPins = mapPinsDataSource.fetchMapPins()
+            val outList = mutableListOf<PlaceSummary>()
 
-        //For each pin, get the corresponding details, and add a new PlaceSummary to our output list
-        listOfPins.forEach {
-            val details = placeDetailsDataSource.fetchPlaceDetails(it.id)
-            outList.add(combinePinAndDetails(it, details))
+            //For each pin, get the corresponding details, and add a new PlaceSummary to our output list
+            listOfPins.forEach {
+                val details = placeDetailsDataSource.fetchPlaceDetails(it.id)
+                outList.add(combinePinAndDetails(it, details))
+            }
+
+            return outList.toList()
+        } catch (e: Exception) {
+            Log.e(logTag, "Error fetching map pins: ${e.message}", e)
+            throw e
         }
-
-        return outList.toList()
     }
 
     /**
