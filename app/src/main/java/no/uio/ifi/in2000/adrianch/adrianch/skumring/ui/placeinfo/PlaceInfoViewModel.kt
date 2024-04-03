@@ -30,9 +30,13 @@ class PlaceInfoViewModel : ViewModel() {
     fun loadPlaceInfo(lat: String, long: String, id: Int = 0){
         viewModelScope.launch(Dispatchers.IO){
             Log.d(logTag, "loadPlaceInfo called")
-            _placeInfoUiState.update { currentPlaceInfoUiState ->
-                val placeInfoObject = placeInfoRepository.getPlaceInfo(lat, long, id)
-                currentPlaceInfoUiState.copy(placeInfo = placeInfoObject)
+            try {
+                _placeInfoUiState.update { currentPlaceInfoUiState ->
+                    val placeInfoObject = placeInfoRepository.getPlaceInfo(lat, long, id)
+                    currentPlaceInfoUiState.copy(placeInfo = placeInfoObject)
+                }
+            } catch(e: Exception) {
+                Log.e(logTag, "Error getting pins", e)
             }
         }
     }
