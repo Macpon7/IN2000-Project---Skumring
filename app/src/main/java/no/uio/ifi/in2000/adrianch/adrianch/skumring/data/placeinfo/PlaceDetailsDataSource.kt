@@ -7,24 +7,13 @@ class PlaceDetailsDataSource {
     //TODO: Implement a real database, not just read from preset list
 
     // Constant for logging errors:
-    private val logTag : String = ""
+    private val logTag : String = "PlaceDetailsDataSource"
 
     suspend fun fetchPlaceDetails(id: Int): PlaceDetails {
-        try {
-            return presetPlacesDetails.find { it.id == id } ?: PlaceDetails(
+        return presetPlacesDetails.find { it.id == id } ?: PlaceDetails(
                 id = 0,
                 name = "",
                 description = ""
             )
-        } catch (e : NoSuchElementException) {
-            Log.e(logTag, "Element not found: ${e.message} in fetchPlaceDetails" , e)
-            throw e
-        } catch (e : IndexOutOfBoundsException) {
-            Log.e(logTag, "Index out of bounds: ${e.message} in fetchPlaceDetails" , e)
-            throw e
-        } catch (e : Exception) {
-            Log.e(logTag, "An unexpected error: ${e.message} in fetchPlaceDetails" , e)
-            throw e
-        }
     }
 }

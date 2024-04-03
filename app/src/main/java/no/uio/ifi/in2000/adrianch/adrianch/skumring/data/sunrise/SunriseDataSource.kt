@@ -23,7 +23,7 @@ import java.time.format.DateTimeParseException
 class SunriseDataSource() {
 
     // Constant for logging errors:
-    private val logTag : String = ""
+    private val logTag : String = "SunriseDataSource"
 
     private val client = HttpClient {
         install(ContentNegotiation) {
@@ -38,32 +38,7 @@ class SunriseDataSource() {
         try {
             val response: HttpResponse = client.get(path)
             return response.body()
-        } catch (e: IOException) {
-            Log.e(logTag, "Network error: ${e.message} in fetchSunriseData", e)
-            // Handle network error, e.g. return a default value or specific error code
-            throw e
-        }catch (e: JSONException) { // Handle error in JSON-parsing
-            Log.e(logTag, "An error with handling JSON-parsing: ${e.message} in fetchSunriseData", e)
-            throw e
-        } catch (e: NullPointerException) { // Handle NullPointerException -> null values from the API
-            Log.e(logTag, "An error with null values from the API: ${e.message}, in fetchSunriseData", e)
-            throw e
-        }catch (e: RuntimeException) {
-            Log.e(logTag, "Runtime exception: ${e.message} in fetchSunriseData", e)
-            throw e
-        } catch (e: RedirectResponseException) {
-            // 3xx - responses
-            Log.e(logTag, "Error redirect response: ${e.response.status.description} in fetchSunriseData" , e)
-            throw e
-        }catch (e: ClientRequestException) {
-            //4xx - responses
-            Log.e(logTag, "Error with client request: ${e.response.status.description} in fetchSunriseData" , e)
-            throw e
-        }catch (e: ServerResponseException) {
-            //5xx - responses
-            Log.e(logTag, "Error with server response: ${e.response.status.description} in fetchSunriseData" , e)
-            throw e
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             Log.e(logTag, "Unexpected error: ${e.message} in fetchSunriseData" , e)
             throw e
         }
@@ -93,31 +68,7 @@ class SunriseDataSource() {
             val timeFormatted = LocalDateTime.parse(sunsetTime, formatter).plusHours(1)
 
             return SunActivity(timeFormatted)
-        } catch (e: NoSuchElementException) {
-            Log.e(logTag, "Element not found: ${e.message} in fetchSunActivity", e)
-            throw e
-        } catch (e: DateTimeParseException) {
-            Log.e(logTag, "Failed to parse date-time: ${e.message} in fetchSunActivity", e)
-            throw e
-        } catch (e: IOException) {
-            Log.e(logTag, "Network exception: ${e.message} in fetchSunActivity", e)
-            throw e
-        } catch (e: RuntimeException) {
-            Log.e(logTag, "Runtime exception: ${e.message} in fetchSunActivity", e)
-            throw e
-        } catch (e: RedirectResponseException) {
-            // 3xx - responses
-            Log.e(logTag, "Error redirect response: ${e.response.status.description} in fetchSunActivity" , e)
-            throw e
-        }catch (e: ClientRequestException) {
-            //4xx - responses
-            Log.e(logTag, "Error with client request: ${e.response.status.description} in fetchSunActivity" , e)
-            throw e
-        }catch (e: ServerResponseException) {
-            //5xx - responses
-            Log.e(logTag, "Error with server response: ${e.response.status.description} in fetchSunActivity" , e)
-            throw e }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Log.e(logTag, "An unexpected error: ${e.message} in fetchSunActivity", e)
             throw e
         }
