@@ -194,6 +194,12 @@ class PlaceInfoRepositoryImpl (
             airCondition = airCondition
         )
     }
+
+    /**
+     * Cloudy is when cloudAreaFraction > 67.0
+     * Fair is when < 33.0 cloudAreaFraction < 67.0
+     * Clear is when cloudAreaFraction < 33.0
+     */
     private fun interpretCloudCondition(cloudAreaFraction: Double): CloudConditions {
         return if (cloudAreaFraction > 67) {
             CloudConditions.CLOUDY
@@ -204,6 +210,11 @@ class PlaceInfoRepositoryImpl (
         }
     }
 
+    /**
+     * High is when relative_humidity > 67.0
+     * Mid is when < 33.0 relative_humidity < 67.0
+     * Low is when relative_humidity < 33.0
+     */
     private fun interpretHumidity(humidity: Double): AirConditions {
         return if (humidity > 67) {
             AirConditions.HIGH
@@ -219,7 +230,31 @@ class PlaceInfoRepositoryImpl (
         cloudConditionMedium: CloudConditions,
         cloudConditionHigh: CloudConditions,
         airCondition: AirConditions): WeatherConditionsRating {
+        var rating = 0
 
+        rating += when (cloudConditionLow) {
+            CloudConditions.CLOUDY -> 9
+            CloudConditions.FAIR -> 6
+            CloudConditions.CLEAR -> 0
+        }
+
+        rating += when (cloudConditionMedium) {
+            CloudConditions.CLOUDY -> 0
+            CloudConditions.FAIR -> 0
+            CloudConditions.CLEAR -> 0
+        }
+
+        rating += when (cloudConditionHigh) {
+            CloudConditions.CLOUDY -> 0
+            CloudConditions.FAIR -> 0
+            CloudConditions.CLEAR -> 0
+        }
+
+        rating += when (airCondition) {
+            AirConditions.HIGH -> 0
+            AirConditions.MID -> 0
+            AirConditions.LOW -> 0
+        }
         return WeatherConditionsRating.ONE
     }
 
