@@ -3,9 +3,12 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.AirConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.DailyEvents
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -171,8 +174,30 @@ class PlaceInfoRepositoryImpl (
         return sunsetDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
     }
 
-    suspend fun getWeatherConditions(weatherData: WeatherPerHour) {
+    suspend fun getWeatherConditions(weatherData: WeatherPerHour): WeatherConditions {
+        val cloudConditionsLow = interpretCloudCondition(weatherData.instant.cloud_area_fraction_low)
+        val cloudConditionsMedium = interpretCloudCondition(weatherData.instant.cloud_area_fraction_medium)
+        val cloudConditionsHigh = interpretCloudCondition(weatherData.instant.cloud_area_fraction_high)
+        val airConditions = interpretHumidity(weatherData.instant.relative_humidity)
 
+    }
+    private fun interpretCloudCondition(cloudAreaFraction: Double): CloudConditions {
+        return if (cloudAreaFraction > 67) {
+            CloudConditions.CLOUDY
+        } else if (cloudAreaFraction > 33) {
+            CloudConditions.FAIR
+        } else {
+            CloudConditions.CLEAR
+        }
+    }
+    private fun interpretHumidity(humidity: Double): AirConditions {
+        return if (humidity > 67) {
+            AirConditions.HIGH
+        } else if (humidity > 33) {
+            AirConditions.MID
+        } else {
+            AirConditions.LOW
+        }
     }
 
 }

@@ -1,4 +1,10 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo
 
-class WeatherConditionsRating {
+/**
+ * Rating between 1-3 stars depending on conditions
+ */
+enum class WeatherConditionsRating {
+    ONE,
+    TWO,
+    THREE
 }
