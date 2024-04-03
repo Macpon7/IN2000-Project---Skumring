@@ -3,21 +3,15 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise
 import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.RedirectResponseException
-import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
-import io.ktor.utils.io.errors.IOException
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunriseInfo
-import org.json.JSONException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
 
 class SunriseDataSource() {

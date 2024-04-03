@@ -2,17 +2,12 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast
 import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.RedirectResponseException
-import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
-import io.ktor.utils.io.errors.IOException
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
-import org.json.JSONException
 import java.time.LocalDateTime
 
 
@@ -80,7 +75,7 @@ class LocationForecastDataSource (){
 
                     // We use subsequence of the time string to get rid of the Z character at the end. Other than that Z,
                     // The string we get from the api is in ISO format
-                    val dateTime = LocalDateTime.parse(it.time.subSequence(0, 19)) // Lag en egen error her
+                    val dateTime = LocalDateTime.parse(it.time.subSequence(0, 19))
                     val weatherPerHour = WeatherPerHour(dateTime, it.data.instant.details, icon)
 
                     // Add the weatherPerHour object to the list:
