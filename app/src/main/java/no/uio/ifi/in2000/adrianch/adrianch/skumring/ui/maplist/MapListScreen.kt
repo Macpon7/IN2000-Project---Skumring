@@ -32,14 +32,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -131,27 +129,32 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
         padding = 3.dp,
         onClick = { mapListViewModel.toggleMapListState() }
     )
-
-    if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
-        // Column for map view
+    Surface {
         MapArea(
             navController = navController,
             mapListUiState = mapListUiState)
 
-    } else {
-        // Column for list view
-        Column (Modifier.verticalScroll(rememberScrollState())) {
-            mapListUiState.places.forEach {place ->
-                ListCard(
-                    name = place.name,
-                    description = place.description,
-                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                        navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+        if (mapListUiState.mapListToggle == MapListToggleState.LIST) {
+            Surface (color = MaterialTheme.colorScheme.background ){
+                // Column for list view
+                Column (Modifier.verticalScroll(rememberScrollState())) {
+                    mapListUiState.places.forEach {place ->
+                        ListCard(
+                            name = place.name,
+                            description = place.description,
+                            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                                navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                            }
+                        )
                     }
-                )
+                }
             }
+
         }
     }
+
+
+
     //}
 }
 
