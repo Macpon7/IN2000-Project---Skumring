@@ -65,6 +65,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
+private const val logTag = "MapListScreen"
 
 object MapListDestination : NavigationDestination {
     override val icon = Icons.Outlined.Place
