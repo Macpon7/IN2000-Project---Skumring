@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -149,35 +148,7 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                     }
                 }
             }
-
         }
-    }
-
-
-
-    //}
-}
-
-
-/**
- * Creates a button with two states, list view and map view
- */
-@Composable
-fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(20.dp))
-        ThemeSwitcher(
-            mapTheme = mapTheme,
-            size = 65.dp, //Size of the button
-            padding = 3.dp,
-            onClick = onThemeUpdated
-        )
     }
 }
 
@@ -297,12 +268,6 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-
-//        MapBoxMap(
-//            point = point,
-//            modifier = Modifier.fillMaxSize(),
-//            context = context
-//        )
         MapboxMap(
             Modifier.fillMaxSize(),
             mapInitOptionsFactory = { context ->
@@ -343,30 +308,6 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
                     true
                 }
             )
-            /*mapListUiState.pins.forEach { pinfo ->
-                val long = pinfo.long.toDouble()
-                val lat = pinfo.lat.toDouble()
-                point = Point.fromLngLat(long, lat)
-                PointAnnotation(
-                    point = point,
-                    iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-                    onClick = {
-                        navController.navigate("infoscreen/${pinfo.lat}/${pinfo.long}/${pinfo.id}")
-                        Log.d("Home", "Click!")
-                        true
-                    }
-                )
-
-            }*/
-            // Annotation showing custom coordinate should be here
-//            PointAnnotation(
-//                point = point,
-//               iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-//                onClick = {
-//                   Log.d("Home", "Click!")
-//                   true
-//                },
-//            )
         }
     }
 }
