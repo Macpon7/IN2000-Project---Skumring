@@ -54,13 +54,18 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.google.gson.JsonPrimitive
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
+import com.mapbox.maps.plugin.annotation.AnnotationConfig
+import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
+import com.mapbox.maps.plugin.annotation.ClusterOptions
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
@@ -280,7 +285,7 @@ fun ThemeSwitcher(
 fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
     // Can declare point to contain current location of user
     val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
-    var point: Point by remember { mutableStateOf(testPoint) }
+    //var point: Point by remember { mutableStateOf(testPoint) }
     val context = LocalContext.current
     Box(
         modifier = Modifier
@@ -302,13 +307,40 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
                     context = context,
                     styleUri = Style.OUTDOORS,
                     cameraOptions = CameraOptions.Builder()
-                        .center(point)
+                        .center(Point.fromLngLat(10.71839307051461, 59.943735106220444))
                         .zoom(10.0)
                         .build()
                 )
             }
         ) {
-            mapListUiState.pins.forEach { pinfo ->
+            PointAnnotationGroup(
+                annotations = mapListUiState.pins.map {pinfo ->
+                    val long = pinfo.long.toDouble()
+                    val lat = pinfo.lat.toDouble()
+                    val point = Point.fromLngLat(long, lat)
+
+                    val iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap()
+
+                    PointAnnotationOptions()
+                        .withPoint(point)
+                        .withIconImage(iconImageBitmap)
+                        .withData(JsonPrimitive(pinfo.id.toString()))
+                },
+                annotationConfig = AnnotationConfig(
+                    annotationSourceOptions = AnnotationSourceOptions(
+                        clusterOptions = ClusterOptions()
+                    )
+                ),
+                onClick = {
+                    val lat = it.point.latitude().toString()
+                    val long = it.point.longitude().toString()
+                    val id = it.getData()!!.asString
+                    Log.d(logTag, "Clicked on pin with id: $id")
+                    navController.navigate("infoscreen/${lat}/${long}/${id}")
+                    true
+                }
+            )
+            /*mapListUiState.pins.forEach { pinfo ->
                 val long = pinfo.long.toDouble()
                 val lat = pinfo.lat.toDouble()
                 point = Point.fromLngLat(long, lat)
@@ -321,7 +353,8 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
                         true
                     }
                 )
-            }
+
+            }*/
             // Annotation showing custom coordinate should be here
 //            PointAnnotation(
 //                point = point,
