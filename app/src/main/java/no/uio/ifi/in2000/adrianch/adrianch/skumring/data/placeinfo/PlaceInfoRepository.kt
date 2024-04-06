@@ -233,26 +233,35 @@ class PlaceInfoRepositoryImpl (
 
         var rating = 0
 
-        rating += cloudConditionLow.weightLow
+        rating += when (cloudConditionLow) {
+            CloudConditions.CLOUDY -> 9
+            CloudConditions.FAIR -> 5
+            CloudConditions.CLEAR -> 0
+        }
 
         rating += when (cloudConditionMedium) {
-            CloudConditions.CLOUDY -> 0
-            CloudConditions.FAIR -> 0
-            CloudConditions.CLEAR -> 0
+            CloudConditions.CLOUDY -> 5
+            CloudConditions.FAIR -> 2
+            CloudConditions.CLEAR -> 3
         }
 
         rating += when (cloudConditionHigh) {
-            CloudConditions.CLOUDY -> 0
-            CloudConditions.FAIR -> 0
-            CloudConditions.CLEAR -> 0
+            CloudConditions.CLOUDY -> 4
+            CloudConditions.FAIR -> 2
+            CloudConditions.CLEAR -> 3
         }
 
         rating += when (airCondition) {
-            AirConditions.HIGH -> 0
-            AirConditions.MID -> 0
+            AirConditions.HIGH -> 5
+            AirConditions.MID -> 3
             AirConditions.LOW -> 0
         }
-        return WeatherConditionsRating.ONE
+        return when {
+            rating > 30 -> WeatherConditionsRating.THREE
+            rating > 20 -> WeatherConditionsRating.TWO
+            else -> WeatherConditionsRating.ONE
+        }
+
     }
 
 }
