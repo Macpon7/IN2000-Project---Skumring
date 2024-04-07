@@ -225,6 +225,10 @@ class PlaceInfoRepositoryImpl (
         }
     }
 
+    /**
+     * Returns a rating between 1-3 based on humidity and the cloud coverage of the
+     * three different altitude layers. 1 is bad, 3 is good.
+     */
     private fun getRating(
         cloudConditionLow: CloudConditions,
         cloudConditionMedium: CloudConditions,
@@ -233,33 +237,37 @@ class PlaceInfoRepositoryImpl (
 
         var rating = 0
 
+        // If there are lots of low-altitude clouds, it'll make for a bad sunset
         rating += when (cloudConditionLow) {
-            CloudConditions.CLOUDY -> 9
-            CloudConditions.FAIR -> 5
+            CloudConditions.CLOUDY -> 30
+            CloudConditions.FAIR -> 20
             CloudConditions.CLEAR -> 0
         }
 
+        // Ideally we want it a little cloudy in the mid-high layers
         rating += when (cloudConditionMedium) {
-            CloudConditions.CLOUDY -> 5
+            CloudConditions.CLOUDY -> 10
             CloudConditions.FAIR -> 2
             CloudConditions.CLEAR -> 3
         }
 
         rating += when (cloudConditionHigh) {
-            CloudConditions.CLOUDY -> 4
-            CloudConditions.FAIR -> 2
-            CloudConditions.CLEAR -> 3
+            CloudConditions.CLOUDY -> 5
+            CloudConditions.FAIR -> 0
+            CloudConditions.CLEAR -> 10
         }
 
+        // Humidity should be low
         rating += when (airCondition) {
-            AirConditions.HIGH -> 5
-            AirConditions.MID -> 3
+            AirConditions.HIGH -> 10
+            AirConditions.MID -> 5
             AirConditions.LOW -> 0
         }
+
         return when {
-            rating > 30 -> WeatherConditionsRating.THREE
+            rating > 30 -> WeatherConditionsRating.ONE
             rating > 20 -> WeatherConditionsRating.TWO
-            else -> WeatherConditionsRating.ONE
+            else -> WeatherConditionsRating.THREE
         }
 
     }
