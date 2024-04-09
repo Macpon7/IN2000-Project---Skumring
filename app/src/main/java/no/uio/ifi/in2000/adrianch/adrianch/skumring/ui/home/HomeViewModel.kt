@@ -12,15 +12,26 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.AirConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import java.time.LocalDate
 
 data class HomeUiState(
-    var date: LocalDate = LocalDate.of(2024,3,7),
-    var time: String = "18:30",
-    var temp: String = "25",
-    var sunset: String = "19:00",
+    var date: LocalDate = LocalDate.of(2000,1,1),
+    var time: String = "00:00",
+    var temp: String = "0",
+    var sunset: String = "18:00",
+    var weatherConditions: WeatherConditions = WeatherConditions(
+        weatherRating = WeatherConditionsRating.POOR,
+        cloudConditionHigh = CloudConditions.CLOUDY,
+        cloudConditionMedium = CloudConditions.CLOUDY,
+        cloudConditionLow = CloudConditions.CLOUDY,
+        airCondition = AirConditions.HIGH
+    ),
     var weatherCheck: Boolean = false,
-    var weatherMessage: String = "Dårlig vær"
+    var weatherMessage: String = ""
 )
 
 private const val logTag = "HomeViewModel" //for logging
