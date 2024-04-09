@@ -205,30 +205,44 @@ class PlaceInfoRepositoryImpl (
         }
     }
 
+    /**
+     * Function for interpreting weather data from a [WeatherPerHour] object and returns a
+     * [WeatherConditions] object with descriptions of the weather phenomena relevant for
+     * a nice sunset - Cloud coverage in the different layers and humidity.
+     */
     suspend fun getWeatherConditions(weatherData: WeatherPerHour): WeatherConditions {
-        val cloudConditionLow = interpretCloudCondition(weatherData.instant.cloud_area_fraction_low)
-        val cloudConditionMedium = interpretCloudCondition(weatherData.instant.cloud_area_fraction_medium)
-        val cloudConditionHigh = interpretCloudCondition(weatherData.instant.cloud_area_fraction_high)
-        val airCondition = interpretHumidity(weatherData.instant.relative_humidity)
+        try {
+            val cloudConditionLow =
+                interpretCloudCondition(weatherData.instant.cloud_area_fraction_low)
+            val cloudConditionMedium =
+                interpretCloudCondition(weatherData.instant.cloud_area_fraction_medium)
+            val cloudConditionHigh =
+                interpretCloudCondition(weatherData.instant.cloud_area_fraction_high)
+            val airCondition = interpretHumidity(weatherData.instant.relative_humidity)
 
-        return WeatherConditions(
-            weatherRating = getRating(
+            return WeatherConditions(
+                weatherRating = getRating(
+                    cloudConditionLow = cloudConditionLow,
+                    cloudConditionMedium = cloudConditionMedium,
+                    cloudConditionHigh = cloudConditionHigh,
+                    airCondition = airCondition,
+                ),
                 cloudConditionLow = cloudConditionLow,
                 cloudConditionMedium = cloudConditionMedium,
                 cloudConditionHigh = cloudConditionHigh,
-                airCondition = airCondition,
-            ),
-            cloudConditionLow = cloudConditionLow,
-            cloudConditionMedium = cloudConditionMedium,
-            cloudConditionHigh = cloudConditionHigh,
-            airCondition = airCondition
-        )
+                airCondition = airCondition
+            )
+        } catch (e: Exception) {
+            Log.e(logTag, "Error getting weather conditions", e)
+            throw e
+        }
     }
 
     /**
      * Cloudy is when cloudAreaFraction > 67.0
      * Fair is when < 33.0 cloudAreaFraction < 67.0
      * Clear is when cloudAreaFraction < 33.0
+     * @param cloudAreaFraction Percentage of satellite photo judged to be clouds
      */
     private fun interpretCloudCondition(cloudAreaFraction: Double): CloudConditions {
         return if (cloudAreaFraction > 67) {
@@ -244,6 +258,7 @@ class PlaceInfoRepositoryImpl (
      * High is when relative_humidity > 67.0
      * Mid is when < 33.0 relative_humidity < 67.0
      * Low is when relative_humidity < 33.0
+     * @param humidity Relative humidity in %
      */
     private fun interpretHumidity(humidity: Double): AirConditions {
         return if (humidity > 67) {
@@ -258,6 +273,9 @@ class PlaceInfoRepositoryImpl (
     /**
      * Returns a rating between 1-3 based on humidity and the cloud coverage of the
      * three different altitude layers. 1 is bad, 3 is good.
+     * @param cloudConditionLow Coverage of low, rainy clouds - Hindering view of sunset
+     * @param cloudConditionMedium Coverage of medium altitude clouds - A nice balance of which gives a nice canvas
+     * @param cloudConditionHigh Coverage of high-altitude, whispy clouds - Nice balance gives nice background
      */
     private fun getRating(
         cloudConditionLow: CloudConditions,
