@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +25,8 @@ data class MapListUiState(
     var mapListToggle: MapListToggleState = MapListToggleState.MAP
 )
 
+private const val logTag = "MapListViewModel"
+
 class MapListViewModel: ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeListRepository = PlaceListRepositoryImpl()
@@ -37,18 +40,26 @@ class MapListViewModel: ViewModel() {
 
     private fun loadMap(){
         viewModelScope.launch(Dispatchers.IO){
-            _mapListUiState.update { currentMapUiState ->
-                val mapInfoObject = mapRepository.getPins()
-                currentMapUiState.copy(pins = mapInfoObject)
+            try {
+                _mapListUiState.update { currentMapUiState ->
+                    val mapInfoObject = mapRepository.getPins()
+                    currentMapUiState.copy(pins = mapInfoObject)
+                }
+            } catch(e: Exception) {
+                Log.e(logTag, "Error getting pins, failed updating state", e)
             }
         }
     }
 
     private fun loadList(){
         viewModelScope.launch(Dispatchers.IO) {
-            _mapListUiState.update { currentMapListUiState ->
-                val placeSummaryList = placeListRepository.getPresetPlaceList()
-                currentMapListUiState.copy(places = placeSummaryList)
+            try { // Probably unnecessary but here we are
+                _mapListUiState.update { currentMapListUiState ->
+                    val placeSummaryList = placeListRepository.getPresetPlaceList()
+                    currentMapListUiState.copy(places = placeSummaryList)
+                }
+            } catch(e: Exception) {
+                Log.e(logTag, "Error getting pins", e)
             }
         }
     }
