@@ -1,8 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresExtension
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
@@ -297,9 +295,9 @@ class PlaceInfoRepositoryImpl (
         }
 
         return when {
-            rating > 30 -> WeatherConditionsRating.ONE
-            rating > 20 -> WeatherConditionsRating.TWO
-            else -> WeatherConditionsRating.THREE
+            rating > 30 -> WeatherConditionsRating.POOR
+            rating > 20 -> WeatherConditionsRating.DECENT
+            else -> WeatherConditionsRating.EXCELLENT
         }
     }
 }
