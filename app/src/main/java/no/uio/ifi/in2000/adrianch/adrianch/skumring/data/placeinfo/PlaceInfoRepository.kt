@@ -1,14 +1,16 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresExtension
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.AirConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.DailyEvents
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -171,13 +173,22 @@ class PlaceInfoRepositoryImpl (
         return sunEventsList.toList()
     }
 
+    /**
+     * Takes a list of [WeatherPerHour] objects and checks if any of them expects the cloud
+     * coverage in certain layers to be above certain thresholds (30 % for low clouds and
+     * 70 % for medium).
+     */
     override suspend fun checkConditions(weatherData: List<WeatherPerHour>): Boolean {
-        val cloudAreaFractionThreshold: Float = 70.0F
+        val cloudAreaFractionMediumThreshold = 70.0F
+        val cloudAreaFractionLowThreshold = 30.0F
         weatherData.forEach {
             // cloudAreaFraction is the percentage of pixels in a satellite photo
             // over an area judged to be clouds.
-            val cloudAreaFraction: Float = it.instant.cloud_area_fraction.toFloat()
-            if (cloudAreaFraction > cloudAreaFractionThreshold) {
+            // High and medium clouds allow for nice conditions within certain parameters
+            val cloudAreaFractionLow: Float = it.instant.cloud_area_fraction_low.toFloat()
+            val cloudAreaFractionMedium: Float = it.instant.cloud_area_fraction_medium.toFloat()
+            if (cloudAreaFractionLow > cloudAreaFractionLowThreshold &&
+                cloudAreaFractionMedium > cloudAreaFractionMediumThreshold) {
                 return false
             }
         }
@@ -191,6 +202,120 @@ class PlaceInfoRepositoryImpl (
         } catch (e: Exception) {
             Log.e(logTag, "Error processing sunset() data:" + (e.message ?: ""), e)
             throw e
+        }
+    }
+
+    /**
+     * Function for interpreting weather data from a [WeatherPerHour] object and returns a
+     * [WeatherConditions] object with descriptions of the weather phenomena relevant for
+     * a nice sunset - Cloud coverage in the different layers and humidity.
+     */
+    suspend fun getWeatherConditions(weatherData: WeatherPerHour): WeatherConditions {
+        try {
+            val cloudConditionLow =
+                interpretCloudCondition(weatherData.instant.cloud_area_fraction_low)
+            val cloudConditionMedium =
+                interpretCloudCondition(weatherData.instant.cloud_area_fraction_medium)
+            val cloudConditionHigh =
+                interpretCloudCondition(weatherData.instant.cloud_area_fraction_high)
+            val airCondition = interpretHumidity(weatherData.instant.relative_humidity)
+
+            return WeatherConditions(
+                weatherRating = getRating(
+                    cloudConditionLow = cloudConditionLow,
+                    cloudConditionMedium = cloudConditionMedium,
+                    cloudConditionHigh = cloudConditionHigh,
+                    airCondition = airCondition,
+                ),
+                cloudConditionLow = cloudConditionLow,
+                cloudConditionMedium = cloudConditionMedium,
+                cloudConditionHigh = cloudConditionHigh,
+                airCondition = airCondition
+            )
+        } catch (e: Exception) {
+            Log.e(logTag, "Error getting weather conditions", e)
+            throw e
+        }
+    }
+
+    /**
+     * Cloudy is when cloudAreaFraction > 67.0
+     * Fair is when < 33.0 cloudAreaFraction < 67.0
+     * Clear is when cloudAreaFraction < 33.0
+     * @param cloudAreaFraction Percentage of satellite photo judged to be clouds
+     */
+    private fun interpretCloudCondition(cloudAreaFraction: Double): CloudConditions {
+        return if (cloudAreaFraction > 67) {
+            CloudConditions.CLOUDY
+        } else if (cloudAreaFraction > 33) {
+            CloudConditions.FAIR
+        } else {
+            CloudConditions.CLEAR
+        }
+    }
+
+    /**
+     * High is when relative_humidity > 67.0
+     * Mid is when < 33.0 relative_humidity < 67.0
+     * Low is when relative_humidity < 33.0
+     * @param humidity Relative humidity in %
+     */
+    private fun interpretHumidity(humidity: Double): AirConditions {
+        return if (humidity > 67) {
+            AirConditions.HIGH
+        } else if (humidity > 33) {
+            AirConditions.MID
+        } else {
+            AirConditions.LOW
+        }
+    }
+
+    /**
+     * Returns a rating between 1-3 based on humidity and the cloud coverage of the
+     * three different altitude layers. 1 is bad, 3 is good.
+     * @param cloudConditionLow Coverage of low, rainy clouds - Hindering view of sunset
+     * @param cloudConditionMedium Coverage of medium altitude clouds - A nice balance of which gives a nice canvas
+     * @param cloudConditionHigh Coverage of high-altitude, whispy clouds - Nice balance gives nice background
+     */
+    private fun getRating(
+        cloudConditionLow: CloudConditions,
+        cloudConditionMedium: CloudConditions,
+        cloudConditionHigh: CloudConditions,
+        airCondition: AirConditions): WeatherConditionsRating {
+
+        var rating = 0
+
+        // If there are lots of low-altitude clouds, it'll make for a bad sunset
+        rating += when (cloudConditionLow) {
+            CloudConditions.CLOUDY -> 30
+            CloudConditions.FAIR -> 20
+            CloudConditions.CLEAR -> 0
+        }
+
+        // Ideally we want it a little cloudy in the mid-high layers
+        rating += when (cloudConditionMedium) {
+            CloudConditions.CLOUDY -> 10
+            CloudConditions.FAIR -> 2
+            CloudConditions.CLEAR -> 3
+        }
+
+        rating += when (cloudConditionHigh) {
+            CloudConditions.CLOUDY -> 5
+            CloudConditions.FAIR -> 0
+            CloudConditions.CLEAR -> 10
+        }
+
+        // Humidity should be low
+        rating += when (airCondition) {
+            AirConditions.HIGH -> 10
+            AirConditions.MID -> 5
+            AirConditions.LOW -> 0
+        }
+
+        return when {
+            rating > 30 -> WeatherConditionsRating.POOR
+            rating > 20 -> WeatherConditionsRating.DECENT
+            else -> WeatherConditionsRating.EXCELLENT
         }
     }
 }
