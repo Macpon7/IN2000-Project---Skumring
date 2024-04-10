@@ -71,8 +71,10 @@ fun HomeScreen(
     var time: String = homeUiState.time
     var temp: String = homeUiState.temp
     var sunset: String = homeUiState.sunset
-    var weatherCheck: Boolean = homeUiState.weatherCheck
+    //var weatherCheck: Boolean = homeUiState.weatherCheck
     var weatherMessage: String = homeUiState.weatherMessage
+    var long: String = "60"
+    var lat: String = "10"
 
 
     Scaffold(

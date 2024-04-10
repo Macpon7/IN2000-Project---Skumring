@@ -30,7 +30,7 @@ data class HomeUiState(
         cloudConditionLow = CloudConditions.CLOUDY,
         airCondition = AirConditions.HIGH
     ),
-    var weatherCheck: Boolean = false,
+    //var weatherCheck: Boolean = false,
     var weatherMessage: String = ""
 )
 
