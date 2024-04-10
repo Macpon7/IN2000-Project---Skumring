@@ -77,7 +77,7 @@ fun HomeScreen(
 
     // TODO -> must add variables when we make them in viewmodel:
     // Variable to get the error message from viewmodel
-    val error = true // Have to change according to the state in viemodel
+    val error = false // Have to change according to the state in viemodel
     val errorMessage = "" // Variable for the errorMessage
 
     Scaffold(
