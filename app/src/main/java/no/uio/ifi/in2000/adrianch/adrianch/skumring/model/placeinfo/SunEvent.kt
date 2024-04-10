@@ -8,5 +8,5 @@ import java.time.LocalDateTime
  */
 data class SunEvent (
     val time: LocalDateTime,
-    val conditions: Boolean
+    val conditions: WeatherConditionsRating
 )

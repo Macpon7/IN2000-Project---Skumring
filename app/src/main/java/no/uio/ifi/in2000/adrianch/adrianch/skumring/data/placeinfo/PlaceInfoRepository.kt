@@ -156,7 +156,8 @@ class PlaceInfoRepositoryImpl (
                     DailyEvents(
                         sunset = SunEvent(
                             time = sunActivity.sunset,
-                            conditions = checkConditions(sunsetWeather)
+                            // Gets only the rating for the actual sunset
+                            conditions = getWeatherConditions(sunsetWeather[1]).weatherRating
                         ),
                         /*
                     sunrise = SunEvent(
