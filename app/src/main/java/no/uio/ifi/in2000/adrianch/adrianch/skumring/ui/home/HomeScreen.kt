@@ -25,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
@@ -185,38 +183,10 @@ fun MapBox() {
             .padding(6.dp)
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
-        // Reintroducing placeholder text until I can figure this out
-//        MapBoxMap(
-//            point = point,
-//            modifier = Modifier.fillMaxSize(),
-//            context = context
-//        )
         Text(
             text = "Map Displayholder",
             modifier = Modifier.align(Alignment.Center)
         )
-//        MapboxMap(
-//            Modifier.fillMaxSize(),
-//            mapInitOptionsFactory = { context ->
-//                MapInitOptions(
-//                    context = context,
-//                    styleUri = Style.OUTDOORS,
-//                    cameraOptions = CameraOptions.Builder()
-//                        .center(point)
-//                        .zoom(10.0)
-//                        .build()
-//                )
-//            }
-//        ) {
-//            PointAnnotation(
-//                point = point,
-//                iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-//                onClick = {
-//                    Log.d("Home", "Click!")
-//                    true
-//                }
-//            )
-//        }
     }
 }
 
