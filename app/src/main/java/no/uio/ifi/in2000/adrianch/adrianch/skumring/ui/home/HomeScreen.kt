@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,19 +38,10 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
-import com.mapbox.maps.Style
-import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
-import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
-import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxMap
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
@@ -74,6 +67,10 @@ fun HomeScreen(
     var weatherCheck: Boolean = homeUiState.weatherCheck
     var weatherMessage: String = homeUiState.weatherMessage
 
+    // Snackbar:
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
 
     Scaffold(
         topBar = {
@@ -82,7 +79,8 @@ fun HomeScreen(
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior
             )
-        }
+        },
+        snackbarHost = {SnackbarHost(hostState = snackbarHostState)}
     ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
         Column (modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
