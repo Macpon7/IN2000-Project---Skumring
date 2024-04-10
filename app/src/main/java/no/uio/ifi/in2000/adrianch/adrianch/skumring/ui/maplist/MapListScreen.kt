@@ -83,9 +83,9 @@ object MapListDestination : NavigationDestination {
 /**
  * Main composable function for displaying the map screen
  */
-        @SuppressLint("CoroutineCreationDuringComposition")
-        @OptIn(ExperimentalMaterial3Api::class)
-        @Composable
+@SuppressLint("CoroutineCreationDuringComposition")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun MapListScreen(navController : NavController, mapListViewModel: MapListViewModel = viewModel()) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
