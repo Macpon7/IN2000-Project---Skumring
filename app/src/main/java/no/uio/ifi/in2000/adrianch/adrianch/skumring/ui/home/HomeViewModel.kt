@@ -39,7 +39,10 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel() : ViewModel() {
+class HomeViewModel(
+    private val lat: String,
+    private val long: String
+) : ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
 
@@ -48,7 +51,7 @@ class HomeViewModel() : ViewModel() {
 
     init {
         loadHomeScreen()
-        updateSunset()
+        updateSunset(lat = lat, long = long)
     }
 
     fun loadHomeScreen(){

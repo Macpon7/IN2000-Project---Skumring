@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +22,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,22 +31,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
-import com.mapbox.maps.Style
-import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
-import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
-import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxMap
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
@@ -61,7 +51,9 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = viewModel()
+    homeViewModel: HomeViewModel = viewModel(
+        factory = viewModelFactory { initializer { HomeViewModel(lat = "10", long = "60") } }
+    )
 ) {
 
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
@@ -71,7 +63,7 @@ fun HomeScreen(
     var time: String = homeUiState.time
     var temp: String = homeUiState.temp
     var sunset: String = homeUiState.sunset
-    //var weatherCheck: Boolean = homeUiState.weatherCheck
+    var weatherCondition: String = homeUiState.weatherConditions.weatherRating.toString()
     var weatherMessage: String = homeUiState.weatherMessage
     var long: String = "60"
     var lat: String = "10"
@@ -89,7 +81,7 @@ fun HomeScreen(
         Column (modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ContentHomeScreen(time, temp, sunset, weatherCheck)
+            ContentHomeScreen(time, temp, sunset, weatherCondition)
         }
     }
 }
@@ -102,14 +94,14 @@ fun HomeScreen(
 fun ContentHomeScreen(time: String,
                       temp: String,
                       sunset: String,
-                      weatherCheck: Boolean
+                      weatherCondition: String
 ) {
     Column (verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
 
         SunTempAndTime(time, temp)
         SunDown(sunset)
-        Text(text = "Været er bra: $weatherCheck")
+        Text(text = "The weather is: $weatherCondition")
         MapBox()
     }
 }
