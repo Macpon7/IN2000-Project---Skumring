@@ -32,8 +32,8 @@ data class HomeUiState(
         airCondition = AirConditions.HIGH
     ),
     //var weatherCheck: Boolean = false,
-    var weatherMessage: String = ""
-    var weatherPerHour: WeatherPerHour = WeatherPerHour()
+    //var weatherMessage: String = ""
+    //var weatherPerHour: WeatherPerHour = WeatherPerHour()
 )
 
 private const val logTag = "HomeViewModel" //for logging
@@ -66,10 +66,16 @@ class HomeViewModel(
 
     fun updateWeather(temp: String, sunset: String){
         viewModelScope.launch(Dispatchers.IO){
-            _homeUiState.update{ currenthomeUiState->
-                currenthomeUiState.copy(
-                    temp = temp,
-                    sunset = sunset)
+            try {
+                _homeUiState.update{ currenthomeUiState->
+
+                    currenthomeUiState.copy(
+                        date = LocalDate.now(),
+                        temp = temp,
+                        sunset = sunset)
+                }
+            } catch (e: Exception) {
+                Log.e(logTag, "Error getting weather, failed updating state", e)
             }
         }
     }

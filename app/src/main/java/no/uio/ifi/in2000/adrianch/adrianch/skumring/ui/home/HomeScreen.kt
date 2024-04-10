@@ -53,7 +53,13 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(
-        factory = viewModelFactory { initializer { HomeViewModel(lat = "10", long = "60") } }
+        factory = viewModelFactory {
+            initializer {
+                HomeViewModel(
+                    lat = "10.71839307051461",
+                    long = "59.943735106220444")
+            }
+        }
     )
 ) {
 
@@ -65,9 +71,9 @@ fun HomeScreen(
     var temp: String = homeUiState.temp
     var sunset: String = homeUiState.sunset
     var weatherCondition: String = homeUiState.weatherConditions.weatherRating.text
-    var weatherMessage: String = homeUiState.weatherMessage
-    var long: String = "60"
-    var lat: String = "10"
+    //var weatherMessage: String = homeUiState.weatherMessage
+    var long: String = "59.943735106220444"
+    var lat: String = "10.71839307051461"
     var currentDate = LocalDate.now()
 
 
