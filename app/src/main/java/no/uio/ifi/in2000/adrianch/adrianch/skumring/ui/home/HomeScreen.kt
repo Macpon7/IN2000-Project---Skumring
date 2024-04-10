@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,8 +16,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -31,12 +34,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
+import kotlinx.coroutines.launch
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
@@ -49,10 +53,12 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
     override val titleRes = R.string.app_name
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = viewModel()
+    homeViewModel: HomeViewModel = viewModel(),
+    navController: NavController
 ) {
 
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
@@ -69,6 +75,10 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // TODO -> must add variables when we make them in viewmodel:
+    // Variable to get the error message from viewmodel
+    val error = true // Have to change according to the state in viemodel
+    val errorMessage = "" // Variable for the errorMessage
 
     Scaffold(
         topBar = {
@@ -83,7 +93,28 @@ fun HomeScreen(
         Column (modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ContentHomeScreen(time, temp, sunset, weatherCheck)
+            // if theres an error snackbar will appear:
+            if (error) {
+
+                // Should we show the content or not?
+
+                Text("An error has occurred")
+
+                scope.launch {
+                    val result = snackbarHostState
+                        .showSnackbar(
+                            message = errorMessage,
+                            duration = SnackbarDuration.Indefinite,
+                            actionLabel = "Refresh",
+                        )
+                    when (result) {
+                        SnackbarResult.ActionPerformed -> {navController.navigate("home")}
+                        else -> {}
+                    }
+                }
+            } else {
+                ContentHomeScreen(time, temp, sunset, weatherCheck)
+            }
         }
     }
 }
@@ -188,10 +219,4 @@ fun MapBox() {
             modifier = Modifier.align(Alignment.Center)
         )
     }
-}
-
-@Composable
-@Preview
-fun Test() {
-    HomeScreen()
 }
