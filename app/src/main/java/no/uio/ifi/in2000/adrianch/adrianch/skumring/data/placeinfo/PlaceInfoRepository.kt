@@ -195,10 +195,10 @@ class PlaceInfoRepositoryImpl (
         return true
     }
 
-    override suspend fun getSunset(lat: String, long: String, date: LocalDate): String{
+    override suspend fun getSunset(lat: String, long: String, date: LocalDate): String {
         try {
             val sunsetDateTime = sunriseDataSource.fetchSunActivity(lat, long, date).sunset
-            return sunsetDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            return sunsetDateTime.format(DateTimeFormatter.ISO_LOCAL_TIME)
         } catch (e: Exception) {
             Log.e(logTag, "Error processing sunset() data:" + (e.message ?: ""), e)
             throw e

@@ -4,4 +4,3 @@ import java.time.LocalDateTime
 data class SunActivity (
     val sunset: LocalDateTime
 )
-

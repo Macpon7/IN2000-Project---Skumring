@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
@@ -32,6 +33,7 @@ data class HomeUiState(
     ),
     //var weatherCheck: Boolean = false,
     var weatherMessage: String = ""
+    var weatherPerHour: WeatherPerHour = WeatherPerHour()
 )
 
 private const val logTag = "HomeViewModel" //for logging
@@ -51,14 +53,11 @@ class HomeViewModel(
 
     init {
         loadHomeScreen()
-        updateSunset(lat = lat, long = long)
     }
 
     fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-        //call function that updates time, temp, sunset, weatherMessage
-            //the results will be used in functions in Homescreen
-
+            updateSunset(lat = lat, long = long)
         }
     }
 
@@ -81,12 +80,15 @@ class HomeViewModel(
                  val sunset = placeInfo.getSunset(lat, long, homeUiState.value.date)
                 _homeUiState.update { currentHomeUiState ->
                     currentHomeUiState.copy(
-                        sunset = sunset
+                        sunset = sunset,
                     )
                 }
              } catch (e: Exception) {
                  Log.e(logTag, "Error getting sunset, failed updating state", e)
              }
          }
+    }
+    fun updateWeatherConditions() {
+
     }
 }

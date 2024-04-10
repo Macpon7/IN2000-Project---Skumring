@@ -40,6 +40,7 @@ import com.mapbox.maps.MapboxExperimental
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import java.time.LocalDate
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
@@ -63,10 +64,11 @@ fun HomeScreen(
     var time: String = homeUiState.time
     var temp: String = homeUiState.temp
     var sunset: String = homeUiState.sunset
-    var weatherCondition: String = homeUiState.weatherConditions.weatherRating.toString()
+    var weatherCondition: String = homeUiState.weatherConditions.weatherRating.text
     var weatherMessage: String = homeUiState.weatherMessage
     var long: String = "60"
     var lat: String = "10"
+    var currentDate = LocalDate.now()
 
 
     Scaffold(
