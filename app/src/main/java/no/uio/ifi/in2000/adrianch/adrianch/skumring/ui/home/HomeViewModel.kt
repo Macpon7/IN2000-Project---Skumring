@@ -72,12 +72,12 @@ class HomeViewModel() : ViewModel() {
         }
     }
 
-     fun updateSunset(){
+     fun updateSunset(lat: String, long: String){
          viewModelScope.launch(Dispatchers.IO){
              try {
-                 val sunset = placeInfo.getSunset("10", "60", homeUiState.value.date)
-                _homeUiState.update { currenthomeUiState ->
-                    currenthomeUiState.copy(
+                 val sunset = placeInfo.getSunset(lat, long, homeUiState.value.date)
+                _homeUiState.update { currentHomeUiState ->
+                    currentHomeUiState.copy(
                         sunset = sunset
                     )
                 }
