@@ -43,8 +43,8 @@ class HomeViewModel: ViewModel() {
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
-    private val lat = "10.71839307051461"
-    private val long = "59.943735106220444"
+    private val long = "10.71839307051461"
+    private val lat = "59.943735106220444"
 
     init {
         updateWeather(lat = lat, long = long)
