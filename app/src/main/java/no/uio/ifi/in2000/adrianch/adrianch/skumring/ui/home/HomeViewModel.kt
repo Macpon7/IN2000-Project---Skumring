@@ -18,6 +18,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditi
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class HomeUiState(
     var date: LocalDate = LocalDate.of(2000,1,1),
@@ -42,8 +43,6 @@ private const val logTag = "HomeViewModel" //for logging
  * ViewModel for HomeScreen
  */
 class HomeViewModel(
-    private val lat: String,
-    private val long: String
 ) : ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
@@ -51,6 +50,8 @@ class HomeViewModel(
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
+    private val lat = "10.71839307051461"
+    private val long = "59.943735106220444"
     init {
         loadHomeScreen()
     }
@@ -58,21 +59,21 @@ class HomeViewModel(
     fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
             updateSunset(lat = lat, long = long)
+            updateWeather(lat = lat, long = long)
         }
     }
 
 
     //data to variables in parameters will come frome repository, not as parameter
 
-    fun updateWeather(temp: String, sunset: String){
+    fun updateWeather(lat: String, long: String){
         viewModelScope.launch(Dispatchers.IO){
             try {
                 _homeUiState.update{ currenthomeUiState->
-
                     currenthomeUiState.copy(
                         date = LocalDate.now(),
-                        temp = temp,
-                        sunset = sunset)
+                        time = LocalDateTime.now().toString()
+                    )
                 }
             } catch (e: Exception) {
                 Log.e(logTag, "Error getting weather, failed updating state", e)

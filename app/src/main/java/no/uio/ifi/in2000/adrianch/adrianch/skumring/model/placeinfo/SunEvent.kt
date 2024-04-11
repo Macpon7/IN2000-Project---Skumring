@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo
 
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
 import java.time.LocalDateTime
 
 /**
@@ -8,5 +9,6 @@ import java.time.LocalDateTime
  */
 data class SunEvent (
     val time: LocalDateTime,
+    val weather: WeatherPerHour,
     val conditions: WeatherConditionsRating
 )

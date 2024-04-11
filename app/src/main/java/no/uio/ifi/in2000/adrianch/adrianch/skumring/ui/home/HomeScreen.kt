@@ -52,15 +52,7 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = viewModel(
-        factory = viewModelFactory {
-            initializer {
-                HomeViewModel(
-                    lat = "10.71839307051461",
-                    long = "59.943735106220444")
-            }
-        }
-    )
+    homeViewModel: HomeViewModel = viewModel()
 ) {
 
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
@@ -72,9 +64,6 @@ fun HomeScreen(
     var sunset: String = homeUiState.sunset
     var weatherCondition: String = homeUiState.weatherConditions.weatherRating.text
     //var weatherMessage: String = homeUiState.weatherMessage
-    var long: String = "59.943735106220444"
-    var lat: String = "10.71839307051461"
-    var currentDate = LocalDate.now()
 
 
     Scaffold(
