@@ -21,11 +21,11 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class HomeUiState(
-    var date: LocalDate = LocalDate.of(2000,1,1),
-    var time: String = "00:00",
-    var temp: String = "0",
-    var sunset: String = "18:00",
-    var weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
+    val date: LocalDate = LocalDate.of(2000,1,1),
+    val time: String = "00:00",
+    val temp: String = "0",
+    val sunset: String = "18:00",
+    val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
     //var weatherCheck: Boolean = false,
     //var weatherMessage: String = ""
     //var weatherPerHour: WeatherPerHour = WeatherPerHour()
@@ -36,25 +36,24 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel(
-) : ViewModel() {
+class HomeViewModel: ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
-    //private val sunsetWeather =
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
     private val lat = "10.71839307051461"
     private val long = "59.943735106220444"
+
     init {
-        loadHomeScreen()
+        updateWeather(lat = lat, long = long)
     }
 
     fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-            updateSunset(lat = lat, long = long)
-            updateWeather(lat = lat, long = long)
+            //updateSunset(lat = lat, long = long)
+            //updateWeather(lat = lat, long = long)
         }
     }
 
@@ -65,9 +64,17 @@ class HomeViewModel(
         viewModelScope.launch(Dispatchers.IO){
             try {
                 _homeUiState.update{ currenthomeUiState->
+                    Log.d(logTag, "fetching sunsetweather")
+                    val sunsetWeather = PlaceInfoRepositoryImpl().getLocalSunsetWeather(lat = lat, long = long)
+                    Log.d(logTag, sunsetWeather.time.toString())
                     currenthomeUiState.copy(
+                        sunset = sunsetWeather.time.toString(),
                         date = LocalDate.now(),
-                        time = LocalDateTime.now().toString()
+                        time = LocalDateTime.now().toString(),
+                        temp = sunsetWeather.instant.air_temperature.toString(),
+                        weatherConditions = PlaceInfoRepositoryImpl().getWeatherConditions(sunsetWeather).weatherRating
+
+
                     )
                 }
             } catch (e: Exception) {

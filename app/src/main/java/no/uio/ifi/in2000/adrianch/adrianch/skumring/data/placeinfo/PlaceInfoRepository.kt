@@ -156,9 +156,9 @@ class PlaceInfoRepositoryImpl (
                     DailyEvents(
                         sunset = SunEvent(
                             time = sunActivity.sunset,
-                            weather = sunsetWeather[1],
+                            weather = sunsetWeather[0],
                             // Gets only the rating for the actual sunset
-                            conditions = getWeatherConditions(sunsetWeather[1]).weatherRating
+                            conditions = getWeatherConditions(sunsetWeather[0]).weatherRating
                         ),
                         /*
                     sunrise = SunEvent(
@@ -320,10 +320,10 @@ class PlaceInfoRepositoryImpl (
             else -> WeatherConditionsRating.EXCELLENT
         }
     }
-
     suspend fun getLocalSunsetWeather (lat: String, long: String) : WeatherPerHour {
         val weather = locationDataSource.fetchWeatherData(lat = lat, long = long).groupBy { it.time.toLocalDate() }
         val dailyEvents = makeDailyEvents(weather, lat, long)
+        Log.d(logTag, dailyEvents[0].sunset.weather.time.toString())
         return dailyEvents[0].sunset.weather
     }
 }

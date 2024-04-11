@@ -59,10 +59,10 @@ fun HomeScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //var her før
 
    // var timeUiState: String = homeUiState.time
-    var time: String = homeUiState.time
-    var temp: String = homeUiState.temp
-    var sunset: String = homeUiState.sunset
-    var weatherCondition: String = homeUiState.weatherConditions.weatherRating.text
+    val time: String = homeUiState.time
+    val temp: String = homeUiState.temp
+    val sunset: String = homeUiState.sunset
+    val weatherCondition: String = homeUiState.weatherConditions.text
     //var weatherMessage: String = homeUiState.weatherMessage
 
 
@@ -122,7 +122,7 @@ fun SunTempAndTime(time: String, temp: String) {
         )
         Text(
             text = "Tid: $time \nTemperatur: $temp°C",  //<------------------
-            color = Color.White,
+            color = Color.Black,
             modifier = Modifier.align(Alignment.Center) // Place the text in the middle of the sun
         )
     }
