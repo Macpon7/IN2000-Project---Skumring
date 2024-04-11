@@ -17,6 +17,8 @@ interface PlaceInfoDao {
     @Query("SELECT * FROM placeInfo")
     fun getAllPlaces(): Flow<List<PlaceInfoEntity>>
     //fun getAllPlaces(): List<PlaceInfoEntity>
+    //
+    //
 
 
 

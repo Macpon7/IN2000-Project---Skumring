@@ -108,18 +108,30 @@ dependencies {
     // Room
     val room_version = "2.6.1"
 
+    androidTestImplementation("androidx.test:core:1.2.0")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.2.0")
+    androidTestImplementation("androidx.test.ext:truth:1.5.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
+    //  androidTestImplementation 'com.google.truth:truth:0.42'
+
+
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
     testImplementation("androidx.room:room-testing:$room_version")
-    androidTestImplementation("androidx.test:runner:1.5.2")
+
     //androidTestImplementation("androidx.test:runner:1.4.0")
     //androidTestImplementation("androidx.test.ext:junit:1.1.3")
 
     //to test  Room
+
+   // androidTestCompile("junit:junit:4.12")
     //androidTestImplementation("androidx.test:runner:$testRunnerVersion")
     //androidTestImplementation("androidx.test:rules:$testRulesVersion")
+
+
 
 
 
