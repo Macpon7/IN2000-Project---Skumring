@@ -47,10 +47,10 @@ class HomeViewModel: ViewModel() {
     private val lat = "59.943735106220444"
 
     init {
-        updateWeather(lat = lat, long = long)
+        loadHomeScreen()
     }
 
-    fun loadHomeScreen(){
+    private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
             //updateSunset(lat = lat, long = long)
             //updateWeather(lat = lat, long = long)
@@ -60,19 +60,19 @@ class HomeViewModel: ViewModel() {
 
     //data to variables in parameters will come frome repository, not as parameter
 
-    fun updateWeather(lat: String, long: String){
+    private fun updateWeather(lat: String, long: String){
         viewModelScope.launch(Dispatchers.IO){
             try {
                 _homeUiState.update{ currenthomeUiState->
                     Log.d(logTag, "fetching sunsetweather")
-                    val sunsetWeather = PlaceInfoRepositoryImpl().getLocalSunsetWeather(lat = lat, long = long)
+                    val sunsetWeather = placeInfo.getLocalSunsetWeather(lat = lat, long = long)
                     Log.d(logTag, sunsetWeather.time.toString())
                     currenthomeUiState.copy(
                         sunset = sunsetWeather.time.toString(),
                         date = LocalDate.now(),
                         time = LocalDateTime.now().toString(),
                         temp = sunsetWeather.instant.air_temperature.toString(),
-                        weatherConditions = PlaceInfoRepositoryImpl().getWeatherConditions(sunsetWeather).weatherRating
+                        weatherConditions = placeInfo.getWeatherConditions(sunsetWeather).weatherRating
 
 
                     )
@@ -83,21 +83,21 @@ class HomeViewModel: ViewModel() {
         }
     }
 
-     fun updateSunset(lat: String, long: String){
-         viewModelScope.launch(Dispatchers.IO){
-             try {
-                 val sunset = placeInfo.getSunset(lat, long, homeUiState.value.date)
-                _homeUiState.update { currentHomeUiState ->
-                    currentHomeUiState.copy(
-                        sunset = sunset,
-                    )
-                }
-             } catch (e: Exception) {
-                 Log.e(logTag, "Error getting sunset, failed updating state", e)
-             }
-         }
-    }
-    fun updateWeatherConditions() {
-
-    }
+//     fun updateSunset(lat: String, long: String){
+//         viewModelScope.launch(Dispatchers.IO){
+//             try {
+//                 val sunset = placeInfo.getSunset(lat, long, homeUiState.value.date)
+//                _homeUiState.update { currentHomeUiState ->
+//                    currentHomeUiState.copy(
+//                        sunset = sunset,
+//                    )
+//                }
+//             } catch (e: Exception) {
+//                 Log.e(logTag, "Error getting sunset, failed updating state", e)
+//             }
+//         }
+//    }
+//    fun updateWeatherConditions() {
+//
+//    }
 }

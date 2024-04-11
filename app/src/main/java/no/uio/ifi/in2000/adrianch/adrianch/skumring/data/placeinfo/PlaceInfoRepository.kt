@@ -55,7 +55,12 @@ interface PlaceInfoRepository {
      * Returns a string containing the time of sunset on the given date at the given coordinates.
      */
     suspend fun getSunset(lat: String, long: String, date: LocalDate): String
-}
+
+    suspend fun getLocalSunsetWeather (lat: String, long: String) : WeatherPerHour
+
+    suspend fun getWeatherConditions(weatherData: WeatherPerHour): WeatherConditions
+
+    }
 
 /**
  * An implementation of [PlaceInfoRepository].
@@ -212,7 +217,7 @@ class PlaceInfoRepositoryImpl (
      * [WeatherConditions] object with descriptions of the weather phenomena relevant for
      * a nice sunset - Cloud coverage in the different layers and humidity.
      */
-    suspend fun getWeatherConditions(weatherData: WeatherPerHour): WeatherConditions {
+    override suspend fun getWeatherConditions(weatherData: WeatherPerHour): WeatherConditions {
         try {
             val cloudConditionLow =
                 interpretCloudCondition(weatherData.instant.cloud_area_fraction_low)
@@ -320,7 +325,7 @@ class PlaceInfoRepositoryImpl (
             else -> WeatherConditionsRating.EXCELLENT
         }
     }
-    suspend fun getLocalSunsetWeather (lat: String, long: String) : WeatherPerHour {
+    override suspend fun getLocalSunsetWeather (lat: String, long: String) : WeatherPerHour {
         val weather = locationDataSource.fetchWeatherData(lat = lat, long = long).groupBy { it.time.toLocalDate() }
         val dailyEvents = makeDailyEvents(weather, lat, long)
         Log.d(logTag, dailyEvents[0].sunset.weather.time.toString())
