@@ -320,4 +320,10 @@ class PlaceInfoRepositoryImpl (
             else -> WeatherConditionsRating.EXCELLENT
         }
     }
+
+    suspend fun getLocalSunsetWeather (lat: String, long: String) : WeatherPerHour {
+        val weather = locationDataSource.fetchWeatherData(lat = lat, long = long).groupBy { it.time.toLocalDate() }
+        val dailyEvents = makeDailyEvents(weather, lat, long)
+        return dailyEvents[0].sunset.weather
+    }
 }

@@ -25,13 +25,7 @@ data class HomeUiState(
     var time: String = "00:00",
     var temp: String = "0",
     var sunset: String = "18:00",
-    var weatherConditions: WeatherConditions = WeatherConditions(
-        weatherRating = WeatherConditionsRating.POOR,
-        cloudConditionHigh = CloudConditions.CLOUDY,
-        cloudConditionMedium = CloudConditions.CLOUDY,
-        cloudConditionLow = CloudConditions.CLOUDY,
-        airCondition = AirConditions.HIGH
-    ),
+    var weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
     //var weatherCheck: Boolean = false,
     //var weatherMessage: String = ""
     //var weatherPerHour: WeatherPerHour = WeatherPerHour()
@@ -46,6 +40,7 @@ class HomeViewModel(
 ) : ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
+    //private val sunsetWeather =
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
