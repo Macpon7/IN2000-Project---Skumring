@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,15 +33,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
-import java.time.LocalDate
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
@@ -57,13 +55,12 @@ fun HomeScreen(
 
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //var her før
-
-   // var timeUiState: String = homeUiState.time
-    val time: String = homeUiState.time
     val temp: String = homeUiState.temp
-    val sunset: String = homeUiState.sunset
+    val sunsetDateTime: List<String> = homeUiState.sunset.split("T")
     val weatherCondition: String = homeUiState.weatherConditions.text
     //var weatherMessage: String = homeUiState.weatherMessage
+    val sunsetTime = sunsetDateTime[1]
+    val sunsetDate = sunsetDateTime[0]
 
 
     Scaffold(
@@ -78,7 +75,7 @@ fun HomeScreen(
         Column (modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ContentHomeScreen(time, temp, sunset, weatherCondition)
+            ContentHomeScreen(sunsetTime, temp, sunsetTime, weatherCondition)
         }
     }
 }

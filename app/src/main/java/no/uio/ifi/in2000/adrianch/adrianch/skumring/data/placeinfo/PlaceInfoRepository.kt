@@ -56,8 +56,14 @@ interface PlaceInfoRepository {
      */
     suspend fun getSunset(lat: String, long: String, date: LocalDate): String
 
+    /**
+     * Returns the weather conditions during today's sunset
+     */
     suspend fun getLocalSunsetWeather (lat: String, long: String) : WeatherPerHour
 
+    /**
+     * Returns
+     */
     suspend fun getWeatherConditions(weatherData: WeatherPerHour): WeatherConditions
 
     }

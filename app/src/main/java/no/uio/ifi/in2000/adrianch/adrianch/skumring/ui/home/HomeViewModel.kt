@@ -22,9 +22,8 @@ import java.time.LocalDateTime
 
 data class HomeUiState(
     val date: LocalDate = LocalDate.of(2000,1,1),
-    val time: String = "00:00",
     val temp: String = "0",
-    val sunset: String = "18:00",
+    val sunset: String = "2000-01-01T18:00",
     val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
     //var weatherCheck: Boolean = false,
     //var weatherMessage: String = ""
@@ -53,7 +52,7 @@ class HomeViewModel: ViewModel() {
     private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
             //updateSunset(lat = lat, long = long)
-            //updateWeather(lat = lat, long = long)
+            updateWeather(lat = lat, long = long)
         }
     }
 
@@ -70,7 +69,6 @@ class HomeViewModel: ViewModel() {
                     currenthomeUiState.copy(
                         sunset = sunsetWeather.time.toString(),
                         date = LocalDate.now(),
-                        time = LocalDateTime.now().toString(),
                         temp = sunsetWeather.instant.air_temperature.toString(),
                         weatherConditions = placeInfo.getWeatherConditions(sunsetWeather).weatherRating
 
