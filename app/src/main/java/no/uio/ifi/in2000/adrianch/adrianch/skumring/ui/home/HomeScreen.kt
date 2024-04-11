@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,9 +10,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,35 +27,33 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapInitOptions
-import com.mapbox.maps.MapboxExperimental
-import com.mapbox.maps.Style
-import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
-import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
-import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
+import com.google.relay.compose.BoxScopeInstanceImpl.align
+import com.google.relay.compose.RelayContainer
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxMap
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.map.MapBoxViewModel
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.homescreeninfoscreen.HomeScreenInfoScreen
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.moredetailsbutton.MoreDetailsButton
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.md_theme_dark_background
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.md_theme_dark_error
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.md_theme_dark_inversePrimary
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.md_theme_dark_onPrimary
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.md_theme_dark_secondary
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.md_theme_dark_tertiaryContainer
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
@@ -63,6 +67,9 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel()
 ) {
+
+    //NY
+    val scaffoldState = rememberScaffoldState()
 
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //var her før
@@ -88,9 +95,13 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             ContentHomeScreen(time, temp, sunset, weatherCheck)
+                }
+
+            }
+
         }
-    }
-}
+
+
 
 /**
  * Function with alle the content of the homescreen
@@ -108,7 +119,7 @@ fun ContentHomeScreen(time: String,
         SunTempAndTime(time, temp)
         SunDown(sunset)
         Text(text = "Været er bra: $weatherCheck")
-        MapBox()
+        //MapBox()
     }
 }
 
@@ -165,12 +176,86 @@ fun SunDown(sunset: String) {
     )
 }
 
+/*
+@Preview
+@Composable
+fun infoCard() {
+    Box(
+        modifier = Modifier
+            .size(width = 324.dp, height = 478.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        md_theme_dark_background,
+                        md_theme_dark_onPrimary,
+                        md_theme_dark_tertiaryContainer,
+                        md_theme_dark_onPrimary
+                    )
+                    //md_theme_dark_inversePrimary
+                )
+            )
+            .clip(RoundedCornerShape(50.dp))
+    ) {
+            Text(
+                text = "Sunset today",
+                modifier = Modifier
+                    .padding(16.dp),
+                textAlign = TextAlign.Center,
+                //Colors = md_theme_dark_secondary
+                )
+        }
+    MoreDetailsButton {
+
+    }
+    }
+
+ */
+@Preview
+@Composable
+fun SunsetCard() {
+    androidx.compose.material3.MaterialTheme {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+        Card(
+            modifier = Modifier
+                .width(324.dp)
+                .height(478.dp)
+        ) {
+                RelayContainer {
+                    SunsetInfoScreen(
+                        sunsetTodayText = "Sunset today",
+                        sunsetTimeText = "20:05",
+                        conditionsText = "Sunset conditions",
+                        goldenHourText = "Golden Hour",
+                        goldenHourTimeText = "20:31-21:05",
+                        blueHourText = "Blue Hour",
+                        blueHourTimeText = "19:09-20:31",
+                        degreesText = "18C",
+                        onClick = {},
+                        weatherConditionsText = "Weather conditions: poor",
+                        moreDetailsText = "More details",
+                    )
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
 
 
 /**
  * Function with the map inside
  * Should be put inside the contentHomeScreen
  */
+
+/*
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapBox() {
@@ -221,9 +306,13 @@ fun MapBox() {
 //        }
     }
 }
-
+ */
+/*
 @Composable
 @Preview
 fun Test() {
     HomeScreen()
 }
+
+ */
+
