@@ -10,15 +10,14 @@ import kotlinx.coroutines.launch
 //https://www.youtube.com/watch?v=7cEqDV_c94k&list=PLrJS8IW7z9HHA5-Giy9-Z8akJ461pn6ds&index=6
 class PlaceInfodbViewModel(private val databaseRepository: DatabaseRepository) : ViewModel() {
 
-    fun getAllPlaces() = databaseRepository.getAllPlaces().asLiveData(viewModelScope.coroutineContext)
+    //fun getAllPlaces() = databaseRepository.getAllPlaces().asLiveData(viewModelScope.coroutineContext)
+    fun getAllPlaces() = databaseRepository.getAllPlaces() //skal denne annoteres med livedata
 
-    /*
-    fun addPlace(place: infoooo) = viewModelScope.launch{
+    fun addPlace(id: Int, name: String, lat: String, long: String) = viewModelScope.launch{
         //opprett objekt
-        val placeObject = PlaceInfoEntity(inpuuut)
+        val placeObject = PlaceInfoEntity(id, name, lat, long)
+        databaseRepository.insertPlace(placeObject)
 
     }
-
-     */
 }
 

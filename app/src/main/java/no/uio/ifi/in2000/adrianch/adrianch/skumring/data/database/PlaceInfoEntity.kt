@@ -11,4 +11,5 @@ data class PlaceInfoEntity(
     var name: String = "",
     var lat: String = "",
     var long: String = ""
+    //var isFavorite : Boolean = false //doesnt make sense to have a
 )

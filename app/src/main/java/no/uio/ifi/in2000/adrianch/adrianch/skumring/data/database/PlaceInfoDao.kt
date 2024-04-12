@@ -16,17 +16,14 @@ interface PlaceInfoDao {
 
     @Query("SELECT * FROM placeInfo")
     fun getAllPlaces(): Flow<List<PlaceInfoEntity>>
-    //fun getAllPlaces(): List<PlaceInfoEntity>
-    //
-    //
+    // for tester: fun getAllPlaces(): List<PlaceInfoEntity>
 
-
-
+    //Features vi kan implementere etter hvert
     /*
-    @Query("UPDATE placeInfo SET favorite = 1 WHERE id = :placeId")
+    @Query("UPDATE placeInfo SET isFavorite = True WHERE id = :placeId")
     suspend fun markAsFavorite(placeId: Long)
 
-    @Query("UPDATE placeInfo SET favorite = 0 WHERE id = :placeId")
+    @Query("UPDATE placeInfo SET isFavorite = False WHERE id = :placeId")
     suspend fun unmarkAsFavorite(placeId: Long)
 
      */
