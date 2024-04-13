@@ -15,8 +15,8 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
 
 enum class MapListToggleState (val stateAsBool: Boolean) {
-    MAP(false),
-    LIST(true)
+    MAP(stateAsBool = false),
+    LIST(stateAsBool = true)
 }
 
 data class MapListUiState(

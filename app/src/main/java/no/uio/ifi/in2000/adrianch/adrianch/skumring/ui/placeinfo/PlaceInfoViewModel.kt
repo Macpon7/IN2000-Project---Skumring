@@ -16,7 +16,12 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 private const val logTag = "PlaceInfoViewModel"
 
 data class PlaceInfoUiState(
-    var placeInfo: PlaceInfo = PlaceInfo("","","","", emptyList()),
+    var placeInfo: PlaceInfo = PlaceInfo(
+        name = "",
+        description = "",
+        latitude = "",
+        longitude = "",
+        sunEvents = emptyList()),
 
     // Variable for checking if there is an error
     var error: Boolean = false,

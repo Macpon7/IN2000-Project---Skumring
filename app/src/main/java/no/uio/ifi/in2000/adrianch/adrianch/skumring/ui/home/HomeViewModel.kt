@@ -54,7 +54,6 @@ class HomeViewModel() : ViewModel() {
     }
 
     //data to variables in parameters will come frome repository, not as parameter
-
     fun updateWeather(temp: String, sunset: String){
         viewModelScope.launch(Dispatchers.IO){
             _homeUiState.update{ currenthomeUiState->
@@ -68,7 +67,10 @@ class HomeViewModel() : ViewModel() {
      private fun updateSunset(){
          viewModelScope.launch(Dispatchers.IO){
              try {
-                 val sunset = placeInfo.getSunset("10", "60", homeUiState.value.date)
+                 val sunset = placeInfo.getSunset(
+                     lat = "10",
+                     long = "60",
+                     date = homeUiState.value.date)
                 _homeUiState.update { currenthomeUiState ->
                     currenthomeUiState.copy(
                         sunset = sunset
