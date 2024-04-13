@@ -93,7 +93,7 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
 
     // Mapbox
-    val mapboxVersion = "11.2.2"
+    val mapboxVersion = "11.2.0"
     implementation("com.mapbox.maps:android:$mapboxVersion")
     implementation("com.mapbox.extension:maps-compose:$mapboxVersion")
 }
