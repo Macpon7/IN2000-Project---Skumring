@@ -7,17 +7,21 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.TestRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeScreen
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListScreen
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreenDestination
 
 @Composable
 fun SkumringNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    testRepo: TestRepository
 ) {
     NavHost(
         navController = navController,
@@ -25,10 +29,10 @@ fun SkumringNavHost(
         modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
-            HomeScreen()
+            HomeScreen(homeViewModel = HomeViewModel(testRepo = testRepo), navController = navController)
         }
         composable(route = MapListDestination.route) {
-            MapListScreen(navController = navController)
+            MapListScreen(mapListViewModel = MapListViewModel(testRepo = testRepo) , navController = navController)
         }
         composable(
             route = PlaceInfoScreenDestination.route,
