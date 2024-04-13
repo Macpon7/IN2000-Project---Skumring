@@ -1,8 +1,37 @@
 <resources>
+    <!-- Navigation -->
     <string name="app_name">Skumring</string>
     <string name="back_button">Tilbake</string>
     <string name="nav_map_button">Kart</string>
     <string name="nav_home_button">Hjem</string>
     <string name="nav_fav_button">Favoritter</string>
+    <string name="nav_info_button">Info</string>
     <string name="nav_personal_button">Min side</string>
+    <string name="nav_settings_button">Instillinger</string>
+    <!-- HomeScreen -->
+    <string name="home_greeting">Hei</string>
+    <string name="conditions_are_good">Det blir gode forhold i kveld!</string>
+    <string name="conditions_are_bad">Det blir dårlige forhold i kveld.</string>
+    <string name="sunset">Solnedgang</string>
+    <string name="list_title">Fine steder i dag</string>
+    <!-- MapListScreen -->
+    <string name="toggle_list">Liste</string>
+    <string name="toggle_map">Kart</string>
+    <string name="places_nearby">Steder i nærheten</string>
+    <string name="search_hint">Søk</string>
+    <!-- PlaceInfoScreen -->
+    <string name="picture_taken">Bilde tatt</string>
+    <string name="walking_distance">Gangavstand</string>
+    <string name="today">I dag</string>
+    <string name="tomorrow">I morgen</string>
+    <!-- SettingsScreen -->
+    <string name="theme_option">Fargemodus</string>
+    <string name="language_option">Språk</string>
+    <string name="distance_unit">Avstander</string>
+    <string name="temp_unit">Temperatur</string>
+    <!-- Common strings used across multiple screens -->
+    <string name="weather_condition">Værforhold</string>
+    <string name="temp_at_sunset">Temperatur ved solnedgang</string>
+    <string name="golden_hour">Gylne time</string>
+    <string name="blue_hour">Blåtime</string>
 </resources>
