@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.google.gson.JsonPrimitive
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -70,9 +71,10 @@ import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
 private const val logTag = "MapListScreen"
 
@@ -88,7 +90,7 @@ object MapListDestination : NavigationDestination {
  */
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
-fun MapListScreen(navController : NavController, mapListViewModel: MapListViewModel = viewModel()) {
+fun MapListScreen(navController : NavHostController, mapListViewModel: MapListViewModel = viewModel()) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     /*
@@ -96,13 +98,18 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
      */
     //var text by remember { mutableStateOf("") }
     //var active by remember { mutableStateOf(false) }
-    Scaffold (topBar = {
-        SkumringTopAppBar(
-            title = stringResource(id = MapListDestination.titleRes),
-            canNavigateBack = false,
-            scrollBehavior = scrollBehavior
-        )
-    }) {innerPadding ->
+    Scaffold (
+        topBar = {
+            SkumringTopBar(
+                title = stringResource(id = MapListDestination.titleRes),
+                canNavigateBack = false,
+                scrollBehavior = scrollBehavior
+            )
+        },
+        bottomBar = {
+            SkumringBottomBar(navController = navController)
+        }
+    ) {innerPadding ->
         Column (modifier = Modifier
             .padding(innerPadding)
             .fillMaxSize()
@@ -470,7 +477,8 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
                     modifier = Modifier
                         .padding(vertical = 2.dp)
                         .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally))
+                        .align(Alignment.CenterHorizontally)
+                )
             }
         }
     }
