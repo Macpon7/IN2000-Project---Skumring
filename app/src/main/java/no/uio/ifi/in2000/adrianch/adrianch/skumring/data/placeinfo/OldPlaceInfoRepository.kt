@@ -19,7 +19,7 @@ import kotlin.math.abs
 
 private const val logTag = "PlaceInfoRepository" //log for error-handling
 
-interface PlaceInfoRepository {
+interface OldPlaceInfoRepository {
     /**
      * Creates and returns a [PlaceInfo] object containing all the details about the place matching the
      * given coordinates and id. If no ID is given, then no name or description can be retrieved, since
@@ -58,22 +58,22 @@ interface PlaceInfoRepository {
 }
 
 /**
- * An implementation of [PlaceInfoRepository].
+ * An implementation of [OldPlaceInfoRepository].
  * @property sunriseDataSource instance of [SunriseDataSource]
- * @property locationDataSource instance of [LocationForecastDataSource]
+ * @property locationForecastDataSource instance of [LocationForecastDataSource]
  * @property placeDetailsDataSource instance of [PlaceDetailsDataSource]
  */
-class PlaceInfoRepositoryImpl (
+class OldPlaceInfoRepositoryImpl (
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
-    private val locationDataSource: LocationForecastDataSource = LocationForecastDataSource(),
+    private val locationForecastDataSource: LocationForecastDataSource = LocationForecastDataSource(),
     private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
-): PlaceInfoRepository {
+): OldPlaceInfoRepository {
     override suspend fun getPlaceInfo(lat: String, long: String, id: Int): PlaceInfo {
         try {
 
             // Get the forecasted weather at this place
             //contains data for 10 days currently - might change
-            val fullForecast = locationDataSource.fetchWeatherData(lat = lat, long = long)
+            val fullForecast = locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
 
             // Group all the forecast data by date
             val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
@@ -91,8 +91,8 @@ class PlaceInfoRepositoryImpl (
             return PlaceInfo(
                 name = details.name,
                 description = details.description,
-                latitude = lat,
-                longitude = long,
+                lat = lat,
+                long = long,
                 sunEvents = dailyEventsList
             )
         } catch (e: Exception) {

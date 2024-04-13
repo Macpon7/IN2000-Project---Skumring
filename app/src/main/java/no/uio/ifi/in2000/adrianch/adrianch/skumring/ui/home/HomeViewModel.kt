@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.TestRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
 import java.time.LocalDate
 
 data class HomeUiState(
@@ -29,9 +29,9 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel(testRepo: TestRepository) : ViewModel() {
+class HomeViewModel(placeInfoRepository: PlaceInfoRepository) : ViewModel() {
     private val mapRepository = MapRepositoryImpl()
-    private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
+    private val placeInfo: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
