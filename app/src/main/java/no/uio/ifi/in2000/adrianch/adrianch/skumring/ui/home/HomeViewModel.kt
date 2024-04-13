@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -62,11 +63,15 @@ class HomeViewModel() : ViewModel() {
 
      fun updateSunset(){
          viewModelScope.launch(Dispatchers.IO){
-             val sunset = placeInfo.getSunset("10", "60", homeUiState.value.date)
-             _homeUiState.update { currenthomeUiState ->
-                 currenthomeUiState.copy(
-                     sunset = sunset
-                 )
+             try {
+                 val sunset = placeInfo.getSunset("10", "60", homeUiState.value.date)
+                _homeUiState.update { currenthomeUiState ->
+                    currenthomeUiState.copy(
+                        sunset = sunset
+                    )
+                }
+             } catch (e: Exception) {
+                 Log.e(logTag, "Error getting sunset, failed updating state", e)
              }
          }
     }
