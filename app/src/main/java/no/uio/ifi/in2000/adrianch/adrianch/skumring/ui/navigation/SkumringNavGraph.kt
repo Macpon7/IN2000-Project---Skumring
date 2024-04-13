@@ -7,7 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.TestRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeViewModel
@@ -21,7 +21,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreen
 fun SkumringNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    testRepo: TestRepository
+    placeInfoRepository: PlaceInfoRepository
 ) {
     NavHost(
         navController = navController,
@@ -29,10 +29,10 @@ fun SkumringNavHost(
         modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
-            HomeScreen(homeViewModel = HomeViewModel(testRepo = testRepo), navController = navController)
+            HomeScreen(homeViewModel = HomeViewModel(placeInfoRepository = placeInfoRepository), navController = navController)
         }
         composable(route = MapListDestination.route) {
-            MapListScreen(mapListViewModel = MapListViewModel(testRepo = testRepo) , navController = navController)
+            MapListScreen(mapListViewModel = MapListViewModel(placeInfoRepository = placeInfoRepository) , navController = navController)
         }
         composable(
             route = PlaceInfoScreenDestination.route,
