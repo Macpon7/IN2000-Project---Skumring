@@ -12,18 +12,14 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.AirConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 data class HomeUiState(
     val date: LocalDate = LocalDate.of(2000,1,1),
-    val temp: String = "0",
-    val sunset: String = "2000-01-01T18:00",
+    val temp: String = "",
+    val sunsetTime: String = "",
+    val sunsetDate: String = "",
     val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
     //var weatherCheck: Boolean = false,
     //var weatherMessage: String = ""
@@ -65,9 +61,17 @@ class HomeViewModel: ViewModel() {
                 _homeUiState.update{ currenthomeUiState->
                     Log.d(logTag, "fetching sunsetweather")
                     val sunsetWeather = placeInfo.getLocalSunsetWeather(lat = lat, long = long)
-                    Log.d(logTag, sunsetWeather.time.toString())
+                    val sunsetWeatherDateTime: List<String> = try {
+                        sunsetWeather.time.toString().split("T")
+                    } catch (e: Exception) {
+                        Log.e(logTag, "Failed fetching date",e)
+                        listOf("", "")
+                    }
+                    val sunsetTime = sunsetWeatherDateTime[1]
+                    val sunsetDate = sunsetWeatherDateTime[0]
                     currenthomeUiState.copy(
-                        sunset = sunsetWeather.time.toString(),
+                        sunsetTime = sunsetTime,
+                        sunsetDate = sunsetDate,
                         date = LocalDate.now(),
                         temp = sunsetWeather.instant.air_temperature.toString(),
                         weatherConditions = placeInfo.getWeatherConditions(sunsetWeather).weatherRating

@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -56,11 +55,11 @@ fun HomeScreen(
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //var her før
     val temp: String = homeUiState.temp
-    val sunsetDateTime: List<String> = homeUiState.sunset.split("T")
-    val weatherCondition: String = homeUiState.weatherConditions.text
-    //var weatherMessage: String = homeUiState.weatherMessage
-    val sunsetTime = sunsetDateTime[1]
-    val sunsetDate = sunsetDateTime[0]
+    val weatherCondition: String = try {
+        homeUiState.weatherConditions.text
+    } catch (e: Exception){""}
+    val sunsetTime = homeUiState.sunsetTime
+    val sunsetDate = homeUiState.sunsetDate
 
 
     Scaffold(
