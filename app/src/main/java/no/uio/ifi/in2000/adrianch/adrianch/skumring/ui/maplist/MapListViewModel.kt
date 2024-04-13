@@ -22,7 +22,14 @@ enum class MapListToggleState (val stateAsBool: Boolean) {
 data class MapListUiState(
     val pins: List<PinInfo> = emptyList(),
     val places: List<PlaceSummary> = emptyList(),
-    var mapListToggle: MapListToggleState = MapListToggleState.MAP
+    var mapListToggle: MapListToggleState = MapListToggleState.MAP,
+
+    // Variable for checking if there is an error
+    var error: Boolean = false,
+    // Variable that change according to the error message we get:
+    var errorMessage: String = "No error",
+    // Variable for snackbar:
+    var canRefresh: Boolean = false
 )
 
 private const val logTag = "MapListViewModel"
@@ -36,6 +43,12 @@ class MapListViewModel: ViewModel() {
     init {
         loadMap()
         loadList()
+    }
+
+    // For refreshing when you use snackbar in MapListScreen:
+    fun refreshMapList() {
+        _mapListUiState.update {currentMapUiState ->
+            currentMapUiState.copy(canRefresh = false) }
     }
 
     private fun loadMap(){
