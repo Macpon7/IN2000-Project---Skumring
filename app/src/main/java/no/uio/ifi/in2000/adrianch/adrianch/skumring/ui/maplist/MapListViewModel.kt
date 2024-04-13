@@ -45,34 +45,52 @@ class MapListViewModel: ViewModel() {
         loadList()
     }
 
+    // TODO: Do we need this?
+    fun errorDismissed() {
+        _mapListUiState.update { currentMapUiState ->
+            currentMapUiState.copy(error = false)
+        }
+    }
+
     // For refreshing when you use snackbar in MapListScreen:
+    // TODO: When is this used?
     fun refreshMapList() {
         _mapListUiState.update {currentMapUiState ->
             currentMapUiState.copy(canRefresh = false) }
+        viewModelScope.launch (Dispatchers.IO) {
+            loadMap()
+            loadList()
+        }
     }
 
     private fun loadMap(){
         viewModelScope.launch(Dispatchers.IO){
-            try {
-                _mapListUiState.update { currentMapUiState ->
+            _mapListUiState.update { currentMapUiState ->
+                try {
                     val mapInfoObject = mapRepository.getPins()
                     currentMapUiState.copy(pins = mapInfoObject)
+                } catch(e: Exception) {
+                    Log.e(logTag, "Error getting pins, failed updating state in loadMap", e)
+                    currentMapUiState.copy(error = true,
+                        errorMessage = "Error getting pins, failed updating state in loadMap",
+                        canRefresh = true)
                 }
-            } catch(e: Exception) {
-                Log.e(logTag, "Error getting pins, failed updating state", e)
             }
         }
     }
 
     private fun loadList(){
         viewModelScope.launch(Dispatchers.IO) {
-            try { // Probably unnecessary but here we are
-                _mapListUiState.update { currentMapListUiState ->
+            _mapListUiState.update { currentMapListUiState ->
+                try {
                     val placeSummaryList = placeListRepository.getPresetPlaceList()
                     currentMapListUiState.copy(places = placeSummaryList)
+                } catch(e: Exception) {
+                    Log.e(logTag, "Error getting pins in loadList", e)
+                    currentMapListUiState.copy(error = true,
+                        errorMessage = "Error getting pins in loadList",
+                        canRefresh = true)
                 }
-            } catch(e: Exception) {
-                Log.e(logTag, "Error getting pins", e)
             }
         }
     }
