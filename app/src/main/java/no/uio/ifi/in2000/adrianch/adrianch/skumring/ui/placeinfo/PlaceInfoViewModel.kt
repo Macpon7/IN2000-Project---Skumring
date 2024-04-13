@@ -24,7 +24,6 @@ data class PlaceInfoUiState(
     var errorMessage: String = "No error",
     // Variable for snackbar:
     var canRefresh: Boolean = false
-
 )
 
 class PlaceInfoViewModel : ViewModel() {
@@ -37,13 +36,16 @@ class PlaceInfoViewModel : ViewModel() {
     fun loadPlaceInfo(lat: String, long: String, id: Int = 0){
         viewModelScope.launch(Dispatchers.IO){
             Log.d(logTag, "loadPlaceInfo called")
-            try {
-                _placeInfoUiState.update { currentPlaceInfoUiState ->
+            _placeInfoUiState.update { currentPlaceInfoUiState ->
+                try {
                     val placeInfoObject = placeInfoRepository.getPlaceInfo(lat, long, id)
                     currentPlaceInfoUiState.copy(placeInfo = placeInfoObject)
+                } catch(e: Exception) {
+                    Log.e(logTag, "Error getting pins in loadPlaceInfo", e)
+                    currentPlaceInfoUiState.copy(error = true,
+                        errorMessage = "Error getting pins in loadPlaceInfo",
+                        canRefresh = true)
                 }
-            } catch(e: Exception) {
-                Log.e(logTag, "Error getting pins", e)
             }
         }
     }
