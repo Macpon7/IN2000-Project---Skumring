@@ -35,6 +35,7 @@ class HomeViewModel: ViewModel() {
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
+    // TODO add users position, alternatively favourite position from database
     private val long = "10.71839307051461"
     private val lat = "59.943735106220444"
 
@@ -47,9 +48,6 @@ class HomeViewModel: ViewModel() {
             updateWeather(lat = lat, long = long)
         }
     }
-
-
-    //data to variables in parameters will come frome repository, not as parameter
 
     private fun updateWeather(lat: String, long: String){
         viewModelScope.launch(Dispatchers.IO){
@@ -76,6 +74,7 @@ class HomeViewModel: ViewModel() {
                     )
                 }
             } catch (e: Exception) {
+                // Entire API thing failed
                 Log.e(logTag, "Error getting weather, failed updating state", e)
             }
         }
