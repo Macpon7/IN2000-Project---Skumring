@@ -10,6 +10,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,21 +26,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,24 +51,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.google.gson.JsonPrimitive
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
+import com.mapbox.maps.plugin.annotation.AnnotationConfig
+import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
+import com.mapbox.maps.plugin.annotation.ClusterOptions
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
+private const val logTag = "MapListScreen"
 
 object MapListDestination : NavigationDestination {
     override val icon = Icons.Outlined.Place
@@ -78,7 +90,7 @@ object MapListDestination : NavigationDestination {
  */
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
-fun MapListScreen(navController : NavController, mapListViewModel: MapListViewModel = viewModel()) {
+fun MapListScreen(navController : NavHostController, mapListViewModel: MapListViewModel = viewModel()) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     /*
@@ -86,13 +98,18 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
      */
     //var text by remember { mutableStateOf("") }
     //var active by remember { mutableStateOf(false) }
-    Scaffold (topBar = {
-        SkumringTopAppBar(
-            title = stringResource(id = MapListDestination.titleRes),
-            canNavigateBack = false,
-            scrollBehavior = scrollBehavior
-        )
-    }) {innerPadding ->
+    Scaffold (
+        topBar = {
+            SkumringTopBar(
+                title = stringResource(id = MapListDestination.titleRes),
+                canNavigateBack = false,
+                scrollBehavior = scrollBehavior
+            )
+        },
+        bottomBar = {
+            SkumringBottomBar(navController = navController)
+        }
+    ) {innerPadding ->
         Column (modifier = Modifier
             .padding(innerPadding)
             .fillMaxSize()
@@ -104,6 +121,7 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
@@ -118,57 +136,48 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
      */
 
-
     ThemeSwitcher (
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
         size = 65.dp, //Size of the button
         padding = 3.dp,
         onClick = { mapListViewModel.toggleMapListState() }
     )
-
-    if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
-        // Column for map view
+    Surface {
         MapArea(
             navController = navController,
-            mapListUiState = mapListUiState)
-
-    } else {
-        // Column for list view
-        Column (Modifier.verticalScroll(rememberScrollState())) {
-            mapListUiState.places.forEach {place ->
-                ListCard(
-                    name = place.name,
-                    description = place.description,
-                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                        navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
-                    }
-                )
+            mapListUiState = mapListUiState,
+            mapListViewModel = mapListViewModel
+        )
+        if (mapListUiState.showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { mapListViewModel.hideBottomSheet() },
+                sheetState = mapListUiState.sheetState,
+                dragHandle = {}
+                ) {
+                BottomSheetContent(
+                    place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
+                    navController = navController,
+                    mapListViewModel = mapListViewModel
+                    )
             }
         }
-    }
-    //}
-}
 
-
-/**
- * Creates a button with two states, list view and map view
- */
-@Composable
-fun ListAndMapButton(mapTheme: Boolean, onThemeUpdated: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(20.dp))
-        ThemeSwitcher(
-            mapTheme = mapTheme,
-            size = 65.dp, //Size of the button
-            padding = 3.dp,
-            onClick = onThemeUpdated
-        )
+        if (mapListUiState.mapListToggle == MapListToggleState.LIST) {
+            Surface (color = MaterialTheme.colorScheme.background ){
+                // Column for list view
+                Column (Modifier.verticalScroll(rememberScrollState())) {
+                    mapListUiState.places.forEach {place ->
+                        ListCard(
+                            name = place.name,
+                            description = place.description,
+                            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                                navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                            }
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -271,66 +280,87 @@ fun ThemeSwitcher(
         }
     }
 }
+
+@Composable
+fun BottomSheetContent(
+    place: PlaceSummary,
+    navController: NavController,
+    mapListViewModel: MapListViewModel
+) {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    )
+    {
+        Text(text = place.name, style = MaterialTheme.typography.headlineMedium)
+        Button(onClick = {
+            mapListViewModel.hideBottomSheet()
+            navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+        }) {
+            Text(text = "More details", style = MaterialTheme.typography.labelMedium)
+        }
+    }
+}
+
 /**
  * Placeholder for the map display area
  */
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
+fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapListViewModel: MapListViewModel) {
     // Can declare point to contain current location of user
     val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
-    var point: Point by remember { mutableStateOf(testPoint) }
+    //var point: Point by remember { mutableStateOf(testPoint) }
     val context = LocalContext.current
-    Box(
-        modifier = Modifier
-            .width(500.dp)
-            .height(500.dp)
-            .padding(6.dp)
-            .background(Color.LightGray, RoundedCornerShape((16.dp))),
-    ) {
 
-//        MapBoxMap(
-//            point = point,
-//            modifier = Modifier.fillMaxSize(),
-//            context = context
-//        )
-        MapboxMap(
-            Modifier.fillMaxSize(),
-            mapInitOptionsFactory = { context ->
-                MapInitOptions(
-                    context = context,
-                    styleUri = Style.OUTDOORS,
-                    cameraOptions = CameraOptions.Builder()
-                        .center(point)
-                        .zoom(10.0)
-                        .build()
-                )
-            }
-        ) {
-            mapListUiState.pins.forEach { pinfo ->
+    MapboxMap(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 12.dp)
+            .clip(RoundedCornerShape(16.dp)),
+        mapInitOptionsFactory = { context ->
+            MapInitOptions(
+                context = context,
+                styleUri = Style.OUTDOORS,
+                cameraOptions = CameraOptions.Builder()
+                    .center(Point.fromLngLat(10.71839307051461, 59.943735106220444))
+                    .zoom(10.0)
+                    .build()
+            )
+        },
+        onMapLongClickListener = {
+            Log.d(logTag, "Long pressed. Long: ${it.longitude().toString()}, Lat: ${it.latitude().toString()}")
+            true
+        }
+    ) {
+        PointAnnotationGroup(
+            annotations = mapListUiState.pins.map {pinfo ->
                 val long = pinfo.long.toDouble()
                 val lat = pinfo.lat.toDouble()
-                point = Point.fromLngLat(long, lat)
-                PointAnnotation(
-                    point = point,
-                    iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-                    onClick = {
-                        navController.navigate("infoscreen/${pinfo.lat}/${pinfo.long}/${pinfo.id}")
-                        Log.d("Home", "Click!")
-                        true
-                    }
+                val point = Point.fromLngLat(long, lat)
+
+                val iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap()
+
+                PointAnnotationOptions()
+                    .withPoint(point)
+                    .withIconImage(iconImageBitmap)
+                    .withData(JsonPrimitive(pinfo.id.toString()))
+            },
+            annotationConfig = AnnotationConfig(
+                annotationSourceOptions = AnnotationSourceOptions(
+                    clusterOptions = ClusterOptions()
                 )
+            ),
+            onClick = {
+                val lat = it.point.latitude().toString()
+                val long = it.point.longitude().toString()
+                val id = it.getData()!!.asString
+                Log.d(logTag, "Clicked on pin with id: $id")
+                mapListViewModel.showBottomSheet(id.toInt())
+                //navController.navigate("infoscreen/${lat}/${long}/${id}")
+                true
             }
-            // Annotation showing custom coordinate should be here
-//            PointAnnotation(
-//                point = point,
-//               iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
-//                onClick = {
-//                   Log.d("Home", "Click!")
-//                   true
-//                },
-//            )
-        }
+        )
     }
 }
 
@@ -339,45 +369,117 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
  */
 @Composable
 fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 12.dp)
-            .clickable(onClick = onItemClick) //Click to infoscreen
-    ){
+    BoxWithConstraints {
+        if (maxWidth < 400.dp) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp)
+                    .clickable(onClick = onItemClick), //Click to infoscreen
+            ){
 
-        //Box for picture:
-        Box(
-            modifier = Modifier
-                .height(150.dp)
-                .padding(6.dp)
-                .background(Color.LightGray, RoundedCornerShape((16.dp)))
-                .fillMaxWidth(),
-        ) {
-            Text(
-                text = "Image Placeholder",
-                modifier = Modifier.align(Alignment.Center)
-            )
+                //Box for picture:
+                Box(
+                    modifier = Modifier
+                        .height(150.dp)
+                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Image Placeholder",
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                Row (
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp)
+                )
+                {
+                    Text(
+                        text = name,
+                        modifier = Modifier
+                            .padding(vertical = 2.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                    Row {
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
+                        }
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
+                        }
+                    }
+                }
+
+                //Text for description. Do we want weather condition in the future?
+                Text(
+                    text = description,
+                    modifier = Modifier
+                        .padding(vertical = 2.dp)
+                        .padding(bottom = 4.dp)
+                        .align(Alignment.CenterHorizontally))
+            }
+        } else {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp)
+                    .clickable(onClick = onItemClick), //Click to infoscreen
+            ){
+
+                //Box for picture:
+                Box(
+                    modifier = Modifier
+                        .height(150.dp)
+                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Image Placeholder",
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp)
+                )
+                {
+                    Text(
+                        text = name,
+                        modifier = Modifier
+                            .padding(vertical = 2.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Row {
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
+                        }
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
+                        }
+                    }
+                }
+
+                //Text for description. Do we want weather condition in the future?
+                Text(
+                    text = description,
+                    modifier = Modifier
+                        .padding(vertical = 2.dp)
+                        .padding(bottom = 4.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
         }
-
-        //Text for name of place
-        Text(
-            text = name,
-            modifier = Modifier
-                .padding(vertical = 2.dp)
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-
-        //Text for description. Do we want weather condition in the future?
-        Text(
-            text = description,
-            modifier = Modifier
-                .padding(vertical = 2.dp)
-                .padding(bottom = 4.dp)
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center,)
     }
 }

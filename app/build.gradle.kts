@@ -102,8 +102,9 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
 
     // Mapbox
-    implementation("com.mapbox.maps:android:11.2.0")
-    implementation("com.mapbox.extension:maps-compose:11.2.0")
+    val mapboxVersion = "11.2.0"
+    implementation("com.mapbox.maps:android:$mapboxVersion")
+    implementation("com.mapbox.extension:maps-compose:$mapboxVersion")
 
     // Room
     val room_version = "2.6.1"

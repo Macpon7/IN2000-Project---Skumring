@@ -18,14 +18,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,8 +41,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -58,6 +58,7 @@ object PlaceInfoScreenDestination : NavigationDestination {
     override val titleRes = null
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PlaceInfoScreen(
@@ -65,7 +66,7 @@ fun PlaceInfoScreen(
     lat: String,
     long: String,
     id: Int,
-    navController: NavController
+    navController: NavHostController
 ) {
 
     LaunchedEffect(key1 = id) {
@@ -78,48 +79,33 @@ fun PlaceInfoScreen(
 
     Scaffold(
         topBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White)
-                    .padding(vertical = 10.dp) // Choose the size of the topbar
-            ) {
-                    IconButton(onClick = {navController.popBackStack()},
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Arrow back" ,
-                            modifier = Modifier.size(30.dp) // Set the size of the Icon inside the IconButton
-                        )
-                    }
-                Text(
-                    text = placeUiState.placeInfo.name,
-                    textAlign = TextAlign.Center,
-                    fontSize = 24.sp,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            SkumringTopBar(
+                title = placeUiState.placeInfo.name,
+                canNavigateBack = true,
+                navigateUp = { navController.popBackStack() })
         },
-        content = {innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding) // Padding for topbar
-            ) {
-                when {
-                    // The content won't load before the content is ready
-                    placeUiState.placeInfo.name.isEmpty() -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                    else -> {
-                        ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
-                    }
+        bottomBar = {
+            SkumringBottomBar(navController = navController)
+        }
+    ) {innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding) // Padding for topbar
+        ) {
+            when {
+                // The content won't load before the content is ready
+                placeUiState.placeInfo.name.isEmpty() -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                else -> {
+                    ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
                 }
             }
         }
-    )
+    }
 }
 
 /**
@@ -202,7 +188,9 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
                 Icon(
                     imageVector = if (showLongTermForecast) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = "Toggle Long Term Forecast",
-                    modifier = Modifier.padding(end = 8.dp).size(36.dp)
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .size(36.dp)
                 )
             }
 
