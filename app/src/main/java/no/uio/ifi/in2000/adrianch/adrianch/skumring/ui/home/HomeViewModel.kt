@@ -21,10 +21,7 @@ data class HomeUiState(
     val sunsetTime: String = "",
     val sunsetDate: String = "",
     val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
-    //var weatherCheck: Boolean = false,
-    //var weatherMessage: String = ""
-    //var weatherPerHour: WeatherPerHour = WeatherPerHour()
-)
+ )
 
 private const val logTag = "HomeViewModel" //for logging
 
@@ -47,7 +44,6 @@ class HomeViewModel: ViewModel() {
 
     private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-            //updateSunset(lat = lat, long = long)
             updateWeather(lat = lat, long = long)
         }
     }
@@ -61,6 +57,8 @@ class HomeViewModel: ViewModel() {
                 _homeUiState.update{ currenthomeUiState->
                     Log.d(logTag, "fetching sunsetweather")
                     val sunsetWeather = placeInfo.getLocalSunsetWeather(lat = lat, long = long)
+                    // Adding try/catch to handle date missing
+                    // Add to snackbar?
                     val sunsetWeatherDateTime: List<String> = try {
                         sunsetWeather.time.toString().split("T")
                     } catch (e: Exception) {
@@ -75,8 +73,6 @@ class HomeViewModel: ViewModel() {
                         date = LocalDate.now(),
                         temp = sunsetWeather.instant.air_temperature.toString(),
                         weatherConditions = placeInfo.getWeatherConditions(sunsetWeather).weatherRating
-
-
                     )
                 }
             } catch (e: Exception) {
@@ -84,22 +80,4 @@ class HomeViewModel: ViewModel() {
             }
         }
     }
-
-//     fun updateSunset(lat: String, long: String){
-//         viewModelScope.launch(Dispatchers.IO){
-//             try {
-//                 val sunset = placeInfo.getSunset(lat, long, homeUiState.value.date)
-//                _homeUiState.update { currentHomeUiState ->
-//                    currentHomeUiState.copy(
-//                        sunset = sunset,
-//                    )
-//                }
-//             } catch (e: Exception) {
-//                 Log.e(logTag, "Error getting sunset, failed updating state", e)
-//             }
-//         }
-//    }
-//    fun updateWeatherConditions() {
-//
-//    }
 }
