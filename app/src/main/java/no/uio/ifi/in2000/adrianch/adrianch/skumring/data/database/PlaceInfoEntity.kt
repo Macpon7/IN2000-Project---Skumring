@@ -7,9 +7,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "placeInfo")
 data class PlaceInfoEntity(
-    @PrimaryKey(autoGenerate = true) var id: Int = 0,
-    var name: String = "",
-    var lat: String = "",
-    var long: String = ""
-    //var isFavorite : Boolean = false //doesnt make sense to have a
+    @PrimaryKey(autoGenerate = true) var id: Int,
+    var name: String,
+    var lat: String,
+    var long: String,
+    @ColumnInfo(name = "is_custom_place") var isCustomPlace: Int,
+    @ColumnInfo(name = "is_favourite") var isFavourite: Int
 )
