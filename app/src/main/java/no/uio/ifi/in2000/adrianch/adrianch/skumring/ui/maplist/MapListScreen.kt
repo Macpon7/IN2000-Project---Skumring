@@ -346,11 +346,8 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
             }
         ) {
             mapListUiState.pins.forEach { pinfo ->
-                val long = pinfo.long.toDouble()
-                val lat = pinfo.lat.toDouble()
-                point = Point.fromLngLat(long, lat)
                 PointAnnotation(
-                    point = point,
+                    point = pinfo.point,
                     iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
                     onClick = {
                         navController.navigate("/${pinfo.lat}/${pinfo.long}/${pinfo.id}")
