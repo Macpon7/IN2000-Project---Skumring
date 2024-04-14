@@ -6,10 +6,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [PlaceInfoEntity::class], version = 1)
+@Database(entities = [PlaceInfoEntity::class, ImageEntity::class, ForecastEntity::class], version = 1)
 //@TypeConverters(RoomConverters::class)
 public abstract class AppDatabase : RoomDatabase() {
     abstract fun placeInfoDao(): PlaceInfoDao
+    abstract fun imageDao(): ImageDao
+    abstract fun forecastDao(): ForecastDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the
