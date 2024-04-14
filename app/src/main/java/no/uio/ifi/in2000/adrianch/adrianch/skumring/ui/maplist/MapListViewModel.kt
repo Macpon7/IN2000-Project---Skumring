@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
 import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -15,14 +16,21 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
 
 enum class MapListToggleState (val stateAsBool: Boolean) {
-    MAP(false),
-    LIST(true)
+    MAP(stateAsBool = false),
+    LIST(stateAsBool = true)
 }
 
 data class MapListUiState(
     val pins: List<PinInfo> = emptyList(),
     val places: List<PlaceSummary> = emptyList(),
-    var mapListToggle: MapListToggleState = MapListToggleState.MAP
+    var mapListToggle: MapListToggleState = MapListToggleState.MAP,
+
+    // Variable for checking if there is an error:
+    var showSnackbar: Boolean = false,
+    // Variable that change according to the error message we get:
+    var errorMessage: String = "No error",
+    // Variable for snackbar:
+    val snackbarHostState: SnackbarHostState = SnackbarHostState()
 )
 
 private const val logTag = "MapListViewModel"
@@ -40,26 +48,30 @@ class MapListViewModel: ViewModel() {
 
     private fun loadMap(){
         viewModelScope.launch(Dispatchers.IO){
-            try {
-                _mapListUiState.update { currentMapUiState ->
+            _mapListUiState.update { currentMapUiState ->
+                try {
                     val mapInfoObject = mapRepository.getPins()
                     currentMapUiState.copy(pins = mapInfoObject)
+                } catch(e: Exception) {
+                    Log.e(logTag, "Error getting pins, failed updating state in loadMap", e)
+                    currentMapUiState.copy(showSnackbar = true,
+                        errorMessage = "Error getting pins, failed updating state in loadMap")
                 }
-            } catch(e: Exception) {
-                Log.e(logTag, "Error getting pins, failed updating state", e)
             }
         }
     }
 
     private fun loadList(){
         viewModelScope.launch(Dispatchers.IO) {
-            try { // Probably unnecessary but here we are
-                _mapListUiState.update { currentMapListUiState ->
+            _mapListUiState.update { currentMapListUiState ->
+                try {
                     val placeSummaryList = placeListRepository.getPresetPlaceList()
                     currentMapListUiState.copy(places = placeSummaryList)
+                } catch(e: Exception) {
+                    Log.e(logTag, "Error getting pins in loadList", e)
+                    currentMapListUiState.copy(showSnackbar = true,
+                        errorMessage = "Error getting pins in loadList")
                 }
-            } catch(e: Exception) {
-                Log.e(logTag, "Error getting pins", e)
             }
         }
     }
@@ -73,6 +85,30 @@ class MapListViewModel: ViewModel() {
                     currentMapListUiState.copy(mapListToggle = MapListToggleState.MAP)
                 }
             }
+        }
+    }
+
+    fun snackbarDismissed() {
+        _mapListUiState.update { currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false)
+        }
+    }
+
+    // For refreshing when you use snackbar in MapListScreen:
+    fun refreshList() {
+        _mapListUiState.update {currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false) }
+        viewModelScope.launch (Dispatchers.IO) {
+            loadList()
+        }
+    }
+
+    // For refreshing when you use snackbar in MapListScreen:
+    fun refreshMap() {
+        _mapListUiState.update {currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false) }
+        viewModelScope.launch (Dispatchers.IO) {
+            loadMap()
         }
     }
 }

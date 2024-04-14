@@ -27,7 +27,7 @@ fun SkumringNavHost(
         modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
-            HomeScreen()
+            HomeScreen(navController = navController)
         }
         composable(route = MapListDestination.route) {
             MapListScreen(navController = navController)
