@@ -11,7 +11,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -29,7 +28,7 @@ interface OldPlaceInfoRepository {
      * @param long String containing the longitude coordinate
      * @param id Optional parameter. If id is not 0 then we will fetch details like name and description
      */
-    suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
+    //suspend fun getPlaceInfo(lat: String, long: String, id: Int = 0): PlaceInfo
 
     /**
      * Makes a list of [DailyEvents] objects, one for each [date][LocalDateTime] key found in the map property.
@@ -38,9 +37,9 @@ interface OldPlaceInfoRepository {
      * are the lists), this function creates our simple DailyEvents objects for each date, containing
      * the time of the solar events, and a statement on the conditions for photography at each event.
      */
-    suspend fun makeDailyEvents(
+    suspend fun makeSunEvents(
         forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>,
-        lat: String, long: String): List<DailyEvents>
+        lat: String, long: String): List<SunEvent>
 
     /**
      * Takes list of WeatherPerHour objects, goes through each of them and
@@ -54,7 +53,7 @@ interface OldPlaceInfoRepository {
     /**
      * Returns a string containing the time of sunset on the given date at the given coordinates.
      */
-    suspend fun getSunset(lat: String, long: String, date: LocalDate): String
+    suspend fun getSunsetString(lat: String, long: String, date: LocalDate): String
 
     /**
      * Returns the weather conditions during today's sunset given cooridnates
@@ -80,7 +79,7 @@ class OldPlaceInfoRepositoryImpl (
     private val locationForecastDataSource: LocationForecastDataSource = LocationForecastDataSource(),
     private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
 ): OldPlaceInfoRepository {
-    override suspend fun getPlaceInfo(lat: String, long: String, id: Int): PlaceInfo {
+    /*override suspend fun getPlaceInfo(lat: String, long: String, id: Int): PlaceInfo {
         try {
 
             // Get the forecasted weather at this place
@@ -91,7 +90,7 @@ class OldPlaceInfoRepositoryImpl (
             val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
 
             // Send our map to a function which will return a list of DailyEvents
-            val dailyEventsList = makeDailyEvents(
+            val sunEventsList = makeSunEvents(
                 forecastGroupedByDate = forecastGroupedByDate,
                 lat = lat,
                 long = long
@@ -106,79 +105,51 @@ class OldPlaceInfoRepositoryImpl (
                 description = details.description,
                 lat = lat,
                 long = long,
-                sunEvents = dailyEventsList
+                sunEvents = sunEventsList,
             )
         } catch (e: Exception) {
             Log.e(logTag, "Error when fetching placeinfo:" + (e.message ?: ""), e)
             throw e
         }
-    }
+    }*/
 
     /**
-     * Given a map containing lists of weather forecast data (where the key is the date and the values
-     * are the lists), this function creates our simple DailyEvents objects for each date, containing
-     * the time of the solar events, and a statement on the conditions for photography at each event
+     * Given a map containing lists of [WeatherPerHour] objects (where the key is a [LocalDate] and
+     * the values are the lists), this function creates a [SunEvent] object for each date, containing
+     * the time of sunset and a statement on the conditions for photography.
      */
-    override suspend fun makeDailyEvents(
+    override suspend fun makeSunEvents(
         forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>,
         lat: String,
         long: String
-    ): List<DailyEvents> {
+    ): List<SunEvent> {
         // The list we will eventually return
-        val sunEventsList = mutableListOf<DailyEvents>()
+        val sunEventsList = mutableListOf<SunEvent>()
 
-        /* For each date in the map, find out the time of sunset/rise
-           For each sunset/rise, make a new SunEvent object and check if the conditions will be good
-           Make a DailyEvents object for each date and add that to our sunEventsList
+        /* For each date in the map, find out the time of sunset. Then make a new SunEvent object and
+        check the conditions, before returning a list. One for each of the next 11 days.
         */
         forecastGroupedByDate.forEach {
             try {
-                // SunActivity is a list of times. One for each event we are interested in
-                // In MVP this is only sunset, but we will add sunrise at a later date
-                val sunActivity: SunActivity = sunriseDataSource.fetchSunActivity(
+                // Time of sunset as a result of API call to MET Sunrise API
+                val sunsetTime: LocalDateTime = sunriseDataSource.fetchSunsetTime(
                     lat = lat,
                     long = long,
                     date = it.key
                 )
 
-                // Filters away all the WeatherPerHour objects whose time is too far from sunset
-                var sunsetWeather: List<WeatherPerHour> = emptyList()
-                if (it.value.size == 24) {
-                    sunsetWeather = it.value.filter { forecastObject ->
-                        abs(sunActivity.sunset.hour - forecastObject.time.hour) < 2
-                    }
-                } else {
-                    var closestForecast: WeatherPerHour = it.value[0]
-                    it.value.forEach { forecastObject ->
-                        if (abs(sunActivity.sunset.hour - forecastObject.time.hour) < abs(
-                                sunActivity.sunset.hour - closestForecast.time.hour
-                            )
-                        ) {
-                            closestForecast = forecastObject
-                        }
-                    }
-                    sunsetWeather = listOf<WeatherPerHour>(closestForecast)
-                }
-
-                val sunriseWeather = it.value.filter {
-                    //TODO after MVP: filter sunriseWeather as well
-                    true
-                }
+                // it.value is the list of WeatherPerHour objects for this date
+                val sunsetWeather = findClosestWeather(sunsetTime, it.value)
 
                 sunEventsList.add(
-                    DailyEvents(
-                        sunset = SunEvent(
-                            time = sunActivity.sunset,
-                            weather = sunsetWeather[0],
-                            // Gets only the rating for the actual sunset
-                            conditions = getWeatherConditions(sunsetWeather[0]).weatherRating
-                        ),
-                        /*
-                    sunrise = SunEvent(
-                        time = sunActivity.sunrise,
-                        conditions = checkConditions(sunriseWeather)
-                     */
-                    )
+                    SunEvent(
+                        time = sunsetTime,
+                        tempAtEvent = sunsetWeather.instant.air_temperature.toString(),
+                        //if icon is null for any reason, use the string "no_icon" instead
+                        weatherIcon = sunsetWeather.icon?:"no_icon",
+                        conditions = getWeatherConditions(sunsetWeather)
+                        )
+
                 )
             } catch (e: Exception) {
                 Log.e(logTag, "Error fetching sun activity:" + (e.message ?: ""), e)
@@ -186,6 +157,30 @@ class OldPlaceInfoRepositoryImpl (
             }
         }
         return sunEventsList.toList()
+    }
+
+    /**
+     * Given a sunset time of type [LocalDateTime] and list of [WeatherPerHour] objects, this function
+     * will return whichever weather object is closest in time to the given sunset time.
+     */
+    private fun findClosestWeather(sunsetTime: LocalDateTime, weatherData: List<WeatherPerHour>): WeatherPerHour {
+        // Pick the first WeatherPerHour object to begin with
+        var sunsetWeather: WeatherPerHour = weatherData[0]
+        // Then go through all of them and pick the closest to sunset
+        weatherData.forEach { forecastObject ->
+            // if the time between this WeatherPerHour object and sunsetTime is less than
+            // the time between the currently selected closest WeatherPerHour and sunsetTime,
+            // pick this WeatherPerHour object as the new closest.
+            // Use abs() because the difference int is positive or negative depending on if
+            // the time we compare with is before or after sunset
+            if (abs(forecastObject.time.compareTo(sunsetTime)) <
+                abs(sunsetWeather.time.compareTo(sunsetTime)))
+            {
+                sunsetWeather = forecastObject
+            }
+        }
+
+        return sunsetWeather
     }
 
     /**
@@ -210,9 +205,9 @@ class OldPlaceInfoRepositoryImpl (
         return true
     }
 
-    override suspend fun getSunset(lat: String, long: String, date: LocalDate): String {
+    override suspend fun getSunsetString(lat: String, long: String, date: LocalDate): String {
         try {
-            val sunsetDateTime = sunriseDataSource.fetchSunActivity(lat, long, date).sunset
+            val sunsetDateTime = sunriseDataSource.fetchSunsetTime(lat, long, date)
             return sunsetDateTime.format(DateTimeFormatter.ISO_LOCAL_TIME)
         } catch (e: Exception) {
             Log.e(logTag, "Error processing sunset() data:" + (e.message ?: ""), e)
@@ -335,8 +330,14 @@ class OldPlaceInfoRepositoryImpl (
     }
     override suspend fun getLocalSunsetWeather (lat: String, long: String) : WeatherPerHour {
         val weather = locationForecastDataSource.fetchWeatherData(lat = lat, long = long).groupBy { it.time.toLocalDate() }
-        val dailyEvents = makeDailyEvents(weather, lat, long)
-        Log.d(logTag, dailyEvents[0].sunset.weather.time.toString())
-        return dailyEvents[0].sunset.weather
+        val weatherToday = weather.entries.first()
+
+        val sunsetTime: LocalDateTime = sunriseDataSource.fetchSunsetTime(
+            lat = lat,
+            long = long,
+            date = weatherToday.key
+        )
+
+        return findClosestWeather(sunsetTime = sunsetTime, weatherData = weatherToday.value)
     }
 }
