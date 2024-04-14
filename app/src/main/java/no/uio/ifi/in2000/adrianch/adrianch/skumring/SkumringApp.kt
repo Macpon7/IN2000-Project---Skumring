@@ -17,7 +17,11 @@ fun SkumringApp(
 ) {
     val db = AppDatabase.getDatabase(LocalContext.current)
 
-    val dbRepository: PlaceInfoRepository = PlaceInfoRepositoryImpl(db.placeInfoDao())
+    val dbRepository: PlaceInfoRepository = PlaceInfoRepositoryImpl(
+        placeInfoDao = db.placeInfoDao(),
+        forecastDao = db.forecastDao(),
+        imageDao = db.imageDao()
+        )
     SkumringNavHost(navController = navController, placeInfoRepository = dbRepository)
 }
 
