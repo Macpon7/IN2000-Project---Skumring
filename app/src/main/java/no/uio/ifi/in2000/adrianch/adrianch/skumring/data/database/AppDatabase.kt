@@ -5,9 +5,10 @@ import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 @Database(entities = [PlaceInfoEntity::class, ImageEntity::class, ForecastEntity::class], version = 1)
-//@TypeConverters(RoomConverters::class)
+@TypeConverters(RoomConverters::class)
 public abstract class AppDatabase : RoomDatabase() {
     abstract fun placeInfoDao(): PlaceInfoDao
     abstract fun imageDao(): ImageDao

@@ -12,6 +12,6 @@ data class PlaceInfoEntity(
     var description: String,
     var latitude: String,
     var longitude: String,
-    @ColumnInfo(name = "is_custom_place") var isCustomPlace: Int,
-    @ColumnInfo(name = "is_favourite") var isFavourite: Int
+    @ColumnInfo(name = "is_custom_place") var isCustomPlace: Boolean,
+    @ColumnInfo(name = "is_favourite") var isFavourite: Boolean
 )
