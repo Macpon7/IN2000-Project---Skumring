@@ -63,7 +63,7 @@ interface PlaceInfoRepository {
 
     /**
      * Returns a 1-3 rating of the given weather conditions
-     * @param WeatherPerHour
+     * @param weatherData
      */
     suspend fun getWeatherConditions(weatherData: WeatherPerHour): WeatherConditions
 
