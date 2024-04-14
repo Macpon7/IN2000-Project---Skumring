@@ -25,6 +25,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
@@ -54,7 +57,7 @@ private const val logTag = "PlaceInfoScreen"
 object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
     override val buttonTitle = null
-    override val route = "infoscreen/{lat}/{long}/{id}"
+    override val route = "placeinfoscreen/{lat}/{long}/{id}"
     override val titleRes = null
 }
 
@@ -72,10 +75,32 @@ fun PlaceInfoScreen(
     LaunchedEffect(key1 = id) {
         Log.d(logTag, "LaunchedEffect launched with key $id")
         placeViewModel.loadPlaceInfo(lat = lat, long = long, id = id)
-        Locale.setDefault(Locale("no", ))
     }
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
+
+    // Check if there is an error, if so show a snackbar:
+    if (placeUiState.showSnackbar) {
+        LaunchedEffect(placeUiState.snackbarHostState) {
+            val result = placeUiState.snackbarHostState.showSnackbar(
+                message = placeUiState.errorMessage,
+                withDismissAction = true,
+                actionLabel = "Refresh",
+            )
+            // If the snackbar is dismissed, reset the boolean of the showSnackbar-variable
+            // The snackbar will reappear is we get a new error
+            when (result) {
+                // If you press refresh
+                SnackbarResult.ActionPerformed -> {
+                    placeViewModel.refresh(lat = lat, long = long, id = id)
+                }
+                // If you click somewhere on the screen
+                SnackbarResult.Dismissed -> {
+                    placeViewModel.snackbarDismissed()
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -86,8 +111,10 @@ fun PlaceInfoScreen(
         },
         bottomBar = {
             SkumringBottomBar(navController = navController)
-        }
-    ) {innerPadding ->
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = placeUiState.snackbarHostState)
+        }) {innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -125,7 +152,6 @@ fun PlacePicture() {
         )
     }
 }
-
 
 /**
  * Function with alle the content of the homescreen
@@ -205,7 +231,7 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
 }
 
 @Composable
-fun SunEventInfo(time: LocalDateTime, conditions: Boolean) {
+fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
     val dateString = if (time.dayOfYear == LocalDateTime.now().dayOfYear) {
         // The current date we are formatting is today
         "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
@@ -219,10 +245,10 @@ fun SunEventInfo(time: LocalDateTime, conditions: Boolean) {
 
     val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-    val conditionsString = if (conditions) {
-        "Det blir gode forhold!"
-    } else {
-        "Det blir dårlige forhold..."
+    val conditionsString = when (conditions) {
+        WeatherConditionsRating.POOR -> "Det blir dårlige forhold.."
+        WeatherConditionsRating.DECENT -> "Det blir OK forhold"
+        WeatherConditionsRating.EXCELLENT -> "Det blir fantastiske forhold!"
     }
 
     SunEventInfoCard(
