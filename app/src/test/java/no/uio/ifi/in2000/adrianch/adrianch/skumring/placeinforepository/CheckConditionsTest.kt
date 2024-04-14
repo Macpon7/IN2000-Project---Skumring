@@ -16,7 +16,7 @@ class CheckConditionsTest {
      * according to the agreed upon conditions.
      */
     @Test
-    fun checkingIfWeatherConditionsAreGood() {
+    suspend fun checkingIfWeatherConditionsAreGood() {
         val gson = Gson()
 
         val goodWeatherResponse: LocationForecastInfo = gson.fromJson(
@@ -35,7 +35,7 @@ class CheckConditionsTest {
     }
 
     @Test
-    fun checkingIfWeatherConditionsAreBad() {
+    suspend fun checkingIfWeatherConditionsAreBad() {
         val gson = Gson()
 
         val badWeatherResponse: LocationForecastInfo = gson.fromJson(
