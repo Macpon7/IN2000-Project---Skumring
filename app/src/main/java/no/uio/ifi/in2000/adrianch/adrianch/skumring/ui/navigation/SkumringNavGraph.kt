@@ -11,6 +11,8 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListScreen
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreenDestination
 
@@ -29,6 +31,9 @@ fun SkumringNavHost(
         }
         composable(route = MapListDestination.route) {
             MapListScreen(navController = navController)
+        }
+        composable(route = MyPageDestination.route) {
+            MyPageScreen()
         }
         composable(
             route = PlaceInfoScreenDestination.route,
