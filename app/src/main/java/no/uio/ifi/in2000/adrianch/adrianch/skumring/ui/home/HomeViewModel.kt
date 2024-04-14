@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
 import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -21,12 +22,12 @@ data class HomeUiState(
     var weatherCheck: Boolean = false,
     var weatherMessage: String = "Dårlig vær",
 
-    // Variable for checking if there is an error
-    var error: Boolean = false,
+    // Variable for checking if there is an error:
+    var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
     var errorMessage: String = "No error",
     // Variable for snackbar:
-    var canRefresh: Boolean = false
+    val snackbarHostState: SnackbarHostState = SnackbarHostState()
 )
 
 private const val logTag = "HomeViewModel" //for logging
@@ -78,7 +79,35 @@ class HomeViewModel() : ViewModel() {
                 }
              } catch (e: Exception) {
                  Log.e(logTag, "Error getting sunset, failed updating state", e)
+                 _homeUiState.update { currenthomeUiState ->
+                     currenthomeUiState.copy(
+                         showSnackbar = true,
+                         errorMessage = "Error getting sunset, failed updating state"
+                     )
+                 }
              }
          }
+    }
+
+    /**
+     * Set showSnackbar to false, so when the snackbar refresh it will be shown again
+     */
+    fun snackbarDismissed() {
+        _homeUiState.update { currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false)
+        }
+    }
+
+    /**
+     *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
+     */
+    fun refresh() {
+        _homeUiState.update {currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false)
+        }
+        viewModelScope.launch (Dispatchers.IO) {
+            loadHomeScreen()
+            updateSunset()
+        }
     }
 }

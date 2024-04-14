@@ -16,18 +16,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,7 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
-import kotlinx.coroutines.launch
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
@@ -71,14 +68,28 @@ fun HomeScreen(
     var weatherCheck: Boolean = homeUiState.weatherCheck
     var weatherMessage: String = homeUiState.weatherMessage
 
-    // Snackbar:
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    // TODO -> must add variables when we make them in viewmodel:
-    // Variable to get the error message from viewmodel
-    val error = false // Have to change according to the state in viemodel
-    val errorMessage = "" // Variable for the errorMessage
+    // Check if there is an error, if so show a snackbar:
+    if (homeUiState.showSnackbar) {
+        LaunchedEffect(homeUiState.snackbarHostState) {
+            val result = homeUiState.snackbarHostState.showSnackbar(
+                message = homeUiState.errorMessage,
+                withDismissAction = true,
+                actionLabel = "Refresh",
+            )
+            // If the snackbar is dismissed, reset the boolean of the error-variable
+            // The snackbar will reappear is we get a new error
+            when (result) {
+                // If you press refresh
+                SnackbarResult.ActionPerformed -> {
+                    homeViewModel.refresh()
+                }
+                // If you click somewhere on the screen
+                SnackbarResult.Dismissed -> {
+                    homeViewModel.snackbarDismissed()
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -88,33 +99,12 @@ fun HomeScreen(
                 scrollBehavior = scrollBehavior
             )
         },
-        snackbarHost = {SnackbarHost(hostState = snackbarHostState)}
+        snackbarHost = { SnackbarHost(hostState = homeUiState.snackbarHostState) },
     ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
         Column (modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // if theres an error snackbar will appear:
-            if (error) {
-
-                // Should we show the content or not?
-
-                Text("An error has occurred")
-
-                scope.launch {
-                    val result = snackbarHostState
-                        .showSnackbar(
-                            message = errorMessage,
-                            duration = SnackbarDuration.Indefinite,
-                            actionLabel = "Refresh",
-                        )
-                    when (result) {
-                        SnackbarResult.ActionPerformed -> {navController.navigate("home")}
-                        else -> {}
-                    }
-                }
-            } else {
-                ContentHomeScreen(time, temp, sunset, weatherCheck)
-            }
+            ContentHomeScreen(time, temp, sunset, weatherCheck)
         }
     }
 }
@@ -191,8 +181,6 @@ fun SunDown(sunset: String) {
         fontSize = 12.sp
     )
 }
-
-
 
 /**
  * Function with the map inside
