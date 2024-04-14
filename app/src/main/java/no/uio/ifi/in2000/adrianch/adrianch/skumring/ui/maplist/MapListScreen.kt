@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateDpAsState
@@ -32,9 +33,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -76,23 +80,60 @@ object MapListDestination : NavigationDestination {
 /**
  * Main composable function for displaying the map screen
  */
-        @OptIn(ExperimentalMaterial3Api::class)
-        @Composable
+@SuppressLint("CoroutineCreationDuringComposition")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun MapListScreen(navController : NavController, mapListViewModel: MapListViewModel = viewModel()) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
+    val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
+
+    // Check if there is an error, if so show a snackbar:
+    if (mapListUiState.showSnackbar) {
+        LaunchedEffect(mapListUiState.snackbarHostState) {
+            val result = mapListUiState.snackbarHostState.showSnackbar(
+                message = mapListUiState.errorMessage,
+                withDismissAction = true,
+                actionLabel = "Refresh",
+            )
+
+            // If the snackbar is dismissed, reset the boolean of the error-variable
+            // The snackbar will reappear is we get a new error
+            when (result) {
+                // If you press refresh
+                SnackbarResult.ActionPerformed -> {
+                    // Check if in map or list
+                    if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
+                        mapListViewModel.refreshMap()
+                    }
+                    else {
+                        mapListViewModel.refreshList()
+                    }
+                }
+                // If you click somewhere on the screen
+                SnackbarResult.Dismissed -> {
+                    // Check if in map or list
+                    mapListViewModel.snackbarDismissed()
+                }
+            }
+        }
+    }
+
     /*
-    These belong to searchbar
+    TODO: These belong to searchbar
      */
     //var text by remember { mutableStateOf("") }
     //var active by remember { mutableStateOf(false) }
+
     Scaffold (topBar = {
         SkumringTopAppBar(
             title = stringResource(id = MapListDestination.titleRes),
             canNavigateBack = false,
             scrollBehavior = scrollBehavior
         )
-    }) {innerPadding ->
+    },
+        snackbarHost = { SnackbarHost(hostState = mapListUiState.snackbarHostState) },
+    ) {innerPadding ->
         Column (modifier = Modifier
             .padding(innerPadding)
             .fillMaxSize()
@@ -118,7 +159,6 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
      */
 
-
     ThemeSwitcher (
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
         size = 65.dp, //Size of the button
@@ -140,15 +180,13 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                     name = place.name,
                     description = place.description,
                     onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                        navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                        navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
                     }
                 )
             }
         }
     }
-    //}
 }
-
 
 /**
  * Creates a button with two states, list view and map view
@@ -315,7 +353,7 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
                     point = point,
                     iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
                     onClick = {
-                        navController.navigate("infoscreen/${pinfo.lat}/${pinfo.long}/${pinfo.id}")
+                        navController.navigate("/${pinfo.lat}/${pinfo.long}/${pinfo.id}")
                         Log.d("Home", "Click!")
                         true
                     }
@@ -343,7 +381,7 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 12.dp)
-            .clickable(onClick = onItemClick) //Click to infoscreen
+            .clickable(onClick = onItemClick) //Click to placeinfoscreen
     ){
 
         //Box for picture:

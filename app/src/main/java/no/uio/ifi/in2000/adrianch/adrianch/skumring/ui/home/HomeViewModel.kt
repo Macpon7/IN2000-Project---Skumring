@@ -16,13 +16,20 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherCondi
 import java.time.LocalDate
 
 data class HomeUiState(
-    val date: LocalDate = LocalDate.of(2000,1,1),
+    val date: LocalDate = LocalDate.of(2024,3,7),
     val temp: String = "",
     val sunsetTime: String = "",
     val sunsetDate: String = "",
     val sunsetWeatherIcon: String? = "",
     val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
- )
+
+    // Variable for checking if there is an error:
+    var showSnackbar: Boolean = false,
+    // Variable that change according to the error message we get:
+    var errorMessage: String = "No error",
+    // Variable for snackbar:
+    val snackbarHostState: SnackbarHostState = SnackbarHostState()
+)
 
 private const val logTag = "HomeViewModel" //for logging
 
@@ -31,22 +38,24 @@ private const val logTag = "HomeViewModel" //for logging
  */
 class HomeViewModel: ViewModel() {
     private val mapRepository = MapRepositoryImpl()
+    // Creates new instance of repository:
     private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
-    // TODO add users position, alternatively favourite position from database
-    private val long = "10.71839307051461"
-    private val lat = "59.943735106220444"
-
     init {
         loadHomeScreen()
     }
 
+
     private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-            updateWeather(lat = lat, long = long)
+            _homeUiState.update{ currenthomeUiState->
+                currenthomeUiState.copy(
+                    temp = temp,
+                    sunset = sunset)
+            }
         }
     }
 
@@ -77,12 +86,37 @@ class HomeViewModel: ViewModel() {
                         weatherConditions = placeInfo.getWeatherConditions(sunsetWeather).weatherRating
                     )
                 }
-            } catch (e: Exception) {
-                // Entire API thing failed
-                Log.e(logTag, "Error getting weather, failed updating state", e)
-            }
+             } catch (e: Exception) {
+                 Log.e(logTag, "Error getting sunset, failed updating state", e)
+                 _homeUiState.update { currenthomeUiState ->
+                     currenthomeUiState.copy(
+                         showSnackbar = true,
+                         errorMessage = "Error getting sunset, failed updating state"
+                     )
+                 }
+             }
+         }
+    }
+
+    /**
+     * Set showSnackbar to false, so when the snackbar refresh it will be shown again
+     */
+    fun snackbarDismissed() {
+        _homeUiState.update { currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false)
         }
     }
 
-
+    /**
+     *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
+     */
+    fun refresh() {
+        _homeUiState.update {currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false)
+        }
+        viewModelScope.launch (Dispatchers.IO) {
+            loadHomeScreen()
+            updateWeather()
+        }
+    }
 }
