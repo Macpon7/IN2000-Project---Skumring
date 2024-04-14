@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlaceInfoDao {
@@ -15,7 +14,7 @@ interface PlaceInfoDao {
     suspend fun update(place: PlaceInfoEntity)
 
     @Query("SELECT * FROM placeInfo")
-    fun getAllPlaces(): Flow<List<PlaceInfoEntity>>
+    fun getAllPlaces(): List<PlaceInfoEntity>
     // for tester: fun getAllPlaces(): List<PlaceInfoEntity>
 
     //Features vi kan implementere etter hvert
