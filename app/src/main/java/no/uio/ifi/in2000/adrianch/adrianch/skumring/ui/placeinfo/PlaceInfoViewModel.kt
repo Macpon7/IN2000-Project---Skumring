@@ -16,7 +16,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 private const val logTag = "PlaceInfoViewModel"
 
 data class PlaceInfoUiState(
-    var placeInfo: PlaceInfo = PlaceInfo("","","","", emptyList())
+    var placeInfo: PlaceInfo = PlaceInfo(id = 0,name = "", description = "", lat = "", long = "", sunEvents = emptyList())
 
 )
 
