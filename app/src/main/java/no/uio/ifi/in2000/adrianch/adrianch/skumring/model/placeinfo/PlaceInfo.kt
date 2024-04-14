@@ -9,5 +9,9 @@ data class PlaceInfo (
     val description: String,
     val lat: String,
     val long: String,
-    val sunEvents: List<DailyEvents>
+    val isFavourite: Boolean,
+    val isCustomPlace: Boolean,
+    val hasNotification: Boolean,
+    val images: List<ImageDetails>,
+    val sunEvents: List<SunEvent>
 )
