@@ -3,6 +3,8 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceDetailsDataSource
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
 
 interface PlaceInfoRepository {
@@ -18,10 +20,13 @@ interface PlaceInfoRepository {
 class PlaceInfoRepositoryImpl(
     //Creates and initializes the database
     //var database : AppDatabase = AppDatabase.getDatabase(context = LocalContext.current),
-    private val dbDAO: PlaceInfoDao,
+    private val placeInfoDao: PlaceInfoDao,
+    private val forecastDao: ForecastDao,
+    private val imageDao: ImageDao,
     private val locationForecastDataSource: LocationForecastDataSource = LocationForecastDataSource(),
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
-    private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
+    private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource(),
+    private val placeListRepository: PlaceListRepository = PlaceListRepositoryImpl()
 ): PlaceInfoRepository {
     private val oldPlaceInfoRepository = OldPlaceInfoRepositoryImpl(
         sunriseDataSource = sunriseDataSource,
