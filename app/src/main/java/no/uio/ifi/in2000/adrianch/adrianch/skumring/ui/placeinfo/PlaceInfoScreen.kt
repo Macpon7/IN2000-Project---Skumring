@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -217,7 +218,7 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
 }
 
 @Composable
-fun SunEventInfo(time: LocalDateTime, conditions: Boolean) {
+fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
     val dateString = if (time.dayOfYear == LocalDateTime.now().dayOfYear) {
         // The current date we are formatting is today
         "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
@@ -231,10 +232,10 @@ fun SunEventInfo(time: LocalDateTime, conditions: Boolean) {
 
     val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-    val conditionsString = if (conditions) {
-        "Det blir gode forhold!"
-    } else {
-        "Det blir dårlige forhold..."
+    val conditionsString = when (conditions) {
+        WeatherConditionsRating.POOR -> "Det blir dårlige forhold.."
+        WeatherConditionsRating.DECENT -> "Det blir OK forhold"
+        WeatherConditionsRating.EXCELLENT -> "Det blir fantastiske forhold!"
     }
 
     SunEventInfoCard(
