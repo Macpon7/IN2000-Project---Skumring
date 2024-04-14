@@ -20,6 +20,7 @@ data class HomeUiState(
     val temp: String = "",
     val sunsetTime: String = "",
     val sunsetDate: String = "",
+    val sunsetWeatherIcon: String? = "",
     val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
  )
 
@@ -65,9 +66,12 @@ class HomeViewModel: ViewModel() {
                     }
                     val sunsetTime = sunsetWeatherDateTime[1]
                     val sunsetDate = sunsetWeatherDateTime[0]
+                    // REMEMBER IS NULLABLE
+                    val sunsetWeatherIcon = sunsetWeather.icon
                     currenthomeUiState.copy(
                         sunsetTime = sunsetTime,
                         sunsetDate = sunsetDate,
+                        sunsetWeatherIcon = sunsetWeatherIcon,
                         date = LocalDate.now(),
                         temp = sunsetWeather.instant.air_temperature.toString(),
                         weatherConditions = placeInfo.getWeatherConditions(sunsetWeather).weatherRating

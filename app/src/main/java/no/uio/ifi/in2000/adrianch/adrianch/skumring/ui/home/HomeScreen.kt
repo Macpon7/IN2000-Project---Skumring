@@ -60,6 +60,7 @@ fun HomeScreen(
     } catch (e: Exception){""}
     val sunsetTime = homeUiState.sunsetTime
     val sunsetDate = homeUiState.sunsetDate
+    val sunsetWeatherIcon = homeUiState.sunsetWeatherIcon
 
 
     Scaffold(
