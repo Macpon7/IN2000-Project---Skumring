@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
 import android.util.Log
-import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -10,17 +9,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import java.time.LocalDate
 
 data class HomeUiState(
-    var date: LocalDate = LocalDate.of(2024,3,7),
-    var time: String = "18:30",
-    var temp: String = "25",
-    var sunset: String = "19:00",
-    var weatherCheck: Boolean = false,
-    var weatherMessage: String = "Dårlig vær",
+    val date: LocalDate = LocalDate.of(2024,3,7),
+    val temp: String = "",
+    val sunsetTime: String = "",
+    val sunsetDate: String = "",
+    val sunsetWeatherIcon: String? = "",
+    val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -35,7 +36,8 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel() : ViewModel() {
+class HomeViewModel: ViewModel() {
+    private val mapRepository = MapRepositoryImpl()
     // Creates new instance of repository:
     private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
 
@@ -44,18 +46,10 @@ class HomeViewModel() : ViewModel() {
 
     init {
         loadHomeScreen()
-        updateSunset()
     }
+
 
     private fun loadHomeScreen(){
-        viewModelScope.launch(Dispatchers.IO){
-        //call function that updates time, temp, sunset, weatherMessage
-        //the results will be used in functions in Homescreen
-        }
-    }
-
-    //data to variables in parameters will come frome repository, not as parameter
-    fun updateWeather(temp: String, sunset: String){
         viewModelScope.launch(Dispatchers.IO){
             _homeUiState.update{ currenthomeUiState->
                 currenthomeUiState.copy(
@@ -65,16 +59,31 @@ class HomeViewModel() : ViewModel() {
         }
     }
 
-     private fun updateSunset(){
-         viewModelScope.launch(Dispatchers.IO){
-             try {
-                 val sunset = placeInfo.getSunset(
-                     lat = "10",
-                     long = "60",
-                     date = homeUiState.value.date)
-                _homeUiState.update { currenthomeUiState ->
+    private fun updateWeather(lat: String, long: String){
+        viewModelScope.launch(Dispatchers.IO){
+            try {
+                _homeUiState.update{ currenthomeUiState->
+                    Log.d(logTag, "fetching sunsetweather")
+                    val sunsetWeather = placeInfo.getLocalSunsetWeather(lat = lat, long = long)
+                    // Adding try/catch to handle date missing
+                    // Add to snackbar?
+                    val sunsetWeatherDateTime: List<String> = try {
+                        sunsetWeather.time.toString().split("T")
+                    } catch (e: Exception) {
+                        Log.e(logTag, "Failed fetching date",e)
+                        listOf("", "")
+                    }
+                    val sunsetTime = sunsetWeatherDateTime[1]
+                    val sunsetDate = sunsetWeatherDateTime[0]
+                    // REMEMBER IS NULLABLE
+                    val sunsetWeatherIcon = sunsetWeather.icon
                     currenthomeUiState.copy(
-                        sunset = sunset
+                        sunsetTime = sunsetTime,
+                        sunsetDate = sunsetDate,
+                        sunsetWeatherIcon = sunsetWeatherIcon,
+                        date = LocalDate.now(),
+                        temp = sunsetWeather.instant.air_temperature.toString(),
+                        weatherConditions = placeInfo.getWeatherConditions(sunsetWeather).weatherRating
                     )
                 }
              } catch (e: Exception) {
@@ -107,7 +116,7 @@ class HomeViewModel() : ViewModel() {
         }
         viewModelScope.launch (Dispatchers.IO) {
             loadHomeScreen()
-            updateSunset()
+            updateWeather()
         }
     }
 }
