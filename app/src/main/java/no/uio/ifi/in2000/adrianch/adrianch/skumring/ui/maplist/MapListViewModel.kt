@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
 import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -24,12 +25,12 @@ data class MapListUiState(
     val places: List<PlaceSummary> = emptyList(),
     var mapListToggle: MapListToggleState = MapListToggleState.MAP,
 
-    // Variable for checking if there is an error
-    var error: Boolean = false,
+    // Variable for checking if there is an error:
+    var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
     var errorMessage: String = "No error",
     // Variable for snackbar:
-    var canRefresh: Boolean = false
+    val snackbarHostState: SnackbarHostState = SnackbarHostState()
 )
 
 private const val logTag = "MapListViewModel"
@@ -45,24 +46,6 @@ class MapListViewModel: ViewModel() {
         loadList()
     }
 
-    // TODO: Do we need this?
-    fun errorDismissed() {
-        _mapListUiState.update { currentMapUiState ->
-            currentMapUiState.copy(error = false)
-        }
-    }
-
-    // For refreshing when you use snackbar in MapListScreen:
-    // TODO: When is this used?
-    fun refreshMapList() {
-        _mapListUiState.update {currentMapUiState ->
-            currentMapUiState.copy(canRefresh = false) }
-        viewModelScope.launch (Dispatchers.IO) {
-            loadMap()
-            loadList()
-        }
-    }
-
     private fun loadMap(){
         viewModelScope.launch(Dispatchers.IO){
             _mapListUiState.update { currentMapUiState ->
@@ -71,9 +54,8 @@ class MapListViewModel: ViewModel() {
                     currentMapUiState.copy(pins = mapInfoObject)
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting pins, failed updating state in loadMap", e)
-                    currentMapUiState.copy(error = true,
-                        errorMessage = "Error getting pins, failed updating state in loadMap",
-                        canRefresh = true)
+                    currentMapUiState.copy(showSnackbar = true,
+                        errorMessage = "Error getting pins, failed updating state in loadMap")
                 }
             }
         }
@@ -87,9 +69,8 @@ class MapListViewModel: ViewModel() {
                     currentMapListUiState.copy(places = placeSummaryList)
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting pins in loadList", e)
-                    currentMapListUiState.copy(error = true,
-                        errorMessage = "Error getting pins in loadList",
-                        canRefresh = true)
+                    currentMapListUiState.copy(showSnackbar = true,
+                        errorMessage = "Error getting pins in loadList")
                 }
             }
         }
@@ -104,6 +85,30 @@ class MapListViewModel: ViewModel() {
                     currentMapListUiState.copy(mapListToggle = MapListToggleState.MAP)
                 }
             }
+        }
+    }
+
+    fun snackbarDismissed() {
+        _mapListUiState.update { currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false)
+        }
+    }
+
+    // For refreshing when you use snackbar in MapListScreen:
+    fun refreshList() {
+        _mapListUiState.update {currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false) }
+        viewModelScope.launch (Dispatchers.IO) {
+            loadList()
+        }
+    }
+
+    // For refreshing when you use snackbar in MapListScreen:
+    fun refreshMap() {
+        _mapListUiState.update {currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false) }
+        viewModelScope.launch (Dispatchers.IO) {
+            loadMap()
         }
     }
 }

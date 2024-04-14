@@ -77,7 +77,6 @@ fun PlaceInfoScreen(
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
-
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
         LaunchedEffect(placeUiState.snackbarHostState) {
@@ -86,7 +85,7 @@ fun PlaceInfoScreen(
                 withDismissAction = true,
                 actionLabel = "Refresh",
             )
-            // If the snackbar is dismissed, reset the boolean of the error-variable
+            // If the snackbar is dismissed, reset the boolean of the showSnackbar-variable
             // The snackbar will reappear is we get a new error
             when (result) {
                 // If you press refresh

@@ -33,18 +33,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,7 +65,6 @@ import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
-import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
@@ -89,20 +86,45 @@ object MapListDestination : NavigationDestination {
 fun MapListScreen(navController : NavController, mapListViewModel: MapListViewModel = viewModel()) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    // Snackbar:
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
-    // TODO -> must add variables when we make them in viewmodel:
-    // Variable to get the error message from viewmodel
-    val error = true // Have to change according to the state in viemodel
-    val errorMessage = "" // Variable for the errorMessage
+    // Check if there is an error, if so show a snackbar:
+    if (mapListUiState.showSnackbar) {
+        LaunchedEffect(mapListUiState.snackbarHostState) {
+            val result = mapListUiState.snackbarHostState.showSnackbar(
+                message = mapListUiState.errorMessage,
+                withDismissAction = true,
+                actionLabel = "Refresh",
+            )
+
+            // If the snackbar is dismissed, reset the boolean of the error-variable
+            // The snackbar will reappear is we get a new error
+            when (result) {
+                // If you press refresh
+                SnackbarResult.ActionPerformed -> {
+                    // Check if in map or list
+                    if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
+                        mapListViewModel.refreshMap()
+                    }
+                    else {
+                        mapListViewModel.refreshList()
+                    }
+                }
+                // If you click somewhere on the screen
+                SnackbarResult.Dismissed -> {
+                    // Check if in map or list
+                    mapListViewModel.snackbarDismissed()
+                }
+            }
+        }
+    }
 
     /*
-    These belong to searchbar
+    TODO: These belong to searchbar
      */
     //var text by remember { mutableStateOf("") }
     //var active by remember { mutableStateOf(false) }
+
     Scaffold (topBar = {
         SkumringTopAppBar(
             title = stringResource(id = MapListDestination.titleRes),
@@ -110,7 +132,7 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
             scrollBehavior = scrollBehavior
         )
     },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        snackbarHost = { SnackbarHost(hostState = mapListUiState.snackbarHostState) },
     ) {innerPadding ->
         Column (modifier = Modifier
             .padding(innerPadding)
@@ -118,32 +140,10 @@ fun MapListScreen(navController : NavController, mapListViewModel: MapListViewMo
             .padding(8.dp),
             verticalArrangement = Arrangement.Top
         ) {
-            if (error) {
-
-                // Should we show the content or not?
-                MapListContent(navController = navController, mapListViewModel = mapListViewModel)
-
-                // launcher for snackbar:
-                scope.launch {
-                    val result = snackbarHostState
-                        .showSnackbar(
-                            message = errorMessage,
-                            duration = SnackbarDuration.Indefinite,
-                            actionLabel = "Refresh",
-                        )
-                    when (result) {
-                        SnackbarResult.ActionPerformed -> {navController.navigate("maplist")}
-                        else -> {}
-                    }
-                }
-            }
-            else {
-                MapListContent(navController = navController, mapListViewModel = mapListViewModel)
-            }
+            MapListContent(navController = navController, mapListViewModel = mapListViewModel)
         }
     }
 }
-
 
 @Composable
 fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
@@ -158,7 +158,6 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
      //TODO legge til søkefelt
     }
      */
-
 
     ThemeSwitcher (
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
@@ -181,14 +180,13 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                     name = place.name,
                     description = place.description,
                     onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                        navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                        navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
                     }
                 )
             }
         }
     }
 }
-
 
 /**
  * Creates a button with two states, list view and map view
@@ -355,7 +353,7 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController) {
                     point = point,
                     iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap(),
                     onClick = {
-                        navController.navigate("infoscreen/${pinfo.lat}/${pinfo.long}/${pinfo.id}")
+                        navController.navigate("/${pinfo.lat}/${pinfo.long}/${pinfo.id}")
                         Log.d("Home", "Click!")
                         true
                     }
@@ -383,7 +381,7 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 12.dp)
-            .clickable(onClick = onItemClick) //Click to infoscreen
+            .clickable(onClick = onItemClick) //Click to placeinfoscreen
     ){
 
         //Box for picture:
