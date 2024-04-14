@@ -17,7 +17,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherCondi
     indices = [Index("place_id")]
 )
 data class ForecastEntity(
-    @PrimaryKey(autoGenerate = true) var id: Int,
+    @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name = "place_id") var placeId: Int,
     @ColumnInfo(name = "sunset_date_time") var sunsetDateTime: String,
     @ColumnInfo(name = "weather_rating") var weatherRating: WeatherConditionsRating,

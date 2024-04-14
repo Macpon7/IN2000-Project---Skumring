@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
     ]
 )
 data class ImageEntity(
-    @PrimaryKey(autoGenerate = true) var id: Int,
+    @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name = "place_id") var placeId: Int,
     @ColumnInfo(name = "img_path") var imgPath: String
 )
