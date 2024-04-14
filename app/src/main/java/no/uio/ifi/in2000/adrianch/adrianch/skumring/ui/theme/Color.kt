@@ -13,9 +13,6 @@ val Pink40 = Color(0xFF7D5260)
  */
 
 
-val sunSetColor = Color(0xFFFFD20A)
-val sunSetColor2 = Color(0xFFFFA024)
-
 val md_theme_light_primary = Color(0xFF6D47B8)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFEADDFF)
@@ -77,6 +74,5 @@ val md_theme_dark_shadow = Color(0xFF000000)
 val md_theme_dark_surfaceTint = Color(0xFFD2BBFF)
 val md_theme_dark_outlineVariant = Color(0xFF49454E)
 val md_theme_dark_scrim = Color(0xFF000000)
-
 
 val seed = Color(0xFF7751C2)
