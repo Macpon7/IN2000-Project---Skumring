@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
 import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -116,7 +117,7 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository) : ViewModel() {
         }
         viewModelScope.launch (Dispatchers.IO) {
             loadHomeScreen()
-            updateWeather()
+            updateWeather(lat = lat, long = long)
         }
     }
 }

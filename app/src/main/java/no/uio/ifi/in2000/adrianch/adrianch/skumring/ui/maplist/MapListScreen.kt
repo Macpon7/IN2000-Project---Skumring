@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateDpAsState
@@ -39,18 +38,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +53,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -212,7 +206,7 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                             name = place.name,
                             description = place.description,
                             onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                                navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                                navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
                             }
                         )
                     }
@@ -336,7 +330,7 @@ fun BottomSheetContent(
         Text(text = place.name, style = MaterialTheme.typography.headlineMedium)
         Button(onClick = {
             mapListViewModel.hideBottomSheet()
-            navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+            navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
         }) {
             Text(text = "More details", style = MaterialTheme.typography.labelMedium)
         }

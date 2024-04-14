@@ -334,7 +334,7 @@ class OldPlaceInfoRepositoryImpl (
         }
     }
     override suspend fun getLocalSunsetWeather (lat: String, long: String) : WeatherPerHour {
-        val weather = locationDataSource.fetchWeatherData(lat = lat, long = long).groupBy { it.time.toLocalDate() }
+        val weather = locationForecastDataSource.fetchWeatherData(lat = lat, long = long).groupBy { it.time.toLocalDate() }
         val dailyEvents = makeDailyEvents(weather, lat, long)
         Log.d(logTag, dailyEvents[0].sunset.weather.time.toString())
         return dailyEvents[0].sunset.weather

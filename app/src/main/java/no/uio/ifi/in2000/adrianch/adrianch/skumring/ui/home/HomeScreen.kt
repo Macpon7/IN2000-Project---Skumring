@@ -56,12 +56,13 @@ fun HomeScreen(
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //var her før
 
-   // var timeUiState: String = homeUiState.time
-    var time: String = homeUiState.time
-    var temp: String = homeUiState.temp
-    var sunset: String = homeUiState.sunset
-    var weatherCheck: Boolean = homeUiState.weatherCheck
-    var weatherMessage: String = homeUiState.weatherMessage
+    val temp: String = homeUiState.temp
+    val weatherCondition: String = try {
+        homeUiState.weatherConditions.text
+    } catch (e: Exception){""}
+    val sunsetTime = homeUiState.sunsetTime
+    val sunsetDate = homeUiState.sunsetDate
+    val sunsetWeatherIcon = homeUiState.sunsetWeatherIcon
 
 
     Scaffold(
@@ -79,7 +80,7 @@ fun HomeScreen(
         Column (modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ContentHomeScreen(time, temp, sunset, weatherCheck)
+            ContentHomeScreen(sunsetTime, temp, sunsetTime, weatherCondition)
         }
     }
 }
@@ -92,14 +93,14 @@ fun HomeScreen(
 fun ContentHomeScreen(time: String,
                       temp: String,
                       sunset: String,
-                      weatherCheck: Boolean
+                      weatherCondition: String
 ) {
     Column (verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
 
         SunTempAndTime(time, temp)
         SunDown(sunset)
-        Text(text = "Været er bra: $weatherCheck")
+        Text(text = "The weather is: $weatherCondition")
         MapBox()
     }
 }

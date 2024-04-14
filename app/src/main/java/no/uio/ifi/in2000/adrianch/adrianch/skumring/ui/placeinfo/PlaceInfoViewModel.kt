@@ -21,8 +21,8 @@ data class PlaceInfoUiState(
         id = 0,
         name = "",
         description = "",
-        latitude = "",
-        longitude = "",
+        lat = "",
+        long = "",
         sunEvents = emptyList()),
 
     // Variable for checking if there is an error:

@@ -1,5 +1,8 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceDetailsDataSource
@@ -33,6 +36,14 @@ class PlaceInfoRepositoryImpl(
         locationForecastDataSource = locationForecastDataSource,
         placeDetailsDataSource = placeDetailsDataSource
     )
+
+    init {
+        runBlocking {
+            launch (Dispatchers.IO) {
+                val places = placeInfoDao.getAllPlaces()
+            }
+        }
+    }
 
     override suspend fun getAllPlaces() {
         TODO("Not yet implemented")
