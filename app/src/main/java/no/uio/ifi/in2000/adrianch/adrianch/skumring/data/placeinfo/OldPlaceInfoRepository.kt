@@ -89,6 +89,7 @@ class OldPlaceInfoRepositoryImpl (
 
             //return PlaceInfo with fetched details
             return PlaceInfo(
+                id = id,
                 name = details.name,
                 description = details.description,
                 lat = lat,
