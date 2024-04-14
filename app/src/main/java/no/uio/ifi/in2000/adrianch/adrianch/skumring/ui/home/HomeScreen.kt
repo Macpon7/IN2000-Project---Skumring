@@ -120,6 +120,7 @@ fun HorizontalInfoListContent(mapListUiState: MapListUiState, navController: Nav
                 description = place.description,
                 onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                     navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+
                 }
             )
         }
