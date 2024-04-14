@@ -27,9 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,7 +36,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,8 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.ContentHomeScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -61,7 +56,7 @@ private const val logTag = "PlaceInfoScreen"
 object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
     override val buttonTitle = null
-    override val route = "infoscreen/{lat}/{long}/{id}"
+    override val route = "placeinfoscreen/{lat}/{long}/{id}"
     override val titleRes = null
 }
 
@@ -78,19 +73,33 @@ fun PlaceInfoScreen(
     LaunchedEffect(key1 = id) {
         Log.d(logTag, "LaunchedEffect launched with key $id")
         placeViewModel.loadPlaceInfo(lat = lat, long = long, id = id)
-        Locale.setDefault(Locale("no", ))
     }
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
-    // Snackbar:
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
-    // TODO -> must add variables when we make them in viewmodel:
-    // Variable to get the error message from viewmodel
-    val error = false // Have to change according to the state in viemodel
-    val errorMessage = "" // Variable for the errorMessage
+    // Check if there is an error, if so show a snackbar:
+    if (placeUiState.showSnackbar) {
+        LaunchedEffect(placeUiState.snackbarHostState) {
+            val result = placeUiState.snackbarHostState.showSnackbar(
+                message = placeUiState.errorMessage,
+                withDismissAction = true,
+                actionLabel = "Refresh",
+            )
+            // If the snackbar is dismissed, reset the boolean of the error-variable
+            // The snackbar will reappear is we get a new error
+            when (result) {
+                // If you press refresh
+                SnackbarResult.ActionPerformed -> {
+                    placeViewModel.refresh(lat = lat, long = long, id = id)
+                }
+                // If you click somewhere on the screen
+                SnackbarResult.Dismissed -> {
+                    placeViewModel.snackbarDismissed()
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -116,61 +125,23 @@ fun PlaceInfoScreen(
                 )
             }
         },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        snackbarHost = { SnackbarHost(hostState = placeUiState.snackbarHostState) },
 
         content = {innerPadding ->
-
-            // if theres an error snackbar will appear:
-            if (error) {
-
-                // Should we show the content or not?
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding) // Padding for topbar
-                ) {
-                    when {
-                        // The content won't load before the content is ready
-                        placeUiState.placeInfo.name.isEmpty() -> {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-                        else -> {
-                            ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
-                        }
-                    }
-                }
-
-                // launcher for snackbar:
-                scope.launch {
-                    val result = snackbarHostState
-                        .showSnackbar(
-                            message = errorMessage,
-                            duration = SnackbarDuration.Indefinite,
-                            actionLabel = "Refresh",
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding) // Padding for topbar
+            ) {
+                when {
+                    // The content won't load before the content is ready
+                    placeUiState.placeInfo.name.isEmpty() -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
                         )
-                    when (result) {
-                        SnackbarResult.ActionPerformed -> {navController.navigate("infoscreen/${lat}/${long}/${id}")}
-                        else -> {}
                     }
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding) // Padding for topbar
-                ) {
-                    when {
-                        // The content won't load before the content is ready
-                        placeUiState.placeInfo.name.isEmpty() -> {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-                        else -> {
-                            ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
-                        }
+                    else -> {
+                        ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
                     }
                 }
             }
@@ -195,7 +166,6 @@ fun PlacePicture() {
         )
     }
 }
-
 
 /**
  * Function with alle the content of the homescreen
@@ -258,7 +228,9 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
                 Icon(
                     imageVector = if (showLongTermForecast) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = "Toggle Long Term Forecast",
-                    modifier = Modifier.padding(end = 8.dp).size(36.dp)
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .size(36.dp)
                 )
             }
 

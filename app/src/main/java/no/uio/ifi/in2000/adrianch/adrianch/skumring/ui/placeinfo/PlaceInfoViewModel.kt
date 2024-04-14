@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -23,13 +24,14 @@ data class PlaceInfoUiState(
         longitude = "",
         sunEvents = emptyList()),
 
-    // Variable for checking if there is an error
-    var error: Boolean = false,
+    // Variable for checking if there is an error:
+    var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
     var errorMessage: String = "No error",
     // Variable for snackbar:
-    var canRefresh: Boolean = false
+    val snackbarHostState: SnackbarHostState = SnackbarHostState()
 )
+
 
 class PlaceInfoViewModel : ViewModel() {
     private val placeInfoRepository: PlaceInfoRepository = PlaceInfoRepositoryImpl()
@@ -47,14 +49,36 @@ class PlaceInfoViewModel : ViewModel() {
                     currentPlaceInfoUiState.copy(placeInfo = placeInfoObject)
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting pins in loadPlaceInfo", e)
-                    currentPlaceInfoUiState.copy(error = true,
-                        errorMessage = "Error getting pins in loadPlaceInfo",
-                        canRefresh = true)
+                    currentPlaceInfoUiState.copy(showSnackbar = true,
+                        errorMessage = "Error getting pins in loadPlaceInfo")
                 }
             }
         }
     }
+
+    /**
+     * Set showSnackbar to false, so when the snackbar refresh it will be shown again
+      */
+    fun snackbarDismissed() {
+        _placeInfoUiState.update { currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false)
+        }
+    }
+
+    /**
+     *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
+     */
+    fun refresh(lat: String, long: String, id: Int = 0 ) {
+        _placeInfoUiState.update {currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false)
+        }
+        viewModelScope.launch (Dispatchers.IO) {
+            loadPlaceInfo(lat, long, id)
+        }
+    }
 }
+
+
 
 
 
