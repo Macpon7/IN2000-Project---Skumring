@@ -10,6 +10,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceDetailsD
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
 
 interface PlaceInfoRepository {
     suspend fun getAllPlaces()
@@ -41,7 +42,8 @@ class PlaceInfoRepositoryImpl(
     init {
         runBlocking {
             launch (Dispatchers.IO) {
-                val places = placeInfoDao.getAllPlaces()
+
+
 
             //Following code is to populate the database
             /*
@@ -83,37 +85,41 @@ class PlaceInfoRepositoryImpl(
     }
 
     override suspend fun getCustomPlaces() {
-        placeInfoDao.getCustomPlaces()
+        TODO("Not yet implemented")
     }
 
 
-//Do we check latitude or longitude to see if this place already exists?
-//Do we check if name already exists?
+//works but should take another input
     override suspend fun insertCustomPlace(place: PlaceInfoEntity){
+        //input is PlaceInfo object
+        //API is called so user can access weather forecast immidieately
         placeInfoDao.insertCustomPlace(place)
     }
 
+    /**
+     *This methods removes a tuple from the table based on the placeId
+     */
     override suspend fun removeCustomPlace(placeId: Int) {
-        TODO("Not yet implemented")
-        /*
-        try{
-            val customPlace: Int? = placeInfoDao.checkIfCustomPlace(placeId)
-            if (customPlace == 1){
-                placeInfoDao.deleteCustomPlace(placeId)
+        val customPlace: Int? = placeInfoDao.checkIfCustomPlace(placeId)
+        if (customPlace == 1){
+            placeInfoDao.deleteCustomPlace(placeId)
         } else {
             throw IllegalArgumentException("Cannot delete a non-custom place")
-            }
-        } catch (e: Exception){
-            Log.e("PlaceInfoRepository", "An unexpected error: ${e.message} in removeCustomPlace(placeId: Int)", e)
         }
 
-         */
     }
 
+    /**
+    *This methods sets a location as favorite by setting is_custom_place = 1
+     *
+     */
     override suspend fun makeFavourite(placeId: Int) {
         placeInfoDao.markAsFavorite(placeId)
     }
 
+    /**
+     *This methods sets a location as favorite by setting is_custom_place = 0
+     */
     override suspend fun unmakeFavourite(placeId: Int) {
         placeInfoDao.unmarkAsFavorite(placeId)
     }
@@ -125,6 +131,6 @@ class PlaceInfoRepositoryImpl(
        // var imageEntity: ImageEntity = ImageEntity(placeId = 1, )
         //imageDao.insert()
     }
-
 }
+
 
