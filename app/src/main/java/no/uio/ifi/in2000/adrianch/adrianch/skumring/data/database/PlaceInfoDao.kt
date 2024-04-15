@@ -17,13 +17,19 @@ interface PlaceInfoDao {
     fun getAllPlaces(): List<PlaceInfoEntity>
     // for tester: fun getAllPlaces(): List<PlaceInfoEntity>
 
-    //Features vi kan implementere etter hvert
-    /*
-    @Query("UPDATE placeInfo SET isFavorite = True WHERE id = :placeId")
-    suspend fun markAsFavorite(placeId: Long)
 
-    @Query("UPDATE placeInfo SET isFavorite = False WHERE id = :placeId")
-    suspend fun unmarkAsFavorite(placeId: Long)
 
-     */
+    @Query("SELECT is_custom_place FROM placeInfo WHERE id = :placeId")
+    suspend fun checkIfCustomPlace(placeId: Int): Int?
+
+    @Query("DELETE FROM placeInfo WHERE id= :placeId")
+    suspend fun deleteCustomPlace(placeId: Int)
+
+    @Query("UPDATE placeInfo SET is_custom_place = 1 WHERE id = :placeId")
+    suspend fun markAsFavorite(placeId: Int)
+
+    @Query("UPDATE placeInfo SET is_favourite = 0 WHERE id = :placeId")
+    suspend fun unmarkAsFavorite(placeId: Int)
+
+
 }

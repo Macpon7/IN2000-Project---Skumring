@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -41,6 +42,26 @@ class PlaceInfoRepositoryImpl(
         runBlocking {
             launch (Dispatchers.IO) {
                 val places = placeInfoDao.getAllPlaces()
+
+            //Following code is to populate the database
+            /*
+                val allPlaces = placeListRepository.getPresetPlaceList()
+                allPlaces.forEach{
+                    placeInfoDao.insert(
+                        PlaceInfoEntity(
+                            name = it.name,
+                            description = it.description,
+                            latitude = it.lat,
+                            longitude = it.long,
+                            isCustomPlace = 0,
+                            isFavourite = 0
+                        )
+                    )
+                }
+
+             */
+
+
             }
         }
     }
@@ -65,15 +86,34 @@ class PlaceInfoRepositoryImpl(
         //appDatabase.placeInfoDao().insert(place)
     }
 
-    override suspend fun removeCustomPlace(id: Int) {
-        TODO("Not yet implemented")
+    override suspend fun removeCustomPlace(placeId: Int) {
+        try{
+            val customPlace: Int? = placeInfoDao.checkIfCustomPlace(placeId)
+            if (customPlace == 1){
+                placeInfoDao.deleteCustomPlace(placeId)
+        } else {
+            throw IllegalArgumentException("Cannot delete a non-custom place")
+            }
+        } catch (e: Exception){
+            Log.e("PlaceInfoRepository", "An unexpected error: ${e.message} in removeCustomPlace(placeId: Int)", e)
+        }
     }
 
-    override suspend fun makeFavourite(id: Int) {
-        TODO("Not yet implemented")
+    override suspend fun makeFavourite(placeId: Int) {
+        placeInfoDao.markAsFavorite(placeId)
     }
 
-    override suspend fun unmakeFavourite(id: Int) {
-        TODO("Not yet implemented")
+    override suspend fun unmakeFavourite(placeId: Int) {
+        placeInfoDao.unmarkAsFavorite(placeId)
     }
+
+    //Image features
+
+    suspend fun insertDefaultImage(path: String){
+        //painterResource(R.drawable.solnedgang)
+       // var imageEntity: ImageEntity = ImageEntity(placeId = 1, )
+        //imageDao.insert()
+    }
+
 }
+
