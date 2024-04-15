@@ -197,7 +197,7 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
         //The accurately forecast sunsets, always show this:
         if (placeInfoUiState.placeInfo.sunEvents.size > 3) {
             placeInfoUiState.placeInfo.sunEvents.subList(0, 3).forEach {
-                SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
+                SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
             }
 
             // Dropdown menu for long-term forecast, optional to show:
@@ -223,7 +223,7 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
             // Check if the arrow-icon is clicked on
             if (showLongTermForecast) {
                 placeInfoUiState.placeInfo.sunEvents.subList(3, placeInfoUiState.placeInfo.sunEvents.size).forEach {
-                    SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
+                    SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
                 }
             }
         }
