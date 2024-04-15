@@ -13,12 +13,10 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+// Constant for logging:
+private const val logTag : String = "SunriseDataSource"
 
 class SunriseDataSource() {
-
-    // Constant for logging errors:
-    private val logTag : String = "SunriseDataSource"
-
     private val client = HttpClient {
         install(ContentNegotiation) {
             gson()
@@ -69,16 +67,3 @@ class SunriseDataSource() {
         }
     }
 }
-
-//Test that should be moved to a test file
-
-/*
-suspend fun main() {
-    val source = SunriseDataSource()
-    //var test_date = "2024-03-07"
-    var test_date = LocalDate.of(2023,9,8)
-    val fetcher = source.fetchSunriseData("https://api.met.no/weatherapi/sunrise/3.0/edr/collections/sun/position?coords=POINT%2810%2060%29&datetime=2024-03-07")
-
-    print(fetcher)
-}
- */

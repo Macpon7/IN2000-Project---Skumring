@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
 import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -9,9 +10,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import java.time.LocalDate
 
@@ -36,13 +38,16 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel: ViewModel() {
+class HomeViewModel(placeInfoRepository: PlaceInfoRepository) : ViewModel() {
     private val mapRepository = MapRepositoryImpl()
-    // Creates new instance of repository:
-    private val placeInfo: PlaceInfoRepository = PlaceInfoRepositoryImpl()
+    private val placeInfo: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
+
+    // TODO add user's position
+    private val long = "10.718393"
+    private val lat = "59.943735"
 
     init {
         loadHomeScreen()
@@ -51,11 +56,7 @@ class HomeViewModel: ViewModel() {
 
     private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-            _homeUiState.update{ currenthomeUiState->
-                currenthomeUiState.copy(
-                    temp = temp,
-                    sunset = sunset)
-            }
+            updateWeather(lat = lat, long = long)
         }
     }
 
@@ -116,7 +117,7 @@ class HomeViewModel: ViewModel() {
         }
         viewModelScope.launch (Dispatchers.IO) {
             loadHomeScreen()
-            updateWeather()
+            updateWeather(lat = lat, long = long)
         }
     }
 }
