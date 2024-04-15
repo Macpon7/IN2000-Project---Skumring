@@ -243,8 +243,28 @@ class PlaceInfoRepositoryImpl(
         }
     }
 
-    override suspend fun getPlace(id: Int): PlaceInfo {
-        TODO("Not yet implemented")
+    /**
+     * Gets a PlaceInfo object from our database, given an id
+     */
+    override suspend fun getPlace(placeId: Int): PlaceInfo {
+        val placeEntity = placeInfoDao.getOnePlace(placeId = placeId)
+
+        //TODO fetch images
+        return PlaceInfo(
+            id = placeEntity.id,
+            name = placeEntity.name,
+            description = placeEntity.description,
+            lat = placeEntity.latitude,
+            long = placeEntity.longitude,
+            isFavourite = placeEntity.isFavourite,
+            isCustomPlace = placeEntity.isCustomPlace,
+            hasNotification = placeEntity.hasNotification,
+            images = emptyList(),
+            sunEvents = getForecastData(
+                placeId = placeEntity.id,
+                lat = placeEntity.latitude,
+                long = placeEntity.longitude)
+        )
     }
 
     override suspend fun getFavourites(): List<PlaceInfo> {
