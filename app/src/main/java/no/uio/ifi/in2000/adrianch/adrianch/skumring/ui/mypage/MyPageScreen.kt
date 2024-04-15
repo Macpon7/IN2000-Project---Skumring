@@ -37,11 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 
 object MyPageDestination : NavigationDestination {
     override val icon = Icons.Outlined.AccountCircle
@@ -52,7 +53,7 @@ object MyPageDestination : NavigationDestination {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyPageScreen(navController: NavController, myPageViewModel: MyPageViewModel) {
+fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewModel) {
     val myPageUiState: MyPageUiState by myPageViewModel.myListUiState.collectAsState()
 
     // Check if there is an error, if so show a snackbar:
@@ -81,10 +82,12 @@ fun MyPageScreen(navController: NavController, myPageViewModel: MyPageViewModel)
 
     Scaffold(
         topBar = {
-            SkumringTopAppBar(
+            SkumringTopBar(
                 title = stringResource(id = HomeDestination.titleRes),
                 canNavigateBack = false,
             )
+        },bottomBar = {
+            SkumringBottomBar(navController = navController)
         },
         snackbarHost = { SnackbarHost(hostState = myPageUiState.snackbarHostState) },
         ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
