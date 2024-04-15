@@ -26,8 +26,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 
 object SettingsScreenDestination : NavigationDestination {
     override val icon = null
@@ -39,7 +41,7 @@ object SettingsScreenDestination : NavigationDestination {
 @Composable
 fun SettingsScreen(
     settingsViewModel: SettingsViewModel = viewModel(),
-    navController: NavController
+    navController: NavHostController
 ) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
@@ -90,6 +92,9 @@ fun SettingsScreen(
                 )
             }
         },
+        bottomBar = {
+            SkumringBottomBar(navController = navController)
+        },
         snackbarHost = { SnackbarHost(hostState = settingsUiState.snackbarHostState) },
     ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
         Column (modifier = Modifier.padding(innerPadding),
@@ -109,6 +114,6 @@ fun ContentSettings() {
 
 @Composable
 @Preview
-fun Test() {
-    ContentSettings()
+fun Test(navController: NavHostController = rememberNavController()) {
+    SettingsScreen(navController = navController)
 }
