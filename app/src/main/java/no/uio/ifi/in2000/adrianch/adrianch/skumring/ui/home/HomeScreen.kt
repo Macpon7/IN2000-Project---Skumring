@@ -458,47 +458,47 @@ modifier = Modifier
 .size(150.dp) // Choose the wanted size of the picture
 ) {
 
-Image(
-painterResource(R.drawable.sol),
-contentDescription = null,
-modifier = Modifier
-    .fillMaxSize()
-    .align(Alignment.Center)
-)
-Text(
-text = "Tid: $time \nTemperatur: $temp°C",  //<------------------
-color = Color.White,
-modifier = Modifier.align(Alignment.Center) // Place the text in the middle of the sun
-)
-}
+        Image(
+            painterResource(R.drawable.sol),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center)
+        )
+        Text(
+            text = "Tid: $time \nTemperatur: $temp°C",  //<------------------
+            color = Color.White,
+            modifier = Modifier.align(Alignment.Center) // Place the text in the middle of the sun
+        )
+    }
 }
 
 /**
-* Shows icon of the sun going down -> Need for MVP
-* Show text of when the sun goes down
-* Have also text of when it goes down and up for each icon
-*/
+ * Shows icon of the sun going down -> Need for MVP
+ * Show text of when the sun goes down
+ * Have also text of when it goes down and up for each icon
+ */
 @Composable
 fun SunDown(sunset: String) {
-Box(
-modifier = Modifier
-    .size(50.dp) // Choose the wanted size of the picture
-    .background(Color.LightGray) //It doesnt show in darkmode without this, need to fix
-) {
-Image(
-painterResource(R.drawable.solnedgang),
-contentDescription = null,
-modifier = Modifier
-    .fillMaxSize()
-    .align(Alignment.Center)
-)
-}
-Text(
-text = "Solnedgang $sunset",
-color = Color.Black,
-modifier = Modifier,
-fontSize = 12.sp
-)
+    Box(
+        modifier = Modifier
+            .size(50.dp) // Choose the wanted size of the picture
+            .background(Color.LightGray) //It doesnt show in darkmode without this, need to fix
+    ) {
+        Image(
+            painterResource(R.drawable.solnedgang),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center)
+        )
+    }
+    Text(
+        text = "Solnedgang $sunset",
+        color = Color.Black,
+        modifier = Modifier,
+        fontSize = 12.sp
+    )
 }
 
 

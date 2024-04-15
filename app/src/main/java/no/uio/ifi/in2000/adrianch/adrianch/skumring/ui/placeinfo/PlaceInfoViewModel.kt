@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -16,9 +17,21 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 private const val logTag = "PlaceInfoViewModel"
 
 data class PlaceInfoUiState(
-    var placeInfo: PlaceInfo = PlaceInfo("","","","", emptyList())
+    var placeInfo: PlaceInfo = PlaceInfo(
+        name = "",
+        description = "",
+        latitude = "",
+        longitude = "",
+        sunEvents = emptyList()),
 
+    // Variable for checking if there is an error:
+    var showSnackbar: Boolean = false,
+    // Variable that change according to the error message we get:
+    var errorMessage: String = "No error",
+    // Variable for snackbar:
+    val snackbarHostState: SnackbarHostState = SnackbarHostState()
 )
+
 
 class PlaceInfoViewModel : ViewModel() {
     private val placeInfoRepository: PlaceInfoRepository = PlaceInfoRepositoryImpl()
@@ -30,17 +43,42 @@ class PlaceInfoViewModel : ViewModel() {
     fun loadPlaceInfo(lat: String, long: String, id: Int = 0){
         viewModelScope.launch(Dispatchers.IO){
             Log.d(logTag, "loadPlaceInfo called")
-            try {
-                _placeInfoUiState.update { currentPlaceInfoUiState ->
+            _placeInfoUiState.update { currentPlaceInfoUiState ->
+                try {
                     val placeInfoObject = placeInfoRepository.getPlaceInfo(lat, long, id)
                     currentPlaceInfoUiState.copy(placeInfo = placeInfoObject)
+                } catch(e: Exception) {
+                    Log.e(logTag, "Error getting pins in loadPlaceInfo", e)
+                    currentPlaceInfoUiState.copy(showSnackbar = true,
+                        errorMessage = "Error getting pins in loadPlaceInfo")
                 }
-            } catch(e: Exception) {
-                Log.e(logTag, "Error getting pins", e)
             }
         }
     }
+
+    /**
+     * Set showSnackbar to false, so when the snackbar refresh it will be shown again
+      */
+    fun snackbarDismissed() {
+        _placeInfoUiState.update { currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false)
+        }
+    }
+
+    /**
+     *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
+     */
+    fun refresh(lat: String, long: String, id: Int = 0 ) {
+        _placeInfoUiState.update {currentMapUiState ->
+            currentMapUiState.copy(showSnackbar = false)
+        }
+        viewModelScope.launch (Dispatchers.IO) {
+            loadPlaceInfo(lat, long, id)
+        }
+    }
 }
+
+
 
 
 
