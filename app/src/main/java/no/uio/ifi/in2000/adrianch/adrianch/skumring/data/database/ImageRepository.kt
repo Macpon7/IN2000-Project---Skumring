@@ -5,7 +5,12 @@ import android.os.Environment
 import android.util.Log
 import java.io.File
 
-//val file = File(context.filesDir, filename)
+
+
+/*
+suspend fun createFile(context: Context)
+    val file = File(context.filesDir, filename)
+*/
 
 
 fun main(){
