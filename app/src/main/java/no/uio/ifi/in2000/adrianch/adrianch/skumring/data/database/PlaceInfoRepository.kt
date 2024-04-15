@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -254,6 +253,7 @@ class PlaceInfoRepositoryImpl(
     }
 
     override suspend fun getCustomPlaces(): List<PlaceInfo> {
+        TODO()
         placeInfoDao.getFavourites()
     }
 
