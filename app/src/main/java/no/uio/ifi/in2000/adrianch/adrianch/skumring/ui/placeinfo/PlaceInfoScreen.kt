@@ -66,15 +66,13 @@ object PlaceInfoScreenDestination : NavigationDestination {
 @Composable
 fun PlaceInfoScreen(
     placeViewModel: PlaceInfoViewModel = viewModel(),
-    lat: String,
-    long: String,
     id: Int,
     navController: NavHostController
 ) {
 
     LaunchedEffect(key1 = id) {
         Log.d(logTag, "LaunchedEffect launched with key $id")
-        placeViewModel.loadPlaceInfo(lat = lat, long = long, id = id)
+        placeViewModel.loadPlaceInfo(id = id)
     }
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
@@ -92,7 +90,7 @@ fun PlaceInfoScreen(
             when (result) {
                 // If you press refresh
                 SnackbarResult.ActionPerformed -> {
-                    placeViewModel.refresh(lat = lat, long = long, id = id)
+                    placeViewModel.refresh(id = id)
                 }
                 // If you click somewhere on the screen
                 SnackbarResult.Dismissed -> {
