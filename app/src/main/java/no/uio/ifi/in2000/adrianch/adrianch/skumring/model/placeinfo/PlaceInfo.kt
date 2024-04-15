@@ -13,5 +13,5 @@ data class PlaceInfo (
     val isCustomPlace: Boolean,
     val hasNotification: Boolean,
     val images: List<ImageDetails>,
-    val sunEvents: List<SunEvent>
+    var sunEvents: List<SunEvent>
 )
