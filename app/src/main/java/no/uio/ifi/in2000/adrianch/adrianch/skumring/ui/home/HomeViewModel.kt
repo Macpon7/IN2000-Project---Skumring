@@ -38,7 +38,7 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel(placeInfoRepository: PlaceInfoRepository) : ViewModel() {
+class HomeViewModel(private val placeInfoRepository: PlaceInfoRepository) : ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
 

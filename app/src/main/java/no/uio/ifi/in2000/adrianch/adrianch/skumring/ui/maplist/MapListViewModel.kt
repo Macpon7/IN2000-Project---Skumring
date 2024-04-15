@@ -4,10 +4,8 @@ import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
-import androidx.compose.runtime.DefaultMonotonicFrameClock
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
+import androidx.compose.runtime.DefaultMonotonicFrameClock
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +44,7 @@ data class MapListUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMat
 
 private const val logTag = "MapListViewModel"
 
-class MapListViewModel(placeInfoRepository: PlaceInfoRepository): ViewModel() {
+class MapListViewModel(private val placeInfoRepository: PlaceInfoRepository): ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeListRepository = PlaceListRepositoryImpl()
 
