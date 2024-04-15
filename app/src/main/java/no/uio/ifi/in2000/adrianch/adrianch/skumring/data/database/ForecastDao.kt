@@ -8,11 +8,11 @@ import androidx.room.Update
 @Dao
 interface ForecastDao {
     @Insert
-    suspend fun insertForecasts(forecasts: Array<ForecastEntity>)
+    suspend fun insertForecasts(forecasts: List<ForecastEntity>)
 
     @Update
-    suspend fun updateForecasts(forecasts: Array<ForecastEntity>)
+    suspend fun updateForecasts(forecasts: List<ForecastEntity>)
 
     @Query("SELECT * FROM forecasts WHERE place_id = :placeId")
-    suspend fun getForecasts(placeId: Int): Array<ForecastEntity>
+    suspend fun getForecasts(placeId: Int): List<ForecastEntity>
 }
