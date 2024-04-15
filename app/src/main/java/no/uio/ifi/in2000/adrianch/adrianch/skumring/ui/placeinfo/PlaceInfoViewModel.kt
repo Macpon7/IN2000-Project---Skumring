@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
@@ -39,19 +40,18 @@ data class PlaceInfoUiState(
 )
 
 
-class PlaceInfoViewModel : ViewModel() {
+class PlaceInfoViewModel(private val placeInfoRepository: PlaceInfoRepository): ViewModel() {
     private val oldPlaceInfoRepository: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
-
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
 
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
 
-    fun loadPlaceInfo(lat: String, long: String, id: Int = 0){
+    fun loadPlaceInfo(id: Int){
         viewModelScope.launch(Dispatchers.IO){
             Log.d(logTag, "loadPlaceInfo called")
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
-                    val placeInfoObject = oldPlaceInfoRepository.getPlaceInfo(lat, long, id)
+                    val placeInfoObject = placeInfoRepository.getPlace(id)
                     currentPlaceInfoUiState.copy(placeInfo = placeInfoObject)
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting pins in loadPlaceInfo", e)
@@ -74,12 +74,12 @@ class PlaceInfoViewModel : ViewModel() {
     /**
      *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
      */
-    fun refresh(lat: String, long: String, id: Int = 0 ) {
+    fun refresh(id: Int = 0 ) {
         _placeInfoUiState.update {currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch (Dispatchers.IO) {
-            loadPlaceInfo(lat, long, id)
+            loadPlaceInfo(id)
         }
     }
 }
