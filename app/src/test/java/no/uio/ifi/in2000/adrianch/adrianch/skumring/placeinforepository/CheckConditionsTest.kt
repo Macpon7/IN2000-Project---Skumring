@@ -2,7 +2,7 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.placeinforepository
 
 import com.google.gson.Gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.locationforecast.badWeatherTestData
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.locationforecast.goodWeatherTestData
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
@@ -16,7 +16,7 @@ class CheckConditionsTest {
      * according to the agreed upon conditions.
      */
     @Test
-    fun checkingIfWeatherConditionsAreGood() {
+    suspend fun checkingIfWeatherConditionsAreGood() {
         val gson = Gson()
 
         val goodWeatherResponse: LocationForecastInfo = gson.fromJson(
@@ -26,7 +26,7 @@ class CheckConditionsTest {
 
         val source = LocationForecastDataSource()
         val goodResult = source.convertResponseToWeatherPerHour(goodWeatherResponse)
-        val testRepo = PlaceInfoRepositoryImpl()
+        val testRepo = OldPlaceInfoRepositoryImpl()
 
         val goodBoolean = testRepo.checkConditions(goodResult)
         val goodExpected = true
@@ -35,7 +35,7 @@ class CheckConditionsTest {
     }
 
     @Test
-    fun checkingIfWeatherConditionsAreBad() {
+    suspend fun checkingIfWeatherConditionsAreBad() {
         val gson = Gson()
 
         val badWeatherResponse: LocationForecastInfo = gson.fromJson(
@@ -45,7 +45,7 @@ class CheckConditionsTest {
 
         val source = LocationForecastDataSource()
         val badResult = source.convertResponseToWeatherPerHour(badWeatherResponse)
-        val testRepo = PlaceInfoRepositoryImpl()
+        val testRepo = OldPlaceInfoRepositoryImpl()
 
         val badBoolean = testRepo.checkConditions(badResult)
         val badExpected = false
