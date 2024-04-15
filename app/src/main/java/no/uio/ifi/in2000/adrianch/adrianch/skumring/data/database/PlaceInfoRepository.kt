@@ -71,19 +71,22 @@ class PlaceInfoRepositoryImpl(
     }
 
     override suspend fun getPlace(id: Int) {
-        TODO("Not yet implemented")
+        placeInfoDao.getPlace(id)
     }
 
     override suspend fun getFavourites() {
-        TODO("Not yet implemented")
+        placeInfoDao.getFavourites()
     }
 
     override suspend fun getCustomPlaces() {
-        TODO("Not yet implemented")
+        placeInfoDao.getCustomPlaces()
     }
 
+
+//Do we check latitude or longitude to see if this place already exists?
+//Do we check if name already exists?
     override suspend fun insertCustomPlace(place: PlaceInfoEntity){
-        //appDatabase.placeInfoDao().insert(place)
+        placeInfoDao.insertCustomPlace(place)
     }
 
     override suspend fun removeCustomPlace(placeId: Int) {
