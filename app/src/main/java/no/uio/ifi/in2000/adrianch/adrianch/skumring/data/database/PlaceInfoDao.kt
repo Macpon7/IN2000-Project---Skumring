@@ -2,7 +2,6 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 
@@ -20,6 +19,9 @@ interface PlaceInfoDao {
 
     //@Query("SELECT * FROM placeInfo WHERE id = :placeId")
     //suspend fun getPlace(placeId: Int)
+
+    @Query("SELECT * FROM placeInfo WHERE id=:placeId")
+    fun getOnePlace(placeId: Int): PlaceInfoEntity
 
     @Query("SELECT * FROM placeInfo WHERE is_favourite = 1")
     fun getFavourites(): List<PlaceInfoEntity>
