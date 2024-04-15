@@ -15,10 +15,10 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherCondi
 import java.time.LocalDateTime
 
 interface PlaceInfoRepository {
-    suspend fun getAllPlaces()
-    suspend fun getPlace(id: Int)
-    suspend fun getFavourites()
-    suspend fun getCustomPlaces()
+    suspend fun getAllPlaces(): List<PlaceInfo>
+    suspend fun getPlace(id: Int): PlaceInfo
+    suspend fun getFavourites(): List<PlaceInfo>
+    suspend fun getCustomPlaces(): List<PlaceInfo>
     suspend fun insertCustomPlace(place: PlaceInfoEntity)
     suspend fun removeCustomPlace(id: Int)
     suspend fun makeFavourite(id: Int)
@@ -49,14 +49,21 @@ class PlaceInfoRepositoryImpl(
         }
     }
 
-    override suspend fun getAllPlaces() {
+    override suspend fun getAllPlaces(): List<PlaceInfo> {
         //TODO("Not yet implemented")
         // 1. Get all places from DB (missing SunEvents)
         // 2. For each place, check the forecast info (in separate function)
         // 3. Send back the list of PlaceInfo objects
 
-        val placesWithoutForecast = getAllPlacesFromDb()
+        // The first result from DB is without forecast information
+        val allPlaces = getAllPlacesFromDb()
 
+        // Here we fetch the forecast info for each place
+        allPlaces.forEach {
+            it.sunEvents = getForecastData(it.id, it.lat, it.long)
+        }
+
+        return allPlaces
         //awaitAll()
     }
 
@@ -67,24 +74,38 @@ class PlaceInfoRepositoryImpl(
      * objects based on this data. Then the new forecast data is stored in the DB, overwriting any
      * old data for this placeId.
      */
-    private suspend fun getForecastData(placeId: Int): List<SunEvent> {
+    private suspend fun getForecastData(placeId: Int, lat: String, long: String): List<SunEvent> {
         // Try to fetch from DB
         val dataFromDb = forecastDao.getForecasts(placeId = placeId)
 
         if (dataFromDb.isEmpty()) {
             // If there is no data in the DB for this placeId, we need to fetch data from APIs
-            TODO()
-            // Fetch data from API, using functions in oldPlaceInfoRepo
 
+            // Fetch data from API, using code taken from oldPlaceInfoRepo
+            val sunEventsList = fetchNewForecastData(lat = lat, long = long)
+
+            // Save sun event list to DB with correct placeId
+            insertNewForecastData(sunEvents = sunEventsList, placeId = placeId)
+
+            return sunEventsList
 
         } else if (dataFromDb[0].timestamp.isBefore(LocalDateTime.now().minusHours(1))) {
             // If there is data, but it is older than one hour, also fetch new data
-            TODO()
 
+            // Fetch data from API
+            val sunEvents = fetchNewForecastData(lat = lat, long = long)
+
+            // Update Forecast objects in the DB
+            updateForecastData(
+                oldForecastData = dataFromDb,
+                sunEvents = sunEvents,
+                placeId = placeId)
+
+            return sunEvents
 
         } else {
             // If there is good data AND it is less than 1 hour old, compute the list and return it
-            return dataFromDb.asList().map {
+            return dataFromDb.map {
                 SunEvent(
                     time = it.sunsetDateTime,
                     tempAtEvent = it.sunsetTemp,
@@ -99,6 +120,80 @@ class PlaceInfoRepositoryImpl(
                 )
             }
         }
+    }
+
+    /**
+     * Fetches new forecast data for the given coordinates from the API and returns it
+     * as a list of [SunEvent] objects. One object for each day of the forecast.
+     */
+    private suspend fun fetchNewForecastData (lat: String, long: String): List<SunEvent> {
+        // Get the forecasted weather at this place
+        val fullForecast = locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
+
+        // Group all the forecast data by date
+        val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
+
+        // Send our map to a function which will return a list of SunEvent objects
+        return oldPlaceInfoRepository.makeSunEvents(
+            forecastGroupedByDate = forecastGroupedByDate,
+            lat = lat,
+            long = long
+        )
+    }
+
+    /**
+     * Inserts a list of SunEvent objects for the given placeId in the DB
+     */
+    private suspend fun insertNewForecastData(sunEvents: List<SunEvent>, placeId: Int) {
+        // Convert list of SunEvent objects into list of ForecastEntity objects
+        val currentTimeStamp = LocalDateTime.now()
+        val forecasts = sunEvents.map {
+            ForecastEntity(
+                placeId = placeId,
+                sunsetDateTime = it.time,
+                weatherRating = it.conditions.weatherRating,
+                cloudConditionLow = it.conditions.cloudConditionLow,
+                cloudConditionMedium = it.conditions.cloudConditionMedium,
+                cloudConditionHigh = it.conditions.cloudConditionHigh,
+                airCondition = it.conditions.airCondition,
+                sunsetTemp = it.tempAtEvent,
+                weatherIcon = it.weatherIcon,
+                timestamp = currentTimeStamp
+            )
+        }
+
+        // Insert the ForecastEntity objects into the database
+        forecastDao.insertForecasts(forecasts)
+    }
+
+    private suspend fun updateForecastData(
+        oldForecastData: List<ForecastEntity>,
+        sunEvents: List<SunEvent>,
+        placeId: Int) {
+        // Convert list of SunEvent objects into list of ForecastEntity objects
+        val currentTimeStamp = LocalDateTime.now()
+        val forecasts = sunEvents.map {
+            // Get the right id to use by getting the id of the item at the same index
+            // in oldForecastData
+            val oldId = oldForecastData[sunEvents.indexOf(it)].id
+            ForecastEntity(
+                id = oldId,
+                placeId = placeId,
+                sunsetDateTime = it.time,
+                weatherRating = it.conditions.weatherRating,
+                cloudConditionLow = it.conditions.cloudConditionLow,
+                cloudConditionMedium = it.conditions.cloudConditionMedium,
+                cloudConditionHigh = it.conditions.cloudConditionHigh,
+                airCondition = it.conditions.airCondition,
+                sunsetTemp = it.tempAtEvent,
+                weatherIcon = it.weatherIcon,
+                timestamp = currentTimeStamp
+            )
+        }
+
+
+        // Insert the ForecastEntity objects into the database
+        forecastDao.updateForecasts(forecasts)
     }
 
     /**
@@ -127,15 +222,15 @@ class PlaceInfoRepositoryImpl(
         }
     }
 
-    override suspend fun getPlace(id: Int) {
+    override suspend fun getPlace(id: Int): PlaceInfo {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getFavourites() {
+    override suspend fun getFavourites(): List<PlaceInfo> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCustomPlaces() {
+    override suspend fun getCustomPlaces(): List<PlaceInfo> {
         TODO("Not yet implemented")
     }
 
