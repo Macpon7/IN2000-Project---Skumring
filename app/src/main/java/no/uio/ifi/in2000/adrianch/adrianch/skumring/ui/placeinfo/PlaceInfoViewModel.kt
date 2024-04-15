@@ -23,7 +23,12 @@ data class PlaceInfoUiState(
         description = "",
         lat = "",
         long = "",
-        sunEvents = emptyList()),
+        isFavourite = false,
+        isCustomPlace = false,
+        hasNotification = false,
+        images = emptyList(),
+        sunEvents = emptyList()
+        ),
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
