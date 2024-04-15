@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -13,6 +14,8 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
 import java.time.LocalDateTime
+
+private const val logTag = "PlaceInfoRepository"
 
 interface PlaceInfoRepository {
     suspend fun getAllPlaces(): List<PlaceInfo>
@@ -45,27 +48,23 @@ class PlaceInfoRepositoryImpl(
         runBlocking {
             launch (Dispatchers.IO) {
 
-
-
-            //Following code is to populate the database
-            /*
-                val allPlaces = placeListRepository.getPresetPlaceList()
-                allPlaces.forEach{
-                    placeInfoDao.insert(
-                        PlaceInfoEntity(
-                            name = it.name,
-                            description = it.description,
-                            latitude = it.lat,
-                            longitude = it.long,
-                            isCustomPlace = 0,
-                            isFavourite = 0
+                val populate = false
+                if (populate) {
+                    val allPlaces = placeListRepository.getPresetPlaceList()
+                    allPlaces.forEach{
+                        placeInfoDao.insert(
+                            PlaceInfoEntity(
+                                name = it.name,
+                                description = it.description,
+                                latitude = it.lat,
+                                longitude = it.long,
+                                isCustomPlace = false,
+                                isFavourite = false,
+                                hasNotification = false
+                            )
                         )
-                    )
+                    }
                 }
-
-             */
-
-
             }
         }
     }
@@ -247,6 +246,7 @@ class PlaceInfoRepositoryImpl(
      * Gets a PlaceInfo object from our database, given an id
      */
     override suspend fun getPlace(placeId: Int): PlaceInfo {
+        Log.d(logTag, "Trying to load place with id: $placeId from DB")
         val placeEntity = placeInfoDao.getOnePlace(placeId = placeId)
 
         //TODO fetch images
