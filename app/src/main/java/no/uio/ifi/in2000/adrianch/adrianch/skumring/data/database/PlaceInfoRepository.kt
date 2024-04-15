@@ -70,9 +70,13 @@ class PlaceInfoRepositoryImpl(
         TODO("Not yet implemented")
     }
 
+
     override suspend fun getPlace(id: Int) {
-        placeInfoDao.getPlace(id)
+        TODO("Not yet implemented")
+        //placeInfoDao.getPlace(id)
     }
+
+
 
     override suspend fun getFavourites() {
         placeInfoDao.getFavourites()
@@ -90,6 +94,8 @@ class PlaceInfoRepositoryImpl(
     }
 
     override suspend fun removeCustomPlace(placeId: Int) {
+        TODO("Not yet implemented")
+        /*
         try{
             val customPlace: Int? = placeInfoDao.checkIfCustomPlace(placeId)
             if (customPlace == 1){
@@ -100,6 +106,8 @@ class PlaceInfoRepositoryImpl(
         } catch (e: Exception){
             Log.e("PlaceInfoRepository", "An unexpected error: ${e.message} in removeCustomPlace(placeId: Int)", e)
         }
+
+         */
     }
 
     override suspend fun makeFavourite(placeId: Int) {

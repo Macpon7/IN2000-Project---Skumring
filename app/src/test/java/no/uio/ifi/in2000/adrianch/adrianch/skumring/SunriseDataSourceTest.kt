@@ -29,7 +29,7 @@ class SunriseDataSourceTest {
 
         geometry = Geometry(
             type = "Point",
-            coordinates = listOf(10, 60)
+            coordinates = listOf(10.0f, 60.0f)
         ),
         `when` = When(
             interval = listOf("2024-03-06T23:20:00Z", "2024-03-07T23:30:00Z")

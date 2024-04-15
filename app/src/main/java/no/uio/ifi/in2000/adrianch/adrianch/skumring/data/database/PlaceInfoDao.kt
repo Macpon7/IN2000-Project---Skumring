@@ -18,8 +18,8 @@ interface PlaceInfoDao {
     fun getAllPlaces(): List<PlaceInfoEntity>
     // for tester: fun getAllPlaces(): List<PlaceInfoEntity>
 
-    @Query("SELECT * FROM placeInfo WHERE id = :placeId")
-    suspend fun getPlace(placeId: Int)
+    //@Query("SELECT * FROM placeInfo WHERE id = :placeId")
+    //suspend fun getPlace(placeId: Int)
 
     @Query("SELECT * FROM placeInfo WHERE is_favourite = 1")
     fun getFavourites(): List<PlaceInfoEntity>
