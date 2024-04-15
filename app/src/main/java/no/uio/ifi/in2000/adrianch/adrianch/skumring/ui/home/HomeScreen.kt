@@ -56,13 +56,10 @@ import androidx.navigation.compose.rememberNavController
 
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListUiState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.md_theme_dark_background
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.md_theme_dark_onSecondary
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.md_theme_light_primaryContainer
-
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
@@ -80,14 +77,13 @@ fun HomeScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
-    var sunsetTime: String = homeUiState.sunset
+    var sunsetTime: String = homeUiState.sunsetTime
     var temp: String = homeUiState.temp
-    var weatherConditions: String = homeUiState.weatherMessage
+    var weatherConditions: WeatherConditionsRating = homeUiState.weatherConditions
     //var goldenHourTime: String //add when info is available
     //var blueHourTime: String  //add when info is available
 
-    var weatherCheck: Boolean = homeUiState.weatherCheck
-    var time: String = homeUiState.time
+    //var weatherCheck: Boolean = homeUiState.weatherCheck
     // var timeUiState: String = homeUiState.time
 
     Scaffold(
@@ -125,7 +121,7 @@ fun HomeScreen(
  */
 
 @Composable
-fun SunsetInfoCard(sunsetTime: String, weatherConditions: String, temp: String) { //, add goldenHourTime: String, blueHourTime: String later
+fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRating, temp: String) { //, add goldenHourTime: String, blueHourTime: String later
     Card(
         //backgroundColor = Color.Transparent, //removing existing background color
         shape = RoundedCornerShape(15.dp),
@@ -320,7 +316,7 @@ fun MoreDetailsButton() {
  */
 @Composable
 fun HorizontalInfoCardRow (mapListUiState: MapListUiState, navController: NavController) {
-    LazyRow() {
+    LazyRow {
         items(mapListUiState.places) {place ->
             HorizontalInfoCardContent(
                 name = place.name,
@@ -381,7 +377,7 @@ fun HorizontalInfoCardContent(name: String, distance: String, onItemClick: () ->
                     color = MaterialTheme.colorScheme.onSecondary,
                 )
                 Text(
-                    text = "Distance: 15 m", //
+                    text = "Distance: 15 m", //Add correct distance later
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(vertical = 4.dp)
