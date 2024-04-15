@@ -37,19 +37,13 @@ fun SkumringNavHost(
         composable(
             route = PlaceInfoScreenDestination.route,
             arguments = listOf(
-                navArgument("lat") { type = NavType.StringType },
-                navArgument("long") { type = NavType.StringType },
                 navArgument("id") { type = NavType.IntType }
                 )
             ) {backStackEntry ->
-            val lat = backStackEntry.arguments?.getString("lat")
-            val long = backStackEntry.arguments?.getString("long")
             val id = backStackEntry.arguments?.getInt("id")
-            if (lat != null && long != null && id != null) {
+            if (id != null) {
                 PlaceInfoScreen(
                     navController = navController,
-                    lat = lat,
-                    long = long,
                     id = id
                 )
             }
