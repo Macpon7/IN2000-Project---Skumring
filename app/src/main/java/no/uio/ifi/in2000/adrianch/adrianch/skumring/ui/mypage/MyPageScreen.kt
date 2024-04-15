@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
@@ -37,7 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
@@ -53,7 +58,7 @@ object MyPageDestination : NavigationDestination {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewModel) {
+fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewModel = viewModel()) {
     val myPageUiState: MyPageUiState by myPageViewModel.myListUiState.collectAsState()
 
     // Check if there is an error, if so show a snackbar:
@@ -94,59 +99,62 @@ fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewMo
         Column (modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-          //  ContentMyPage(navController = navController, myPageViewModel = myPageViewModel)
+          ContentMyPage(navController = navController, myPageViewModel = myPageViewModel)
         }
     }
 }
 
 @Composable
-fun ContentMyPage(
-//    navController : NavController, myPageViewModel: MyPageViewModel
-    )
+fun ContentMyPage(navController : NavController, myPageViewModel: MyPageViewModel)
 {
 
-    //val myPageUiState: MyPageUiState by myPageViewModel.myListUiState.collectAsState()
+    val myPageUiState: MyPageUiState by myPageViewModel.myListUiState.collectAsState()
 
-    var hasLocations = false
+    Column {
+        SettingsButton{
+            // The action that happens when the button is pressed happens here:
 
-    if (hasLocations) {
-        // Column for list view
-        /*
-        Column (Modifier.verticalScroll(rememberScrollState())) {
-            myPageUiState.places.forEach {place ->
-                LocationCard(
-                    name = place.name,
-                    description = place.description,
-                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                        navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
-                    }
-                )
-            }
+            // Get send to the SettingsButton when the button is pressed
+
         }
-         */
-    } else {
-        Text(
-            text = "You have no locations saved yet",
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
 
-    SettingsButton{
-        // The action that happens when the button is pressed happens here:
+        var hasLocations = false
 
-        // Get send to the SettingsButton when the button is pressed
+        Spacer(modifier = Modifier.weight(1f))
 
-    }
+        if (hasLocations) {
+            // Column for list view
+            Column (Modifier.verticalScroll(rememberScrollState())) {
+                myPageUiState.places.forEach {place ->
+                    LocationCard(
+                        name = place.name,
+                        description = place.description,
+                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                            navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
+                        }
+                    )
+                }
+            }
+        } else {
+            Text(
+                text = "You have no locations saved yet",
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
-    AddLocationButton {
-        // The action that happens when the button is pressed happens here:
-        hasLocations = true //Show the list of locations
-    }
+        Spacer(modifier = Modifier.weight(1f))
 
-    // TODO: Make as a dialogs
-    if (hasLocations) {
-        Text("Ny plassering lagt til!")
+
+        AddLocationButton {
+            // The action that happens when the button is pressed happens here:
+            hasLocations = true //Show the list of locations
+        }
+
+        // TODO: Make as a dialogs
+        if (hasLocations) {
+            Text("Ny plassering lagt til!")
+        }
     }
 }
 
@@ -226,6 +234,7 @@ fun LocationCard(name: String, description: String, onItemClick: () -> Unit) {
 fun AddLocationButton(onClick: () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.End,
+        modifier = Modifier.padding(16.dp)
     ) {
         // Push the icon to the right:
         Spacer(modifier = Modifier.weight(1f))
@@ -240,6 +249,6 @@ fun AddLocationButton(onClick: () -> Unit) {
 
 @Composable
 @Preview
-fun Test() {
-    ContentMyPage()
+fun Test(navController: NavHostController = rememberNavController()) {
+    MyPageScreen(navController = navController)
 }
