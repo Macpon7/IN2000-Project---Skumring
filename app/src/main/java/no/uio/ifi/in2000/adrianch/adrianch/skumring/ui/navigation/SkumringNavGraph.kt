@@ -16,6 +16,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreenDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoViewModel
 
 @Composable
 fun SkumringNavHost(
@@ -43,6 +44,7 @@ fun SkumringNavHost(
             val id = backStackEntry.arguments?.getInt("id")
             if (id != null) {
                 PlaceInfoScreen(
+                    placeViewModel = PlaceInfoViewModel(placeInfoRepository = placeInfoRepository),
                     navController = navController,
                     id = id
                 )
