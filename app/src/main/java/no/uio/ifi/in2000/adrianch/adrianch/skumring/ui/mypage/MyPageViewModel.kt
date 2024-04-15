@@ -71,7 +71,7 @@ class MyPageViewModel : ViewModel() {
     /**
      *    For refreshing when you use snackbar in MyPageScreen:
      */
-    fun refreshList() {
+    fun refresh() {
         _mapListUiState.update {currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false) }
         viewModelScope.launch (Dispatchers.IO) {
