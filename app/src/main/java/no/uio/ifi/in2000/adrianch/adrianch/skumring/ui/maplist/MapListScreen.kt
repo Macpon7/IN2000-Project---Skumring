@@ -206,7 +206,7 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                             name = place.name,
                             description = place.description,
                             onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                                navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
+                                navController.navigate("placeinfoscreen/${place.id}")
                             }
                         )
                     }
@@ -330,7 +330,7 @@ fun BottomSheetContent(
         Text(text = place.name, style = MaterialTheme.typography.headlineMedium)
         Button(onClick = {
             mapListViewModel.hideBottomSheet()
-            navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
+            navController.navigate("placeinfoscreen/${place.id}")
         }) {
             Text(text = "More details", style = MaterialTheme.typography.labelMedium)
         }

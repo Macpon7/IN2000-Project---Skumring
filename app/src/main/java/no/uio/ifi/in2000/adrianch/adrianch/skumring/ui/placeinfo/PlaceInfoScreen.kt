@@ -57,7 +57,7 @@ private const val logTag = "PlaceInfoScreen"
 object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
     override val buttonTitle = null
-    override val route = "placeinfoscreen/{lat}/{long}/{id}"
+    override val route = "placeinfoscreen/{id}"
     override val titleRes = null
 }
 
