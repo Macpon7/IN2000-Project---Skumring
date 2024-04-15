@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -44,7 +45,28 @@ class PlaceInfoRepositoryImpl(
     init {
         runBlocking {
             launch (Dispatchers.IO) {
-                val places = placeInfoDao.getAllPlaces()
+
+
+
+            //Following code is to populate the database
+            /*
+                val allPlaces = placeListRepository.getPresetPlaceList()
+                allPlaces.forEach{
+                    placeInfoDao.insert(
+                        PlaceInfoEntity(
+                            name = it.name,
+                            description = it.description,
+                            latitude = it.lat,
+                            longitude = it.long,
+                            isCustomPlace = 0,
+                            isFavourite = 0
+                        )
+                    )
+                }
+
+             */
+
+
             }
         }
     }
@@ -228,25 +250,56 @@ class PlaceInfoRepositoryImpl(
 
     override suspend fun getFavourites(): List<PlaceInfo> {
         TODO("Not yet implemented")
+        //placeInfoDao.getPlace(id)
     }
 
     override suspend fun getCustomPlaces(): List<PlaceInfo> {
-        TODO("Not yet implemented")
+        placeInfoDao.getFavourites()
     }
 
+
+//works but should take another input
     override suspend fun insertCustomPlace(place: PlaceInfoEntity){
-        //appDatabase.placeInfoDao().insert(place)
+        //input is PlaceInfo object
+        //API is called so user can access weather forecast immidieately
+        placeInfoDao.insertCustomPlace(place)
     }
 
-    override suspend fun removeCustomPlace(id: Int) {
-        TODO("Not yet implemented")
+    /**
+     *This methods removes a tuple from the table based on the placeId
+     */
+    override suspend fun removeCustomPlace(placeId: Int) {
+        val customPlace: Int? = placeInfoDao.checkIfCustomPlace(placeId)
+        if (customPlace == 1){
+            placeInfoDao.deleteCustomPlace(placeId)
+        } else {
+            throw IllegalArgumentException("Cannot delete a non-custom place")
+        }
+
     }
 
-    override suspend fun makeFavourite(id: Int) {
-        TODO("Not yet implemented")
+    /**
+    *This methods sets a location as favorite by setting is_custom_place = 1
+     *
+     */
+    override suspend fun makeFavourite(placeId: Int) {
+        placeInfoDao.markAsFavorite(placeId)
     }
 
-    override suspend fun unmakeFavourite(id: Int) {
-        TODO("Not yet implemented")
+    /**
+     *This methods sets a location as favorite by setting is_custom_place = 0
+     */
+    override suspend fun unmakeFavourite(placeId: Int) {
+        placeInfoDao.unmarkAsFavorite(placeId)
+    }
+
+    //Image features
+
+    suspend fun insertDefaultImage(path: String){
+        //painterResource(R.drawable.solnedgang)
+       // var imageEntity: ImageEntity = ImageEntity(placeId = 1, )
+        //imageDao.insert()
     }
 }
+
+

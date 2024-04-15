@@ -2,6 +2,7 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 
@@ -17,13 +18,29 @@ interface PlaceInfoDao {
     fun getAllPlaces(): List<PlaceInfoEntity>
     // for tester: fun getAllPlaces(): List<PlaceInfoEntity>
 
-    //Features vi kan implementere etter hvert
-    /*
-    @Query("UPDATE placeInfo SET isFavorite = True WHERE id = :placeId")
-    suspend fun markAsFavorite(placeId: Long)
+    //@Query("SELECT * FROM placeInfo WHERE id = :placeId")
+    //suspend fun getPlace(placeId: Int)
 
-    @Query("UPDATE placeInfo SET isFavorite = False WHERE id = :placeId")
-    suspend fun unmarkAsFavorite(placeId: Long)
+    @Query("SELECT * FROM placeInfo WHERE is_favourite = 1")
+    fun getFavourites(): List<PlaceInfoEntity>
 
-     */
+    @Query("SELECT * FROM placeInfo WHERE is_custom_place = 1")
+    fun getCustomPlaces(): List<PlaceInfoEntity>
+
+    //@Insert(onConflict = OnConflictStrategy.REPLACE) use this?
+    @Insert
+    fun insertCustomPlace(place: PlaceInfoEntity)
+
+    @Query("SELECT is_custom_place FROM placeInfo WHERE id = :placeId")
+    suspend fun checkIfCustomPlace(placeId: Int): Int?
+
+    @Query("DELETE FROM placeInfo WHERE id= :placeId")
+    suspend fun deleteCustomPlace(placeId: Int)
+
+    @Query("UPDATE placeInfo SET is_favourite = 1 WHERE id = :placeId")
+    suspend fun markAsFavorite(placeId: Int)
+
+    @Query("UPDATE placeInfo SET is_favourite = 0 WHERE id = :placeId")
+    suspend fun unmarkAsFavorite(placeId: Int)
+
 }
