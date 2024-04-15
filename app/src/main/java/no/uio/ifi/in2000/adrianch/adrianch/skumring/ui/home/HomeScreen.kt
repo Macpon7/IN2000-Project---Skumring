@@ -17,8 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Button
@@ -74,7 +77,7 @@ fun HomeScreen(
     navController: NavController, homeViewModel: HomeViewModel = viewModel(), mapListViewModel: MapListViewModel = viewModel()
 ) {
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior() //var her før
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
     var sunsetTime: String = homeUiState.sunset
@@ -98,12 +101,18 @@ fun HomeScreen(
     ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
         Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState()) //makes the column scrollable
                 .padding(innerPadding)
-                .background(color = md_theme_dark_background),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+                .background(color = MaterialTheme.colorScheme.surface),
         ) {
             SunsetInfoCard(sunsetTime, weatherConditions, temp)
-                HorizontalInfoListContent(
+            Text(
+                text = "Favourite places",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(start = 10.dp)
+            )
+                HorizontalInfoCardRow(
                     mapListUiState = mapListUiState,
                     navController = navController
                 )
@@ -116,138 +125,119 @@ fun HomeScreen(
  */
 
 @Composable
-fun SunsetInfoCard(sunsetTime: String, weatherConditions: String, temp: String) { //, goldenHourTime: String, blueHourTime: String
-/*
-primary = md_theme_dark_primary,
-    onPrimary = md_theme_dark_onPrimary,
-    primaryContainer = md_theme_dark_primaryContainer,
-    onPrimaryContainer = md_theme_dark_onPrimaryContainer,
-    secondary =
- */
-    val colorStops = arrayOf(
-        MaterialTheme.colorScheme.primary,
-        MaterialTheme.colorScheme.onPrimary,
-         MaterialTheme.colorScheme.primaryContainer,
-        MaterialTheme.colorScheme.onPrimaryContainer,
-
-
-    )
+fun SunsetInfoCard(sunsetTime: String, weatherConditions: String, temp: String) { //, add goldenHourTime: String, blueHourTime: String later
     Card(
         //backgroundColor = Color.Transparent, //removing existing background color
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
-        // .background(Brush.horizontalGradient(colorStops = colorStops)
+
     ) {
-        Box(
-            //Need box for color gradient
+        Box( //Need box as an overlay over card for color gradient
             modifier = Modifier
                // .fillMaxSize()
                 .background(Brush.verticalGradient(listOf(
                     MaterialTheme.colorScheme.primary,
                     //MaterialTheme.colorScheme.secondary,
                    // MaterialTheme.colorScheme.surfaceTint,
-                    MaterialTheme.colorScheme.onPrimaryContainer,
-
-                )))
-                        )
-
-
-            //.background( //adding desired backgroundcolor
-         {
+                    MaterialTheme.colorScheme.onPrimaryContainer)))
+        )
+         {//Displaying the information in the card
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = "Sunset today",
-                    color = md_theme_light_primaryContainer,
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.sunsetsymbol),
-                    contentDescription = "Sunset Icon",
-                    modifier = Modifier.size(120.dp),
-                    tint = Color.Unspecified
-                )
-                Text(
-                    text = sunsetTime,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.headlineLarge,
-                    color = md_theme_light_primaryContainer,
-                    textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(bottom = 10.dp)
+                        .padding(top = 10.dp)
                 )
-                //Row for weather conditions
-                Row(
+                Box { //Sunset icon and time of sunset, in box because it needs to overlap
+                    Icon(
+                        painter = painterResource(id = R.drawable.sunsetsymbol),
+                        contentDescription = "Sunset Icon",
+                        tint = Color.Unspecified,
+                        modifier = Modifier
+                            .size(140.dp)
+                    )
+                    Text(
+                        text = sunsetTime,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 10.dp, top = 125.dp)
+                    )
+                }
+                Row( //For displaying weather conditions
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Weather conditions:",
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = md_theme_light_primaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Center,
                     )
-                    Text(
-                        text = " $weatherConditions", //change this later
-                        style = MaterialTheme.typography.bodyLarge,
+                    Text( //text changing based on weather conditions
+                        text = " $weatherConditions",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold,
-//color = md_theme_dark_inversePrimary,
                         textAlign = TextAlign.Center,
                     )
                 }
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    Box {
+                    Box { //Weather icon and temperature at sunset, in box because it needs to overlap
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.weathersymbolcloudy),
                             contentDescription = "Weather icon cloudy",
                             tint = Color.Unspecified,
                             modifier = Modifier
-                                .padding(start = 45.dp) //The icon was not in the middle
+                                .padding(start = 45.dp) //To get the icon in the middle of the screen
                         )
                         Text(
-                            text = "$temp°C", //change this later
+                            text = "$temp°C",
                             style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = md_theme_light_primaryContainer,
-                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
                                 .padding(bottom = 5.dp)
                         )
                     }
-                    Row(
+                Divider( //for dividing sunset today info from golden hour and blue hour times
+                    modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    thickness = 1.dp
+                )
+                    Row( //For displaying Golden hour and Blue hour times on a row
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 40.dp, end = 70.dp)
+                            .padding(start = 40.dp, end = 60.dp)
 
                     ) {
                         Text(
-                            text = "Golden Hour ", //change this later
-                            style = MaterialTheme.typography.bodyMedium,
+                            text = "Golden Hour ",
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = md_theme_light_primaryContainer,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             textAlign = TextAlign.Center,
                         )
                         Text(
-                            text = "Blue Hour", //change this later
-                            style = MaterialTheme.typography.bodyMedium,
+                            text = "Blue Hour",
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = md_theme_light_primaryContainer,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             textAlign = TextAlign.Center,
                         )
+
                     }
-                    Row(
+                    Row( //for displaying time and icon for Golden hour and Blue Hour
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
@@ -255,8 +245,7 @@ primary = md_theme_dark_primary,
                             .padding(start = 40.dp, end = 40.dp, bottom = 10.dp)
 
                     ) {
-                        Box {
-                            //Golden hour icon and time
+                        Box { //Golden hour icon and time
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
                                 contentDescription = "yellow sun icon",
@@ -267,13 +256,12 @@ primary = md_theme_dark_primary,
                             Text(
                                 text = "19:09 -20:31", //change this later to $goldenHourTime
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = md_theme_light_primaryContainer,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(start = 20.dp)
                             )
                         }
-                        //Blue hour icon and time
-                        Box {
+                        Box {  //Blue hour icon and time
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
                                 contentDescription = "blue sun icon",
@@ -282,66 +270,84 @@ primary = md_theme_dark_primary,
                             Text(
                                 text = "20:31-21:05", //change this later to $blueHourTime
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = md_theme_light_primaryContainer,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(start = 20.dp)
                             )
                         }
                     }
-
-                    Button(
-                        onClick = { }, shape = RectangleShape,
-                        contentPadding = PaddingValues(0.dp),
-                        // colors = ButtonDefaults.buttonColors(containerColor = md_theme_dark_inversePrimary),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 0.dp, end = 0.dp)
-                        // .background(md_theme_dark_inversePrimary)
-
-                    ) {
-                        Text(
-                            text = "More Info",
-                            fontSize = 18.sp
-                        )
-                    }
-
-
-                }
+                    MoreDetailsButton()
             }
         }
     }
 }
 
 
+/**
+ * Click button for more details about the sunset at the place you are at
+ */
 @Composable
-fun HorizontalInfoListContent    (mapListUiState: MapListUiState, navController: NavController) {
-    LazyRow() {
-        Modifier.padding(start = 10.dp, end = 10.dp)
-        items(mapListUiState.places) {place ->
-            HorizontalInfoCard(
-                name = place.name,
-                distance = place.description, //, should be distance
-                onItemClick = {
-                    navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
-                },
-                modifier = Modifier.padding(10.dp)
+fun MoreDetailsButton() {
+    Box( //Inside a box with color because it shows the outline of the card over and under without it
+        modifier = Modifier.background(MaterialTheme.colorScheme.secondary)
+    ) {
+        Divider( //marks the division between the button and the card
+            color = MaterialTheme.colorScheme.outlineVariant,
+            thickness = 1.dp
+        )
+        Button(
+            onClick = {
+                // navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+            },
+            shape = RectangleShape,
+            contentPadding = PaddingValues(0.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 0.dp, end = 0.dp)
+        ) {
+            Text(
+                text = "More details",
+                color = MaterialTheme.colorScheme.onSecondary,
+                style = MaterialTheme.typography.titleMedium,
             )
         }
     }
 }
 
+/**
+ * For displaying the HorizontalInfoCards in a row. When clicked, navigate to PlaceInfoScreen
+ */
 @Composable
-fun HorizontalInfoCard(name: String, distance: String, onItemClick: () -> Unit, modifier: Modifier) {
+fun HorizontalInfoCardRow (mapListUiState: MapListUiState, navController: NavController) {
+    LazyRow() {
+        items(mapListUiState.places) {place ->
+            HorizontalInfoCardContent(
+                name = place.name,
+                distance = place.description, //, should be distance
+                onItemClick = {
+                    navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                },
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
+            )
+        }
+    }
+}
+
+/**
+ * Infocards that shows picture of the favourite places of the user and the distance to them from the users current location
+ */
+@Composable
+fun HorizontalInfoCardContent(name: String, distance: String, onItemClick: () -> Unit, modifier: Modifier) {
     Card(
         modifier = modifier
-            .width(200.dp)
-            .height(200.dp)
+            .width(220.dp)
+            .height(220.dp)
             .clickable(onClick = onItemClick), //Click to infoscreen
         shape = RoundedCornerShape(15.dp),
         elevation = 5.dp
-
     ) {
-        Box(
+        Box( //displays the image and the information under the image
             modifier = Modifier.fillMaxSize()
         ) {
             Image(
@@ -352,35 +358,38 @@ fun HorizontalInfoCard(name: String, distance: String, onItemClick: () -> Unit, 
                     .fillMaxWidth()
                     .align(Alignment.TopCenter)
             )
-            // Box for text displayed from the middle and down, covering the bottom half
-            Box(
+            Divider( //for dividing photo from bottom text
+                modifier = Modifier.padding(top = 142.dp),
+                color = MaterialTheme.colorScheme.outlineVariant,
+                thickness = 1.dp
+            )
+            Box( // Box for text displayed, covering the bottom half of the other box
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
-                    .fillMaxHeight(0.3f)
-                    .background(color = md_theme_dark_onSecondary),
+                    .fillMaxHeight(0.35f) //set the height of the box
+                    .background(MaterialTheme.colorScheme.secondary),
 
                 ) {
-                //Text for name of place
-                Text(
+                Text( //Text for name of place
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 5.dp),
                     text = name,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = md_theme_light_primaryContainer,
+                    color = MaterialTheme.colorScheme.onSecondary,
                 )
                 Text(
-                    text = "Distance: 15 m", //distance instead
+                    text = "Distance: 15 m", //
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(vertical = 4.dp)
                         .padding(start = 15.dp, bottom = 4.dp)
                         .fillMaxWidth(),
                     textAlign = TextAlign.Left,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = md_theme_light_primaryContainer
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
 
             }
@@ -391,10 +400,27 @@ fun HorizontalInfoCard(name: String, distance: String, onItemClick: () -> Unit, 
 }
 
 
+/**
+ * For testing the HomeScreen
+ */
 @Preview
 @Composable
-fun Test(navController: NavController = rememberNavController()) {
+fun HomeScreenTest(navController: NavController = rememberNavController()) {
 HomeScreen(navController = navController)
+}
+
+/**
+ * For testing the info cards displayed in a lazyrow on the HomeScreen
+ */
+@Preview
+@Composable
+fun TestHorizontalInfoCard(navController: NavController = rememberNavController()) {
+    HorizontalInfoCardContent(
+        name = "Hei",
+        distance = "paa deg",
+        onItemClick = { navController.navigate("destination_route") },
+        modifier = Modifier
+    )
 }
 
 
@@ -475,13 +501,4 @@ fontSize = 12.sp
 )
 }
 
-@Preview
-@Composable
-fun TestHorizontalInfoList(navController: NavController = rememberNavController()) {
-    HorizontalInfoCard(
-        name = "Hei",
-        distance = "paa deg",
-        onItemClick = { navController.navigate("destination_route") },
-        modifier = Modifier
-    )
-}
+
