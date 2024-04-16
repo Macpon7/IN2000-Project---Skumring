@@ -71,20 +71,13 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navController: NavHostController, homeViewModel: HomeViewModel = viewModel(), mapListViewModel: MapListViewModel = viewModel()
+    navController: NavHostController,
+    homeViewModel: HomeViewModel = viewModel(),
+    mapListViewModel: MapListViewModel = viewModel()
 ) {
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
-
-    var sunsetTime: String = homeUiState.sunsetTime
-    var temp: String = homeUiState.temp
-    var weatherConditions: WeatherConditionsRating = homeUiState.weatherConditions
-    //var goldenHourTime: String //add when info is available
-    //var blueHourTime: String  //add when info is available
-
-    //var weatherCheck: Boolean = homeUiState.weatherCheck
-    // var timeUiState: String = homeUiState.time
 
     Scaffold(
         topBar = {
@@ -104,9 +97,9 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.surface),
         ) {
-            SunsetInfoCard(sunsetTime, weatherConditions, temp)
+            SunsetInfoCard(homeUiState.sunsetTime, homeUiState.weatherConditions, homeUiState.temp) //add blueHourTime and goldenHourTime later
             Text(
-                text = "Favourite places",
+                text = stringResource(R.string.home_favourite_places),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(start = 10.dp)
@@ -125,7 +118,6 @@ fun HomeScreen(
 @Composable
 fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRating, temp: String) { //, add goldenHourTime: String, blueHourTime: String later
     Card(
-        //backgroundColor = Color.Transparent, //removing existing background color
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier
             .padding(10.dp)
@@ -134,7 +126,6 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
     ) {
         Box( //Need box as an overlay over card for color gradient
             modifier = Modifier
-               // .fillMaxSize()
                 .background(Brush.verticalGradient(listOf(
                     MaterialTheme.colorScheme.primary,
                     //MaterialTheme.colorScheme.secondary,
@@ -146,10 +137,8 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-               // val helloWorldText = getString(R.string.hello_world)
                 Text(
-                    text = stringResource(R.string.home_sunset), //Must change to String value -->
+                    text = stringResource(R.string.home_sunset),
                     color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier
@@ -183,7 +172,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                         color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Center,
                     )
-                    Text( //text changing based on weather conditions
+                    Text( //text changing based on weather conditions, in different textbox because of change of color
                         text = " $weatherConditions",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -193,14 +182,14 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                 }
                     Box { //Weather icon and temperature at sunset, in box because it needs to overlap
                         Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.weathersymbolcloudy),
+                            imageVector = ImageVector.vectorResource(id = R.drawable.weathersymbolcloudy), //Change to dynamic icon when possible
                             contentDescription = "Weather icon cloudy",
                             tint = Color.Unspecified,
                             modifier = Modifier
                                 .padding(start = 45.dp) //To get the icon in the middle of the screen
                         )
                         Text(
-                            text = "$temp°C",
+                            text = "$temp °C",
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier
@@ -288,16 +277,16 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
  */
 @Composable
 fun MoreDetailsButton() {
-    Box( //Inside a box with color because it shows the outline of the card over and under without it
+    Box(
         modifier = Modifier.background(MaterialTheme.colorScheme.secondary)
     ) {
-        Divider( //marks the division between the button and the card
+        Divider( //marks the division between the image and the informationpart of the button
             color = MaterialTheme.colorScheme.outlineVariant,
             thickness = 1.dp
         )
         Button(
             onClick = {
-                // navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                      //TODO add correct destination for buttonClick // navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
             },
             shape = RectangleShape,
             contentPadding = PaddingValues(0.dp),
@@ -326,7 +315,7 @@ fun HorizontalInfoCardRow (mapListUiState: MapListUiState, navHostController: Na
                 name = place.name,
                 distance = place.description, //, should be distance
                 onItemClick = {
-                    navHostController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                    navHostController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
                 },
                 modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
             )
@@ -351,7 +340,7 @@ fun HorizontalInfoCardContent(name: String, distance: String, onItemClick: () ->
             modifier = Modifier.fillMaxSize()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.sunset_picture), //add correct picture later
+                painter = painterResource(id = R.drawable.sunset_picture), //Change to dynamic image later
                 contentDescription = "sunset image placeholder",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -381,7 +370,7 @@ fun HorizontalInfoCardContent(name: String, distance: String, onItemClick: () ->
                     color = MaterialTheme.colorScheme.onSecondary,
                 )
                 Text(
-                    text = stringResource(R.string.home_distance , distance), //"15 m" Add correct distance later
+                    text = stringResource(R.string.home_distance , distance), //Add correct distance later
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(vertical = 4.dp)
