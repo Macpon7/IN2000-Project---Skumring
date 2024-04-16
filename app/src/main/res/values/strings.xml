@@ -29,6 +29,9 @@
     <string name="language_option">Språk</string>
     <string name="distance_unit">Avstander</string>
     <string name="temp_unit">Temperatur</string>
+    <!-- MyPageScreen -->
+    <string name="no_location">Ingen lokasjon lagret</string>
+    <string name="new_location">Ny plassering lagt til!</string>
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>

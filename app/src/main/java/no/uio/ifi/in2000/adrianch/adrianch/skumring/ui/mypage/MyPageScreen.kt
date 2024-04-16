@@ -137,7 +137,7 @@ fun ContentMyPage(navController : NavController, myPageViewModel: MyPageViewMode
             }
         } else {
             Text(
-                text = "You have no locations saved yet",
+                text = R.string.no_location.toString(),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -153,7 +153,7 @@ fun ContentMyPage(navController : NavController, myPageViewModel: MyPageViewMode
 
         // TODO: Make as a dialogs
         if (hasLocations) {
-            Text("Ny plassering lagt til!")
+            Text(text = R.string.new_location.toString())
         }
     }
 }
