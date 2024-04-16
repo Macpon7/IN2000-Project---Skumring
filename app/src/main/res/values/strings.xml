@@ -12,8 +12,9 @@
     <string name="home_greeting">Hei</string>
     <string name="conditions_are_good">Det blir gode forhold i kveld!</string>
     <string name="conditions_are_bad">Det blir dårlige forhold i kveld.</string>
-    <string name="sunset">Solnedgang</string>
+    <string name="home_sunset">Solnedgang i dag</string>
     <string name="list_title">Fine steder i dag</string>
+    <string name="home_more_details_button">Mer informasjon</string>
     <!-- MapListScreen -->
     <string name="toggle_list">Liste</string>
     <string name="toggle_map">Kart</string>
@@ -30,8 +31,9 @@
     <string name="distance_unit">Avstander</string>
     <string name="temp_unit">Temperatur</string>
     <!-- Common strings used across multiple screens -->
-    <string name="weather_condition">Værforhold</string>
+    <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
     <string name="golden_hour">Gylne time</string>
     <string name="blue_hour">Blåtime</string>
+    <string name="home_distance">Avstand:</string>
 </resources>

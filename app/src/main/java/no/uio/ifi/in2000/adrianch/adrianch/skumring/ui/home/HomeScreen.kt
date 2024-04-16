@@ -30,7 +30,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -119,7 +119,6 @@ fun HomeScreen(
 /**
  * An infocard in HomeScreen that shows time for sunset, sunset weather conditions, golden hour and blue hour at the users location
  */
-
 @Composable
 fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRating, temp: String) { //, add goldenHourTime: String, blueHourTime: String later
     Card(
@@ -144,8 +143,10 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+               // val helloWorldText = getString(R.string.hello_world)
                 Text(
-                    text = "Sunset today",
+                    text = stringResource(R.string.home_sunset), //Must change to String value -->
                     color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier
@@ -173,7 +174,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Weather conditions:",
+                        text = stringResource(R.string.weather_condition),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -218,14 +219,14 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
 
                     ) {
                         Text(
-                            text = "Golden Hour ",
+                            text = stringResource(R.string.golden_hour),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onPrimary,
                             textAlign = TextAlign.Center,
                         )
                         Text(
-                            text = "Blue Hour",
+                            text = stringResource(R.string.blue_hour),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onPrimary,
@@ -303,7 +304,7 @@ fun MoreDetailsButton() {
                 .padding(start = 0.dp, end = 0.dp)
         ) {
             Text(
-                text = "More details",
+                text = stringResource(R.string.home_more_details_button),
                 color = MaterialTheme.colorScheme.onSecondary,
                 style = MaterialTheme.typography.titleMedium,
             )
@@ -347,7 +348,7 @@ fun HorizontalInfoCardContent(name: String, distance: String, onItemClick: () ->
             modifier = Modifier.fillMaxSize()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.sunset_picture),
+                painter = painterResource(id = R.drawable.sunset_picture), //add correct picture later
                 contentDescription = "sunset image placeholder",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -377,7 +378,7 @@ fun HorizontalInfoCardContent(name: String, distance: String, onItemClick: () ->
                     color = MaterialTheme.colorScheme.onSecondary,
                 )
                 Text(
-                    text = "Distance: 15 m", //Add correct distance later
+                    text = stringResource(R.string.home_distance , distance), //"15 m" Add correct distance later
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(vertical = 4.dp)
@@ -392,9 +393,7 @@ fun HorizontalInfoCardContent(name: String, distance: String, onItemClick: () ->
         }
 
     }
-
 }
-
 
 /**
  * For testing the HomeScreen
