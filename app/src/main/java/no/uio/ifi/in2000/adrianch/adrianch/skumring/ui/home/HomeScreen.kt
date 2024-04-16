@@ -35,6 +35,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -51,15 +54,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-
+import androidx.navigation.NavHostController
+import com.mapbox.geojson.Point
+import com.mapbox.maps.MapboxExperimental
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListUiState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
@@ -71,7 +76,7 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navController: NavController, homeViewModel: HomeViewModel = viewModel(), mapListViewModel: MapListViewModel = viewModel()
+    navController: NavHostController, homeViewModel: HomeViewModel = viewModel(), mapListViewModel: MapListViewModel = viewModel()
 ) {
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -88,12 +93,15 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            SkumringTopAppBar(
-                title = stringResource( id = HomeDestination.titleRes),
+            SkumringTopBar(
+                title = stringResource(id = HomeDestination.titleRes),
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior
             )
         },
+        bottomBar = {
+            SkumringBottomBar(navController = navController)
+        }
     ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
         Column(
             modifier = Modifier
@@ -426,18 +434,18 @@ fun TestHorizontalInfoCard(navController: NavController = rememberNavController(
 */
 @Composable
 fun ContentHomeScreen(time: String,
-temp: String,
-sunset: String,
-weatherCheck: Boolean
+                      temp: String,
+                      sunset: String,
+                      weatherCondition: String
 ) {
 Column (verticalArrangement = Arrangement.Center,
 horizontalAlignment = Alignment.CenterHorizontally) {
 
-SunTempAndTime(time, temp)
-SunDown(sunset)
-Text(text = "Været er bra: $weatherCheck")
-//MapBox()
-}
+        SunTempAndTime(time, temp)
+        SunDown(sunset)
+        Text(text = "The weather is: $weatherCondition")
+        MapBox()
+    }
 }
 
 

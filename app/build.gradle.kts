@@ -1,13 +1,19 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
+    id("androidx.room")
     id("com.google.relay") version "0.3.11"
 }
-
 
 android {
     namespace = "no.uio.ifi.in2000.adrianch.adrianch.skumring"
     compileSdk = 34
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 
     defaultConfig {
         applicationId = "no.uio.ifi.in2000.adrianch.adrianch.skumring"
@@ -19,6 +25,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+        //for Room implementation to fix Room - Schema export directory is not provided to the annotation processor so we cannot export the schema
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
         }
     }
 
@@ -73,6 +86,7 @@ dependencies {
     // Jetpack Compose ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
 
     // Testing stuff
     testImplementation("junit:junit:4.13.2")
@@ -94,6 +108,39 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
 
     // Mapbox
-    implementation("com.mapbox.maps:android:11.2.0")
-    implementation("com.mapbox.extension:maps-compose:11.2.0")
+    val mapboxVersion = "11.2.0"
+    implementation("com.mapbox.maps:android:$mapboxVersion")
+    implementation("com.mapbox.extension:maps-compose:$mapboxVersion")
+
+    // Room
+    val room_version = "2.6.1"
+
+    androidTestImplementation("androidx.test:core:1.2.0")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.2.0")
+    androidTestImplementation("androidx.test.ext:truth:1.5.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
+    //  androidTestImplementation 'com.google.truth:truth:0.42'
+
+
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    //kapt("androidx.room:room-compiler:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+    testImplementation("androidx.room:room-testing:$room_version")
+
+    //androidTestImplementation("androidx.test:runner:1.4.0")
+    //androidTestImplementation("androidx.test.ext:junit:1.1.3")
+
+    //to test  Room
+
+   // androidTestCompile("junit:junit:4.12")
+    //androidTestImplementation("androidx.test:runner:$testRunnerVersion")
+    //androidTestImplementation("androidx.test:rules:$testRulesVersion")
+
+
+
+
+
 }

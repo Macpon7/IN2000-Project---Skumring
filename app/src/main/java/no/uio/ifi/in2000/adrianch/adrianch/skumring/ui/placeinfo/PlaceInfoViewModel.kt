@@ -10,18 +10,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceInfoRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 
 private const val logTag = "PlaceInfoViewModel"
 
 data class PlaceInfoUiState(
     var placeInfo: PlaceInfo = PlaceInfo(
+        id = 0,
         name = "",
         description = "",
-        latitude = "",
-        longitude = "",
+        lat = "",
+        long = "",
         sunEvents = emptyList()),
 
     // Variable for checking if there is an error:
@@ -34,7 +35,7 @@ data class PlaceInfoUiState(
 
 
 class PlaceInfoViewModel : ViewModel() {
-    private val placeInfoRepository: PlaceInfoRepository = PlaceInfoRepositoryImpl()
+    private val oldPlaceInfoRepository: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
 
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
 
@@ -45,7 +46,7 @@ class PlaceInfoViewModel : ViewModel() {
             Log.d(logTag, "loadPlaceInfo called")
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
-                    val placeInfoObject = placeInfoRepository.getPlaceInfo(lat, long, id)
+                    val placeInfoObject = oldPlaceInfoRepository.getPlaceInfo(lat, long, id)
                     currentPlaceInfoUiState.copy(placeInfo = placeInfoObject)
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting pins in loadPlaceInfo", e)
