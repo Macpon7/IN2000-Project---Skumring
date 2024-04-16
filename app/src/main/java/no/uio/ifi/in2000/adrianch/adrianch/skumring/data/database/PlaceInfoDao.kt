@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlaceInfoDao {
@@ -21,28 +22,28 @@ interface PlaceInfoDao {
     //suspend fun getPlace(placeId: Int)
 
     @Query("SELECT * FROM placeInfo WHERE id=:placeId")
-    fun getOnePlace(placeId: Int): PlaceInfoEntity
+    fun getOnePlace(placeId: Int): Flow<PlaceInfoEntity>
 
     @Query("SELECT * FROM placeInfo WHERE is_favourite = 1")
-    fun getFavourites(): List<PlaceInfoEntity>
+    fun getFavourites(): Flow<List<PlaceInfoEntity>>
 
     @Query("SELECT * FROM placeInfo WHERE is_custom_place = 1")
-    fun getCustomPlaces(): List<PlaceInfoEntity>
+    fun getCustomPlaces(): Flow<List<PlaceInfoEntity>>
 
     //@Insert(onConflict = OnConflictStrategy.REPLACE) use this?
     @Insert
     fun insertCustomPlace(place: PlaceInfoEntity)
 
     @Query("SELECT is_custom_place FROM placeInfo WHERE id = :placeId")
-    suspend fun checkIfCustomPlace(placeId: Int): Int?
+    fun checkIfCustomPlace(placeId: Int): Flow<Boolean>
 
     @Query("DELETE FROM placeInfo WHERE id= :placeId")
-    suspend fun deleteCustomPlace(placeId: Int)
+    fun deleteCustomPlace(placeId: Int)
 
     @Query("UPDATE placeInfo SET is_favourite = 1 WHERE id = :placeId")
-    suspend fun markAsFavorite(placeId: Int)
+    fun markAsFavorite(placeId: Int)
 
     @Query("UPDATE placeInfo SET is_favourite = 0 WHERE id = :placeId")
-    suspend fun unmarkAsFavorite(placeId: Int)
+    fun unmarkAsFavorite(placeId: Int)
 
 }
