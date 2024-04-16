@@ -58,6 +58,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherCondi
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListUiState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
@@ -94,8 +95,7 @@ fun HomeScreen(
             )
         },
         bottomBar = {
-
-            //SkumringBottomBar(navController = navController)
+            SkumringBottomBar(navController = navController)
         }
     ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
         Column(
