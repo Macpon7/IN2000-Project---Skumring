@@ -30,6 +30,11 @@
     <string name="language_option">Language</string>
     <string name="distance_unit">Distances</string>
     <string name="temp_unit">Temperatures</string>
+    <string name="add_photo">Add photo</string>
+    <string name="location_name">Location name</string>
+    <string name="choose_location">Choose location</string>
+    <string name="time">Unknown</string>
+    <string name="notes">Notes</string>
     <!-- MyPageScreen -->
     <string name="no_location">You have no locations saved yet</string>
     <string name="new_location">New location added!</string>

@@ -32,6 +32,11 @@
     <!-- MyPageScreen -->
     <string name="no_location">Ingen lokasjon lagret</string>
     <string name="new_location">Ny plassering lagt til!</string>
+    <string name="add_photo">Legg til bilde</string>
+    <string name="location_name">Steds navn</string>
+    <string name="choose_location">Velg sted</string>
+    <string name="time">Velg tid</string>
+    <string name="notes">Notater</string>
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
