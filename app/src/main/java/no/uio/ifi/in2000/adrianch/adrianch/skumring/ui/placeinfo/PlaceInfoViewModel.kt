@@ -33,6 +33,8 @@ data class PlaceInfoUiState(
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
+    // Variable for if we should show loading wheel or not:
+    var isLoading: Boolean = true,
     // Variable that change according to the error message we get:
     var errorMessage: String = "No error",
     // Variable for snackbar:
@@ -52,13 +54,14 @@ class PlaceInfoViewModel(private val placeInfoRepository: PlaceInfoRepository): 
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
                     val placeInfoObject = placeInfoRepository.getPlace(id)
-                    currentPlaceInfoUiState.copy(placeInfo = placeInfoObject)
+                    currentPlaceInfoUiState.copy(placeInfo = placeInfoObject, isLoading = false)
                 } catch(e: Exception) {
-                    Log.e(logTag, "Error getting pins in loadPlaceInfo", e)
+                    Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)
                     currentPlaceInfoUiState.copy(showSnackbar = true,
                         errorMessage = "Error getting pins in loadPlaceInfo")
                 }
             }
+            Log.d(logTag, "New place in UiState: ${_placeInfoUiState.value.placeInfo.name}")
         }
     }
 

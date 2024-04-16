@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
 import android.util.Log
+import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -96,7 +97,7 @@ class PlaceInfoRepositoryImpl(
      */
     private suspend fun getForecastData(placeId: Int, lat: String, long: String): List<SunEvent> {
         // Try to fetch from DB
-        val dataFromDb = forecastDao.getForecasts(placeId = placeId)
+        val dataFromDb = forecastDao.getForecasts(placeId = placeId).asLiveData().value?: emptyList()
 
         if (dataFromDb.isEmpty()) {
             // If there is no data in the DB for this placeId, we need to fetch data from APIs
@@ -105,7 +106,7 @@ class PlaceInfoRepositoryImpl(
             val sunEventsList = fetchNewForecastData(lat = lat, long = long)
 
             // Save sun event list to DB with correct placeId
-            insertNewForecastData(sunEvents = sunEventsList, placeId = placeId)
+            upsertForecastData(sunEvents = sunEventsList, placeId = placeId)
 
             return sunEventsList
 
@@ -116,7 +117,7 @@ class PlaceInfoRepositoryImpl(
             val sunEvents = fetchNewForecastData(lat = lat, long = long)
 
             // Update Forecast objects in the DB
-            updateForecastData(
+            upsertForecastData(
                 oldForecastData = dataFromDb,
                 sunEvents = sunEvents,
                 placeId = placeId)
@@ -186,8 +187,8 @@ class PlaceInfoRepositoryImpl(
         forecastDao.insertForecasts(forecasts)
     }
 
-    private suspend fun updateForecastData(
-        oldForecastData: List<ForecastEntity>,
+    private suspend fun upsertForecastData(
+        oldForecastData: List<ForecastEntity> = emptyList(),
         sunEvents: List<SunEvent>,
         placeId: Int) {
         // Convert list of SunEvent objects into list of ForecastEntity objects
@@ -195,7 +196,11 @@ class PlaceInfoRepositoryImpl(
         val forecasts = sunEvents.map {
             // Get the right id to use by getting the id of the item at the same index
             // in oldForecastData
-            val oldId = oldForecastData[sunEvents.indexOf(it)].id
+            val oldId = if (oldForecastData.isNotEmpty()) {
+                oldForecastData[sunEvents.indexOf(it)].id
+            } else {
+                0
+            }
             ForecastEntity(
                 id = oldId,
                 placeId = placeId,
@@ -213,7 +218,7 @@ class PlaceInfoRepositoryImpl(
 
 
         // Insert the ForecastEntity objects into the database
-        forecastDao.updateForecasts(forecasts)
+        forecastDao.upsertForecasts(forecasts)
     }
 
     /**
@@ -247,7 +252,7 @@ class PlaceInfoRepositoryImpl(
      */
     override suspend fun getPlace(placeId: Int): PlaceInfo {
         Log.d(logTag, "Trying to load place with id: $placeId from DB")
-        val placeEntity = placeInfoDao.getOnePlace(placeId = placeId)
+        val placeEntity = placeInfoDao.getOnePlace(placeId = placeId).asLiveData().value!!
 
         //TODO fetch images
         return PlaceInfo(
@@ -289,8 +294,8 @@ class PlaceInfoRepositoryImpl(
      *This methods removes a tuple from the table based on the placeId
      */
     override suspend fun removeCustomPlace(placeId: Int) {
-        val customPlace: Int? = placeInfoDao.checkIfCustomPlace(placeId)
-        if (customPlace == 1){
+        val customPlace: Boolean = placeInfoDao.checkIfCustomPlace(placeId).asLiveData().value!!
+        if (customPlace){
             placeInfoDao.deleteCustomPlace(placeId)
         } else {
             throw IllegalArgumentException("Cannot delete a non-custom place")

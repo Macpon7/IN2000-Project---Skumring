@@ -21,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -70,12 +69,13 @@ fun PlaceInfoScreen(
     navController: NavHostController
 ) {
 
-    LaunchedEffect(key1 = id) {
-        Log.d(logTag, "LaunchedEffect launched with key $id")
-        placeViewModel.loadPlaceInfo(id = id)
-    }
-
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
+
+    LaunchedEffect(key1 = id) {
+        Log.d(logTag, "Loading PlaceInfo object with ID: $id")
+        placeViewModel.loadPlaceInfo(id = id)
+        Log.d(logTag, "Loaded place: ${placeUiState.placeInfo.name}")
+    }
 
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
@@ -118,17 +118,14 @@ fun PlaceInfoScreen(
                 .fillMaxSize()
                 .padding(innerPadding) // Padding for topbar
         ) {
-            when {
+            /*if (placeUiState.isLoading) {
                 // The content won't load before the content is ready
-                placeUiState.placeInfo.name.isEmpty() -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                else -> {
-                    ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
-                }
-            }
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            } else {*/
+            ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
+            //}
         }
     }
 }
