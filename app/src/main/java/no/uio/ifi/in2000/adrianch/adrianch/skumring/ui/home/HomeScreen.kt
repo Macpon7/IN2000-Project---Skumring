@@ -35,9 +35,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -55,15 +52,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.mapbox.geojson.Point
-import com.mapbox.maps.MapboxExperimental
+import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.SkumringTopAppBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListUiState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
@@ -100,7 +94,8 @@ fun HomeScreen(
             )
         },
         bottomBar = {
-            SkumringBottomBar(navController = navController)
+
+            //SkumringBottomBar(navController = navController)
         }
     ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
         Column(
@@ -118,7 +113,7 @@ fun HomeScreen(
             )
                 HorizontalInfoCardRow(
                     mapListUiState = mapListUiState,
-                    navController = navController
+                    navHostController = navController
                 )
             }
         }
@@ -324,14 +319,14 @@ fun MoreDetailsButton() {
  * For displaying the HorizontalInfoCards in a row. When clicked, navigate to PlaceInfoScreen
  */
 @Composable
-fun HorizontalInfoCardRow (mapListUiState: MapListUiState, navController: NavController) {
+fun HorizontalInfoCardRow (mapListUiState: MapListUiState, navHostController: NavHostController) {
     LazyRow {
         items(mapListUiState.places) {place ->
             HorizontalInfoCardContent(
                 name = place.name,
                 distance = place.description, //, should be distance
                 onItemClick = {
-                    navController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
+                    navHostController.navigate("infoscreen/${place.lat}/${place.long}/${place.id}")
                 },
                 modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
             )
@@ -408,7 +403,7 @@ fun HorizontalInfoCardContent(name: String, distance: String, onItemClick: () ->
  */
 @Preview
 @Composable
-fun HomeScreenTest(navController: NavController = rememberNavController()) {
+fun HomeScreenTest(navController: NavHostController = rememberNavController()) {
 HomeScreen(navController = navController)
 }
 
@@ -417,7 +412,7 @@ HomeScreen(navController = navController)
  */
 @Preview
 @Composable
-fun TestHorizontalInfoCard(navController: NavController = rememberNavController()) {
+fun TestHorizontalInfoCard(navController: NavHostController = rememberNavController()) {
     HorizontalInfoCardContent(
         name = "Hei",
         distance = "paa deg",
@@ -444,7 +439,6 @@ horizontalAlignment = Alignment.CenterHorizontally) {
         SunTempAndTime(time, temp)
         SunDown(sunset)
         Text(text = "The weather is: $weatherCondition")
-        MapBox()
     }
 }
 
