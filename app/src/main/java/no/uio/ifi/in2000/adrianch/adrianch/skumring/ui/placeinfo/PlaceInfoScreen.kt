@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -113,6 +114,7 @@ fun PlaceInfoScreen(
         snackbarHost = {
             SnackbarHost(hostState = placeUiState.snackbarHostState)
         }) {innerPadding ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -124,7 +126,12 @@ fun PlaceInfoScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {*/
-            ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
+            ContentInfoScreen(
+                description = placeUiState.placeInfo.description,
+                placeInfoUiState = placeUiState,
+                placeViewModel = placeViewModel,
+                id = id
+                )
             //}
         }
     }
@@ -153,12 +160,20 @@ fun PlacePicture() {
  * This exclude the top- and bottomBar
  */
 @Composable
-fun ContentInfoScreen(description: String, placeInfoUiState: PlaceInfoUiState) {
+fun ContentInfoScreen(
+    description: String,
+    placeInfoUiState: PlaceInfoUiState,
+    placeViewModel: PlaceInfoViewModel,
+    id: Int) {
     Column (
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
         //Picture of the place:
+        Button(onClick = { placeViewModel.loadPlaceInfo(id = id) }) {
+            Text(text = "Update")
+        }
+
         PlacePicture()
 
         //Add space between pictures and text
@@ -189,7 +204,7 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
             .verticalScroll(state = rememberScrollState(), enabled = true)
             .fillMaxWidth()
     ) {
-        //The accurately forecast sunsets, always show this:
+         //The accurately forecast sunsets, always show this:
         if (placeInfoUiState.placeInfo.sunEvents.size > 3) {
             placeInfoUiState.placeInfo.sunEvents.subList(0, 3).forEach {
                 SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)

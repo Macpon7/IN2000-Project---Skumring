@@ -22,7 +22,7 @@ interface PlaceInfoDao {
     //suspend fun getPlace(placeId: Int)
 
     @Query("SELECT * FROM placeInfo WHERE id=:placeId")
-    fun getOnePlace(placeId: Int): Flow<PlaceInfoEntity>
+    fun getOnePlace(placeId: Int): PlaceInfoEntity
 
     @Query("SELECT * FROM placeInfo WHERE is_favourite = 1")
     fun getFavourites(): Flow<List<PlaceInfoEntity>>

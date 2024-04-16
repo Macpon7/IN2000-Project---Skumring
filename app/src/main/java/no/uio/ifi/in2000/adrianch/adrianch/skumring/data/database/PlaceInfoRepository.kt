@@ -49,6 +49,9 @@ class PlaceInfoRepositoryImpl(
         runBlocking {
             launch (Dispatchers.IO) {
 
+                var testPlaces = placeInfoDao.getAllPlaces()
+
+
                 val populate = false
                 if (populate) {
                     val allPlaces = placeListRepository.getPresetPlaceList()
@@ -252,7 +255,8 @@ class PlaceInfoRepositoryImpl(
      */
     override suspend fun getPlace(placeId: Int): PlaceInfo {
         Log.d(logTag, "Trying to load place with id: $placeId from DB")
-        val placeEntity = placeInfoDao.getOnePlace(placeId = placeId).asLiveData().value!!
+
+        val placeEntity: PlaceInfoEntity = placeInfoDao.getOnePlace(placeId = placeId)
 
         //TODO fetch images
         return PlaceInfo(

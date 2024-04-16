@@ -49,7 +49,7 @@ class PlaceInfoViewModel(private val placeInfoRepository: PlaceInfoRepository): 
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
 
     fun loadPlaceInfo(id: Int){
-        viewModelScope.launch(Dispatchers.IO){
+        val job = viewModelScope.launch(Dispatchers.IO){
             Log.d(logTag, "loadPlaceInfo called")
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
@@ -61,7 +61,9 @@ class PlaceInfoViewModel(private val placeInfoRepository: PlaceInfoRepository): 
                         errorMessage = "Error getting pins in loadPlaceInfo")
                 }
             }
-            Log.d(logTag, "New place in UiState: ${_placeInfoUiState.value.placeInfo.name}")
+        }
+        job.invokeOnCompletion {
+            Log.d(logTag, "New place in UiState: ${placeInfoUiState.value.placeInfo}")
         }
     }
 
