@@ -11,9 +11,12 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceDetailsD
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.AirConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import java.time.LocalDateTime
 
 private const val logTag = "PlaceInfoRepository"
@@ -48,10 +51,6 @@ class PlaceInfoRepositoryImpl(
     init {
         runBlocking {
             launch (Dispatchers.IO) {
-
-                var testPlaces = placeInfoDao.getAllPlaces()
-
-
                 val populate = false
                 if (populate) {
                     val allPlaces = placeListRepository.getPresetPlaceList()
@@ -256,7 +255,35 @@ class PlaceInfoRepositoryImpl(
     override suspend fun getPlace(placeId: Int): PlaceInfo {
         Log.d(logTag, "Trying to load place with id: $placeId from DB")
 
-        val placeEntity: PlaceInfoEntity = placeInfoDao.getOnePlace(placeId = placeId)
+        // Brukt til testing
+        return PlaceInfo(
+            id = 1,
+            name = "Holmenkollen",
+            description="Kjent topp med utsikt over Oslo",
+            lat="59.9640303",
+            long="10.6651817",
+            isFavourite=false,
+            isCustomPlace=false,
+            hasNotification=false,
+            images= emptyList(),
+            sunEvents= listOf(
+                SunEvent(
+                    time= LocalDateTime.parse("2024-04-16T20:38"),
+                    tempAtEvent="4.3",
+                    weatherIcon="clearsky_night",
+                    conditions=WeatherConditions(
+                        weatherRating= WeatherConditionsRating.EXCELLENT,
+                        cloudConditionLow= CloudConditions.CLEAR,
+                        cloudConditionMedium=CloudConditions.CLEAR,
+                        cloudConditionHigh=CloudConditions.CLEAR,
+                        airCondition= AirConditions.MID
+                    )
+                )
+            )
+        )
+
+
+        /*val placeEntity: PlaceInfoEntity = placeInfoDao.getOnePlace(placeId = placeId)
 
         //TODO fetch images
         return PlaceInfo(
@@ -273,7 +300,7 @@ class PlaceInfoRepositoryImpl(
                 placeId = placeEntity.id,
                 lat = placeEntity.latitude,
                 long = placeEntity.longitude)
-        )
+        )*/
     }
 
     override suspend fun getFavourites(): List<PlaceInfo> {

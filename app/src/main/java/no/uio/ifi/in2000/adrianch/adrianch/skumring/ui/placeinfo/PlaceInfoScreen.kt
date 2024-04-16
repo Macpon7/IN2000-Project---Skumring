@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -72,11 +71,64 @@ fun PlaceInfoScreen(
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
-    LaunchedEffect(key1 = id) {
+    /*
+     * Vi sliter med at composable ikke rekomponeres selv om UiState får riktig informasjon.
+     * Denne Log meldingen printer rett fra verdiene i UiState:
+     * New place in UiState: PlaceInfo(id=1, name=Holmenkollen, description=Kjen....
+     * Den ser dere på linje 66 i PlaceInfoViewModel, og leser fra det public placeInfoUiState objektet,
+     * derfor vet vi at denne informasjonen faktisk lagres i objektet.
+     */
+
+    // Dette funker ikke, kun ett kall til viewmodel
+    /*LaunchedEffect(key1 = id) {
+        delay(100)
         Log.d(logTag, "Loading PlaceInfo object with ID: $id")
         placeViewModel.loadPlaceInfo(id = id)
         Log.d(logTag, "Loaded place: ${placeUiState.placeInfo.name}")
+    }*/
+
+
+    // Dette funker heller ikke, også kun ett kall
+    /*var firstTime by remember { mutableStateOf(true) }
+
+
+    if (firstTime) {
+        placeViewModel.loadPlaceInfo(id = id)
+        firstTime = false
+    }*/
+
+    // Dette funker, men gjør 3 kall. loadPlaceInfo setter isLoading til false.
+    // Av en eller annen grunn er de to første kallene med 50 ms mellomrom, mens det tredje er 500ms senere
+    if (placeUiState.isLoading) {
+        placeViewModel.loadPlaceInfo(id = id)
     }
+
+    /*
+    * I tillegg, for å gjøre denne bugen enda rarere:
+    * Vi har lagt inn en knapp på denne skjermen for testing, som kjører samme kode som på linje 103 over.
+    * Hvis vi kommenterer ut if-setningen på linje 102-104 men beholder denne knappen, så oppdateres skjermen
+    * når vi trykker på den.
+    * SOMEHOW, så funker ikke det funksjonskallet når det kalles fra en LaunchedEffect eller med en
+    * lokal bool med remember, men hvis funksjonen kalles av at vi trykker på en knapp på skjermen funker det
+    *
+    * Jeg har sittet med denne buggen i 8 timer nå, håper du kan løse den.
+    *
+
+             __                 __        __                          __      __  __
+            |  \               |  \      |  \                        |  \    |  \|  \
+            | $$      __    __ | $$   __ | $$   __   ______         _| $$_    \$$| $$
+            | $$     |  \  |  \| $$  /  \| $$  /  \ /      \       |   $$ \  |  \| $$
+            | $$     | $$  | $$| $$_/  $$| $$_/  $$|  $$$$$$\       \$$$$$$  | $$| $$
+            | $$     | $$  | $$| $$   $$ | $$   $$ | $$    $$        | $$ __ | $$| $$
+            | $$_____| $$__/ $$| $$$$$$\ | $$$$$$\ | $$$$$$$$        | $$|  \| $$| $$
+            | $$     \\$$    $$| $$  \$$\| $$  \$$\ \$$     \         \$$  $$| $$| $$
+             \$$$$$$$$_\$$$$$$$ \$$   \$$ \$$   \$$  \$$$$$$$          \$$$$  \$$ \$$
+                     |  \__| $$
+                      \$$    $$
+                       \$$$$$$
+
+    */
+
 
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
@@ -204,7 +256,16 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
             .verticalScroll(state = rememberScrollState(), enabled = true)
             .fillMaxWidth()
     ) {
-         //The accurately forecast sunsets, always show this:
+
+        // This is to allow us to show just one forecast object, used for testing
+        if(placeInfoUiState.placeInfo.sunEvents.isNotEmpty()) {
+            SunEventInfo(
+                time = placeInfoUiState.placeInfo.sunEvents.first().time,
+                conditions = placeInfoUiState.placeInfo.sunEvents.first().conditions.weatherRating
+            )
+        }
+
+        //The accurately forecast sunsets, always show this:
         if (placeInfoUiState.placeInfo.sunEvents.size > 3) {
             placeInfoUiState.placeInfo.sunEvents.subList(0, 3).forEach {
                 SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
