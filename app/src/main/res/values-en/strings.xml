@@ -12,8 +12,9 @@
     <string name="home_greeting">Hello</string>
     <string name="conditions_are_good">The conditions will be good tonight!</string>
     <string name="conditions_are_bad">The conditions will be bad tonight.</string>
-    <string name="sunset">Sunset</string>
+    <string name="home_sunset">Sunset today</string>
     <string name="list_title">Nice locations today</string>
+    <string name="home_favourite_places">Favourite places</string>
     <!-- MapListScreen -->
     <string name="toggle_list">List</string>
     <string name="toggle_map">Map</string>
@@ -39,8 +40,11 @@
     <string name="new_location">New location added!</string>
 
     <!-- Common strings used across multiple screens -->
-    <string name="weather_condition">Weather conditions</string>
+    <string name="weather_condition">"Weather conditions: "</string>
     <string name="temp_at_sunset">Temperature at sunset</string>
     <string name="golden_hour">Golden hour</string>
     <string name="blue_hour">Blue hour</string>
+    <string name="home_more_details_button">More details</string>
+    <string name="home_distance">"Distance: "</string>
+
 </resources>

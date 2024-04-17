@@ -32,7 +32,10 @@ fun SkumringNavHost(
         modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
-            HomeScreen(homeViewModel = HomeViewModel(placeInfoRepository = placeInfoRepository), navController = navController)
+            //TODO mapListViewModel must be removed from HomeScreen in the future
+            HomeScreen(homeViewModel = HomeViewModel(placeInfoRepository = placeInfoRepository),
+                mapListViewModel = MapListViewModel(placeInfoRepository = placeInfoRepository),
+                navController = navController)
         }
         composable(route = MapListDestination.route) {
             MapListScreen(mapListViewModel = MapListViewModel(placeInfoRepository = placeInfoRepository) , navController = navController)
