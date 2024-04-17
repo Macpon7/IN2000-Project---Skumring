@@ -1,9 +1,16 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.location.Location
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationRequest.Builder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,7 +45,7 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel(placeInfoRepository: PlaceInfoRepository) : ViewModel() {
+class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) : ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
 
@@ -46,11 +53,26 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository) : ViewModel() {
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
     // TODO add user's position
-    private val long = "10.718393"
-    private val lat = "59.943735"
+    private var long = "10.718393"
+    private var lat = "59.943735"
+
+    var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+    // TODO check for permissions lol
+    @SuppressLint("MissingPermission")
+    private fun getLastLocation(fusedLocationClient: FusedLocationProviderClient) {
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                long = location.longitude.toString()
+                lat = location.latitude.toString()
+                Log.d(logTag, "Long: $long Lat: $lat")
+            }
+        }
+    }
 
     init {
         loadHomeScreen()
+        getLastLocation(fusedLocationClient)
     }
 
 

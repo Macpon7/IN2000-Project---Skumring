@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -21,7 +22,8 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreen
 fun SkumringNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    placeInfoRepository: PlaceInfoRepository
+    placeInfoRepository: PlaceInfoRepository,
+    context: Context
 ) {
     NavHost(
         navController = navController,
@@ -30,7 +32,9 @@ fun SkumringNavHost(
     ) {
         composable(route = HomeDestination.route) {
             //TODO mapListViewModel must be removed from HomeScreen in the future
-            HomeScreen(homeViewModel = HomeViewModel(placeInfoRepository = placeInfoRepository),
+            HomeScreen(homeViewModel = HomeViewModel(
+                placeInfoRepository = placeInfoRepository,
+                context = context),
                 mapListViewModel = MapListViewModel(placeInfoRepository = placeInfoRepository),
                 navController = navController)
         }
