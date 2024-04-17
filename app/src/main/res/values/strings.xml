@@ -1,6 +1,6 @@
 <resources>
     <!-- Navigation -->
-    <string name="app_name">Skumring</string>
+    <string name="app_name" translatable="false">Skumring</string>
     <string name="back_button">Tilbake</string>
     <string name="nav_map_button">Kart</string>
     <string name="nav_home_button">Hjem</string>
@@ -32,7 +32,7 @@
     <!-- MyPageScreen -->
     <string name="no_location">Ingen lokasjon lagret</string>
     <string name="new_location">Ny plassering lagt til!</string>
-    <string name="add_photo">Legg til bilde</string>
+    <string name="mypage_add_photo">Legg til bilde</string>
     <string name="location_name">Steds navn</string>
     <string name="choose_location">Velg sted</string>
     <string name="time">Velg tid</string>
