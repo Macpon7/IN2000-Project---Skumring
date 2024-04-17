@@ -56,11 +56,12 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) 
     private var long = "10.718393"
     private var lat = "59.943735"
 
-    var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     // TODO check for permissions lol
     @SuppressLint("MissingPermission")
     private fun getLastLocation(fusedLocationClient: FusedLocationProviderClient) {
+        Log.d(logTag, "Trying to fetch loc")
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
                 long = location.longitude.toString()
@@ -72,12 +73,12 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) 
 
     init {
         loadHomeScreen()
-        getLastLocation(fusedLocationClient)
     }
 
 
     private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
+            getLastLocation(fusedLocationClient)
             updateWeather(lat = lat, long = long)
         }
     }

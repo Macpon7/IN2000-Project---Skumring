@@ -58,7 +58,6 @@ class SunriseDataSource() {
             val sunsetTime: String = response.properties.sunset.time  //output: 2024-03-07T17:03+00:00
             val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME //Offset is in timezone 0, so add 1 hour in the line below
             val timeFormatted = LocalDateTime.parse(sunsetTime, formatter).plusHours(1)
-            Log.d(logTag, timeFormatted.toString())
 
             return SunActivity(timeFormatted)
         } catch (e: Exception) {
