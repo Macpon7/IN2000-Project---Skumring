@@ -1,6 +1,6 @@
 <resources>
     <!-- Navigation -->
-    <string name="app_name">Skumring</string>
+    <string name="app_name" translatable="false">Skumring</string>
     <string name="back_button">Tilbake</string>
     <string name="nav_map_button">Kart</string>
     <string name="nav_home_button">Hjem</string>
@@ -34,4 +34,5 @@
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
     <string name="golden_hour">Gylne time</string>
     <string name="blue_hour">Blåtime</string>
+    <string name="app_version" translatable="false">0.3</string>
 </resources>

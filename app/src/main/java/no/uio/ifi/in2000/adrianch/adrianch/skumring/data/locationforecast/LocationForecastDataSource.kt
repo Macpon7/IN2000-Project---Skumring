@@ -2,17 +2,13 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast
 import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.RedirectResponseException
-import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
-import io.ktor.utils.io.errors.IOException
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
-import org.json.JSONException
 import java.time.LocalDateTime
 
 
@@ -35,7 +31,12 @@ class LocationForecastDataSource (){
         val newpath = this.path + "coords=POINT($long+$lat)"
 
         try {
-            val response: HttpResponse = client.get(newpath)
+            val response: HttpResponse = client.get(newpath){
+                this.headers.append(
+                    name = "User-Agent",
+                    value = "${R.string.app_name}/${R.string.app_version} (IN2000 prosjekt med Case 5)"
+                )
+            }
             return response.body()
         } catch (e: Exception) {
             Log.e(logTag, "An unexpected error: ${e.message} in fetchLocationForecastData" , e)

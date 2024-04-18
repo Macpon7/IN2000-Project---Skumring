@@ -7,6 +7,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunriseInfo
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -27,7 +28,12 @@ class SunriseDataSource() {
      */
     suspend fun fetchSunriseData(path: String): SunriseInfo {
         try {
-            val response: HttpResponse = client.get(path)
+            val response: HttpResponse = client.get(path) {
+                this.headers.append(
+                    name = "User-Agent",
+                    value = "${R.string.app_name}/${R.string.app_version} (IN2000 prosjekt med Case 5)"
+                )
+            }
             return response.body()
         } catch (e: Exception) {
             Log.e(logTag, "Unexpected error: ${e.message} in fetchSunriseData" , e)
