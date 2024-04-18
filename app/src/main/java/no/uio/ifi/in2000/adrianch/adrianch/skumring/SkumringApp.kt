@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring
 
+import android.content.Context.MODE_PRIVATE
+import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -9,7 +11,8 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.SkumringNavHost
-
+import java.io.IOException
+import android.content.Context
 @Composable
 @Preview
 fun SkumringApp(
@@ -23,7 +26,11 @@ fun SkumringApp(
         imageDao = db.imageDao()
         )
     SkumringNavHost(navController = navController, placeInfoRepository = dbRepository)
+
+
 }
+
+
 
 
 
