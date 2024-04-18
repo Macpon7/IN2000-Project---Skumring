@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     SkumringApp()
-                    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.image_name)
+                    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.default)
 
 /*
                 }
