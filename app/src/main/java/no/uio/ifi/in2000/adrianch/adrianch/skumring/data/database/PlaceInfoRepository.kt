@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
 import android.util.Log
-import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -11,12 +10,9 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceDetailsD
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.AirConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import java.time.LocalDateTime
 
 private const val logTag = "PlaceInfoRepository"
@@ -99,7 +95,7 @@ class PlaceInfoRepositoryImpl(
      */
     private suspend fun getForecastData(placeId: Int, lat: String, long: String): List<SunEvent> {
         // Try to fetch from DB
-        val dataFromDb = forecastDao.getForecasts(placeId = placeId).asLiveData().value?: emptyList()
+        val dataFromDb = forecastDao.getForecasts(placeId = placeId)
 
         if (dataFromDb.isEmpty()) {
             // If there is no data in the DB for this placeId, we need to fetch data from APIs
@@ -256,7 +252,7 @@ class PlaceInfoRepositoryImpl(
         Log.d(logTag, "Trying to load place with id: $placeId from DB")
 
         // Brukt til testing
-        return PlaceInfo(
+        /*return PlaceInfo(
             id = 1,
             name = "Holmenkollen",
             description="Kjent topp med utsikt over Oslo",
@@ -280,10 +276,10 @@ class PlaceInfoRepositoryImpl(
                     )
                 )
             )
-        )
+        )*/
 
 
-        /*val placeEntity: PlaceInfoEntity = placeInfoDao.getOnePlace(placeId = placeId)
+        val placeEntity: PlaceInfoEntity = placeInfoDao.getOnePlace(placeId = placeId)
 
         //TODO fetch images
         return PlaceInfo(
@@ -300,7 +296,7 @@ class PlaceInfoRepositoryImpl(
                 placeId = placeEntity.id,
                 lat = placeEntity.latitude,
                 long = placeEntity.longitude)
-        )*/
+        )
     }
 
     override suspend fun getFavourites(): List<PlaceInfo> {
@@ -325,7 +321,7 @@ class PlaceInfoRepositoryImpl(
      *This methods removes a tuple from the table based on the placeId
      */
     override suspend fun removeCustomPlace(placeId: Int) {
-        val customPlace: Boolean = placeInfoDao.checkIfCustomPlace(placeId).asLiveData().value!!
+        val customPlace: Boolean = placeInfoDao.checkIfCustomPlace(placeId)
         if (customPlace){
             placeInfoDao.deleteCustomPlace(placeId)
         } else {

@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ForecastDao {
@@ -15,5 +14,5 @@ interface ForecastDao {
     fun upsertForecasts(forecasts: List<ForecastEntity>)
 
     @Query("SELECT * FROM forecasts WHERE place_id = :placeId")
-    fun getForecasts(placeId: Int): Flow<List<ForecastEntity>>
+    fun getForecasts(placeId: Int): List<ForecastEntity>
 }

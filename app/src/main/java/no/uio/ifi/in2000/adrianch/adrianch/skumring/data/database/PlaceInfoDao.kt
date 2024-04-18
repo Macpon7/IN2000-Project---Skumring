@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlaceInfoDao {
@@ -25,17 +24,17 @@ interface PlaceInfoDao {
     fun getOnePlace(placeId: Int): PlaceInfoEntity
 
     @Query("SELECT * FROM placeInfo WHERE is_favourite = 1")
-    fun getFavourites(): Flow<List<PlaceInfoEntity>>
+    fun getFavourites(): List<PlaceInfoEntity>
 
     @Query("SELECT * FROM placeInfo WHERE is_custom_place = 1")
-    fun getCustomPlaces(): Flow<List<PlaceInfoEntity>>
+    fun getCustomPlaces(): List<PlaceInfoEntity>
 
     //@Insert(onConflict = OnConflictStrategy.REPLACE) use this?
     @Insert
     fun insertCustomPlace(place: PlaceInfoEntity)
 
     @Query("SELECT is_custom_place FROM placeInfo WHERE id = :placeId")
-    fun checkIfCustomPlace(placeId: Int): Flow<Boolean>
+    fun checkIfCustomPlace(placeId: Int): Boolean
 
     @Query("DELETE FROM placeInfo WHERE id= :placeId")
     fun deleteCustomPlace(placeId: Int)
