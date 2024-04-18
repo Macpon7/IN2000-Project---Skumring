@@ -3,6 +3,7 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +15,10 @@ import androidx.lifecycle.GeneratedAdapter
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
+import java.io.File
 import java.io.IOException
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +32,26 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     SkumringApp()
-                    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.default)
+                    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.holmenkollen)
+                    val success = savePhotoToInternalStorage("example", bitmap)
+                    println(success)
+                    if (success){
+                        Log.d("SavePhoto", "Photo saved successfully")
+                    } else {
+                        Log.d("SavePhoto", "Photo saved unsuccessfully")
+                    }
+
+                    runBlocking {
+                        // Call loadPhotosFromInternalStorage within the coroutine scope
+                        val photos = loadPhotosFromInternalStorage()
+                        // Handle the loaded photos here
+                        photos.forEach { photo ->
+                            println("Photo name: ${photo.name}")
+                            Log.d("SavePhoto", "Photo is called ${photo.name}. Length is ${photos.size}")
+                        }
+                    }
+
+
 
 /*
                 }
@@ -57,6 +79,26 @@ class MainActivity : ComponentActivity() {
         }
     }
                  */
+
+
+    //from byte array
+   // val byteArray: ByteArray = // Image data in byte array
+    //val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+
+
+    //fun drawableToBitmap()
+    //    return BitmapFactory.decodeResource(resources, R.drawable.image_name)
+
+    /*
+    fun imagepathToBitmap(file:String){
+        //file = "/path/to/image.jpg"
+        val file = File(file)
+        return BitmapFactory.decodeFile(file.absolutePath)
+    }
+
+     */
+
+
 
     data class InternalStoragePhoto(
         val name: String,
