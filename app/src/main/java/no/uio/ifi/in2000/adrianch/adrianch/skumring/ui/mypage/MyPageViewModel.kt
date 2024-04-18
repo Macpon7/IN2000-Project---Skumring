@@ -20,20 +20,25 @@ data class MyPageUiState(
     val pins: List<PinInfo> = emptyList(),
     val places: List<PlaceSummary> = emptyList(),
 
-    var showNewLocationCard : Boolean = true,
+    var showNewLocationCard : Boolean = false,
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
     var errorMessage: String = "No error",
     // Variable for snackbar:
-    val snackbarHostState: SnackbarHostState = SnackbarHostState()
+    val snackbarHostState: SnackbarHostState = SnackbarHostState(),
+    // If mypage has locations added they will be shown
+    val showLocations : Boolean = false
 )
 
 data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
+
     var locationName : String = "",
+
     // TODO add location
     // TODO get date from user
     // val dateOfImage: LocalDate,
+
     var descriptions : String = "",
 
     var datePickerState: DatePickerState = DatePickerState(
@@ -43,22 +48,21 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
         initialDisplayMode = DisplayMode.Picker
         ),
 
-
     // Show the date picker when the user want to pick a date
-    var showDatePicker : Boolean = true,
+    var showDatePicker : Boolean = false,
 
     // Show an error if the use did not pick a date
     var datePickerError : Boolean = false
 
 )
 
+// TODO: Use this is the functions in viewmodel where errors can happen:
 private const val logTag = "MyPageViewModel"
 
 class MyPageViewModel : ViewModel() {
 
     // TODO: Make own repository for places that the user saves, use this as a placeholder meanwhile
-    private val placeListRepository = PlaceListRepositoryImpl()
-
+    private val placeListRepository = PlaceListRepositoryImpl() // TODO do we use this repository?
 
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
@@ -70,15 +74,64 @@ class MyPageViewModel : ViewModel() {
         loadList()
     }
 
-    fun updateNewLocationName() {
+    // Functions for updating NewPlaceUiState:
 
+    /**
+     * Update if the datepicker is shown or not
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateShowDatePicker() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(showDatePicker = !currentNewPlaceUiState.showDatePicker)
+            }
+        }
     }
 
+    /**
+     * update the location name string in NewPlaceUiState
+     */
     @OptIn(ExperimentalMaterial3Api::class)
+    fun updateNewLocationName(locationName: String) {
+        viewModelScope.launch (Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(locationName = locationName)
+            }
+        }
+    }
+
+    /**
+     * update the location description string in NewPlaceUiState
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateNewLocationDescription(descriptions: String) {
+        viewModelScope.launch (Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(locationName = descriptions)
+            }
+        }
+    }
+
+    // Functions for updating MyPageUiState:
+
+    /**
+     *  The form for adding a location is added
+     */
     fun showNewForm() {
         viewModelScope.launch (Dispatchers.IO) {
             _myPageUiState.update { currentMyPageUiState ->
                 currentMyPageUiState.copy(showNewLocationCard = true)
+            }
+        }
+    }
+
+    /**
+     * When a card is added the locations will be shown
+     */
+    fun showNewLocations() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _myPageUiState.update { currentMyPageUiState ->
+                currentMyPageUiState.copy(showLocations = true)
             }
         }
     }
@@ -103,8 +156,8 @@ class MyPageViewModel : ViewModel() {
      * showSnackbar is set to false and the snackbar disappear
      */
     fun snackbarDismissed() {
-        _myPageUiState.update { currentMapUiState ->
-            currentMapUiState.copy(showSnackbar = false)
+        _myPageUiState.update { currentMyPageUiState ->
+            currentMyPageUiState.copy(showSnackbar = false)
         }
     }
 
@@ -112,10 +165,10 @@ class MyPageViewModel : ViewModel() {
      *    For refreshing when you use snackbar in MyPageScreen:
      */
     fun refresh() {
-        _myPageUiState.update { currentMapUiState ->
-            currentMapUiState.copy(showSnackbar = false) }
+        _myPageUiState.update { currentMyPageUiState ->
+            currentMyPageUiState.copy(showSnackbar = false) }
         viewModelScope.launch (Dispatchers.IO) {
-            loadList()
+            // TODO: Add what gets updated when the API fails
         }
     }
 }
