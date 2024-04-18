@@ -19,7 +19,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepos
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 
 enum class MapListToggleState (val stateAsBool: Boolean) {
     MAP(stateAsBool = false),
@@ -28,7 +28,7 @@ enum class MapListToggleState (val stateAsBool: Boolean) {
 
 data class MapListUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class) constructor(
     val pins: List<PinInfo> = emptyList(),
-    val places: List<PlaceSummary> = emptyList(),
+    val places: List<PlaceInfo> = emptyList(),
     var clickedId: Int = 1,
     var mapListToggle: MapListToggleState = MapListToggleState.MAP,
     var sheetState: SheetState = SheetState(skipPartiallyExpanded = true),
@@ -51,10 +51,10 @@ class MapListViewModel(private val placeInfoRepository: PlaceInfoRepository): Vi
     private val _mapListUiState = MutableStateFlow(MapListUiState())
     val mapListUiState: StateFlow<MapListUiState> = _mapListUiState.asStateFlow()
 
-    init {
-        loadMap()
-        loadList()
-    }
+    // TODO make this work instead of having the user press a button
+    /*init {
+        loadPlaces()
+    }*/
 
     @OptIn(ExperimentalMaterial3Api::class)
     private fun loadMap(){
@@ -73,18 +73,30 @@ class MapListViewModel(private val placeInfoRepository: PlaceInfoRepository): Vi
     }
 
     @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
-    private fun loadList(){
+    fun loadPlaces(){
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d(logTag, "Loading all places from DB")
             _mapListUiState.update { currentMapListUiState ->
                 try {
-                    val placeSummaryList = placeListRepository.getPresetPlaceList()
-                    currentMapListUiState.copy(places = placeSummaryList)
+                    // Get all places from DB and make corresponding PinInfo objects
+                    val places = placeInfoRepository.getAllPlaces()
+                    val pins = places.map {
+                        PinInfo(
+                            id = it.id,
+                            lat = it.lat,
+                            long = it.long
+                        )
+                    }
+
+                    currentMapListUiState.copy(places = places, pins = pins)
                 } catch(e: Exception) {
-                    Log.e(logTag, "Error getting pins in loadList", e)
+                    Log.e(logTag, "Error getting places from DB", e)
                     currentMapListUiState.copy(showSnackbar = true,
-                        errorMessage = "Error getting pins in loadList")
+                        errorMessage = "Error getting places from database")
                 }
             }
+        }.invokeOnCompletion {
+            Log.d(logTag, "New places list: ${mapListUiState.value.places}")
         }
     }
 
@@ -138,17 +150,18 @@ class MapListViewModel(private val placeInfoRepository: PlaceInfoRepository): Vi
         _mapListUiState.update {currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false) }
         viewModelScope.launch (Dispatchers.IO) {
-            loadList()
+            loadPlaces()
         }
     }
 
     // For refreshing when you use snackbar in MapListScreen:
     @OptIn(ExperimentalMaterial3Api::class)
-    fun refreshMap() {
+    fun refreshPlaces() {
         _mapListUiState.update {currentMapUiState ->
-            currentMapUiState.copy(showSnackbar = false) }
+            currentMapUiState.copy(showSnackbar = false)
+        }
         viewModelScope.launch (Dispatchers.IO) {
-            loadMap()
+            loadPlaces()
         }
     }
 }

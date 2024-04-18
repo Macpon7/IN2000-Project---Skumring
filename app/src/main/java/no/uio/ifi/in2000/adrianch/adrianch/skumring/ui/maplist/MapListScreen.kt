@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
 import android.util.Log
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -73,7 +74,7 @@ import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
@@ -107,17 +108,11 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
             )
 
             // If the snackbar is dismissed, reset the boolean of the error-variable
-            // The snackbar will reappear is we get a new error
+            // The snackbar will reappear if we get a new error
             when (result) {
                 // If you press refresh
                 SnackbarResult.ActionPerformed -> {
-                    // Check if in map or list
-                    if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
-                        mapListViewModel.refreshMap()
-                    }
-                    else {
-                        mapListViewModel.refreshList()
-                    }
+                    mapListViewModel.refreshPlaces()
                 }
                 // If you click somewhere on the screen
                 SnackbarResult.Dismissed -> {
@@ -171,6 +166,9 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
      */
 
+    Button(onClick = { mapListViewModel.loadPlaces() }) {
+        Text(text = "Update")
+    }
     ThemeSwitcher (
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
         size = 65.dp, //Size of the button
@@ -318,7 +316,7 @@ fun ThemeSwitcher(
 
 @Composable
 fun BottomSheetContent(
-    place: PlaceSummary,
+    place: PlaceInfo,
     navController: NavController,
     mapListViewModel: MapListViewModel
 ) {
@@ -327,13 +325,15 @@ fun BottomSheetContent(
         modifier = Modifier.fillMaxWidth()
     )
     {
-        Text(text = place.name, style = MaterialTheme.typography.headlineMedium)
-        Button(onClick = {
-            mapListViewModel.hideBottomSheet()
-            navController.navigate("placeinfoscreen/${place.id}")
-        }) {
-            Text(text = "More details", style = MaterialTheme.typography.labelMedium)
-        }
+        ListCard(
+            name = place.name,
+            description = place.description,
+            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                mapListViewModel.hideBottomSheet()
+                navController.navigate("placeinfoscreen/${place.id}")
+            }
+        )
+        Spacer(modifier = Modifier.height(40.dp))
     }
 }
 
@@ -364,22 +364,22 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
             )
         },
         onMapLongClickListener = {
-            Log.d(logTag, "Long pressed. Long: ${it.longitude().toString()}, Lat: ${it.latitude().toString()}")
+            Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
         }
     ) {
         PointAnnotationGroup(
-            annotations = mapListUiState.pins.map {pinfo ->
-                val long = pinfo.long.toDouble()
-                val lat = pinfo.lat.toDouble()
+            annotations = mapListUiState.pins.map {pinInfo ->
+                val long = pinInfo.long.toDouble()
+                val lat = pinInfo.lat.toDouble()
                 val point = Point.fromLngLat(long, lat)
 
-                val iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap()
+                val iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.location_on)!!.toBitmap()
 
                 PointAnnotationOptions()
                     .withPoint(point)
                     .withIconImage(iconImageBitmap)
-                    .withData(JsonPrimitive(pinfo.id.toString()))
+                    .withData(JsonPrimitive(pinInfo.id.toString()))
             },
             annotationConfig = AnnotationConfig(
                 annotationSourceOptions = AnnotationSourceOptions(
@@ -387,8 +387,6 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 )
             ),
             onClick = {
-                val lat = it.point.latitude().toString()
-                val long = it.point.longitude().toString()
                 val id = it.getData()!!.asString
                 Log.d(logTag, "Clicked on pin with id: $id")
                 mapListViewModel.showBottomSheet(id.toInt())
