@@ -38,7 +38,7 @@
     <string name="location_name">Steds navn</string>
     <string name="choose_location">Velg sted</string>
     <string name="time">Velg tid</string>
-    <string name="notes">Notater</string>
+    <string name="description">Beskrivelse</string>
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
