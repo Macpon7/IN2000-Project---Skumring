@@ -1,10 +1,13 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -59,9 +62,26 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) 
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     // TODO check for permissions lol
-    @SuppressLint("MissingPermission")
-    private fun getLastLocation(fusedLocationClient: FusedLocationProviderClient) {
+    //@SuppressLint("MissingPermission")
+    private fun getLastLocation(fusedLocationClient: FusedLocationProviderClient, context: Context) {
         Log.d(logTag, "Trying to fetch loc")
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
                 long = location.longitude.toString()
@@ -72,13 +92,13 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) 
     }
 
     init {
-        loadHomeScreen()
+        loadHomeScreen(context = context)
     }
 
 
-    private fun loadHomeScreen(){
+    private fun loadHomeScreen(context: Context){
         viewModelScope.launch(Dispatchers.IO){
-            getLastLocation(fusedLocationClient)
+            getLastLocation(fusedLocationClient, context)
             updateWeather(lat = lat, long = long)
         }
     }
@@ -134,12 +154,12 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) 
     /**
      *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
      */
-    fun refresh() {
+    fun refresh(context: Context) {
         _homeUiState.update {currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch (Dispatchers.IO) {
-            loadHomeScreen()
+            loadHomeScreen(context)
             updateWeather(lat = lat, long = long)
         }
     }
