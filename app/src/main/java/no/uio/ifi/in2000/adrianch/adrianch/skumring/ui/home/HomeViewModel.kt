@@ -59,46 +59,14 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) 
     private var long = "10.718393"
     private var lat = "59.943735"
 
-    private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
-    // TODO check for permissions lol
-    //@SuppressLint("MissingPermission")
-    private fun getLastLocation(fusedLocationClient: FusedLocationProviderClient, context: Context) {
-        Log.d(logTag, "Trying to fetch loc")
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            if (location != null) {
-                long = location.longitude.toString()
-                lat = location.latitude.toString()
-                Log.d(logTag, "Long: $long Lat: $lat")
-            }
-        }
-    }
 
     init {
-        loadHomeScreen(context = context)
+        loadHomeScreen()
     }
 
 
-    private fun loadHomeScreen(context: Context){
+    private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-            getLastLocation(fusedLocationClient, context)
             updateWeather(lat = lat, long = long)
         }
     }
@@ -154,12 +122,12 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) 
     /**
      *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
      */
-    fun refresh(context: Context) {
+    fun refresh() {
         _homeUiState.update {currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch (Dispatchers.IO) {
-            loadHomeScreen(context)
+            loadHomeScreen()
             updateWeather(lat = lat, long = long)
         }
     }
