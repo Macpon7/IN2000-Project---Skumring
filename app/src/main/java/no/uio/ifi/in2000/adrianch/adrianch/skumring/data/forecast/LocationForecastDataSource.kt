@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast
 import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -7,8 +7,8 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.LocationForecastInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.LocationForecastInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherPerHour
 import java.time.LocalDateTime
 
 
