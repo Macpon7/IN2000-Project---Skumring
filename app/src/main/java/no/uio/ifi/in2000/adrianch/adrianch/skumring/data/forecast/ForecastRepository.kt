@@ -13,13 +13,17 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.math.abs
 
-private const val logTag = "PlaceInfoRepository" //log for error-handling
+private const val TAG = "PlaceInfoRepository" //log for error-handling
 
 interface ForecastRepository {
     suspend fun makeSunEvents(
-        forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>,
-        lat: String, long: String): List<SunEvent>
-    suspend fun findClosestWeather(sunsetTime: LocalDateTime, weatherData: List<WeatherPerHour>): WeatherPerHour
+        forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>, lat: String, long: String
+    ): List<SunEvent>
+
+    suspend fun findClosestWeather(
+        sunsetTime: LocalDateTime, weatherData: List<WeatherPerHour>
+    ): WeatherPerHour
+
     suspend fun getWeatherConditions(weatherData: WeatherPerHour): WeatherConditions
     suspend fun interpretCloudCondition(cloudAreaFraction: Double): CloudConditions
     suspend fun interpretHumidity(humidity: Double): AirConditions
@@ -29,7 +33,6 @@ interface ForecastRepository {
         cloudConditionHigh: CloudConditions,
         airCondition: AirConditions
     ): WeatherConditionsRating
-
 }
 
 /**
@@ -38,35 +41,29 @@ interface ForecastRepository {
  * @property locationForecastDataSource instance of [LocationForecastDataSource]
  * @property placeDetailsDataSource instance of [PlaceDetailsDataSource]
  */
-class ForecastRepositoryImpl (
+class ForecastRepositoryImpl(
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
     private val locationForecastDataSource: LocationForecastDataSource = LocationForecastDataSource(),
     private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
-): ForecastRepository {
-
+) : ForecastRepository {
     /**
      * Given a map containing lists of [WeatherPerHour] objects (where the key is a [LocalDate] and
      * the values are the lists), this function creates a [SunEvent] object for each date, containing
      * the time of sunset and a statement on the conditions for photography.
      */
     override suspend fun makeSunEvents(
-        forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>,
-        lat: String,
-        long: String
+        forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>, lat: String, long: String
     ): List<SunEvent> {
         // The list we will eventually return
         val sunEventsList = mutableListOf<SunEvent>()
 
         /* For each date in the map, find out the time of sunset. Then make a new SunEvent object and
-        check the conditions, before returning a list. One for each of the next 11 days.
-        */
+        check the conditions, before returning a list. One for each of the next 11 days. */
         forecastGroupedByDate.forEach {
             try {
                 // Time of sunset as a result of API call to MET Sunrise API
                 val sunsetTime: LocalDateTime = sunriseDataSource.fetchSunsetTime(
-                    lat = lat,
-                    long = long,
-                    date = it.key
+                    lat = lat, long = long, date = it.key
                 )
 
                 // it.value is the list of WeatherPerHour objects for this date
@@ -77,13 +74,12 @@ class ForecastRepositoryImpl (
                         time = sunsetTime,
                         tempAtEvent = sunsetWeather.instant.air_temperature.toString(),
                         //if icon is null for any reason, use the string "no_icon" instead
-                        weatherIcon = sunsetWeather.icon?:"no_icon",
+                        weatherIcon = sunsetWeather.icon ?: "no_icon",
                         conditions = getWeatherConditions(sunsetWeather)
-                        )
-
+                    )
                 )
             } catch (e: Exception) {
-                Log.e(logTag, "Error fetching sun activity:" + (e.message ?: ""), e)
+                Log.e(TAG, "Error while making SunEvents", e)
                 throw e
             }
         }
@@ -94,20 +90,20 @@ class ForecastRepositoryImpl (
      * Given a sunset time of type [LocalDateTime] and list of [WeatherPerHour] objects, this function
      * will return whichever weather object is closest in time to the given sunset time.
      */
-    override suspend fun findClosestWeather(sunsetTime: LocalDateTime, weatherData: List<WeatherPerHour>): WeatherPerHour {
+    override suspend fun findClosestWeather(
+        sunsetTime: LocalDateTime, weatherData: List<WeatherPerHour>
+    ): WeatherPerHour {
         // Pick the first WeatherPerHour object to begin with
         var sunsetWeather: WeatherPerHour = weatherData[0]
         // Then go through all of them and pick the closest to sunset
-        weatherData.forEach { forecastObject ->
+        weatherData.forEach {
             // if the time between this WeatherPerHour object and sunsetTime is less than
             // the time between the currently selected closest WeatherPerHour and sunsetTime,
             // pick this WeatherPerHour object as the new closest.
             // Use abs() because the difference int is positive or negative depending on if
             // the time we compare with is before or after sunset
-            if (abs(forecastObject.time.compareTo(sunsetTime)) <
-                abs(sunsetWeather.time.compareTo(sunsetTime)))
-            {
-                sunsetWeather = forecastObject
+            if (abs(it.time.compareTo(sunsetTime)) < abs(sunsetWeather.time.compareTo(sunsetTime))) {
+                sunsetWeather = it
             }
         }
 
@@ -142,7 +138,7 @@ class ForecastRepositoryImpl (
                 airCondition = airCondition
             )
         } catch (e: Exception) {
-            Log.e(logTag, "Error getting weather conditions", e)
+            Log.e(TAG, "Error getting weather conditions", e)
             throw e
         }
     }
@@ -184,7 +180,7 @@ class ForecastRepositoryImpl (
      * three different altitude layers. 1 is bad, 3 is good.
      * @param cloudConditionLow Coverage of low, rainy clouds - Hindering view of sunset
      * @param cloudConditionMedium Coverage of medium altitude clouds - A nice balance of which gives a nice canvas
-     * @param cloudConditionHigh Coverage of high-altitude, whispy clouds - Nice balance gives nice background
+     * @param cloudConditionHigh Coverage of high-altitude, wispy clouds - Nice balance gives nice background
      */
     override suspend fun getRating(
         cloudConditionLow: CloudConditions,
