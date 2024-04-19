@@ -1,9 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
-
-import android.content.Context
-import android.os.Environment
-import android.util.Log
-import java.io.File
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place
 
 
 
