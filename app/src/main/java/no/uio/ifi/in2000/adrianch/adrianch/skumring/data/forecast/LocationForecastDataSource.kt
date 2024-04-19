@@ -1,4 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast
+
 import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -13,11 +14,13 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherPerHou
 import java.time.LocalDateTime
 
 // Constants for logging and API request path
-private const val TAG : String = "LocationForecastDatasource"
-private const val API_PATH: String = "https://api.met.no/weatherapi/locationforecast/2.0/edr/collections/complete/position?"
+private const val TAG: String = "LocationForecastDatasource"
+private const val API_PATH: String =
+    "https://api.met.no/weatherapi/locationforecast/2.0/edr/collections/complete/position?"
 
 // Our own HTTP exception type
-class HTTPException (override val message: String? = null, override val cause: Throwable? = null): Exception()
+class HTTPException(override val message: String? = null, override val cause: Throwable? = null) :
+    Exception()
 
 class LocationForecastDataSource {
 
@@ -36,7 +39,7 @@ class LocationForecastDataSource {
         try {
             val path = API_PATH + "coords=POINT($long+$lat)"
 
-            val response: HttpResponse = client.get(path){
+            val response: HttpResponse = client.get(path) {
                 this.headers.append(
                     name = "User-Agent",
                     value = "${R.string.app_name}/${R.string.app_version} (IN2000 prosjekt med Case 5)"
@@ -84,11 +87,16 @@ class LocationForecastDataSource {
                 WeatherPerHour(
                     time = LocalDateTime.parse(it.time.subSequence(0, 19)),
                     instant = it.data.instant.details,
-                    icon = icon)
+                    icon = icon
+                )
             }
         } catch (e: Exception) {
             // Check for any exceptions when the loop is done
-            Log.e(TAG, "An unexpected in the outer-loop of converterResponseToWeatherPerHour: ${e.message}", e)
+            Log.e(
+                TAG,
+                "An unexpected in the outer-loop of converterResponseToWeatherPerHour: ${e.message}",
+                e
+            )
             throw e
         }
     }
