@@ -360,7 +360,19 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                             myPageViewModel.updateAddressMissing()
                         }
 
-                        else {
+                        if (newPlaceUiState.locationName != "") {
+                            myPageViewModel.updateLocationNameMissingFalse()
+                        }
+                        if (newPlaceUiState.descriptions != "") {
+                            myPageViewModel.updateDescriptionsMissingFalse()
+                        }
+                        if (newPlaceUiState.address != "") {
+                            myPageViewModel.updateAddressMissingFalse()
+                        }
+
+                        if (newPlaceUiState.locationName != "" &&
+                            newPlaceUiState.descriptions != ""&&
+                            newPlaceUiState.address != "") {
                             myPageViewModel.notMissingInfo()
                             myPageViewModel.updateIsReady()
                         }

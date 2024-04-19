@@ -133,7 +133,7 @@ class MyPageViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(
-                    locationNameIsMissing = !currentNewPlaceUiState.locationNameIsMissing,
+                    locationNameIsMissing = true,
                     missingInfo = true
                 )
             }
@@ -145,7 +145,7 @@ class MyPageViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(
-                    addressIsMissing = !currentNewPlaceUiState.addressIsMissing,
+                    addressIsMissing = true,
                     missingInfo = true
                 )
             }
@@ -156,8 +156,42 @@ class MyPageViewModel : ViewModel() {
     fun updateDescriptionsMissing(){
         _newPlaceUiState.update { currentNewPlaceUiState ->
             currentNewPlaceUiState.copy(
-                descriptionsIsMissing = !currentNewPlaceUiState.descriptionsIsMissing,
+                descriptionsIsMissing = true,
                 missingInfo = true
+            )
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateLocationNameMissingFalse(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    locationNameIsMissing = false,
+                    missingInfo = false
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateAddressMissingFalse(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    addressIsMissing = false,
+                    missingInfo = false
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateDescriptionsMissingFalse(){
+        _newPlaceUiState.update { currentNewPlaceUiState ->
+            currentNewPlaceUiState.copy(
+                descriptionsIsMissing = false,
+                missingInfo = false
             )
         }
     }
