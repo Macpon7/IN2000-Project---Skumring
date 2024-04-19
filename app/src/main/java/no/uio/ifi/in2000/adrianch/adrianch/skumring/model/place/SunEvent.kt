@@ -1,5 +1,6 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place
 
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
 import java.time.LocalDateTime
 
 /**

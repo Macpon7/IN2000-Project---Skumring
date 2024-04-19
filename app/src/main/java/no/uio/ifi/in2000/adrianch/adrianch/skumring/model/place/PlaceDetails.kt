@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place
 
 /**
  * Contains the name and description for a specific place. A place in our app context is a spot to take

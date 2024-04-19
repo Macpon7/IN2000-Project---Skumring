@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place
 
 /**
  * Data class containing everything we need to make a list of clickable objects that display
