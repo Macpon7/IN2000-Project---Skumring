@@ -1,8 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites
 
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListToggleState
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.favoriteUiState
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
 
 
 

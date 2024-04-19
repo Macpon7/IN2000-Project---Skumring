@@ -26,10 +26,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +49,8 @@ import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.presetPlacesDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListContent
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListToggleState
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
@@ -61,8 +67,37 @@ object FavoritesDestination : NavigationDestination {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesScreen2(navController : NavHostController){
+fun FavoritesScreen2(navController : NavHostController, favoritesViewModel: FavoritesViewModel = viewModel()){
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val favoritesUiState: FavoritesUiState by favoritesViewModel.favoritesUiState.collectAsState()
+
+    if (favoritesUiState.showSnackbar) {
+        LaunchedEffect(favoritesUiState.snackbarHostState) {
+            val result = favoritesUiState.snackbarHostState.showSnackbar(
+                message = favoritesUiState.errorMessage,
+                withDismissAction = true,
+                actionLabel = "Refresh",
+            )
+
+            // If the snackbar is dismissed, reset the boolean of the error-variable
+            // The snackbar will reappear is we get a new error
+            when (result) {
+                // If you press refresh
+                SnackbarResult.ActionPerformed -> {
+                    // Check if in map or list
+                        favoritesViewModel.refreshList()
+                }
+                // If you click somewhere on the screen
+                SnackbarResult.Dismissed -> {
+                    // Check if in map or list
+                    favoritesViewModel.snackbarDismissed()
+                }
+            }
+        }
+    }
+
+
 
     Scaffold (
         topBar = {

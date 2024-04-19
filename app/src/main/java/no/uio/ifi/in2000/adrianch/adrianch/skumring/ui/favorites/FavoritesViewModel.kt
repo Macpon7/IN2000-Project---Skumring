@@ -44,12 +44,11 @@ class FavoritesViewModel(placeInfoRepository: PlaceInfoRepository): ViewModel() 
     private val placeListRepository = PlaceListRepositoryImpl()
 
     private val _favoritesUiState = MutableStateFlow(FavoritesUiState())
-    val favoritesUiState: StateFlow<FavoritesUiState> =_favoritesUiState.asStateFlow()
+    val favoritesUiState: StateFlow<FavoritesUiState> = _favoritesUiState.asStateFlow()
 
     init {
            loadList()
     }
-
 
     @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
     private fun loadList(){
