@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
+import android.location.Address
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
@@ -97,6 +98,20 @@ class MyPageViewModel : ViewModel() {
     // Functions for updating NewPlaceUiState:
 
     @OptIn(ExperimentalMaterial3Api::class)
+    fun refreshNewPlaceUiState(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    locationName = "",
+                    address = "",
+                    descriptions = "",
+                    pickedDate = LocalDate.now(),
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
     fun showDatePicker() {
         viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
@@ -159,6 +174,18 @@ class MyPageViewModel : ViewModel() {
     }
 
     /**
+     * update the location name string in NewPlaceUiState
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateNewLocationAddress(address: String) {
+        viewModelScope.launch (Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(address = address)
+            }
+        }
+    }
+
+    /**
      * update the location description string in NewPlaceUiState
      */
     @OptIn(ExperimentalMaterial3Api::class)
@@ -194,7 +221,6 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     fun hideNewForm() {
         viewModelScope.launch (Dispatchers.IO) {
             _myPageUiState.update {currentMyPageUiState ->

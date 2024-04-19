@@ -35,11 +35,12 @@
     <string name="new_location">New location added!</string>
     <string name="mypage_add_photo">Add photo</string>
     <string name="location_name">Location name</string>
-    <string name="choose_location">Choose location</string>
+    <string name="address">Location address</string>
     <string name="time">Choose date</string>
     <string name="description">Description</string>
     <string name="add_photo">Add photo</string>
     <string name="add_location">Add location</string>
+    <string name="cancel">Cancel</string>
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">"Weather conditions: "</string>
     <string name="temp_at_sunset">Temperature at sunset</string>
