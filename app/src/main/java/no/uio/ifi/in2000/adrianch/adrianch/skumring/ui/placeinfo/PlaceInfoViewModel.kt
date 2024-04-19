@@ -14,10 +14,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlacesRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
 private const val logTag = "PlaceInfoViewModel"
 
@@ -47,9 +47,9 @@ data class PlaceInfoUiState(
 
 
 class PlaceInfoViewModel(
-    private val placesRepository: PlacesRepository,
+    private val placeRepository: PlaceRepository,
 ): ViewModel() {
-    private val oldPlaceInfoRepository: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
+    private val forecastRepository: ForecastRepository = ForecastRepositoryImpl()
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
 
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
@@ -59,7 +59,7 @@ class PlaceInfoViewModel(
             Log.d(logTag, "loadPlaceInfo called")
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
-                    val placeInfoObject = placesRepository.getPlace(id)
+                    val placeInfoObject = placeRepository.getPlace(id)
                     currentPlaceInfoUiState.copy(placeInfo = placeInfoObject, isLoading = false)
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)
@@ -104,7 +104,7 @@ class PlaceInfoViewModel(
                 val application = checkNotNull(extras[APPLICATION_KEY])
 
                 return PlaceInfoViewModel(
-                    placesRepository = (application as ApplicationSkumring).dbRepository
+                    placeRepository = (application as ApplicationSkumring).dbRepository
                 ) as T
             }
         }

@@ -18,11 +18,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlacesRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
 enum class MapListToggleState (val stateAsBool: Boolean) {
     MAP(stateAsBool = false),
@@ -47,7 +47,7 @@ data class MapListUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMat
 
 private const val logTag = "MapListViewModel"
 
-class MapListViewModel(private val placesRepository: PlacesRepository): ViewModel() {
+class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeListRepository = PlaceListRepositoryImpl()
 
@@ -82,7 +82,7 @@ class MapListViewModel(private val placesRepository: PlacesRepository): ViewMode
             _mapListUiState.update { currentMapListUiState ->
                 try {
                     // Get all places from DB and make corresponding PinInfo objects
-                    val places = placesRepository.getAllPlaces()
+                    val places = placeRepository.getAllPlaces()
                     val pins = places.map {
                         PinInfo(
                             id = it.id,
@@ -178,7 +178,7 @@ class MapListViewModel(private val placesRepository: PlacesRepository): ViewMode
                 val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return MapListViewModel(
-                    placesRepository = (application as ApplicationSkumring).dbRepository
+                    placeRepository = (application as ApplicationSkumring).dbRepository
                 ) as T
             }
         }

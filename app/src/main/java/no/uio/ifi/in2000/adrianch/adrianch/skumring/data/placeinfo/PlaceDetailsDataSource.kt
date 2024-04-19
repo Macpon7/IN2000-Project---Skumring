@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 
-import android.util.Log
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceDetails
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceDetails
 
 class PlaceDetailsDataSource {
     //TODO: Implement a real database, not just read from preset list

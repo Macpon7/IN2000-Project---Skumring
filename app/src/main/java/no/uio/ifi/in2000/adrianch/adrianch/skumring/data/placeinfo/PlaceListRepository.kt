@@ -4,8 +4,8 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo
 import android.util.Log
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapPinsDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceDetails
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceDetails
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceSummary
 
 
 private const val logTag = "PlaceListRepository"

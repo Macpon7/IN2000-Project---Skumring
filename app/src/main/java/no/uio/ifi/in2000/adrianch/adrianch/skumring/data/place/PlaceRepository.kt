@@ -1,23 +1,28 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place
 
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoDao
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoEntity
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceDetailsDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import java.time.LocalDateTime
 
 private const val logTag = "PlaceInfoRepository"
 
-interface PlacesRepository {
+interface PlaceRepository {
     suspend fun getAllPlaces(): List<PlaceInfo>
     suspend fun getPlace(id: Int): PlaceInfo
     suspend fun getFavourites(): List<PlaceInfo>
@@ -27,7 +32,7 @@ interface PlacesRepository {
     suspend fun makeFavourite(id: Int)
     suspend fun unmakeFavourite(id: Int)
 }
-class PlacesRepositoryImpl(
+class PlaceRepositoryImpl(
     //Creates and initializes the database
     //var database : AppDatabase = AppDatabase.getDatabase(context = LocalContext.current),
     private val placeInfoDao: PlaceInfoDao,
@@ -37,8 +42,8 @@ class PlacesRepositoryImpl(
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
     private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource(),
     private val placeListRepository: PlaceListRepository = PlaceListRepositoryImpl()
-): PlacesRepository {
-    private val oldPlaceInfoRepository = OldPlaceInfoRepositoryImpl(
+): PlaceRepository {
+    private val oldPlaceInfoRepository = ForecastRepositoryImpl(
         sunriseDataSource = sunriseDataSource,
         locationForecastDataSource = locationForecastDataSource,
         placeDetailsDataSource = placeDetailsDataSource
