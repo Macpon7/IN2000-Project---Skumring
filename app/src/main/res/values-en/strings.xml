@@ -41,6 +41,9 @@
     <string name="add_photo">Add photo</string>
     <string name="add_location">Add location</string>
     <string name="cancel">Cancel</string>
+    <string name="error_location_name">Write a name</string>
+    <string name="error_address">Write an address</string>
+    <string name="error_description">Write a description</string>
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">"Weather conditions: "</string>
     <string name="temp_at_sunset">Temperature at sunset</string>
