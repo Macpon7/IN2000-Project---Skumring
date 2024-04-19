@@ -3,14 +3,13 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,27 +23,25 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -53,8 +50,10 @@ import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
+import java.time.format.DateTimeFormatter
 
 object MyPageDestination : NavigationDestination {
     override val icon = Icons.Outlined.AccountCircle
@@ -67,6 +66,7 @@ object MyPageDestination : NavigationDestination {
 @Composable
 fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewModel = viewModel()) {
     val myPageUiState: MyPageUiState by myPageViewModel.myPageUiState.collectAsState()
+
 
     // Check if there is an error, if so show a snackbar:
     if (myPageUiState.showSnackbar) {
@@ -97,6 +97,7 @@ fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewMo
             SkumringTopBar(
                 title = stringResource(id = HomeDestination.titleRes),
                 canNavigateBack = false,
+                // Button to navigate to settings-page
                 actions = {
                     IconButton(
                         onClick = {
@@ -112,9 +113,13 @@ fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewMo
             SkumringBottomBar(navController = navController)
         },
         snackbarHost = { SnackbarHost(hostState = myPageUiState.snackbarHostState) },
+        // Button to add custom locations:
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    // Show the form:
+                    myPageViewModel.showNewForm()
+                          },
                 modifier = Modifier.padding(end = 16.dp)
             ) {
                 Icon(Icons.Filled.Add, "Add location")
@@ -122,8 +127,13 @@ fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewMo
         }
         )
     { innerPadding -> //Here is what will be shown inside the scaffold of the screen
-        Column (modifier = Modifier.padding(innerPadding),
+        Column (
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()) //makes the column scrollable
+                .background(color = MaterialTheme.colorScheme.surface)
+                .padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
+
         ) {
           ContentMyPage(navController = navController, myPageViewModel = myPageViewModel)
         }
@@ -131,10 +141,7 @@ fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewMo
 }
 
 /**
- * Content in mypage:
- * SettingsButton
- * LocationCard
- * AddLocationButton
+ * Content of my page:
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -143,169 +150,169 @@ fun ContentMyPage(navController : NavController, myPageViewModel: MyPageViewMode
     val myPageUiState: MyPageUiState by myPageViewModel.myPageUiState.collectAsState()
     val newPlaceUiState : NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
-    if (myPageUiState.showNewLocationCard) { //When the user click AddLocationButton this is shown
+    //Make as surface that show the locationcard on top when new location is added
+    Surface {
 
-        // DONT DO THIS, put it in viewmodel
-        var locationName by remember { mutableStateOf("") }
-        var chosenLocation by remember { mutableStateOf("") }
-        var dateOfPicture by remember { mutableStateOf("") }
-        var notes by remember { mutableStateOf("") }
-
-        if (newPlaceUiState.showDatePicker) {
-            DatePickerDialog(
-
-                onDismissRequest = { /*TODO toggle datePickerError and showDatePicker*/ },
-                confirmButton = { /*TODO*/ },
-                dismissButton = { /*TODO*/ }
-
-            ) {
-                DatePicker(state = newPlaceUiState.datePickerState)
-            }
-        }
-
-
-        // Lag dette som et eget card
-        // Bruk surface of card skal poppe opp, sjekk maplistscreen
-        Card(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-        ) {
-            // String with name
-            TextField(
-                value = "",// Take variable from newPlaceUiState
-                onValueChange = { locationName = it },
-                label = { Text("Location") }
-            )
-            // Brukeren skal skrive inn addresse:
-            TextField(
-                value = chosenLocation,
-                onValueChange = { chosenLocation = it },
-                label = { Text("Choose location") }
-            )
-            // Time skal lages made datepicker dialog
-            TextField(
-                value = dateOfPicture,
-                onValueChange = {  },
-                modifier = Modifier.clickable(
-                    enabled = true,
-                    onClick = {
-                        //TODO enable date picker in viewmodel with boolean
-                    }
-                ),
-                enabled = false,
-                isError = newPlaceUiState.datePickerError,
-                label = { Text("Time of picture") }
-            )
-
-            // String with description
-            TextField(
-                value = notes,
-                onValueChange = { notes = it },
-                label = { Text("Notes") }
-            )
-            Button(
-                onClick = {
-                    //TODO
-                } ) {
-                Text("Add a photo")
-            }
-            Button(
-                onClick = { },
-                modifier = Modifier.padding(vertical = 8.dp),
-            ) {
-                Text("Add Location")
-            }
-        }
-    } else {
-        // Need to have column in order to use spacer inside the Column to push the add-icon down on the page
-        Column {
-            var hasLocations = false
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            if (hasLocations) {
-                // Column for list view
-                Column (Modifier.verticalScroll(rememberScrollState())) {
-                    myPageUiState.places.forEach {place ->
-                        LocationCard(
-                            name = place.name,
-                            description = place.description,
-                            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                                navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
-                            }
-                        )
-                    }
+        // If a location is added this will be shown:
+        if (myPageUiState.showLocations) {
+            // Column for list view
+            Column (Modifier.verticalScroll(rememberScrollState())) {
+                myPageUiState.places.forEach {place ->
+                    ListCard(
+                        name = place.name,
+                        description = place.description,
+                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                            navController.navigate(
+                                route = "placeinfoscreen/${place.lat}/${place.long}/${place.id}"
+                            )
+                        }
+                    )
                 }
-            } else {
-                Text(
-                    text = stringResource(R.string.no_location),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
             }
+        } else {
 
+            Text(
+                text = stringResource(R.string.no_location),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
-            // TODO: Make as a dialogs
-            if (hasLocations) {
-                Text(text = R.string.new_location.toString())
+        //When the user click AddLocationButton this is shown
+        // TODO: Show it as a dialog
+        if (myPageUiState.showNewLocationCard) {
+
+            NewPlaceDialog(myPageViewModel = myPageViewModel)
+
+            // Show when the user pick a date:
+            if (newPlaceUiState.showDatePicker) {
+                DatePickerDialog(
+
+                    onDismissRequest = { myPageViewModel.dismissDatePicker() },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            myPageViewModel.saveSelectedDate()
+                        }) {
+                            Text(text = stringResource(R.string.add_date)) // TODO make in stringresource
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            myPageViewModel.dismissDatePicker()
+                        }) {
+                            Text(text = stringResource(R.string.cancel))// TODO make in stringresource
+                        }
+                    }
+
+                ) {
+                    DatePicker(state = newPlaceUiState.datePickerState)
+                }
             }
         }
     }
 }
 
 /**
- * Cards with information about places
+ * Function that will pop up when addLocation is pressed
+ * Should take in viewmodel
  */
 @Composable
-fun LocationCard(name: String, description: String, onItemClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 12.dp)
-            .clickable(onClick = onItemClick) //Click to placeinfoscreen
-    ){
+fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
+    val myPageUiState: MyPageUiState by myPageViewModel.myPageUiState.collectAsState()
+    val newPlaceUiState : NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
-        //Box for picture:
-        Box(
-            modifier = Modifier
-                .height(150.dp)
-                .padding(6.dp)
-                .background(Color.LightGray, RoundedCornerShape((16.dp)))
-                .fillMaxWidth(),
-        ) {
-            Text(
-                text = "Image Placeholder",
-                modifier = Modifier.align(Alignment.Center)
-            )
+    //TODO se på oblig 1 for hvordan man gjorde det med keyboard
+
+    Dialog(onDismissRequest = { myPageViewModel.hideNewForm() }) {
+        Card {
+            Column (modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                // String with name
+                OutlinedTextField(
+                    value = newPlaceUiState.locationName,
+                    // Take variable from newPlaceUiState
+                    onValueChange = { myPageViewModel.updateNewLocationName(it) },
+                    label = { Text(stringResource(R.string.location_name)) },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    singleLine = true
+                )
+
+                // Brukeren skal skrive inn addresse:
+                OutlinedTextField(
+                    value = newPlaceUiState.address,
+                    onValueChange = { myPageViewModel.updateNewLocationAddress(it) },
+                    label = { Text(stringResource(R.string.address)) },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    singleLine = true
+                )
+                // TODO logikken skjer i viewmodel, sender inn string med addresse
+
+
+                /*
+                // Alternative to OutlinedTextField for datepicker
+                OutlinedButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { myPageViewModel.showDatePicker() }) {
+                    Text(text = newPlaceUiState.pickedDate.format(
+                        DateTimeFormatter.ISO_LOCAL_DATE
+                    ))
+                }
+                 */
+
+                   // Time skal lages made datepicker dialog
+                OutlinedTextField(
+                    // TODO display the picked date if the user has picked one
+                    value = newPlaceUiState.pickedDate.format(
+                        DateTimeFormatter.ISO_LOCAL_DATE
+                    ),
+                    onValueChange = {  },
+                    modifier = Modifier.clickable(
+                        enabled = true,
+                        onClick = {
+                            //TODO enable date picker in viewmodel with boolean
+                            myPageViewModel.showDatePicker()
+                        }
+                    ),
+                    enabled = false,
+                    readOnly = true,
+                    isError = newPlaceUiState.dateTextFieldError,
+                    label = { Text(stringResource(R.string.time)) }
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+
+                // String with description
+                OutlinedTextField(
+                    value = newPlaceUiState.descriptions,
+                    onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
+                    label = { Text(stringResource(R.string.description)) },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    singleLine = true
+                )
+
+                // Button to add photo
+                Button(
+                    onClick = {
+                        //TODO HOW
+                    } ) {
+                    Text(text = stringResource(R.string.add_photo))
+                }
+
+                // Button that is pressed when the location is added:
+                Button(
+                    onClick = {
+                        // Only update the first time, since then it will always be true
+                        // TODO: Unless a card can be deleted, but this is not implemented yet
+                        if (!myPageUiState.showLocations)
+                        { myPageViewModel.showNewLocations() }
+                        // Add an object of the place
+                    },
+                    modifier = Modifier.padding(vertical = 8.dp),
+                ) {
+                    Text(text = stringResource(R.string.add_location))
+                }
+            }
         }
-
-        //Text for name of place
-        Text(
-            text = name,
-            modifier = Modifier
-                .padding(vertical = 2.dp)
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-
-        //Text for description. Do we want weather condition in the future?
-        Text(
-            text = description,
-            modifier = Modifier
-                .padding(vertical = 2.dp)
-                .padding(bottom = 4.dp)
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center,)
-    }
-}
-
-@Composable
-fun NewPlaceDialog() {
-    Dialog(onDismissRequest = { /*TODO*/ }) {
-        
     }
 }
 
@@ -314,8 +321,12 @@ fun NewPlaceDialog() {
 fun TestList(navController: NavHostController = rememberNavController()) {
     MyPageScreen(
         navController = navController,
-        myPageViewModel = MyPageViewModel(
+        myPageViewModel = MyPageViewModel()
+        )
+}
 
-        )
-        )
+@Composable
+@Preview
+fun PreviewNewPlaceDialog(navController: NavHostController = rememberNavController()) {
+    NewPlaceDialog(myPageViewModel = MyPageViewModel())
 }
