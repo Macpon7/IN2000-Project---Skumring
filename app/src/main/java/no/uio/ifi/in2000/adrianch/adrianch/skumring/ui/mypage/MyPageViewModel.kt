@@ -15,6 +15,9 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 data class MyPageUiState(
     val pins: List<PinInfo> = emptyList(),
@@ -31,9 +34,16 @@ data class MyPageUiState(
     val showLocations : Boolean = false
 )
 
+/* TODO , lag en dataklasse som innholder alt data som brukeren legger inn
+Dette skal sendes inn til placerepository
+ */
+
+
 data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     var locationName : String = "",
+
+    var address : String = "",
 
     // TODO add location
     // TODO get date from user
@@ -48,11 +58,16 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
         initialDisplayMode = DisplayMode.Picker
         ),
 
+    var pickedDate: LocalDate = LocalDate.now(),
+
     // Show the date picker when the user want to pick a date
     var showDatePicker : Boolean = false,
 
-    // Show an error if the use did not pick a date
-    var datePickerError : Boolean = false
+    // Show an error if the use pressed ok without picking a date
+    var datePickerError : Boolean = false,
+
+    // Show an error if user closes date picker without picking a date
+    var dateTextFieldError: Boolean = false
 
 )
 
@@ -74,16 +89,59 @@ class MyPageViewModel : ViewModel() {
         loadList()
     }
 
+    /* TODO, funksjon som lager et objekt av stedet, tar med alle variablene til brukeren
+    Bruker dataklassen som skal lages over
+     */
+
+
     // Functions for updating NewPlaceUiState:
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun showDatePicker() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    showDatePicker = !currentNewPlaceUiState.showDatePicker
+                )
+            }
+        }
+    }
 
     /**
      * Update if the datepicker is shown or not
      */
     @OptIn(ExperimentalMaterial3Api::class)
-    fun updateShowDatePicker() {
+    fun dismissDatePicker() {
         viewModelScope.launch (Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(showDatePicker = !currentNewPlaceUiState.showDatePicker)
+                currentNewPlaceUiState.copy(
+                    dateTextFieldError = true,
+                    showDatePicker = !currentNewPlaceUiState.showDatePicker
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun saveSelectedDate() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                val dateFromPicker = currentNewPlaceUiState.datePickerState.selectedDateMillis
+
+                if (dateFromPicker == null) {
+                    currentNewPlaceUiState.copy(
+                        datePickerError = true
+                    )
+                } else {
+                    val date = LocalDateTime.ofEpochSecond(
+                        dateFromPicker/1000, 0, ZoneOffset.UTC
+                    ).toLocalDate()!!
+                    currentNewPlaceUiState.copy(
+                        datePickerError = false,
+                        showDatePicker = !currentNewPlaceUiState.showDatePicker,
+                        pickedDate = date
+                    )
+                }
             }
         }
     }
@@ -107,7 +165,7 @@ class MyPageViewModel : ViewModel() {
     fun updateNewLocationDescription(descriptions: String) {
         viewModelScope.launch (Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(locationName = descriptions)
+                currentNewPlaceUiState.copy(descriptions = descriptions)
             }
         }
     }
