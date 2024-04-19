@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Place
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -93,7 +92,7 @@ object MapListDestination : NavigationDestination {
  */
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
-fun MapListScreen(navController : NavHostController, mapListViewModel: MapListViewModel = viewModel()) {
+fun MapListScreen(navController : NavHostController, mapListViewModel: MapListViewModel = viewModel(factory = MapListViewModel.Factory)) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
@@ -166,9 +165,6 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
      */
 
-    Button(onClick = { mapListViewModel.loadPlaces() }) {
-        Text(text = "Update")
-    }
     ThemeSwitcher (
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
         size = 65.dp, //Size of the button

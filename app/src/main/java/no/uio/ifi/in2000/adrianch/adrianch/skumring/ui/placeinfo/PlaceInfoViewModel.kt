@@ -3,13 +3,17 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
@@ -42,7 +46,9 @@ data class PlaceInfoUiState(
 )
 
 
-class PlaceInfoViewModel(private val placeInfoRepository: PlaceInfoRepository): ViewModel() {
+class PlaceInfoViewModel(
+    private val placeInfoRepository: PlaceInfoRepository,
+): ViewModel() {
     private val oldPlaceInfoRepository: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
 
@@ -85,6 +91,22 @@ class PlaceInfoViewModel(private val placeInfoRepository: PlaceInfoRepository): 
         }
         viewModelScope.launch (Dispatchers.IO) {
             loadPlaceInfo(id)
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                val application = checkNotNull(extras[APPLICATION_KEY])
+
+                return PlaceInfoViewModel(
+                    placeInfoRepository = (application as ApplicationSkumring).dbRepository
+                ) as T
+            }
         }
     }
 }

@@ -7,7 +7,9 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.DefaultMonotonicFrameClock
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
@@ -52,9 +55,9 @@ class MapListViewModel(private val placeInfoRepository: PlaceInfoRepository): Vi
     val mapListUiState: StateFlow<MapListUiState> = _mapListUiState.asStateFlow()
 
     // TODO make this work instead of having the user press a button
-    /*init {
+    init {
         loadPlaces()
-    }*/
+    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     private fun loadMap(){
@@ -162,6 +165,22 @@ class MapListViewModel(private val placeInfoRepository: PlaceInfoRepository): Vi
         }
         viewModelScope.launch (Dispatchers.IO) {
             loadPlaces()
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+
+                return MapListViewModel(
+                    placeInfoRepository = (application as ApplicationSkumring).dbRepository
+                ) as T
+            }
         }
     }
 }

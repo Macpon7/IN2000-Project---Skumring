@@ -49,7 +49,7 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = viewModel(),
+    homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
     navController: NavHostController
 ) {
 

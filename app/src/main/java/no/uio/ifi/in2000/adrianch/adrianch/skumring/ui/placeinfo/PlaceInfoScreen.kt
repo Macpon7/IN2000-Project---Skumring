@@ -19,7 +19,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -64,7 +63,7 @@ object PlaceInfoScreenDestination : NavigationDestination {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PlaceInfoScreen(
-    placeViewModel: PlaceInfoViewModel = viewModel(),
+    placeViewModel: PlaceInfoViewModel = viewModel(factory = PlaceInfoViewModel.Factory),
     id: Int,
     navController: NavHostController
 ) {
@@ -80,11 +79,11 @@ fun PlaceInfoScreen(
      */
 
     // Dette funker ikke, kun ett kall til viewmodel
-    /*LaunchedEffect(key1 = id) {
-        Log.d(logTag, "Loading PlaceInfo object with ID: $id")
-        placeViewModel.loadPlaceInfo(id = id)
-        Log.d(logTag, "Loaded place: ${placeUiState.placeInfo.name}")
-    }*/
+    LaunchedEffect(Unit) {
+        //Log.d(logTag, "Loading PlaceInfo object with ID: $id")
+       placeViewModel.loadPlaceInfo(id = id)
+        //Log.d(logTag, "Loaded place: ${placeUiState.placeInfo.name}")
+    }
 
 
     // Dette funker heller ikke, også kun ett kall
@@ -98,9 +97,9 @@ fun PlaceInfoScreen(
 
     // Dette funker, men gjør 3 kall. loadPlaceInfo setter isLoading til false.
     // Av en eller annen grunn er de to første kallene med 50 ms mellomrom, mens det tredje er 500ms senere
-    /*if (placeUiState.isLoading) {
-        placeViewModel.loadPlaceInfo(id = id)
-    }*/
+    // if (placeUiState.isLoading) {
+    //    placeViewModel.loadPlaceInfo(id = id)
+    //}
 
     /*
     * I tillegg, for å gjøre denne bugen enda rarere:
@@ -221,10 +220,6 @@ fun ContentInfoScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
         //Picture of the place:
-        Button(onClick = { placeViewModel.loadPlaceInfo(id = id) }) {
-            Text(text = "Update")
-        }
-
         PlacePicture()
 
         //Add space between pictures and text
