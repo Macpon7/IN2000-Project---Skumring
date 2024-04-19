@@ -37,8 +37,10 @@
     <string name="mypage_add_photo">Legg til bilde</string>
     <string name="location_name">Steds navn</string>
     <string name="choose_location">Velg sted</string>
-    <string name="time">Velg tid</string>
+    <string name="time">Velg dato</string>
     <string name="description">Beskrivelse</string>
+    <string name="add_photo">Legg til bilde</string>
+    <string name="add_location">Legg til sted</string>
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
