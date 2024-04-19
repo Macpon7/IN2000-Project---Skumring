@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
-import android.location.Address
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
@@ -38,19 +37,25 @@ data class MyPageUiState(
 /* TODO , lag en dataklasse som innholder alt data som brukeren legger inn
 Dette skal sendes inn til placerepository
  */
+data class NewPlace(
+    val locationName: String,
+    val address: String,
+    val pickedDate: LocalDate,
+    val descriptions: String,
+    )
 
 
 data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     var locationName : String = "",
+    var locationNameIsMissing : Boolean = false,
 
     var address : String = "",
+    var addressIsMissing : Boolean = false,
 
     // TODO add location
     // TODO get date from user
     // val dateOfImage: LocalDate,
-
-    var descriptions : String = "",
 
     var datePickerState: DatePickerState = DatePickerState(
         initialSelectedDateMillis = null,
@@ -59,7 +64,11 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
         initialDisplayMode = DisplayMode.Picker
         ),
 
+    // This will not make an error since if it is not picked it will be the current date:
     var pickedDate: LocalDate = LocalDate.now(),
+
+    var descriptions : String = "",
+    var descriptionsIsMissing: Boolean = false,
 
     // Show the date picker when the user want to pick a date
     var showDatePicker : Boolean = false,
@@ -68,8 +77,13 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     var datePickerError : Boolean = false,
 
     // Show an error if user closes date picker without picking a date
-    var dateTextFieldError: Boolean = false
+    var dateTextFieldError: Boolean = false,
 
+    // Check if all the required spaces is filled in by the user
+    var isReady : Boolean = false,
+
+    // Check if something in the textfield is missing
+    var missingInfo : Boolean = false
 )
 
 // TODO: Use this is the functions in viewmodel where errors can happen:
@@ -90,22 +104,98 @@ class MyPageViewModel : ViewModel() {
         loadList()
     }
 
-    /* TODO, funksjon som lager et objekt av stedet, tar med alle variablene til brukeren
-    Bruker dataklassen som skal lages over
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun notMissingInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    missingInfo = false
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateIsReady() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    isReady = true
+                )
+            }
+        }
+    }
+
+    // Functions to check if there is a field missing:
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateLocationNameMissing(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    locationNameIsMissing = !currentNewPlaceUiState.locationNameIsMissing,
+                    missingInfo = true
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateAddressMissing(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    addressIsMissing = !currentNewPlaceUiState.addressIsMissing,
+                    missingInfo = true
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateDescriptionsMissing(){
+        _newPlaceUiState.update { currentNewPlaceUiState ->
+            currentNewPlaceUiState.copy(
+                descriptionsIsMissing = !currentNewPlaceUiState.descriptionsIsMissing,
+                missingInfo = true
+            )
+        }
+    }
+
+    /**
+     * Function for adding location to the database
      */
+    fun addLocation(locationName: String,
+                    address: String,
+                    pickedDate: LocalDate,
+                    descriptions: String) {
+        val LocationObject = NewPlace(
+            locationName = locationName,
+            address = address,
+            pickedDate = pickedDate,
+            descriptions = descriptions
+            )
+        // TODO add locationObject to the database
+    }
 
-
-    // Functions for updating NewPlaceUiState:
-
+    /**
+     * Functions for updating NewPlaceUiState:
+     *
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun refreshNewPlaceUiState(){
         viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(
                     locationName = "",
+                    locationNameIsMissing = false,
                     address = "",
+                    addressIsMissing = false,
                     descriptions = "",
+                    descriptionsIsMissing = false,
                     pickedDate = LocalDate.now(),
+                    isReady = false,
+                    missingInfo = false
                 )
             }
         }
