@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 
 private const val logTag = "PlaceInfoRepository"
 
-interface PlaceInfoRepository {
+interface PlacesRepository {
     suspend fun getAllPlaces(): List<PlaceInfo>
     suspend fun getPlace(id: Int): PlaceInfo
     suspend fun getFavourites(): List<PlaceInfo>
@@ -27,7 +27,7 @@ interface PlaceInfoRepository {
     suspend fun makeFavourite(id: Int)
     suspend fun unmakeFavourite(id: Int)
 }
-class PlaceInfoRepositoryImpl(
+class PlacesRepositoryImpl(
     //Creates and initializes the database
     //var database : AppDatabase = AppDatabase.getDatabase(context = LocalContext.current),
     private val placeInfoDao: PlaceInfoDao,
@@ -37,7 +37,7 @@ class PlaceInfoRepositoryImpl(
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
     private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource(),
     private val placeListRepository: PlaceListRepository = PlaceListRepositoryImpl()
-): PlaceInfoRepository {
+): PlacesRepository {
     private val oldPlaceInfoRepository = OldPlaceInfoRepositoryImpl(
         sunriseDataSource = sunriseDataSource,
         locationForecastDataSource = locationForecastDataSource,

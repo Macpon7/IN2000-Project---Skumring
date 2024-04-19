@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlacesRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
@@ -47,7 +47,7 @@ data class MapListUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMat
 
 private const val logTag = "MapListViewModel"
 
-class MapListViewModel(private val placeInfoRepository: PlaceInfoRepository): ViewModel() {
+class MapListViewModel(private val placesRepository: PlacesRepository): ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeListRepository = PlaceListRepositoryImpl()
 
@@ -82,7 +82,7 @@ class MapListViewModel(private val placeInfoRepository: PlaceInfoRepository): Vi
             _mapListUiState.update { currentMapListUiState ->
                 try {
                     // Get all places from DB and make corresponding PinInfo objects
-                    val places = placeInfoRepository.getAllPlaces()
+                    val places = placesRepository.getAllPlaces()
                     val pins = places.map {
                         PinInfo(
                             id = it.id,
@@ -178,7 +178,7 @@ class MapListViewModel(private val placeInfoRepository: PlaceInfoRepository): Vi
                 val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return MapListViewModel(
-                    placeInfoRepository = (application as ApplicationSkumring).dbRepository
+                    placesRepository = (application as ApplicationSkumring).dbRepository
                 ) as T
             }
         }

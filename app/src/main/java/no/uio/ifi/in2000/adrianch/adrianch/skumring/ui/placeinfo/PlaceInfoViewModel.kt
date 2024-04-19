@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlacesRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
@@ -47,7 +47,7 @@ data class PlaceInfoUiState(
 
 
 class PlaceInfoViewModel(
-    private val placeInfoRepository: PlaceInfoRepository,
+    private val placesRepository: PlacesRepository,
 ): ViewModel() {
     private val oldPlaceInfoRepository: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
@@ -59,7 +59,7 @@ class PlaceInfoViewModel(
             Log.d(logTag, "loadPlaceInfo called")
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
-                    val placeInfoObject = placeInfoRepository.getPlace(id)
+                    val placeInfoObject = placesRepository.getPlace(id)
                     currentPlaceInfoUiState.copy(placeInfo = placeInfoObject, isLoading = false)
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)
@@ -104,7 +104,7 @@ class PlaceInfoViewModel(
                 val application = checkNotNull(extras[APPLICATION_KEY])
 
                 return PlaceInfoViewModel(
-                    placeInfoRepository = (application as ApplicationSkumring).dbRepository
+                    placesRepository = (application as ApplicationSkumring).dbRepository
                 ) as T
             }
         }

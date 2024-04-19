@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlacesRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
@@ -41,7 +41,7 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel(private val placeInfoRepository: PlaceInfoRepository) : ViewModel() {
+class HomeViewModel(private val placesRepository: PlacesRepository) : ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
 
@@ -134,7 +134,7 @@ class HomeViewModel(private val placeInfoRepository: PlaceInfoRepository) : View
                 val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return HomeViewModel(
-                    placeInfoRepository = (application as ApplicationSkumring).dbRepository
+                    placesRepository = (application as ApplicationSkumring).dbRepository
                 ) as T
             }
         }
