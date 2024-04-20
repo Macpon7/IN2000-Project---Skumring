@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     SkumringApp()
-                    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.holmenkollen)
+                    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.)
                     val success = savePhotoToInternalStorage("example", bitmap)
                     println(success)
                     if (success){
@@ -80,23 +80,23 @@ class MainActivity : ComponentActivity() {
     }
                  */
 
-
     //from byte array
    // val byteArray: ByteArray = // Image data in byte array
     //val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
 
 
-    //fun drawableToBitmap()
-    //    return BitmapFactory.decodeResource(resources, R.drawable.image_name)
 
-    /*
-    fun imagepathToBitmap(file:String){
-        //file = "/path/to/image.jpg"
-        val file = File(file)
-        return BitmapFactory.decodeFile(file.absolutePath)
+    fun drawableToBitmap(image_name: String): Bitmap? {
+        val resourceId = resources.getIdentifier(image_name, "drawable", "no.uio.ifi.in2000.adrianch.adrianch.skumring")
+        return BitmapFactory.decodeResource(resources, resourceId)
     }
 
-     */
+    fun imagepathToBitmap(file:String): Bitmap? {
+        //file = "/path/to/image.jpg"
+        val file = File(file)
+        val abs_path = file.absolutePath
+        return BitmapFactory.decodeFile(abs_path)
+    }
 
 
 
