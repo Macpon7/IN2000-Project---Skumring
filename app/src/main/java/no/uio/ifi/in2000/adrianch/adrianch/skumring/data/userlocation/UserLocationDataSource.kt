@@ -28,16 +28,15 @@ class UserLocationDataSource (
             Log.d(logTag, "Failed to get loc")
             UserLocation(long = long, lat = lat)
         } else {
-            Log.d(logTag, "Updating loc")
             long = userLocation.longitude.toString()
             lat = userLocation.latitude.toString()
+            Log.d(logTag, "Lat: $lat, long: $long")
             UserLocation(long = long, lat = lat)
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun getLastLocation(): Location? {
-        Log.d(logTag, "Trying to fetch loc")
 
         val hasAccessFineLocationPermission = ContextCompat.checkSelfPermission(
             context,
@@ -65,6 +64,7 @@ class UserLocationDataSource (
             fusedLocationClient.lastLocation.apply {
                 if (isComplete) {
                     if (isSuccessful) {
+                        Log.d(logTag, "lastlocation success")
                         cont.resume(result) {} // Resume coroutine with location result
                     } else {
                         cont.resume(null) {} // Resume coroutine with null location result
