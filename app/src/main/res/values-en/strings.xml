@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="app_name">Skumring</string>
     <string name="back_button">Back</string>
     <string name="nav_map_button">Map</string>
     <string name="nav_home_button">Home</string>
@@ -13,8 +12,9 @@
     <string name="home_greeting">Hello</string>
     <string name="conditions_are_good">The conditions will be good tonight!</string>
     <string name="conditions_are_bad">The conditions will be bad tonight.</string>
-    <string name="sunset">Sunset</string>
+    <string name="home_sunset">Sunset today</string>
     <string name="list_title">Nice locations today</string>
+    <string name="home_favourite_places">Favourite places</string>
     <!-- MapListScreen -->
     <string name="toggle_list">List</string>
     <string name="toggle_map">Map</string>
@@ -30,9 +30,20 @@
     <string name="language_option">Language</string>
     <string name="distance_unit">Distances</string>
     <string name="temp_unit">Temperatures</string>
+    <!-- MyPageScreen -->
+    <string name="no_location">You have no locations saved yet</string>
+    <string name="new_location">New location added!</string>
+    <string name="mypage_add_photo">Add photo</string>
+    <string name="location_name">Location name</string>
+    <string name="choose_location">Choose location</string>
+    <string name="time">Choose time</string>
+    <string name="description">Description</string>
     <!-- Common strings used across multiple screens -->
-    <string name="weather_condition">Weather conditions</string>
+    <string name="weather_condition">"Weather conditions: "</string>
     <string name="temp_at_sunset">Temperature at sunset</string>
     <string name="golden_hour">Golden hour</string>
     <string name="blue_hour">Blue hour</string>
+    <string name="home_more_details_button">More details</string>
+    <string name="home_distance">"Distance: "</string>
+
 </resources>

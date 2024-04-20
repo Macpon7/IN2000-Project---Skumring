@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("androidx.room")
+    id("com.google.relay") version "0.3.11"
 }
 
 android {
