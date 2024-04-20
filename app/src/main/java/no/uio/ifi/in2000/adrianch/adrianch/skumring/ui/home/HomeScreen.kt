@@ -33,6 +33,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -53,6 +54,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListUiState
@@ -68,7 +71,7 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
     override val titleRes = R.string.app_name
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
     navController: NavHostController,
@@ -79,6 +82,16 @@ fun HomeScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
+    val locationPermissions = rememberMultiplePermissionsState(
+        permissions = listOf(
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    )
+
+    LaunchedEffect(true) {
+        locationPermissions.launchMultiplePermissionRequest()
+    }
     Scaffold(
         topBar = {
             SkumringTopBar(
