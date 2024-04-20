@@ -32,114 +32,13 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     SkumringApp()
-                    val bitmap = BitmapFactory.decodeResource(resources, R.drawable.)
-                    val success = savePhotoToInternalStorage("example", bitmap)
-                    println(success)
-                    if (success){
-                        Log.d("SavePhoto", "Photo saved successfully")
-                    } else {
-                        Log.d("SavePhoto", "Photo saved unsuccessfully")
-                    }
 
-                    runBlocking {
-                        // Call loadPhotosFromInternalStorage within the coroutine scope
-                        val photos = loadPhotosFromInternalStorage()
-                        // Handle the loaded photos here
-                        photos.forEach { photo ->
-                            println("Photo name: ${photo.name}")
-                            Log.d("SavePhoto", "Photo is called ${photo.name}. Length is ${photos.size}")
-                        }
-                    }
-
-
-
-/*
-                }
-            }
-            internalStoragePhotoAdapter = InternalStoragePhotoAdapter{
-
-            }
-            setupInternalStorageRecyclerView()
-            loadPhotosFromInternalStorageIntoRecyclerView()
-        }*/
     }}}}
 
-                /*
-    //private lateinit var internalStoragePhotoAdapter: InternalStoragePhotoAdapter
-        private fun setupInternalStorageRecyclerView() = binding.rvPrivatePhotos.apply{
-        adapter = internalStoragePhotoAdapter
-        layoutManager = StaggeredGridLayoutManager(e, RecyclerVire.VERTICAL)
-    }*/
-
-                /*
-    private fun loadPhotosFromInternalStorageIntoRecyclerView(){
-        lifecycleScope.launch {
-            val photos = loadPhotosFromInternalStorage()
-            internalStoragePhotoAdapter.submitList(photos)
-        }
-    }
-                 */
-
-    //from byte array
-   // val byteArray: ByteArray = // Image data in byte array
-    //val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
 
 
 
-    fun drawableToBitmap(image_name: String): Bitmap? {
-        val resourceId = resources.getIdentifier(image_name, "drawable", "no.uio.ifi.in2000.adrianch.adrianch.skumring")
-        return BitmapFactory.decodeResource(resources, resourceId)
-    }
 
-    fun imagepathToBitmap(file:String): Bitmap? {
-        //file = "/path/to/image.jpg"
-        val file = File(file)
-        val abs_path = file.absolutePath
-        return BitmapFactory.decodeFile(abs_path)
-    }
-
-
-
-    data class InternalStoragePhoto(
-        val name: String,
-        val bml: Bitmap
-    )
-
-    fun deletePhotoFromInternalStorage(filename: String): Boolean{
-        return try{
-            deleteFile(filename) //this returns a boolean if the file was successfully deleted or not
-        } catch (e: Exception){
-            e.printStackTrace()
-            false
-        }
-    }
-
-    //loads all pictures at once
-    suspend fun loadPhotosFromInternalStorage(): List<InternalStoragePhoto>{
-        return withContext(Dispatchers.IO){
-            val files = filesDir.listFiles()
-            //add conditions in line below?
-            files.filter { it.canRead() && it.isFile && it.name.endsWith(".jpg") }.map{
-                val bytes = it.readBytes()
-                val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                InternalStoragePhoto(it.name, bmp)
-            } ?: listOf()
-        }
-    }
-
-    fun savePhotoToInternalStorage(filename: String, bmp: Bitmap): Boolean {
-        return try{
-            openFileOutput("$filename.jpg", MODE_PRIVATE).use{ stream ->
-                if (!bmp.compress(Bitmap.CompressFormat.JPEG, 95, stream)) {
-                    throw IOException("Couldn't save bitmap")
-                }
-            }
-            true
-        } catch(e: IOException){
-            e.printStackTrace()
-            false
-        }
-    }
 
 
 }
