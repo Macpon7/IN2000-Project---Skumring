@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
@@ -47,11 +49,11 @@ data class NewPlace(
 
 data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
-    var locationName : String = "",
-    var locationNameIsMissing : Boolean = false,
+    var locationName: String = "",
+    var locationNameIsMissing: Boolean = false,
 
-    var address : String = "",
-    var addressIsMissing : Boolean = false,
+    var address: String = "",
+    var addressIsMissing: Boolean = false,
 
     // TODO add location
     // TODO get date from user
@@ -67,23 +69,27 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     // This will not make an error since if it is not picked it will be the current date:
     var pickedDate: LocalDate = LocalDate.now(),
 
-    var descriptions : String = "",
+    var descriptions: String = "",
     var descriptionsIsMissing: Boolean = false,
 
+    // Variables for picture:
+    var imageUri: Uri? = null,
+    var bitmap: Bitmap? = null,
+
     // Show the date picker when the user want to pick a date
-    var showDatePicker : Boolean = false,
+    var showDatePicker: Boolean = false,
 
     // Show an error if the use pressed ok without picking a date
-    var datePickerError : Boolean = false,
+    var datePickerError: Boolean = false,
 
     // Show an error if user closes date picker without picking a date
     var dateTextFieldError: Boolean = false,
 
     // Check if all the required spaces is filled in by the user
-    var isReady : Boolean = false,
+    var isReady: Boolean = false,
 
     // Check if something in the textfield is missing
-    var missingInfo : Boolean = false
+    var missingInfo: Boolean = false
 )
 
 // TODO: Use this is the functions in viewmodel where errors can happen:
