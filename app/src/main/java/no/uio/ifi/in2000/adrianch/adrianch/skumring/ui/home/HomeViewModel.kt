@@ -34,8 +34,8 @@ import java.time.LocalDate
 
 data class HomeUiState(
     val date: LocalDate = LocalDate.of(2024,3,7),
-    var long: String = "10.718393",
-    var lat: String = "59.943735",
+    var long: String = "0",
+    var lat: String = "0",
     val temp: String = "",
     val sunsetTime: String = "",
     val sunsetDate: String = "",
@@ -59,13 +59,10 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
 
-    val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
+    private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
-
-    // TODO add user's position
-
 
     init {
         loadHomeScreen()
@@ -75,9 +72,8 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
 
     private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-            updateWeather(lat = homeUiState.value.lat, long = homeUiState.value.long)
             loadUserLocation()
-            Log.d(logTag, "Lat: ${_homeUiState.value.lat}, long: ${_homeUiState.value.long}")
+            updateWeather()
         }
     }
 
@@ -85,7 +81,7 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
         viewModelScope.launch(Dispatchers.IO) {
             _homeUiState.update { currentHomeUiState ->
                 val userLoc = userLocationRepository.getUserLocation()
-                Log.d(logTag, "Loaded user location")
+                Log.d(logTag + "LoadUserLoc", "Lat: ${userLoc.lat}, Long: ${userLoc.long}")
                 currentHomeUiState.copy(
                     lat = userLoc.lat,
                     long = userLoc.long
@@ -94,12 +90,14 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
         }
     }
 
-    private fun updateWeather(lat: String, long: String){
+    private fun updateWeather(){
         viewModelScope.launch(Dispatchers.IO){
             try {
                 _homeUiState.update{ currenthomeUiState->
                     Log.d(logTag, "fetching sunsetweather")
-                    val sunsetWeather = placeInfo.getLocalSunsetWeather(lat = lat, long = long)
+                    val sunsetWeather = placeInfo.getLocalSunsetWeather(
+                        lat = _homeUiState.value.lat,
+                        long = _homeUiState.value.long)
                     // Adding try/catch to handle date missing
                     // Add to snackbar?
                     val sunsetWeatherDateTime: List<String> = try {
@@ -141,7 +139,6 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
             currentMapUiState.copy(showSnackbar = false)
         }
     }
-
     /**
      *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
      */
@@ -151,7 +148,7 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
         }
         viewModelScope.launch (Dispatchers.IO) {
             loadHomeScreen()
-            updateWeather(lat = homeUiState.value.lat, long = homeUiState.value.long)
+            updateWeather()
         }
     }
 }

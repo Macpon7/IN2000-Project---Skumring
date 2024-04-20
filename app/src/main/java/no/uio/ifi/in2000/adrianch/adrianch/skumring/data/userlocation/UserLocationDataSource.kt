@@ -30,7 +30,7 @@ class UserLocationDataSource (
         } else {
             long = userLocation.longitude.toString()
             lat = userLocation.latitude.toString()
-            Log.d(logTag, "Lat: $lat, long: $long")
+            Log.d(logTag, "Lat = $lat, long = $long")
             UserLocation(long = long, lat = lat)
         }
     }
@@ -64,7 +64,6 @@ class UserLocationDataSource (
             fusedLocationClient.lastLocation.apply {
                 if (isComplete) {
                     if (isSuccessful) {
-                        Log.d(logTag, "lastlocation success")
                         cont.resume(result) {} // Resume coroutine with location result
                     } else {
                         cont.resume(null) {} // Resume coroutine with null location result
