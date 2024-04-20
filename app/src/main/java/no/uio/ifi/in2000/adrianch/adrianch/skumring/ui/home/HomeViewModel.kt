@@ -55,12 +55,11 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel(placeInfoRepository: PlaceInfoRepository, application: Application): AndroidViewModel(application) {
+class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context): ViewModel() {
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
 
-    private //val application = getApplication<Application>()
-    val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(application = application)
+    val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()

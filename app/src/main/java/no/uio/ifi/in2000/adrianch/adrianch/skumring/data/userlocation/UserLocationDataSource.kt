@@ -13,10 +13,10 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
 
 class UserLocationDataSource (
-    private val application: Application
+    private val context: Context
 ) {
     private val logTag = "UserLocationDataSource"
-    private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
+    private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     // Default loc is coordinates over OJD
     private var long = "10.718393"
@@ -38,16 +38,16 @@ class UserLocationDataSource (
         Log.d(logTag, "Trying to fetch loc")
 
         val hasAccessFineLocationPermission = ContextCompat.checkSelfPermission(
-            application,
+            context,
             android.Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
 
         val hasAccessCoarseLocationPermission = ContextCompat.checkSelfPermission(
-            application,
+            context,
             android.Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
 
-        val locationManager = application.getSystemService(
+        val locationManager = context.getSystemService(
             Context.LOCATION_SERVICE
         ) as LocationManager
 
