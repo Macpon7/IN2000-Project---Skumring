@@ -2,12 +2,14 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -24,11 +26,16 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepos
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
 import java.time.LocalDate
 
 data class HomeUiState(
     val date: LocalDate = LocalDate.of(2024,3,7),
+    var long: String = "10.718393",
+    var lat: String = "59.943735",
     val temp: String = "",
     val sunsetTime: String = "",
     val sunsetDate: String = "",
@@ -48,16 +55,17 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) : ViewModel() {
+class HomeViewModel(placeInfoRepository: PlaceInfoRepository, application: Application): AndroidViewModel(application) {
     private val mapRepository = MapRepositoryImpl()
     private val placeInfo: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
+
+    private //val application = getApplication<Application>()
+    val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(application = application)
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
     // TODO add user's position
-    private var long = "10.718393"
-    private var lat = "59.943735"
 
 
     init {
@@ -65,10 +73,28 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) 
     }
 
 
+
     private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-            updateWeather(lat = lat, long = long)
+            updateWeather(lat = homeUiState.value.lat, long = homeUiState.value.long)
+            loadUserLocation()
         }
+    }
+
+    private fun loadUserLocation() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _homeUiState.update { currentHomeUiState ->
+                val userLoc = userLocationRepository.getUserLocation()
+                Log.d(logTag, "Loaded user location")
+                currentHomeUiState.copy(
+                    lat = userLoc.lat,
+                    long = userLoc.long
+                )
+            }
+            Log.d(logTag, "Updated user location")
+
+        }
+
     }
 
     private fun updateWeather(lat: String, long: String){
@@ -128,7 +154,7 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context) 
         }
         viewModelScope.launch (Dispatchers.IO) {
             loadHomeScreen()
-            updateWeather(lat = lat, long = long)
+            updateWeather(lat = homeUiState.value.lat, long = homeUiState.value.long)
         }
     }
 }

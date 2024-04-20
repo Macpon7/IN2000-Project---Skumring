@@ -8,7 +8,7 @@ private const val logTag = "UserLocationRepo"
 interface UserLocationRepository {
     suspend fun getUserLocation(): UserLocation
 }
-class UserLocationRepositoryImpl (application: Application) {
+class UserLocationRepositoryImpl (application: Application): UserLocationRepository {
 
     private val userLocationDataSource: UserLocationDataSource = UserLocationDataSource(
         application = application)
