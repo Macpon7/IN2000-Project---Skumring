@@ -1,21 +1,10 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
-import android.content.pm.PackageManager
-import android.location.Location
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
-import androidx.core.app.ActivityCompat
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationRequest.Builder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,13 +18,13 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoR
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
 import java.time.LocalDate
 
 data class HomeUiState(
-    val date: LocalDate = LocalDate.of(2024,3,7),
-    var long: String = "0",
-    var lat: String = "0",
+    // Setting up dummy info, default location to OJD
+    val date: LocalDate = LocalDate.of(2000,1,1),
+    var long: String = "10.718393",
+    var lat: String = "59.943735",
     val temp: String = "",
     val sunsetTime: String = "",
     val sunsetDate: String = "",
@@ -68,8 +57,6 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
         loadHomeScreen()
     }
 
-
-
     private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
             loadUserLocation()
@@ -77,15 +64,23 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
         }
     }
 
+    // Should we just throw this into updateWeather?
+    // Updates coordinates used to ask for weather to devices' current coords
     private fun loadUserLocation() {
         viewModelScope.launch(Dispatchers.IO) {
-            _homeUiState.update { currentHomeUiState ->
-                val userLoc = userLocationRepository.getUserLocation()
-                Log.d(logTag + "LoadUserLoc", "Lat: ${userLoc.lat}, Long: ${userLoc.long}")
-                currentHomeUiState.copy(
-                    lat = userLoc.lat,
-                    long = userLoc.long
-                )
+            try {
+                _homeUiState.update { currentHomeUiState ->
+                    val userLoc = userLocationRepository.getUserLocation()
+                    Log.d(logTag + "LoadUserLoc", "Lat: ${userLoc.lat}, Long: ${userLoc.long}")
+                    currentHomeUiState.copy(
+                        lat = userLoc.lat,
+                        long = userLoc.long
+                    )
+                }
+            } catch (e: Exception) {
+                // Practically no way this should happen
+                Log.e(logTag, "Error updating user location", e)
+
             }
         }
     }

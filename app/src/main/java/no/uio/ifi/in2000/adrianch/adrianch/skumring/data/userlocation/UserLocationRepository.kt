@@ -6,9 +6,16 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocat
 
 private const val logTag = "UserLocationRepo"
 
+
 interface UserLocationRepository {
+
+    /**
+ * Calls the [UserLocationDataSource] to return a [UserLocation] object containing
+ * info about device location.
+ */
     suspend fun getUserLocation(): UserLocation
 }
+
 class UserLocationRepositoryImpl (context: Context): UserLocationRepository {
 
     private val userLocationDataSource: UserLocationDataSource = UserLocationDataSource(

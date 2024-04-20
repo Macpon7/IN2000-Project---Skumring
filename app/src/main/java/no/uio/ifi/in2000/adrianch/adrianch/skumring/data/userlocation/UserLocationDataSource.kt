@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation
 
-import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -9,19 +8,25 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.suspendCancellableCoroutine
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
 
-class UserLocationDataSource (
-    private val context: Context
-) {
+/**
+ * Main object that keeps track of device location when asked
+ */
+class UserLocationDataSource (private val context: Context) {
+
+    //Constant for logcatting
     private val logTag = "UserLocationDataSource"
+
+    // Initializing location client
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-    // Default loc is coordinates over OJD
-    private var long = "0"
-    private var lat = "0"
+    // Default loc is coordinates over OJD to be returned if we fail to access location
+    private var long = "10.718393"
+    private var lat = "59.943735"
 
+    // Available function that returns user location object we designed
+    // If it fails to fetch location, the users location defaults to OJD
     suspend fun getUserLocation(): UserLocation {
         val userLocation = getLastLocation()
         return if (userLocation == null) {
@@ -35,15 +40,17 @@ class UserLocationDataSource (
         }
     }
 
+    // Main function that handles the location query
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun getLastLocation(): Location? {
 
-        val hasAccessFineLocationPermission = ContextCompat.checkSelfPermission(
+        // Gathers data on whether or not we have necessary permissions
+        val isFineEnabled = ContextCompat.checkSelfPermission(
             context,
             android.Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
 
-        val hasAccessCoarseLocationPermission = ContextCompat.checkSelfPermission(
+        val isCourseEnabled = ContextCompat.checkSelfPermission(
             context,
             android.Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
@@ -56,17 +63,22 @@ class UserLocationDataSource (
             .isProviderEnabled(LocationManager.NETWORK_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
-        if (!isGpsEnabled && !(hasAccessCoarseLocationPermission || hasAccessFineLocationPermission)) {
-            return null
+        // If we don't have permissions, return null object
+        return if (!isGpsEnabled && !(isCourseEnabled || isFineEnabled)) {
+            null
+            } else {
+                // Else, return updated or last recorded location of user
+            fusedLocationClient.lastLocation.result
         }
 
-        return suspendCancellableCoroutine { cont ->
+
+        /*suspendCancellableCoroutine { cont ->
             fusedLocationClient.lastLocation.apply {
                 if (isComplete) {
                     if (isSuccessful) {
-                        cont.resume(result) {} // Resume coroutine with location result
+                        cont.resume(result) {} // If successful, resume coroutine returning result
                     } else {
-                        cont.resume(null) {} // Resume coroutine with null location result
+                        cont.resume(null) {} // If unsuccessful, resume coroutine returning null
                     }
                     return@suspendCancellableCoroutine
                 }
@@ -80,6 +92,6 @@ class UserLocationDataSource (
                     cont.cancel() // Cancel the coroutine
                 }
             }
-        }
+        }*/
     }
 }

@@ -85,10 +85,10 @@ fun HomeScreen(
     val locationPermissions = rememberMultiplePermissionsState(
         permissions = listOf(
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_NETWORK_STATE
         )
     )
-
     LaunchedEffect(true) {
         locationPermissions.launchMultiplePermissionRequest()
     }
