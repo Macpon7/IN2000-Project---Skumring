@@ -52,7 +52,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -421,18 +420,17 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
 fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
     val newPlaceUiState : NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-            imageUri = uri
+            myPageViewModel.updateImageUri(uri)
         }
 
     Box() {
 
-        imageUri?.let {
+        newPlaceUiState.imageUri?.let {
             if (Build.VERSION.SDK_INT < 28) {
                 bitmap.value = MediaStore.Images
                     .Media.getBitmap(context.contentResolver, it)

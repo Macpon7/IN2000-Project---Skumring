@@ -74,7 +74,8 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     // Variables for picture:
     var imageUri: Uri? = null,
-    var bitmap: Bitmap? = null,
+    var ListimageUri: List<Uri?> = emptyList(),
+    var bitmap: List<Bitmap?> = emptyList(),
 
     // Show the date picker when the user want to pick a date
     var showDatePicker: Boolean = false,
@@ -108,6 +109,17 @@ class MyPageViewModel : ViewModel() {
 
     init {
         loadList()
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateImageUri(uri : Uri?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    imageUri = uri
+                )
+            }
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
