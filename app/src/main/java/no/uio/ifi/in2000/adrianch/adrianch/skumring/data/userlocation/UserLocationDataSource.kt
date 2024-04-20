@@ -22,7 +22,7 @@ class UserLocationDataSource (
     private var long = "10.718393"
     private var lat = "59.943735"
 
-    suspend fun getUserLocation(application: Application): UserLocation {
+    suspend fun getUserLocation(): UserLocation {
         val userLocation = getLastLocation()
         return if (userLocation == null) {
             UserLocation(long = long, lat = lat)
