@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
@@ -15,6 +17,9 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 data class MyPageUiState(
     val pins: List<PinInfo> = emptyList(),
@@ -31,15 +36,28 @@ data class MyPageUiState(
     val showLocations : Boolean = false
 )
 
+/* TODO , lag en dataklasse som innholder alt data som brukeren legger inn
+Dette skal sendes inn til placerepository
+ */
+data class NewPlace(
+    val locationName: String,
+    val address: String,
+    val pickedDate: LocalDate,
+    val descriptions: String,
+    )
+
+
 data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
-    var locationName : String = "",
+    var locationName: String = "",
+    var locationNameIsMissing: Boolean = false,
+
+    var address: String = "",
+    var addressIsMissing: Boolean = false,
 
     // TODO add location
     // TODO get date from user
     // val dateOfImage: LocalDate,
-
-    var descriptions : String = "",
 
     var datePickerState: DatePickerState = DatePickerState(
         initialSelectedDateMillis = null,
@@ -48,12 +66,30 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
         initialDisplayMode = DisplayMode.Picker
         ),
 
+    // This will not make an error since if it is not picked it will be the current date:
+    var pickedDate: LocalDate = LocalDate.now(),
+
+    var descriptions: String = "",
+    var descriptionsIsMissing: Boolean = false,
+
+    // Variables for picture:
+    var imageUri: Uri? = null,
+    var bitmap: Bitmap? = null,
+
     // Show the date picker when the user want to pick a date
-    var showDatePicker : Boolean = false,
+    var showDatePicker: Boolean = false,
 
-    // Show an error if the use did not pick a date
-    var datePickerError : Boolean = false
+    // Show an error if the use pressed ok without picking a date
+    var datePickerError: Boolean = false,
 
+    // Show an error if user closes date picker without picking a date
+    var dateTextFieldError: Boolean = false,
+
+    // Check if all the required spaces is filled in by the user
+    var isReady: Boolean = false,
+
+    // Check if something in the textfield is missing
+    var missingInfo: Boolean = false
 )
 
 // TODO: Use this is the functions in viewmodel where errors can happen:
@@ -74,16 +110,183 @@ class MyPageViewModel : ViewModel() {
         loadList()
     }
 
-    // Functions for updating NewPlaceUiState:
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun notMissingInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    missingInfo = false
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateIsReady() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    isReady = true
+                )
+            }
+        }
+    }
+
+    // Functions to check if there is a field missing:
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateLocationNameMissing(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    locationNameIsMissing = true,
+                    missingInfo = true
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateAddressMissing(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    addressIsMissing = true,
+                    missingInfo = true
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateDescriptionsMissing(){
+        _newPlaceUiState.update { currentNewPlaceUiState ->
+            currentNewPlaceUiState.copy(
+                descriptionsIsMissing = true,
+                missingInfo = true
+            )
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateLocationNameMissingFalse(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    locationNameIsMissing = false,
+                    missingInfo = false
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateAddressMissingFalse(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    addressIsMissing = false,
+                    missingInfo = false
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateDescriptionsMissingFalse(){
+        _newPlaceUiState.update { currentNewPlaceUiState ->
+            currentNewPlaceUiState.copy(
+                descriptionsIsMissing = false,
+                missingInfo = false
+            )
+        }
+    }
+
+    /**
+     * Function for adding location to the database
+     */
+    fun addLocation(locationName: String,
+                    address: String,
+                    pickedDate: LocalDate,
+                    descriptions: String) {
+        val LocationObject = NewPlace(
+            locationName = locationName,
+            address = address,
+            pickedDate = pickedDate,
+            descriptions = descriptions
+            )
+        // TODO add locationObject to the database
+    }
+
+    /**
+     * Functions for updating NewPlaceUiState:
+     *
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun refreshNewPlaceUiState(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    locationName = "",
+                    locationNameIsMissing = false,
+                    address = "",
+                    addressIsMissing = false,
+                    descriptions = "",
+                    descriptionsIsMissing = false,
+                    pickedDate = LocalDate.now(),
+                    isReady = false,
+                    missingInfo = false
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun showDatePicker() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    showDatePicker = !currentNewPlaceUiState.showDatePicker
+                )
+            }
+        }
+    }
 
     /**
      * Update if the datepicker is shown or not
      */
     @OptIn(ExperimentalMaterial3Api::class)
-    fun updateShowDatePicker() {
+    fun dismissDatePicker() {
         viewModelScope.launch (Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(showDatePicker = !currentNewPlaceUiState.showDatePicker)
+                currentNewPlaceUiState.copy(
+                    dateTextFieldError = true,
+                    showDatePicker = !currentNewPlaceUiState.showDatePicker
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun saveSelectedDate() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                val dateFromPicker = currentNewPlaceUiState.datePickerState.selectedDateMillis
+
+                if (dateFromPicker == null) {
+                    currentNewPlaceUiState.copy(
+                        datePickerError = true
+                    )
+                } else {
+                    val date = LocalDateTime.ofEpochSecond(
+                        dateFromPicker/1000, 0, ZoneOffset.UTC
+                    ).toLocalDate()!!
+                    currentNewPlaceUiState.copy(
+                        datePickerError = false,
+                        showDatePicker = !currentNewPlaceUiState.showDatePicker,
+                        pickedDate = date
+                    )
+                }
             }
         }
     }
@@ -101,13 +304,25 @@ class MyPageViewModel : ViewModel() {
     }
 
     /**
+     * update the location name string in NewPlaceUiState
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateNewLocationAddress(address: String) {
+        viewModelScope.launch (Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(address = address)
+            }
+        }
+    }
+
+    /**
      * update the location description string in NewPlaceUiState
      */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateNewLocationDescription(descriptions: String) {
         viewModelScope.launch (Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(locationName = descriptions)
+                currentNewPlaceUiState.copy(descriptions = descriptions)
             }
         }
     }
@@ -136,7 +351,6 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     fun hideNewForm() {
         viewModelScope.launch (Dispatchers.IO) {
             _myPageUiState.update {currentMyPageUiState ->
