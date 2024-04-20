@@ -77,6 +77,7 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
         viewModelScope.launch(Dispatchers.IO){
             updateWeather(lat = homeUiState.value.lat, long = homeUiState.value.long)
             loadUserLocation()
+            Log.d(logTag, "Lat: ${_homeUiState.value.lat}, long: ${_homeUiState.value.long}")
         }
     }
 
@@ -90,10 +91,7 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
                     long = userLoc.long
                 )
             }
-            Log.d(logTag, "Updated user location")
-
         }
-
     }
 
     private fun updateWeather(lat: String, long: String){

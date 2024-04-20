@@ -19,14 +19,16 @@ class UserLocationDataSource (
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     // Default loc is coordinates over OJD
-    private var long = "10.718393"
-    private var lat = "59.943735"
+    private var long = "0"
+    private var lat = "0"
 
     suspend fun getUserLocation(): UserLocation {
         val userLocation = getLastLocation()
         return if (userLocation == null) {
+            Log.d(logTag, "Failed to get loc")
             UserLocation(long = long, lat = lat)
         } else {
+            Log.d(logTag, "Updating loc")
             long = userLocation.longitude.toString()
             lat = userLocation.latitude.toString()
             UserLocation(long = long, lat = lat)
