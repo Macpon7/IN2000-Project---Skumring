@@ -1,33 +1,41 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -106,22 +114,65 @@ fun SettingsScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.surface),
         ) {
-            ContentSettings()
+            ContentSettings(settingsViewModel)
         }
     }
 }
 
 @Composable
-fun ContentSettings() {
+fun ContentSettings(settingsViewModel: SettingsViewModel) {
+    val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
+
+    // Content for notification:
+    Notification(settingsViewModel = settingsViewModel)
+
+    // Content for choosing language:
+    ChooseLanguage(settingsViewModel = settingsViewModel)
 
 
+    // Content for StartLocation:
+    // TODO DENNE FUNKER IKKE WTF
+    TextButton(onClick = {settingsViewModel.showStartLocationDialog() }) {
+        Text(text = "Choose default location")
+    }
+    if (settingsUiState.showSnackbar) {
+        StartLocation(settingsViewModel = settingsViewModel)
+    }
+    Text(text = "Default location: ${settingsUiState.selectedDefaultLocation}")
 }
 
 /**
  * Function for global notification on or off
+ * Toggle button, where it says notification
  */
-fun Notification() {
+@Composable
+fun Notification(settingsViewModel: SettingsViewModel) {
+    val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
+    Row(
+        modifier = Modifier.padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Notification",
+            modifier = Modifier.weight(1f)
+        )
+        Switch(
+            checked = settingsUiState.notificationEnabled,
+            onCheckedChange = { isChecked -> settingsViewModel.updateNotificationEnabled(isChecked) },
+            colors = SwitchDefaults.colors(
+                // TODO change to better colors?
+                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                uncheckedTrackColor = MaterialTheme.colorScheme.secondary
+            )
+        )
+    }
+}
+
+@Composable
+@Preview
+fun PreviewNotification(settingsViewModel: SettingsViewModel = viewModel()) {
+    Notification(settingsViewModel)
 }
 
 /**
@@ -129,26 +180,104 @@ fun Notification() {
  * Should be shown in a dropdownmeny
  * Alternatives: Dark, light, follow system(default)
  */
+@Composable
 fun ChooseMode() {
-
+//TODO
 }
 
 /**
  * Function to decide for norwegian or english language
  */
-fun ChooseLanguage() {
+@Composable
+fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
+    val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
+    val languageOptions = listOf("Norwegian", "English") //TODO make enum class?
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(
+            text = "Choose Language",
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        languageOptions.forEach { language ->
+            Row(
+                modifier = Modifier.padding(bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = language == settingsUiState.language,
+                    onClick = { settingsViewModel.updateLanguage(language) },
+                )
+                Text(
+                    text = language,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+        Text(
+            text = "Selected Language: ${settingsUiState.language}",
+        )
+    }
+}
+
+@Composable
+@Preview
+fun PreviewChooseLanguage(settingsViewModel: SettingsViewModel = viewModel()) {
+    ChooseLanguage(settingsViewModel)
 }
 
 /**
  * Function to show a choosen location or phones position as default
  */
-fun StartLocation() {
+@Composable
+fun StartLocation(settingsViewModel: SettingsViewModel) {
+    val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
+    // TODO xml
+    val locationOptions = listOf("Chosen Location", "Phone's Position")
+
+    Dialog(onDismissRequest = { /*TODO*/ }) {
+        Card {
+            LazyColumn(modifier = Modifier.padding(16.dp)) {
+                item {
+                    Text(
+                        text = "Start Location", // TODO xml
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    locationOptions.forEach { location ->
+                        Row(
+                            modifier = Modifier.padding(bottom = 8.dp),
+                        ) {
+                            RadioButton(
+                                selected = location == settingsUiState.selectedDefaultLocation,
+                                onClick = {
+                                    settingsViewModel.updateSelectedDefaultLocation(location)
+
+                                    if (location == "chosen location") {
+                                        // TODO show a dropdown meny or a searchbar to choose location
+                                    }
+                                },
+                            )
+                            Text(
+                                text = location,
+                                modifier = Modifier.padding(start = 8.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
 @Preview
-fun Test(navController: NavHostController = rememberNavController()) {
+fun PreviewStartLocation(    settingsViewModel: SettingsViewModel = viewModel(), ) {
+    StartLocation(settingsViewModel)
+}
+
+@Composable
+@Preview
+fun PreviewSettingsScreen(navController: NavHostController = rememberNavController()) {
     SettingsScreen(navController = navController)
 }
