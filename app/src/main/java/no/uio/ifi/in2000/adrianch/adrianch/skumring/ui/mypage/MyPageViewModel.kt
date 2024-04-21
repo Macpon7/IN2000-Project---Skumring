@@ -44,6 +44,7 @@ data class NewPlace(
     val address: String,
     val pickedDate: LocalDate,
     val descriptions: String,
+    var imageUri: Uri?,
     )
 
 
@@ -111,6 +112,11 @@ class MyPageViewModel : ViewModel() {
         loadList()
     }
 
+    // TODO can a place be added without a picture? This is not fixed
+
+    /**
+     * Update the imageUri variable when the picture is added in mypagescreen
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateImageUri(uri : Uri?) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -122,6 +128,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Update the missingInfo variable to false if there are no spots missing information
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun notMissingInfo() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -133,6 +142,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Update the isReady variable if all the required spots are filled in
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateIsReady() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -146,6 +158,9 @@ class MyPageViewModel : ViewModel() {
 
     // Functions to check if there is a field missing:
 
+    /**
+     * updates if location-name is missing
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateLocationNameMissing(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -158,6 +173,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * updates if address is missing
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateAddressMissing(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -170,6 +188,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * updates if description is missing
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateDescriptionsMissing(){
         _newPlaceUiState.update { currentNewPlaceUiState ->
@@ -180,6 +201,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Is updated if the locationNameIsMissing was true and now there is a location
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateLocationNameMissingFalse(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -192,6 +216,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Is updated if the addressIsMissing was true and now there is an address
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateAddressMissingFalse(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -204,6 +231,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Is updated if the descriptionIsMissing was true and now there is a description
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateDescriptionsMissingFalse(){
         _newPlaceUiState.update { currentNewPlaceUiState ->
@@ -220,12 +250,16 @@ class MyPageViewModel : ViewModel() {
     fun addLocation(locationName: String,
                     address: String,
                     pickedDate: LocalDate,
-                    descriptions: String) {
+                    descriptions: String,
+                    imageUri: Uri?
+                    // TODO add bitmap?
+    ) {
         val LocationObject = NewPlace(
             locationName = locationName,
             address = address,
             pickedDate = pickedDate,
-            descriptions = descriptions
+            descriptions = descriptions,
+            imageUri = imageUri
             )
         // TODO add locationObject to the database
     }
@@ -245,6 +279,8 @@ class MyPageViewModel : ViewModel() {
                     addressIsMissing = false,
                     descriptions = "",
                     descriptionsIsMissing = false,
+                    imageUri = null,
+                    // TODO add bitmap ?
                     pickedDate = LocalDate.now(),
                     isReady = false,
                     missingInfo = false
@@ -253,6 +289,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Update if datepicker should be shown
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun showDatePicker() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -265,7 +304,7 @@ class MyPageViewModel : ViewModel() {
     }
 
     /**
-     * Update if the datepicker is shown or not
+     * Update if the datepicker is dismissed
      */
     @OptIn(ExperimentalMaterial3Api::class)
     fun dismissDatePicker() {
@@ -279,6 +318,10 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Function used to save the date picked in MyPageScreen of the user
+     * It update the date picked
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun saveSelectedDate() {
         viewModelScope.launch(Dispatchers.IO) {
