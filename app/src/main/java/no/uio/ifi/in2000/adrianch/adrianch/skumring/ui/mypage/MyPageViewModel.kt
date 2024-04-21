@@ -75,8 +75,7 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     // Variables for picture:
     var imageUri: Uri? = null,
-    var ListimageUri: List<Uri?> = emptyList(),
-    var bitmap: List<Bitmap?> = emptyList(),
+    var bitmap: List<Bitmap?> = emptyList(), // TODO tror ikke det er liste men usikker på hva
 
     // Show the date picker when the user want to pick a date
     var showDatePicker: Boolean = false,
@@ -123,6 +122,21 @@ class MyPageViewModel : ViewModel() {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(
                     imageUri = uri
+                )
+            }
+        }
+    }
+
+    // TODO, usikker på hvordan det skal se ut her
+    /**
+     * The function will update the bitmap variable of newPlaceUiState
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateBitMap(bitmap : List<Bitmap?>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    bitmap = bitmap
                 )
             }
         }
