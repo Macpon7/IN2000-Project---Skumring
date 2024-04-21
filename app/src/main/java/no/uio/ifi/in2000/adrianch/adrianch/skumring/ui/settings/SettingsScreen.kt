@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarResult
@@ -97,8 +100,11 @@ fun SettingsScreen(
         },
         snackbarHost = { SnackbarHost(hostState = settingsUiState.snackbarHostState) },
     ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
-        Column (modifier = Modifier.padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        Column (
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()) //makes the column scrollable
+                .padding(innerPadding)
+                .background(color = MaterialTheme.colorScheme.surface),
         ) {
             ContentSettings()
         }
@@ -107,8 +113,37 @@ fun SettingsScreen(
 
 @Composable
 fun ContentSettings() {
-    Text(text = "Settings")
 
+
+}
+
+/**
+ * Function for global notification on or off
+ */
+fun Notification() {
+
+}
+
+/**
+ * Function to decide if the user want dark or lightmode
+ * Should be shown in a dropdownmeny
+ * Alternatives: Dark, light, follow system(default)
+ */
+fun ChooseMode() {
+
+}
+
+/**
+ * Function to decide for norwegian or english language
+ */
+fun ChooseLanguage() {
+
+}
+
+/**
+ * Function to show a choosen location or phones position as default
+ */
+fun StartLocation() {
 
 }
 
