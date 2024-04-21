@@ -12,6 +12,15 @@ import kotlinx.coroutines.launch
 
 data class SettingsUiState(
 
+    var notificationEnabled : Boolean = false,
+
+    var selectedDefaultLocation : String = "",
+
+    var language : String = "",
+
+    var showDialog : Boolean = false,
+
+
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
@@ -26,8 +35,39 @@ private const val logTag = "SettingsViewModel"
 class SettingsViewModel : ViewModel() {
 
     private val _settingsUiState = MutableStateFlow(SettingsUiState())
-
     val settingsUiState: StateFlow<SettingsUiState> = _settingsUiState.asStateFlow()
+
+    fun showStartLocationDialog() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(showDialog = true)
+            }
+        }
+    }
+
+    fun updateNotificationEnabled(isChecked : Boolean) {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(notificationEnabled = isChecked)
+            }
+        }
+    }
+
+    fun updateLanguage(language : String) {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(language = language)
+            }
+        }
+    }
+
+    fun updateSelectedDefaultLocation(location : String) {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(selectedDefaultLocation = location)
+            }
+        }
+    }
 
     /**
      * Set showSnackbar to false, so when the snackbar refresh it will be shown again
@@ -46,7 +86,7 @@ class SettingsViewModel : ViewModel() {
             currentSettingUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch (Dispatchers.IO) {
-            // Load again here
+            //TODO Load again here
         }
     }
 }
