@@ -192,12 +192,14 @@ fun PreviewNotification(settingsViewModel: SettingsViewModel = viewModel()) {
 fun ChooseMode(settingsViewModel: SettingsViewModel) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
-    // TODO make in xml:
-    val modeOptions = listOf("Follow system","Light mode", "Dark mode") //TODO make enum class?
+    val modeOptions = listOf(stringResource(R.string.follow_system),
+        stringResource(R.string.dark_mode),
+        stringResource(R.string.light_mode)
+    ) //TODO make enum class?
 
     Column() {
         Text(
-            text = "Mode:", // TODO xml
+            text = stringResource(R.string.mode),
             modifier = Modifier.padding(bottom = 8.dp)
         )
         modeOptions.forEach { mode ->
@@ -206,14 +208,13 @@ fun ChooseMode(settingsViewModel: SettingsViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = mode == settingsUiState.selectedDefaultLocation,
+                    selected = mode == settingsUiState.selectedMode,
                     onClick = {
                         settingsViewModel.updateSelectedMode(mode)
                     },
                 )
                 Text(
-                    text = mode,
-                    modifier = Modifier.padding(start = 8.dp)
+                    text = "${stringResource(R.string.selected_mode)}: ${settingsUiState.selectedMode}",
                 )
             }
         }
@@ -256,7 +257,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
             }
         }
         Text(
-            text = "${stringResource(R.string.seleted_language)}: ${settingsUiState.language}",
+            text = "${stringResource(R.string.selected_language)}: ${settingsUiState.language}",
         )
     }
 }

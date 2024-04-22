@@ -31,14 +31,17 @@
     <string name="language_option">Language</string>
     <string name="distance_unit">Distances</string>
     <string name="temp_unit">Temperatures</string>
-
     <string name="settings">Settings</string>
     <string name="choose_default_location">Choose default location</string>
     <string name="default_location">Default location</string>
+    <string name="selected_mode">Selected mode</string>
+    <string name="mode">Mode</string>
+    <string name="follow_system">Følg systemet</string>
+
     <string name="norwegian">Norwegian</string>
     <string name="english">English</string>
     <string name="choose_language">Choose language</string>
-    <string name="seleted_language">Selected language</string>
+    <string name="selected_language">Selected language</string>
 
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">"Weather conditions: "</string>
