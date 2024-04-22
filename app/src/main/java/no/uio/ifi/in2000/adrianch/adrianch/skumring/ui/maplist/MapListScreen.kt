@@ -244,7 +244,7 @@ fun ThemeSwitcher(
         .height(size)
         .clip(shape = parentShape)
         .clickable { onClick() }
-        .background(MaterialTheme.colorScheme.tertiaryContainer)
+        .background(MaterialTheme.colorScheme.onSecondary)
     ) {
         //toggle animation
         Box(
@@ -254,7 +254,7 @@ fun ThemeSwitcher(
                 .offset(x = offset)
                 .padding(all = padding)
                 .clip(shape = toggleShape)
-                .background(MaterialTheme.colorScheme.tertiary)
+                .background(MaterialTheme.colorScheme.secondary)
         )
         //the icons and text representing list and map views
         Row(
@@ -262,7 +262,7 @@ fun ThemeSwitcher(
                 .border(
                     border = BorderStroke(
                         width = borderWidth,
-                        color = MaterialTheme.colorScheme.tertiary
+                        color = MaterialTheme.colorScheme.secondary
                     ),
                     shape = parentShape
                 ),
@@ -280,14 +280,14 @@ fun ThemeSwitcher(
                         .offset((-30).dp, 0.dp),
                     imageVector = Icons.Default.Add,
                     contentDescription = "Theme Icon",
-                    tint = if (mapTheme) MaterialTheme.colorScheme.tertiaryContainer
-                    else MaterialTheme.colorScheme.tertiary
+                    tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                    else MaterialTheme.colorScheme.secondary
                 )
                 Text(
                     text = "List",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = if(mapTheme) MaterialTheme.colorScheme.tertiaryContainer
-                    else MaterialTheme.colorScheme.tertiary
+                    color = if(mapTheme) MaterialTheme.colorScheme.onSecondary
+                    else MaterialTheme.colorScheme.secondary
                 )
             }
             Box(
@@ -302,14 +302,14 @@ fun ThemeSwitcher(
                         .offset((-30).dp, 0.dp),
                     imageVector = Icons.Default.Place,
                     contentDescription = "Theme Icon",
-                    tint = if (mapTheme) MaterialTheme.colorScheme.tertiary
-                    else MaterialTheme.colorScheme.tertiaryContainer
+                    tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.onSecondary
                 )
                 Text(
                     text = "Map",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = if(mapTheme) MaterialTheme.colorScheme.tertiary
-                    else MaterialTheme.colorScheme.tertiaryContainer
+                    color = if(mapTheme) MaterialTheme.colorScheme.secondary
+                    else MaterialTheme.colorScheme.onSecondary
                 )
             }
         }
