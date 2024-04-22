@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 
@@ -96,7 +98,7 @@ fun SettingsScreen(
                     )
                 }
                 Text(
-                    text = "Settings", //TODO -> make in xml
+                    text = stringResource(R.string.settings),
                     textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                     modifier = Modifier.fillMaxWidth()
@@ -133,12 +135,12 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
     // Content for StartLocation:
     // TODO DENNE FUNKER IKKE WTF
     TextButton(onClick = {settingsViewModel.showStartLocationDialog() }) {
-        Text(text = "Choose default location")
+        Text(text = stringResource(R.string.choose_default_location))
     }
     if (settingsUiState.showSnackbar) {
         StartLocation(settingsViewModel = settingsViewModel)
     }
-    Text(text = "Default location: ${settingsUiState.selectedDefaultLocation}")
+    Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}")
 }
 
 /**
@@ -192,11 +194,11 @@ fun ChooseMode() {
 fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
-    val languageOptions = listOf("Norwegian", "English") //TODO make enum class?
+    val languageOptions = listOf(stringResource(R.string.norwegian), stringResource(R.string.english)) //TODO make enum class?
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
-            text = "Choose Language",
+            text = stringResource(R.string.choose_language),
             modifier = Modifier.padding(bottom = 8.dp)
         )
         languageOptions.forEach { language ->
@@ -215,7 +217,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
             }
         }
         Text(
-            text = "Selected Language: ${settingsUiState.language}",
+            text = "${stringResource(R.string.seleted_language)}: ${settingsUiState.language}",
         )
     }
 }
