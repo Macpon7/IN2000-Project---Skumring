@@ -218,14 +218,14 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                             text = stringResource(R.string.golden_hour),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
                             textAlign = TextAlign.Center,
                         )
                         Text(
                             text = stringResource(R.string.blue_hour),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
                             textAlign = TextAlign.Center,
                         )
 
@@ -249,7 +249,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                             Text(
                                 text = "19:09 -20:31", //change this later to $goldenHourTime
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = MaterialTheme.colorScheme.surfaceVariant,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(start = 20.dp)
                             )
@@ -263,7 +263,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                             Text(
                                 text = "20:31-21:05", //change this later to $blueHourTime
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = MaterialTheme.colorScheme.surfaceVariant,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(start = 20.dp)
                             )
