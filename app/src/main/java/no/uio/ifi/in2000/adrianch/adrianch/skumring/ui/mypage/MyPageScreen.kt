@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.DateRange
@@ -467,9 +468,9 @@ fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
 
         }
     Button(onClick = { launcher.launch("image/*") }) {
-        Text(text = "Pick Image")
+        Text(text = stringResource(R.string.add_photo))
+        Icons.Outlined.Add
     }
-
 }
 
 @Composable
