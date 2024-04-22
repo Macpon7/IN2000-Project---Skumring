@@ -13,7 +13,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -144,9 +144,9 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
         if (settingsUiState.showSnackbar) {
             StartLocation(settingsViewModel = settingsViewModel)
         }
-        Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}")
+        Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}",
+            fontWeight = FontWeight.Bold)
     }
-
 }
 
 /**
@@ -162,7 +162,8 @@ fun Notification(settingsViewModel: SettingsViewModel) {
     ) {
         Text(
             text = "Notifications:",
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            fontWeight = FontWeight.Bold
         )
         Switch(
             checked = settingsUiState.notificationEnabled,
@@ -187,7 +188,6 @@ fun PreviewNotification(settingsViewModel: SettingsViewModel = viewModel()) {
  * Should be shown in a dropdownmeny
  * Alternatives: Dark, light, follow system(default)
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChooseMode(settingsViewModel: SettingsViewModel) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
@@ -197,10 +197,11 @@ fun ChooseMode(settingsViewModel: SettingsViewModel) {
         stringResource(R.string.light_mode)
     ) //TODO make enum class?
 
-    Column() {
+    Column(modifier = Modifier.padding(bottom = 8.dp)) {
         Text(
             text = stringResource(R.string.mode),
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp),
+            fontWeight = FontWeight.Bold
         )
         modeOptions.forEach { mode ->
             Row(
@@ -214,10 +215,14 @@ fun ChooseMode(settingsViewModel: SettingsViewModel) {
                     },
                 )
                 Text(
-                    text = "${stringResource(R.string.selected_mode)}: ${settingsUiState.selectedMode}",
+                    text = mode,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }
+        Text(
+            text = "${stringResource(R.string.selected_mode)}: ${settingsUiState.selectedMode}",
+        )
     }
 }
 
@@ -236,10 +241,11 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
 
     val languageOptions = listOf(stringResource(R.string.norwegian), stringResource(R.string.english)) //TODO make enum class?
 
-    Column() {
+    Column(modifier = Modifier.padding(bottom = 8.dp)) {
         Text(
             text = stringResource(R.string.choose_language),
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 8.dp),
+            fontWeight = FontWeight.Bold
         )
         languageOptions.forEach { language ->
             Row(
@@ -278,7 +284,7 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
     // TODO xml
     val locationOptions = listOf("Chosen Location", "Phone's Position")
 
-    Dialog(onDismissRequest = { /*TODO*/ }) {
+    Dialog(onDismissRequest = {settingsViewModel.hideStartLocationDialog()}) {
         Card {
             LazyColumn() {
                 item {

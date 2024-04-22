@@ -49,6 +49,14 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+    fun hideStartLocationDialog() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(showDialog = false)
+            }
+        }
+    }
+
     fun updateNotificationEnabled(isChecked : Boolean) {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
