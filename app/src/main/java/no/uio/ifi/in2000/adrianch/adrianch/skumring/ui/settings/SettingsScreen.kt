@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -123,24 +124,29 @@ fun SettingsScreen(
 
 @Composable
 fun ContentSettings(settingsViewModel: SettingsViewModel) {
-    val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
+    Column(modifier = Modifier.padding(16.dp)) {
+        val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
-    // Content for notification:
-    Notification(settingsViewModel = settingsViewModel)
+        // Content for notification:
+        Notification(settingsViewModel = settingsViewModel)
 
-    // Content for choosing language:
-    ChooseLanguage(settingsViewModel = settingsViewModel)
+        // Content for choose mode:
+        ChooseMode(settingsViewModel = settingsViewModel)
 
+        // Content for choosing language:
+        ChooseLanguage(settingsViewModel = settingsViewModel)
 
-    // Content for StartLocation:
-    // TODO DENNE FUNKER IKKE WTF
-    TextButton(onClick = {settingsViewModel.showStartLocationDialog() }) {
-        Text(text = stringResource(R.string.choose_default_location))
+        // Content for StartLocation:
+        // TODO DENNE FUNKER IKKE WTF
+        TextButton(onClick = {settingsViewModel.showStartLocationDialog() }) {
+            Text(text = stringResource(R.string.choose_default_location))
+        }
+        if (settingsUiState.showSnackbar) {
+            StartLocation(settingsViewModel = settingsViewModel)
+        }
+        Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}")
     }
-    if (settingsUiState.showSnackbar) {
-        StartLocation(settingsViewModel = settingsViewModel)
-    }
-    Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}")
+
 }
 
 /**
@@ -152,11 +158,10 @@ fun Notification(settingsViewModel: SettingsViewModel) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
     Row(
-        modifier = Modifier.padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Notification",
+            text = "Notifications:",
             modifier = Modifier.weight(1f)
         )
         Switch(
@@ -182,9 +187,43 @@ fun PreviewNotification(settingsViewModel: SettingsViewModel = viewModel()) {
  * Should be shown in a dropdownmeny
  * Alternatives: Dark, light, follow system(default)
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChooseMode() {
-//TODO
+fun ChooseMode(settingsViewModel: SettingsViewModel) {
+    val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
+
+    // TODO make in xml:
+    val modeOptions = listOf("Follow system","Light mode", "Dark mode") //TODO make enum class?
+
+    Column() {
+        Text(
+            text = "Mode:", // TODO xml
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        modeOptions.forEach { mode ->
+            Row(
+                modifier = Modifier.padding(bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = mode == settingsUiState.selectedDefaultLocation,
+                    onClick = {
+                        settingsViewModel.updateSelectedMode(mode)
+                    },
+                )
+                Text(
+                    text = mode,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+@Preview
+fun PreviewChooseMode(settingsViewModel: SettingsViewModel = viewModel()) {
+    ChooseMode(settingsViewModel)
 }
 
 /**
@@ -196,7 +235,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
 
     val languageOptions = listOf(stringResource(R.string.norwegian), stringResource(R.string.english)) //TODO make enum class?
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column() {
         Text(
             text = stringResource(R.string.choose_language),
             modifier = Modifier.padding(bottom = 8.dp)
@@ -240,7 +279,7 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
 
     Dialog(onDismissRequest = { /*TODO*/ }) {
         Card {
-            LazyColumn(modifier = Modifier.padding(16.dp)) {
+            LazyColumn() {
                 item {
                     Text(
                         text = "Start Location", // TODO xml
@@ -249,6 +288,7 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
                     locationOptions.forEach { location ->
                         Row(
                             modifier = Modifier.padding(bottom = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
                                 selected = location == settingsUiState.selectedDefaultLocation,
