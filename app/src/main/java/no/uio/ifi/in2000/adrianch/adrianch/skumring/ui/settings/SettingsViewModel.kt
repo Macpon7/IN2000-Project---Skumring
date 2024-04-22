@@ -14,6 +14,10 @@ data class SettingsUiState(
 
     var notificationEnabled : Boolean = false,
 
+    // Variables for choosing mode:
+    var selectedMode : String = "",
+
+
     var selectedDefaultLocation : String = "",
 
     var language : String = "",
@@ -49,6 +53,17 @@ class SettingsViewModel : ViewModel() {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
                 currentSettingsUiState.copy(notificationEnabled = isChecked)
+            }
+        }
+    }
+
+    /**
+     * Function for updating the string selectedMode in SettingsUiState
+     */
+    fun updateSelectedMode(mode : String) {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(selectedMode = mode)
             }
         }
     }
