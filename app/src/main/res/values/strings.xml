@@ -31,6 +31,14 @@
     <string name="language_option">Språk</string>
     <string name="distance_unit">Avstander</string>
     <string name="temp_unit">Temperatur</string>
+    <string name="settings">Innstillinger</string>
+    <string name="choose_default_location">Velg standard lokasjon</string>
+    <string name="default_location">Standard lokasjon</string>
+    <string name="norwegian">Norsk</string>
+    <string name="english">Engelsk</string>
+    <string name="choose_language">Velg språk</string>
+    <string name="seleted_language">Valgt språk</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
