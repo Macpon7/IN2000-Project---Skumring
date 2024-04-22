@@ -244,7 +244,7 @@ fun ThemeSwitcher(
         .height(size)
         .clip(shape = parentShape)
         .clickable { onClick() }
-        .background(MaterialTheme.colorScheme.secondaryContainer)
+        .background(MaterialTheme.colorScheme.tertiaryContainer)
     ) {
         //toggle animation
         Box(
@@ -254,7 +254,7 @@ fun ThemeSwitcher(
                 .offset(x = offset)
                 .padding(all = padding)
                 .clip(shape = toggleShape)
-                .background(MaterialTheme.colorScheme.primary)
+                .background(MaterialTheme.colorScheme.tertiary)
         )
         //the icons and text representing list and map views
         Row(
@@ -262,7 +262,7 @@ fun ThemeSwitcher(
                 .border(
                     border = BorderStroke(
                         width = borderWidth,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.tertiary
                     ),
                     shape = parentShape
                 ),
@@ -280,14 +280,14 @@ fun ThemeSwitcher(
                         .offset((-30).dp, 0.dp),
                     imageVector = Icons.Default.Add,
                     contentDescription = "Theme Icon",
-                    tint = if (mapTheme) MaterialTheme.colorScheme.secondaryContainer
-                    else MaterialTheme.colorScheme.primary
+                    tint = if (mapTheme) MaterialTheme.colorScheme.tertiaryContainer
+                    else MaterialTheme.colorScheme.tertiary
                 )
                 Text(
                     text = "List",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = if(mapTheme) MaterialTheme.colorScheme.secondaryContainer
-                    else MaterialTheme.colorScheme.primary
+                    color = if(mapTheme) MaterialTheme.colorScheme.tertiaryContainer
+                    else MaterialTheme.colorScheme.tertiary
                 )
             }
             Box(
@@ -302,14 +302,14 @@ fun ThemeSwitcher(
                         .offset((-30).dp, 0.dp),
                     imageVector = Icons.Default.Place,
                     contentDescription = "Theme Icon",
-                    tint = if (mapTheme) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.secondaryContainer
+                    tint = if (mapTheme) MaterialTheme.colorScheme.tertiary
+                    else MaterialTheme.colorScheme.tertiaryContainer
                 )
                 Text(
                     text = "Map",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = if(mapTheme) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.secondaryContainer
+                    color = if(mapTheme) MaterialTheme.colorScheme.tertiary
+                    else MaterialTheme.colorScheme.tertiaryContainer
                 )
             }
         }
@@ -410,7 +410,9 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick), //Click to infoscreen
+                    .clickable(onClick = onItemClick) //Click to infoscreen
+
+
             ){
 
                 //Box for picture:
@@ -439,14 +441,16 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
                         modifier = Modifier
                             .padding(vertical = 2.dp),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Row {
                         IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
+                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "", tint = MaterialTheme.colorScheme.onSecondaryContainer)
+
                         }
                         IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
+                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "", tint = MaterialTheme.colorScheme.onSecondaryContainer)
                         }
                     }
                 }
@@ -454,6 +458,7 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
                 //Text for description. Do we want weather condition in the future?
                 Text(
                     text = description,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier
                         .padding(vertical = 2.dp)
                         .padding(bottom = 4.dp)
@@ -490,6 +495,7 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
                 {
                     Text(
                         text = name,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier
                             .padding(vertical = 2.dp),
                         fontWeight = FontWeight.Bold,
@@ -498,10 +504,10 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
                     Spacer(modifier = Modifier.width(20.dp))
                     Row {
                         IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
+                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "", tint = MaterialTheme.colorScheme.onSecondaryContainer )
                         }
                         IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
+                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "", tint = MaterialTheme.colorScheme.onSecondaryContainer)
                         }
                     }
                 }
@@ -509,6 +515,7 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
                 //Text for description. Do we want weather condition in the future?
                 Text(
                     text = description,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier
                         .padding(vertical = 2.dp)
                         .padding(bottom = 4.dp)
