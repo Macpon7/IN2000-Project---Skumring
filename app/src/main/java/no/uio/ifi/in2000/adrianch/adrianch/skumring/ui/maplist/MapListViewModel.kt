@@ -19,8 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
@@ -48,8 +46,6 @@ data class MapListUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMat
 private const val logTag = "MapListViewModel"
 
 class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel() {
-    private val mapRepository = MapRepositoryImpl()
-    private val placeListRepository = PlaceListRepositoryImpl()
 
     private val _mapListUiState = MutableStateFlow(MapListUiState())
     val mapListUiState: StateFlow<MapListUiState> = _mapListUiState.asStateFlow()
@@ -57,22 +53,6 @@ class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel(
     // TODO make this work instead of having the user press a button
     init {
         loadPlaces()
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    private fun loadMap(){
-        viewModelScope.launch(Dispatchers.IO){
-            _mapListUiState.update { currentMapUiState ->
-                try {
-                    val mapInfoObject = mapRepository.getPins()
-                    currentMapUiState.copy(pins = mapInfoObject)
-                } catch(e: Exception) {
-                    Log.e(logTag, "Error getting pins, failed updating state in loadMap", e)
-                    currentMapUiState.copy(showSnackbar = true,
-                        errorMessage = "Error getting pins, failed updating state in loadMap")
-                }
-            }
-        }
     }
 
     @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -144,16 +124,6 @@ class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel(
     fun snackbarDismissed() {
         _mapListUiState.update { currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false)
-        }
-    }
-
-    // For refreshing when you use snackbar in MapListScreen:
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun refreshList() {
-        _mapListUiState.update {currentMapUiState ->
-            currentMapUiState.copy(showSnackbar = false) }
-        viewModelScope.launch (Dispatchers.IO) {
-            loadPlaces()
         }
     }
 
