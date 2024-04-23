@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,11 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlacesRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import java.time.LocalDate
 
 data class HomeUiState(
@@ -41,9 +37,7 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel(private val placesRepository: PlacesRepository) : ViewModel() {
-    private val mapRepository = MapRepositoryImpl()
-    private val placeInfo: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
+class HomeViewModel(private val placeRepository: PlaceRepository) : ViewModel() {
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -53,17 +47,17 @@ class HomeViewModel(private val placesRepository: PlacesRepository) : ViewModel(
     private val lat = "59.943735"
 
     init {
-        loadHomeScreen()
+        //loadHomeScreen()
     }
 
 
-    private fun loadHomeScreen(){
+    /*private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
             updateWeather(lat = lat, long = long)
         }
-    }
+    }*/
 
-    private fun updateWeather(lat: String, long: String){
+    /*private fun updateWeather(lat: String, long: String){
         viewModelScope.launch(Dispatchers.IO){
             try {
                 _homeUiState.update{ currenthomeUiState->
@@ -100,7 +94,7 @@ class HomeViewModel(private val placesRepository: PlacesRepository) : ViewModel(
                  }
              }
          }
-    }
+    }*/
 
     /**
      * Set showSnackbar to false, so when the snackbar refresh it will be shown again
@@ -119,8 +113,8 @@ class HomeViewModel(private val placesRepository: PlacesRepository) : ViewModel(
             currentMapUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch (Dispatchers.IO) {
-            loadHomeScreen()
-            updateWeather(lat = lat, long = long)
+            //loadHomeScreen()
+            //updateWeather(lat = lat, long = long)
         }
     }
 
@@ -134,7 +128,7 @@ class HomeViewModel(private val placesRepository: PlacesRepository) : ViewModel(
                 val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return HomeViewModel(
-                    placesRepository = (application as ApplicationSkumring).dbRepository
+                    placeRepository = (application as ApplicationSkumring).dbRepository
                 ) as T
             }
         }
