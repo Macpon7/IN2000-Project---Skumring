@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast
 
 import android.util.Log
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceDetailsDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
@@ -39,12 +38,10 @@ interface ForecastRepository {
  * An implementation of [ForecastRepository].
  * @property sunriseDataSource instance of [SunriseDataSource]
  * @property locationForecastDataSource instance of [LocationForecastDataSource]
- * @property placeDetailsDataSource instance of [PlaceDetailsDataSource]
  */
 class ForecastRepositoryImpl(
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
     private val locationForecastDataSource: LocationForecastDataSource = LocationForecastDataSource(),
-    private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource()
 ) : ForecastRepository {
     /**
      * Given a map containing lists of [WeatherPerHour] objects (where the key is a [LocalDate] and
