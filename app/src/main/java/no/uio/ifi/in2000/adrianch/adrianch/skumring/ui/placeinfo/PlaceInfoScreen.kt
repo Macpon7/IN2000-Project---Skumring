@@ -70,64 +70,6 @@ fun PlaceInfoScreen(
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
-    /*
-     * Vi sliter med at composable ikke rekomponeres selv om UiState får riktig informasjon.
-     * Denne Log meldingen printer rett fra verdiene i UiState:
-     * New place in UiState: PlaceInfo(id=1, name=Holmenkollen, description=Kjen....
-     * Den ser dere på linje 66 i PlaceInfoViewModel, og leser fra det public placeInfoUiState objektet,
-     * derfor vet vi at denne informasjonen faktisk lagres i objektet.
-     */
-
-    // Dette funker ikke, kun ett kall til viewmodel
-    LaunchedEffect(Unit) {
-        //Log.d(logTag, "Loading PlaceInfo object with ID: $id")
-       placeViewModel.loadPlaceInfo(id = id)
-        //Log.d(logTag, "Loaded place: ${placeUiState.placeInfo.name}")
-    }
-
-
-    // Dette funker heller ikke, også kun ett kall
-    /*var firstTime by remember { mutableStateOf(true) }
-
-
-    if (firstTime) {
-        placeViewModel.loadPlaceInfo(id = id)
-        firstTime = false
-    }*/
-
-    // Dette funker, men gjør 3 kall. loadPlaceInfo setter isLoading til false.
-    // Av en eller annen grunn er de to første kallene med 50 ms mellomrom, mens det tredje er 500ms senere
-    // if (placeUiState.isLoading) {
-    //    placeViewModel.loadPlaceInfo(id = id)
-    //}
-
-    /*
-    * I tillegg, for å gjøre denne bugen enda rarere:
-    * Vi har lagt inn en knapp på denne skjermen for testing, som gjør akkurat det samme funksjonskallet som over.
-    * Hvis vi kommenterer ut if-setningen på linje 102-104 men beholder denne knappen, så oppdateres skjermen
-    * når vi trykker på den.
-    * SOMEHOW, så funker ikke det funksjonskallet når det kalles fra en LaunchedEffect eller med en
-    * lokal bool med remember, men hvis funksjonen kalles av at vi trykker på en knapp på skjermen funker det
-    *
-    * Jeg har sittet med denne buggen i 8 timer nå, håper du kan løse den.
-    *
-
-             __                 __        __                          __      __  __
-            |  \               |  \      |  \                        |  \    |  \|  \
-            | $$      __    __ | $$   __ | $$   __   ______         _| $$_    \$$| $$
-            | $$     |  \  |  \| $$  /  \| $$  /  \ /      \       |   $$ \  |  \| $$
-            | $$     | $$  | $$| $$_/  $$| $$_/  $$|  $$$$$$\       \$$$$$$  | $$| $$
-            | $$     | $$  | $$| $$   $$ | $$   $$ | $$    $$        | $$ __ | $$| $$
-            | $$_____| $$__/ $$| $$$$$$\ | $$$$$$\ | $$$$$$$$        | $$|  \| $$| $$
-            | $$     \\$$    $$| $$  \$$\| $$  \$$\ \$$     \         \$$  $$| $$| $$
-             \$$$$$$$$_\$$$$$$$ \$$   \$$ \$$   \$$  \$$$$$$$          \$$$$  \$$ \$$
-                     |  \__| $$
-                      \$$    $$
-                       \$$$$$$
-
-    */
-
-
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
         LaunchedEffect(placeUiState.snackbarHostState) {
@@ -178,9 +120,7 @@ fun PlaceInfoScreen(
             } else {*/
             ContentInfoScreen(
                 description = placeUiState.placeInfo.description,
-                placeInfoUiState = placeUiState,
-                placeViewModel = placeViewModel,
-                id = id
+                placeInfoUiState = placeUiState
                 )
             //}
         }
@@ -212,9 +152,7 @@ fun PlacePicture() {
 @Composable
 fun ContentInfoScreen(
     description: String,
-    placeInfoUiState: PlaceInfoUiState,
-    placeViewModel: PlaceInfoViewModel,
-    id: Int) {
+    placeInfoUiState: PlaceInfoUiState) {
     Column (
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.Center,
@@ -288,15 +226,19 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
 
 @Composable
 fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
-    val dateString = if (time.dayOfYear == LocalDateTime.now().dayOfYear) {
-        // The current date we are formatting is today
-        "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
-    } else if (time.dayOfYear == LocalDateTime.now().plusDays(1).dayOfYear) {
-        // The current date we are formatting is tomorrow
-        "I Morgen ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
-    } else {
-        // The current date we are formatting is after tomorrow
-        time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+    val dateString = when (time.dayOfYear) {
+        LocalDateTime.now().dayOfYear -> {
+            // The current date we are formatting is today
+            "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+        }
+        LocalDateTime.now().plusDays(1).dayOfYear -> {
+            // The current date we are formatting is tomorrow
+            "I Morgen ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+        }
+        else -> {
+            // The current date we are formatting is after tomorrow
+            time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+        }
     }
 
     val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
