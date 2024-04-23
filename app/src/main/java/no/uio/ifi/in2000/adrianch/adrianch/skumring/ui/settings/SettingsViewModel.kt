@@ -15,12 +15,11 @@ data class SettingsUiState(
     var notificationEnabled : Boolean = false,
 
     // Variables for choosing mode:
-    var selectedMode : String = "",
+    var selectedMode : String = "", // TODO skal lagres som enum
 
+    var selectedDefaultLocation : String = "", // TODO skal lagres som enum
 
-    var selectedDefaultLocation : String = "",
-
-    var language : String = "",
+    var language : String = "", // TODO skal lagres som enum
 
     var dropdownExpandedStartLocation : Boolean = false,
 

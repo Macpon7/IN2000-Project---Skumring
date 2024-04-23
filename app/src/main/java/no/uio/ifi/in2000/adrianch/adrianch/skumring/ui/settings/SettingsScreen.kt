@@ -322,36 +322,7 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
         }
     }
 
-    Column(modifier = Modifier.padding(bottom = 8.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.choose_default_location),
-            modifier = Modifier.padding(bottom = 8.dp),
-            fontWeight = FontWeight.Bold
-        )
-        locationOptions.forEach { location ->
-            Row(
-                modifier = Modifier.padding(bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = location == settingsUiState.selectedDefaultLocation,
-                    onClick = {
-                        settingsViewModel.updateSelectedDefaultLocation(location)
-
-                        if (location == "chosen location") {
-                            // TODO show a dropdown meny or a searchbar to choose location?
-                        }
-                    },
-                )
-                Text(
-                    text = location,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-        }
-        Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}")
-    }
+    Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}")
 }
 
 @Composable
