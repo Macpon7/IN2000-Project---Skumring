@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -137,14 +136,8 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
         ChooseLanguage(settingsViewModel = settingsViewModel)
 
         // Content for StartLocation:
-        TextButton(onClick = {settingsViewModel.showStartLocationDialog() }) {
-            Text(text = stringResource(R.string.choose_default_location))
-        }
-        if (settingsUiState.showDialog) {
-            StartLocation(settingsViewModel = settingsViewModel)
-        }
-        Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}",
-            fontWeight = FontWeight.Bold)
+        StartLocation(settingsViewModel = settingsViewModel)
+
     }
 }
 
@@ -283,37 +276,35 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
     // TODO xml
     val locationOptions = listOf("Chosen Location", "Phone's Position")
 
-    Dialog(onDismissRequest = {settingsViewModel.hideStartLocationDialog()}) {
-        Card {
-            Column(modifier = Modifier.padding(bottom = 8.dp)
+    Column(modifier = Modifier.padding(bottom = 8.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.choose_default_location),
+            modifier = Modifier.padding(bottom = 8.dp),
+            fontWeight = FontWeight.Bold
+        )
+        locationOptions.forEach { location ->
+            Row(
+                modifier = Modifier.padding(bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Start Location", // TODO xml
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                locationOptions.forEach { location ->
-                    Row(
-                        modifier = Modifier.padding(bottom = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = location == settingsUiState.selectedDefaultLocation,
-                            onClick = {
-                                settingsViewModel.updateSelectedDefaultLocation(location)
+                RadioButton(
+                    selected = location == settingsUiState.selectedDefaultLocation,
+                    onClick = {
+                        settingsViewModel.updateSelectedDefaultLocation(location)
 
-                                if (location == "chosen location") {
-                                    // TODO show a dropdown meny or a searchbar to choose location
-                                }
-                            },
-                        )
-                        Text(
-                            text = location,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
+                        if (location == "chosen location") {
+                            // TODO show a dropdown meny or a searchbar to choose location?
+                        }
+                    },
+                )
+                Text(
+                    text = location,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
             }
         }
+        Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}")
     }
 }
 

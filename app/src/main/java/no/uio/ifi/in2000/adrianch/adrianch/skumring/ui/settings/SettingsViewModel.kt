@@ -22,7 +22,7 @@ data class SettingsUiState(
 
     var language : String = "",
 
-    var showDialog : Boolean = false,
+    var dropdownExpandedStartLocation : Boolean = false,
 
 
     // Variable for checking if there is an error:
@@ -41,21 +41,16 @@ class SettingsViewModel : ViewModel() {
     private val _settingsUiState = MutableStateFlow(SettingsUiState())
     val settingsUiState: StateFlow<SettingsUiState> = _settingsUiState.asStateFlow()
 
-    fun showStartLocationDialog() {
+    // Functions for dropdownmenu:
+
+    fun expandDropdownStartLocation() {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
-                currentSettingsUiState.copy(showDialog = true)
+                currentSettingsUiState.copy(dropdownExpandedStartLocation = true)
             }
         }
     }
 
-    fun hideStartLocationDialog() {
-        viewModelScope.launch (Dispatchers.IO) {
-            _settingsUiState.update {currentSettingsUiState ->
-                currentSettingsUiState.copy(showDialog = false)
-            }
-        }
-    }
 
     fun updateNotificationEnabled(isChecked : Boolean) {
         viewModelScope.launch (Dispatchers.IO) {
