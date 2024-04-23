@@ -11,7 +11,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +24,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -269,12 +270,57 @@ fun PreviewChooseLanguage(settingsViewModel: SettingsViewModel = viewModel()) {
 /**
  * Function to show a choosen location or phones position as default
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartLocation(settingsViewModel: SettingsViewModel) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
     // TODO xml
     val locationOptions = listOf("Chosen Location", "Phone's Position")
+
+    ExposedDropdownMenuBox(
+        expanded = settingsUiState.dropdownExpandedStartLocation,
+        onExpandedChange = {settingsViewModel.expandDropdownStartLocation()}) {
+        TextField(
+            modifier = Modifier.menuAnchor(),
+            readOnly = true,
+            value = settingsUiState.selectedDefaultLocation,
+            onValueChange = {},
+            label = {Text(
+                text = stringResource(R.string.choose_default_location),
+                modifier = Modifier.padding(bottom = 8.dp),
+                fontWeight = FontWeight.Bold
+            )},
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = settingsUiState.dropdownExpandedStartLocation)},
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        ExposedDropdownMenu(
+            expanded = settingsUiState.dropdownExpandedStartLocation,
+            onDismissRequest = { settingsViewModel.expandDropdownStartLocation() }
+        ) {
+            locationOptions.forEach {location ->
+                Row(
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = location == settingsUiState.selectedDefaultLocation,
+                        onClick = {
+                            settingsViewModel.updateSelectedDefaultLocation(location)
+
+                            if (location == "chosen location") {
+                                // TODO show a dropdown meny or a searchbar to choose location?
+                            }
+                        },
+                    )
+                    Text(
+                        text = location,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+        }
+    }
 
     Column(modifier = Modifier.padding(bottom = 8.dp)
     ) {

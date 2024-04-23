@@ -46,7 +46,7 @@ class SettingsViewModel : ViewModel() {
     fun expandDropdownStartLocation() {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
-                currentSettingsUiState.copy(dropdownExpandedStartLocation = true)
+                currentSettingsUiState.copy(dropdownExpandedStartLocation = !currentSettingsUiState.dropdownExpandedStartLocation)
             }
         }
     }
