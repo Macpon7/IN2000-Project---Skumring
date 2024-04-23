@@ -1,20 +1,14 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place
 
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoEntity
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.LocationForecastDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceDetailsDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
@@ -39,38 +33,10 @@ class PlaceRepositoryImpl(
     private val forecastDao: ForecastDao,
     private val imageDao: ImageDao,
     private val locationForecastDataSource: LocationForecastDataSource = LocationForecastDataSource(),
-    private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
-    private val placeDetailsDataSource: PlaceDetailsDataSource = PlaceDetailsDataSource(),
-    private val placeListRepository: PlaceListRepository = PlaceListRepositoryImpl()
+    private val forecastRepository:ForecastRepository = ForecastRepositoryImpl()
 ): PlaceRepository {
-    private val oldPlaceInfoRepository = ForecastRepositoryImpl(
-        sunriseDataSource = sunriseDataSource,
-        locationForecastDataSource = locationForecastDataSource,
-        placeDetailsDataSource = placeDetailsDataSource
-    )
-
     init {
-        runBlocking {
-            launch (Dispatchers.IO) {
-                val populate = false
-                if (populate) {
-                    val allPlaces = placeListRepository.getPresetPlaceList()
-                    allPlaces.forEach{
-                        placeInfoDao.insert(
-                            PlaceInfoEntity(
-                                name = it.name,
-                                description = it.description,
-                                latitude = it.lat,
-                                longitude = it.long,
-                                isCustomPlace = false,
-                                isFavourite = false,
-                                hasNotification = false
-                            )
-                        )
-                    }
-                }
-            }
-        }
+        // If we need to do anything on initialization of DB, this is the place to do it
     }
 
     override suspend fun getAllPlaces(): List<PlaceInfo> {
@@ -83,6 +49,7 @@ class PlaceRepositoryImpl(
         val allPlaces = getAllPlacesFromDb()
 
         // Here we fetch the forecast info for each place
+        // TODO parallelize these calls
         allPlaces.forEach {
             it.sunEvents = getForecastData(it.id, it.lat, it.long)
         }
@@ -158,36 +125,11 @@ class PlaceRepositoryImpl(
         val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
 
         // Send our map to a function which will return a list of SunEvent objects
-        return oldPlaceInfoRepository.makeSunEvents(
+        return forecastRepository.makeSunEvents(
             forecastGroupedByDate = forecastGroupedByDate,
             lat = lat,
             long = long
         )
-    }
-
-    /**
-     * Inserts a list of SunEvent objects for the given placeId in the DB
-     */
-    private suspend fun insertNewForecastData(sunEvents: List<SunEvent>, placeId: Int) {
-        // Convert list of SunEvent objects into list of ForecastEntity objects
-        val currentTimeStamp = LocalDateTime.now()
-        val forecasts = sunEvents.map {
-            ForecastEntity(
-                placeId = placeId,
-                sunsetDateTime = it.time,
-                weatherRating = it.conditions.weatherRating,
-                cloudConditionLow = it.conditions.cloudConditionLow,
-                cloudConditionMedium = it.conditions.cloudConditionMedium,
-                cloudConditionHigh = it.conditions.cloudConditionHigh,
-                airCondition = it.conditions.airCondition,
-                sunsetTemp = it.tempAtEvent,
-                weatherIcon = it.weatherIcon,
-                timestamp = currentTimeStamp
-            )
-        }
-
-        // Insert the ForecastEntity objects into the database
-        forecastDao.insertForecasts(forecasts)
     }
 
     private suspend fun upsertForecastData(
