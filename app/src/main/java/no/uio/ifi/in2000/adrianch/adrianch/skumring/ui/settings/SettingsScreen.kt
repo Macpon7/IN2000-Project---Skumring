@@ -137,11 +137,10 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
         ChooseLanguage(settingsViewModel = settingsViewModel)
 
         // Content for StartLocation:
-        // TODO DENNE FUNKER IKKE WTF
         TextButton(onClick = {settingsViewModel.showStartLocationDialog() }) {
             Text(text = stringResource(R.string.choose_default_location))
         }
-        if (settingsUiState.showSnackbar) {
+        if (settingsUiState.showDialog) {
             StartLocation(settingsViewModel = settingsViewModel)
         }
         Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}",
@@ -161,7 +160,7 @@ fun Notification(settingsViewModel: SettingsViewModel) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Notifications:",
+            text = stringResource(R.string.notifications),
             modifier = Modifier.weight(1f),
             fontWeight = FontWeight.Bold
         )
@@ -286,32 +285,31 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
 
     Dialog(onDismissRequest = {settingsViewModel.hideStartLocationDialog()}) {
         Card {
-            LazyColumn() {
-                item {
-                    Text(
-                        text = "Start Location", // TODO xml
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    locationOptions.forEach { location ->
-                        Row(
-                            modifier = Modifier.padding(bottom = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = location == settingsUiState.selectedDefaultLocation,
-                                onClick = {
-                                    settingsViewModel.updateSelectedDefaultLocation(location)
+            Column(modifier = Modifier.padding(bottom = 8.dp)
+            ) {
+                Text(
+                    text = "Start Location", // TODO xml
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                locationOptions.forEach { location ->
+                    Row(
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = location == settingsUiState.selectedDefaultLocation,
+                            onClick = {
+                                settingsViewModel.updateSelectedDefaultLocation(location)
 
-                                    if (location == "chosen location") {
-                                        // TODO show a dropdown meny or a searchbar to choose location
-                                    }
-                                },
-                            )
-                            Text(
-                                text = location,
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-                        }
+                                if (location == "chosen location") {
+                                    // TODO show a dropdown meny or a searchbar to choose location
+                                }
+                            },
+                        )
+                        Text(
+                            text = location,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
                     }
                 }
             }

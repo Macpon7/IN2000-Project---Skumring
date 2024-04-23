@@ -32,6 +32,7 @@
     <string name="distance_unit">Distances</string>
     <string name="temp_unit">Temperatures</string>
     <string name="settings">Settings</string>
+    <string name="notifications">Varslinger</string>
     <string name="choose_default_location">Choose default location</string>
     <string name="default_location">Default location</string>
     <string name="selected_mode">Selected mode</string>

@@ -32,6 +32,7 @@
     <string name="distance_unit">Avstander</string>
     <string name="temp_unit">Temperatur</string>
     <string name="settings">Innstillinger</string>
+    <string name="notifications">Varslinger</string>
     <string name="choose_default_location">Velg standard lokasjon</string>
     <string name="default_location">Standard lokasjon</string>
     <string name="selected_mode">Valgt tema</string>
