@@ -1,53 +1,10 @@
-@file:Suppress("IMPLICIT_CAST_TO_ANY")
-
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
-
-/*
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
- */
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-
-)
-*/
 
 
 private val LightColors = lightColorScheme(
@@ -123,7 +80,7 @@ private val DarkColors = darkColorScheme(
 @Composable
 fun SkumringTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colors = if (!useDarkTheme) {
         LightColors
@@ -136,46 +93,3 @@ fun SkumringTheme(
         content = content
     )
 }
-
-
-@Composable
-fun LightInfoCardScreen(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
-) {
-    val colors = if (!useDarkTheme) {
-        Box( //Need box as an overlay over card for color gradient
-            modifier = Modifier
-                .background(
-                    Brush.verticalGradient(listOf(
-                    MaterialTheme.colorScheme.scrim,// MaterialTheme.colorScheme.onSecondaryContainer,
-                    MaterialTheme.colorScheme.primary,  //surfaceTint
-                    MaterialTheme.colorScheme.outlineVariant,
-                    )
-                )))
-    } else {
-        Box( //Need box as an overlay over card for color gradient
-            modifier = Modifier
-                .background(
-                    Brush.verticalGradient(listOf(
-                        MaterialTheme.colorScheme.scrim,// MaterialTheme.colorScheme.onSecondaryContainer,
-                        MaterialTheme.colorScheme.surfaceTint,
-                        MaterialTheme.colorScheme.outlineVariant,
-
-                        )
-                    )))
-    }
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        content = content
-    )
-}
-
-
-/*
-
-surfaceTint = md_theme_light_surfaceTint,
-outlineVariant = md_theme_light_outlineVariant,
-scrim = md_theme_light_scrim,
- */
