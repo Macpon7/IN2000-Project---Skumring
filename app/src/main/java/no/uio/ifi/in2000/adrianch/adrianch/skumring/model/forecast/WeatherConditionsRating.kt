@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast
 
 /**
  * Rating between 1-3 stars depending on conditions

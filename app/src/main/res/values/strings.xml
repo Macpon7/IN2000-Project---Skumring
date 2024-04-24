@@ -67,4 +67,6 @@
     <string name="golden_hour">Gylne time</string>
     <string name="blue_hour">Blåtime</string>
     <string name="home_distance">Avstand:</string>
+    <string name="app_version" translatable="false">0.3</string>
+    <string name="home_user_loc">Din posisjon</string>
 </resources>

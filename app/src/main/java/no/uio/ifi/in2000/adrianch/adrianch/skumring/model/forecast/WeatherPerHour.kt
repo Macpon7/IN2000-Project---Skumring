@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast
 
 import java.time.LocalDateTime
 

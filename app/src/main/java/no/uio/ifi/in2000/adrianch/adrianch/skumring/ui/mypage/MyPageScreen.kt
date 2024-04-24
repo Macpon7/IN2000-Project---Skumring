@@ -69,11 +69,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import java.time.format.DateTimeFormatter
 
 object MyPageDestination : NavigationDestination {
@@ -85,7 +85,7 @@ object MyPageDestination : NavigationDestination {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewModel = viewModel()) {
+fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewModel = viewModel(factory = MyPageViewModel.Factory)) {
     val myPageUiState: MyPageUiState by myPageViewModel.myPageUiState.collectAsState()
 
 
@@ -181,11 +181,13 @@ fun ContentMyPage(navController : NavController, myPageViewModel: MyPageViewMode
                     ListCard(
                         name = place.name,
                         description = place.description,
+                        isFavourite = place.isFavourite,
                         onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                             navController.navigate(
                                 route = "placeinfoscreen/${place.lat}/${place.long}/${place.id}"
                             )
-                        }
+                        },
+                        onFavouriteClick = {myPageViewModel.toggleFavourite(place = place)}
                     )
                 }
             }
@@ -477,12 +479,12 @@ fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
 fun TestList(navController: NavHostController = rememberNavController()) {
     MyPageScreen(
         navController = navController,
-        myPageViewModel = MyPageViewModel()
+        myPageViewModel = viewModel(factory = MyPageViewModel.Factory)
         )
 }
 
 @Composable
 @Preview
 fun PreviewNewPlaceDialog(navController: NavHostController = rememberNavController()) {
-    NewPlaceDialog(myPageViewModel = MyPageViewModel())
+    NewPlaceDialog(myPageViewModel = viewModel(factory = MyPageViewModel.Factory))
 }

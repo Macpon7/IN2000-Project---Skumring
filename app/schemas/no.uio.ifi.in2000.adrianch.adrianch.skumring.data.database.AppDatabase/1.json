@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "19b4b2ebd2eaf1ac5e9725318edae4d7",
+    "identityHash": "0724feebec58fe6465eb96486a935cba",
     "entities": [
       {
         "tableName": "placeInfo",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `latitude` TEXT NOT NULL, `longitude` TEXT NOT NULL, `is_custom_place` INTEGER NOT NULL, `is_favourite` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `latitude` TEXT NOT NULL, `longitude` TEXT NOT NULL, `is_custom_place` INTEGER NOT NULL, `is_favourite` INTEGER NOT NULL, `has_notification` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -47,6 +47,12 @@
           {
             "fieldPath": "isFavourite",
             "columnName": "is_favourite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasNotification",
+            "columnName": "has_notification",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -210,7 +216,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '19b4b2ebd2eaf1ac5e9725318edae4d7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0724feebec58fe6465eb96486a935cba')"
     ]
   }
 }

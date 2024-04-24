@@ -8,18 +8,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites.FavoritesDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites.FavoritesScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeScreen
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageScreen
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreenDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.SettingsScreen
@@ -29,9 +25,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.SettingsViewMode
 @Composable
 fun SkumringNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier,
-    placeInfoRepository: PlaceInfoRepository,
-    context: Context
+    modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
@@ -39,18 +33,13 @@ fun SkumringNavHost(
         modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
-            //TODO mapListViewModel must be removed from HomeScreen in the future
-            HomeScreen(homeViewModel = HomeViewModel(
-                placeInfoRepository = placeInfoRepository,
-                context = context),
-                mapListViewModel = MapListViewModel(placeInfoRepository = placeInfoRepository),
-                navController = navController)
+            HomeScreen(navController = navController)
         }
         composable(route = MapListDestination.route) {
-            MapListScreen(mapListViewModel = MapListViewModel(placeInfoRepository = placeInfoRepository) , navController = navController)
+            MapListScreen(navController = navController)
         }
         composable(route = MyPageDestination.route) {
-            MyPageScreen(myPageViewModel = MyPageViewModel(), navController = navController)
+            MyPageScreen(navController = navController)
         }
         composable(route = FavoritesDestination.route){
             FavoritesScreen(navController = navController)
@@ -58,19 +47,13 @@ fun SkumringNavHost(
         composable(
             route = PlaceInfoScreenDestination.route,
             arguments = listOf(
-                navArgument("lat") { type = NavType.StringType },
-                navArgument("long") { type = NavType.StringType },
                 navArgument("id") { type = NavType.IntType }
                 )
             ) {backStackEntry ->
-            val lat = backStackEntry.arguments?.getString("lat")
-            val long = backStackEntry.arguments?.getString("long")
             val id = backStackEntry.arguments?.getInt("id")
-            if (lat != null && long != null && id != null) {
+            if (id != null) {
                 PlaceInfoScreen(
                     navController = navController,
-                    lat = lat,
-                    long = long,
                     id = id
                 )
             }

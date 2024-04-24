@@ -4,21 +4,23 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.mapboxpins.MapRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 data class HomeUiState(
     // Setting up dummy info, default location to OJD
@@ -30,6 +32,8 @@ data class HomeUiState(
     val sunsetDate: String = "",
     val sunsetWeatherIcon: String? = "",
     val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
+
+    var favoritePlaces: List<PlaceInfo> = emptyList(),
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -44,11 +48,21 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context): ViewModel() {
-    private val mapRepository = MapRepositoryImpl()
-    private val placeInfo: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
+class HomeViewModel(private val placeRepository: PlaceRepository, context: Context) : ViewModel() {
 
     private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
+    private var userPlace: PlaceInfo = PlaceInfo(
+        id = 0,
+        name = "",
+        description = "",
+        lat = "",
+        long = "",
+        isFavourite = false,
+        isCustomPlace = false,
+        hasNotification = false,
+        images = emptyList(),
+        sunEvents = emptyList()
+    )
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -59,8 +73,18 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
 
     private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-            loadUserLocation()
+            loadFavourites()
             updateWeather()
+        }
+    }
+
+    private fun loadFavourites() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _homeUiState.update { currentHomeUiState ->
+                val favourites = placeRepository.getFavourites()
+
+                currentHomeUiState.copy(favoritePlaces = favourites)
+            }
         }
     }
 
@@ -88,8 +112,20 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
     private fun updateWeather(){
         viewModelScope.launch(Dispatchers.IO){
             try {
-                _homeUiState.update{ currenthomeUiState->
-                    Log.d(logTag, "fetching sunsetweather")
+                loadUserLocation()
+                userPlace = placeRepository.getUserLocationPlace(lat = homeUiState.value.lat, long = homeUiState.value.long)
+                _homeUiState.update{ currentHomeUiState->
+                    currentHomeUiState.copy(
+                        temp = userPlace.sunEvents[0].tempAtEvent,
+                        sunsetTime = userPlace.sunEvents[0].time.toLocalTime().format(
+                            DateTimeFormatter.ofPattern("HH':'mm")),
+                        sunsetDate = userPlace.sunEvents[0].time.toLocalDate().format(
+                            DateTimeFormatter.ISO_LOCAL_DATE),
+                        sunsetWeatherIcon = userPlace.sunEvents[0].weatherIcon,
+                        weatherConditions = userPlace.sunEvents[0].conditions.weatherRating,
+                    )
+
+                    /*Log.d(logTag, "fetching sunsetweather")
                     val sunsetWeather = placeInfo.getLocalSunsetWeather(
                         lat = _homeUiState.value.lat,
                         long = _homeUiState.value.long)
@@ -112,7 +148,8 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
                         date = LocalDate.now(),
                         temp = sunsetWeather.instant.air_temperature.toString(),
                         weatherConditions = placeInfo.getWeatherConditions(sunsetWeather).weatherRating
-                    )
+                    )*/
+
                 }
              } catch (e: Exception) {
                  Log.e(logTag, "Error getting sunset, failed updating state", e)
@@ -142,8 +179,25 @@ class HomeViewModel(placeInfoRepository: PlaceInfoRepository, context: Context):
             currentMapUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch (Dispatchers.IO) {
-            loadHomeScreen()
-            updateWeather()
+            //loadHomeScreen()
+            //updateWeather(lat = lat, long = long)
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as ApplicationSkumring
+
+                return HomeViewModel(
+                    placeRepository = application.dbRepository,
+                    context = application.context
+                ) as T
+            }
         }
     }
 }
