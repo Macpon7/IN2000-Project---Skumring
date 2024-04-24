@@ -20,6 +20,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocati
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 data class HomeUiState(
     // Setting up dummy info, default location to OJD
@@ -50,6 +51,18 @@ private const val logTag = "HomeViewModel" //for logging
 class HomeViewModel(private val placeRepository: PlaceRepository, context: Context) : ViewModel() {
 
     private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
+    private var userPlace: PlaceInfo = PlaceInfo(
+        id = 0,
+        name = "",
+        description = "",
+        lat = "",
+        long = "",
+        isFavourite = false,
+        isCustomPlace = false,
+        hasNotification = false,
+        images = emptyList(),
+        sunEvents = emptyList()
+    )
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -99,10 +112,20 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
     private fun updateWeather(){
         viewModelScope.launch(Dispatchers.IO){
             try {
-                _homeUiState.update{ currenthomeUiState->
-                    loadUserLocation()
+                loadUserLocation()
+                userPlace = placeRepository.getUserLocationPlace(lat = homeUiState.value.lat, long = homeUiState.value.long)
+                _homeUiState.update{ currentHomeUiState->
+                    currentHomeUiState.copy(
+                        temp = userPlace.sunEvents[0].tempAtEvent,
+                        sunsetTime = userPlace.sunEvents[0].time.toLocalTime().format(
+                            DateTimeFormatter.ofPattern("HH':'mm")),
+                        sunsetDate = userPlace.sunEvents[0].time.toLocalDate().format(
+                            DateTimeFormatter.ISO_LOCAL_DATE),
+                        sunsetWeatherIcon = userPlace.sunEvents[0].weatherIcon,
+                        weatherConditions = userPlace.sunEvents[0].conditions.weatherRating,
+                    )
 
-                    Log.d(logTag, "fetching sunsetweather")
+                    /*Log.d(logTag, "fetching sunsetweather")
                     val sunsetWeather = placeInfo.getLocalSunsetWeather(
                         lat = _homeUiState.value.lat,
                         long = _homeUiState.value.long)
@@ -125,7 +148,8 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
                         date = LocalDate.now(),
                         temp = sunsetWeather.instant.air_temperature.toString(),
                         weatherConditions = placeInfo.getWeatherConditions(sunsetWeather).weatherRating
-                    )
+                    )*/
+
                 }
              } catch (e: Exception) {
                  Log.e(logTag, "Error getting sunset, failed updating state", e)
@@ -167,10 +191,11 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as ApplicationSkumring
 
                 return HomeViewModel(
-                    placeRepository = (application as ApplicationSkumring).dbRepository
+                    placeRepository = application.dbRepository,
+                    context = application.context
                 ) as T
             }
         }

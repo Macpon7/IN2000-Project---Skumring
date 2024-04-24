@@ -19,8 +19,7 @@ private const val logTag = "PlaceInfoRepository"
 interface PlaceRepository {
     suspend fun getAllPlaces(): List<PlaceInfo>
     suspend fun getPlace(id: Int): PlaceInfo
-    suspend fun getUserLocationPlace(): PlaceInfo
-    suspend fun updateUserLocationPlace(place: PlaceInfo)
+    suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo
     suspend fun getFavourites(): List<PlaceInfo>
     suspend fun getCustomPlaces(): List<PlaceInfo>
     suspend fun insertCustomPlace(place: PlaceInfo)
@@ -223,46 +222,24 @@ class PlaceRepositoryImpl(
     /**
      *
      */
-    override suspend fun getUserLocationPlace(): PlaceInfo {
-        Log.d(logTag, "Trying to load place with current user location from DB")
-
-        val placeEntity: PlaceInfoEntity = placeInfoDao.getUserLocationPlace()
+    override suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo {
+        Log.d(logTag, "Trying to create PlaceInfo object at user's current location")
 
         //TODO fetch images
         return PlaceInfo(
-            id = placeEntity.id,
-            name = placeEntity.name,
-            description = placeEntity.description,
-            lat = placeEntity.latitude,
-            long = placeEntity.longitude,
-            isFavourite = placeEntity.isFavourite,
-            isCustomPlace = placeEntity.isCustomPlace,
-            hasNotification = placeEntity.hasNotification,
+            id = 0,
+            name = "",
+            description = "",
+            lat = lat,
+            long = long,
+            isFavourite = false,
+            isCustomPlace = false,
+            hasNotification = false,
             images = emptyList(),
-            sunEvents = getForecastData(
-                placeId = placeEntity.id,
-                lat = placeEntity.latitude,
-                long = placeEntity.longitude)
+            sunEvents = fetchNewForecastData(
+                lat = lat,
+                long = long)
         )
-    }
-
-    /**
-     *
-     */
-    override suspend fun updateUserLocationPlace(place: PlaceInfo) {
-        val entity = PlaceInfoEntity(
-            id = place.id,
-            name = place.name,
-            description = place.description,
-            latitude = place.lat,
-            longitude = place.long,
-            isCustomPlace = place.isCustomPlace,
-            isFavourite = place.isFavourite,
-            hasNotification = place.hasNotification
-        )
-
-
-        placeInfoDao.update(entity)
     }
 
     /**
@@ -299,7 +276,7 @@ class PlaceRepositoryImpl(
 
     override suspend fun getCustomPlaces(): List<PlaceInfo> {
         TODO()
-        placeInfoDao.getFavourites()
+        //placeInfoDao.getFavourites()
     }
 
 
@@ -320,7 +297,6 @@ class PlaceRepositoryImpl(
         } else {
             throw IllegalArgumentException("Cannot delete a non-custom place")
         }
-
     }
 
     /**
