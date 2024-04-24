@@ -98,7 +98,7 @@ class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel(
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun hideBottomSheet() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             withContext(DefaultMonotonicFrameClock) {_mapListUiState.value.sheetState.hide()}
         }.invokeOnCompletion { _mapListUiState.update { currentMapListUiState ->
             currentMapListUiState.copy(
@@ -109,7 +109,7 @@ class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel(
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun showBottomSheet(id: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _mapListUiState.update { currentMapListUiState ->
                 currentMapListUiState.copy(
                     showBottomSheet = true,
@@ -119,6 +119,26 @@ class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel(
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun toggleFavourite(place: PlaceInfo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (place.isFavourite) {
+                placeRepository.unmakeFavourite(id = place.id)
+                _mapListUiState.update { currentMapListUiState ->
+                    currentMapListUiState.copy(
+                        places = placeRepository.getAllPlaces()
+                    )
+                }
+            } else {
+                placeRepository.makeFavourite(id = place.id)
+                _mapListUiState.update { currentMapListUiState ->
+                    currentMapListUiState.copy(
+                        places = placeRepository.getAllPlaces()
+                    )
+                }
+            }
+        }
+    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun snackbarDismissed() {
