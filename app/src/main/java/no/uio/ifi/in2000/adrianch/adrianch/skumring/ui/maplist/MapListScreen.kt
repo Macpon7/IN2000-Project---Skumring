@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
 import android.util.Log
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -10,7 +11,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,15 +26,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Place
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -49,13 +44,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -73,8 +65,9 @@ import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
@@ -92,7 +85,7 @@ object MapListDestination : NavigationDestination {
  */
         @OptIn(ExperimentalMaterial3Api::class)
         @Composable
-fun MapListScreen(navController : NavHostController, mapListViewModel: MapListViewModel = viewModel()) {
+fun MapListScreen(navController : NavHostController, mapListViewModel: MapListViewModel = viewModel(factory = MapListViewModel.Factory)) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
@@ -107,17 +100,11 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
             )
 
             // If the snackbar is dismissed, reset the boolean of the error-variable
-            // The snackbar will reappear is we get a new error
+            // The snackbar will reappear if we get a new error
             when (result) {
                 // If you press refresh
                 SnackbarResult.ActionPerformed -> {
-                    // Check if in map or list
-                    if (mapListUiState.mapListToggle == MapListToggleState.MAP) {
-                        mapListViewModel.refreshMap()
-                    }
-                    else {
-                        mapListViewModel.refreshList()
-                    }
+                    mapListViewModel.refreshPlaces()
                 }
                 // If you click somewhere on the screen
                 SnackbarResult.Dismissed -> {
@@ -205,9 +192,11 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                         ListCard(
                             name = place.name,
                             description = place.description,
+                            isFavourite = place.isFavourite,
                             onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                                 navController.navigate("placeinfoscreen/${place.id}")
-                            }
+                            },
+                            onFavouriteClick = {mapListViewModel.toggleFavourite(place)}
                         )
                     }
                 }
@@ -318,7 +307,7 @@ fun ThemeSwitcher(
 
 @Composable
 fun BottomSheetContent(
-    place: PlaceSummary,
+    place: PlaceInfo,
     navController: NavController,
     mapListViewModel: MapListViewModel
 ) {
@@ -327,13 +316,19 @@ fun BottomSheetContent(
         modifier = Modifier.fillMaxWidth()
     )
     {
-        Text(text = place.name, style = MaterialTheme.typography.headlineMedium)
-        Button(onClick = {
-            mapListViewModel.hideBottomSheet()
-            navController.navigate("placeinfoscreen/${place.id}")
-        }) {
-            Text(text = "More details", style = MaterialTheme.typography.labelMedium)
-        }
+        ListCard(
+            name = place.name,
+            description = place.description,
+            isFavourite = place.isFavourite,
+            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                mapListViewModel.hideBottomSheet()
+                navController.navigate("placeinfoscreen/${place.id}")
+            },
+            onFavouriteClick = {
+                mapListViewModel.toggleFavourite(place = place)
+            }
+        )
+        Spacer(modifier = Modifier.height(40.dp))
     }
 }
 
@@ -364,22 +359,22 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
             )
         },
         onMapLongClickListener = {
-            Log.d(logTag, "Long pressed. Long: ${it.longitude().toString()}, Lat: ${it.latitude().toString()}")
+            Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
         }
     ) {
         PointAnnotationGroup(
-            annotations = mapListUiState.pins.map {pinfo ->
-                val long = pinfo.long.toDouble()
-                val lat = pinfo.lat.toDouble()
+            annotations = mapListUiState.pins.map {pinInfo ->
+                val long = pinInfo.long.toDouble()
+                val lat = pinInfo.lat.toDouble()
                 val point = Point.fromLngLat(long, lat)
 
-                val iconImageBitmap = context.getDrawable(R.drawable.location_on)!!.toBitmap()
+                val iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.location_on)!!.toBitmap()
 
                 PointAnnotationOptions()
                     .withPoint(point)
                     .withIconImage(iconImageBitmap)
-                    .withData(JsonPrimitive(pinfo.id.toString()))
+                    .withData(JsonPrimitive(pinInfo.id.toString()))
             },
             annotationConfig = AnnotationConfig(
                 annotationSourceOptions = AnnotationSourceOptions(
@@ -387,8 +382,6 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 )
             ),
             onClick = {
-                val lat = it.point.latitude().toString()
-                val long = it.point.longitude().toString()
                 val id = it.getData()!!.asString
                 Log.d(logTag, "Clicked on pin with id: $id")
                 mapListViewModel.showBottomSheet(id.toInt())
@@ -396,125 +389,5 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 true
             }
         )
-    }
-}
-
-/**
- * Cards with information about places
- */
-@Composable
-fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
-    BoxWithConstraints {
-        if (maxWidth < 400.dp) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick), //Click to infoscreen
-            ){
-
-                //Box for picture:
-                Box(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Image Placeholder",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                Row (
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
-                )
-                {
-                    Text(
-                        text = name,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                    Row {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
-                        }
-                    }
-                }
-
-                //Text for description. Do we want weather condition in the future?
-                Text(
-                    text = description,
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally))
-            }
-        } else {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick), //Click to infoscreen
-            ){
-
-                //Box for picture:
-                Box(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Image Placeholder",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                Row (
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
-                )
-                {
-                    Text(
-                        text = name,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Row {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
-                        }
-                    }
-                }
-
-                //Text for description. Do we want weather condition in the future?
-                Text(
-                    text = description,
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-            }
-        }
     }
 }

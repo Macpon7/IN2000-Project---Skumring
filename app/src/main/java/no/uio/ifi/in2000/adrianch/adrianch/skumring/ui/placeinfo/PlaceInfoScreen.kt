@@ -19,7 +19,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
@@ -64,71 +63,12 @@ object PlaceInfoScreenDestination : NavigationDestination {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PlaceInfoScreen(
-    placeViewModel: PlaceInfoViewModel = viewModel(),
+    placeViewModel: PlaceInfoViewModel = viewModel(factory = PlaceInfoViewModel.Factory),
     id: Int,
     navController: NavHostController
 ) {
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
-
-    /*
-     * Vi sliter med at composable ikke rekomponeres selv om UiState får riktig informasjon.
-     * Denne Log meldingen printer rett fra verdiene i UiState:
-     * New place in UiState: PlaceInfo(id=1, name=Holmenkollen, description=Kjen....
-     * Den ser dere på linje 66 i PlaceInfoViewModel, og leser fra det public placeInfoUiState objektet,
-     * derfor vet vi at denne informasjonen faktisk lagres i objektet.
-     */
-
-    // Dette funker ikke, kun ett kall til viewmodel
-    /*LaunchedEffect(key1 = id) {
-        delay(100)
-        Log.d(logTag, "Loading PlaceInfo object with ID: $id")
-        placeViewModel.loadPlaceInfo(id = id)
-        Log.d(logTag, "Loaded place: ${placeUiState.placeInfo.name}")
-    }*/
-
-
-    // Dette funker heller ikke, også kun ett kall
-    /*var firstTime by remember { mutableStateOf(true) }
-
-
-    if (firstTime) {
-        placeViewModel.loadPlaceInfo(id = id)
-        firstTime = false
-    }*/
-
-    // Dette funker, men gjør 3 kall. loadPlaceInfo setter isLoading til false.
-    // Av en eller annen grunn er de to første kallene med 50 ms mellomrom, mens det tredje er 500ms senere
-    if (placeUiState.isLoading) {
-        placeViewModel.loadPlaceInfo(id = id)
-    }
-
-    /*
-    * I tillegg, for å gjøre denne bugen enda rarere:
-    * Vi har lagt inn en knapp på denne skjermen for testing, som kjører samme kode som på linje 103 over.
-    * Hvis vi kommenterer ut if-setningen på linje 102-104 men beholder denne knappen, så oppdateres skjermen
-    * når vi trykker på den.
-    * SOMEHOW, så funker ikke det funksjonskallet når det kalles fra en LaunchedEffect eller med en
-    * lokal bool med remember, men hvis funksjonen kalles av at vi trykker på en knapp på skjermen funker det
-    *
-    * Jeg har sittet med denne buggen i 8 timer nå, håper du kan løse den.
-    *
-
-             __                 __        __                          __      __  __
-            |  \               |  \      |  \                        |  \    |  \|  \
-            | $$      __    __ | $$   __ | $$   __   ______         _| $$_    \$$| $$
-            | $$     |  \  |  \| $$  /  \| $$  /  \ /      \       |   $$ \  |  \| $$
-            | $$     | $$  | $$| $$_/  $$| $$_/  $$|  $$$$$$\       \$$$$$$  | $$| $$
-            | $$     | $$  | $$| $$   $$ | $$   $$ | $$    $$        | $$ __ | $$| $$
-            | $$_____| $$__/ $$| $$$$$$\ | $$$$$$\ | $$$$$$$$        | $$|  \| $$| $$
-            | $$     \\$$    $$| $$  \$$\| $$  \$$\ \$$     \         \$$  $$| $$| $$
-             \$$$$$$$$_\$$$$$$$ \$$   \$$ \$$   \$$  \$$$$$$$          \$$$$  \$$ \$$
-                     |  \__| $$
-                      \$$    $$
-                       \$$$$$$
-
-    */
-
 
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
@@ -180,9 +120,7 @@ fun PlaceInfoScreen(
             } else {*/
             ContentInfoScreen(
                 description = placeUiState.placeInfo.description,
-                placeInfoUiState = placeUiState,
-                placeViewModel = placeViewModel,
-                id = id
+                placeInfoUiState = placeUiState
                 )
             //}
         }
@@ -214,18 +152,12 @@ fun PlacePicture() {
 @Composable
 fun ContentInfoScreen(
     description: String,
-    placeInfoUiState: PlaceInfoUiState,
-    placeViewModel: PlaceInfoViewModel,
-    id: Int) {
+    placeInfoUiState: PlaceInfoUiState) {
     Column (
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
         //Picture of the place:
-        Button(onClick = { placeViewModel.loadPlaceInfo(id = id) }) {
-            Text(text = "Update")
-        }
-
         PlacePicture()
 
         //Add space between pictures and text
@@ -256,15 +188,6 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
             .verticalScroll(state = rememberScrollState(), enabled = true)
             .fillMaxWidth()
     ) {
-
-        // This is to allow us to show just one forecast object, used for testing
-        if(placeInfoUiState.placeInfo.sunEvents.isNotEmpty()) {
-            SunEventInfo(
-                time = placeInfoUiState.placeInfo.sunEvents.first().time,
-                conditions = placeInfoUiState.placeInfo.sunEvents.first().conditions.weatherRating
-            )
-        }
-
         //The accurately forecast sunsets, always show this:
         if (placeInfoUiState.placeInfo.sunEvents.size > 3) {
             placeInfoUiState.placeInfo.sunEvents.subList(0, 3).forEach {
@@ -303,15 +226,19 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
 
 @Composable
 fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
-    val dateString = if (time.dayOfYear == LocalDateTime.now().dayOfYear) {
-        // The current date we are formatting is today
-        "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
-    } else if (time.dayOfYear == LocalDateTime.now().plusDays(1).dayOfYear) {
-        // The current date we are formatting is tomorrow
-        "I Morgen ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
-    } else {
-        // The current date we are formatting is after tomorrow
-        time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+    val dateString = when (time.dayOfYear) {
+        LocalDateTime.now().dayOfYear -> {
+            // The current date we are formatting is today
+            "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+        }
+        LocalDateTime.now().plusDays(1).dayOfYear -> {
+            // The current date we are formatting is tomorrow
+            "I Morgen ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+        }
+        else -> {
+            // The current date we are formatting is after tomorrow
+            time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+        }
     }
 
     val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))

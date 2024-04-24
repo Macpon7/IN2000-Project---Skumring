@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -7,25 +8,21 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites.FavoritesDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites.FavoritesScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeScreen
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageScreen
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageViewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreenDestination
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoViewModel
 
 @Composable
 fun SkumringNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier,
-    placeInfoRepository: PlaceInfoRepository
+    modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
@@ -33,16 +30,16 @@ fun SkumringNavHost(
         modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
-            //TODO mapListViewModel must be removed from HomeScreen in the future
-            HomeScreen(homeViewModel = HomeViewModel(placeInfoRepository = placeInfoRepository),
-                mapListViewModel = MapListViewModel(placeInfoRepository = placeInfoRepository),
-                navController = navController)
+            HomeScreen(navController = navController)
         }
         composable(route = MapListDestination.route) {
-            MapListScreen(mapListViewModel = MapListViewModel(placeInfoRepository = placeInfoRepository) , navController = navController)
+            MapListScreen(navController = navController)
         }
         composable(route = MyPageDestination.route) {
-            MyPageScreen(myPageViewModel = MyPageViewModel(), navController = navController)
+            MyPageScreen(navController = navController)
+        }
+        composable(route = FavoritesDestination.route){
+            FavoritesScreen(navController = navController)
         }
         composable(
             route = PlaceInfoScreenDestination.route,
@@ -53,7 +50,6 @@ fun SkumringNavHost(
             val id = backStackEntry.arguments?.getInt("id")
             if (id != null) {
                 PlaceInfoScreen(
-                    placeViewModel = PlaceInfoViewModel(placeInfoRepository = placeInfoRepository),
                     navController = navController,
                     id = id
                 )

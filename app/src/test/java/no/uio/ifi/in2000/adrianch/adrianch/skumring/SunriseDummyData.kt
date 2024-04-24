@@ -1,9 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring
 
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherDetails
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.locationforecast.WeatherPerHour
-import java.time.LocalDateTime
-
 val sunriseTestData = """{
   "copyright": "MET Norway",
   "licenseURL": "https://api.met.no/license_data.html",

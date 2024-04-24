@@ -8,24 +8,23 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 data class MyPageUiState(
-    val pins: List<PinInfo> = emptyList(),
-    val places: List<PlaceSummary> = emptyList(),
+    val places: List<PlaceInfo> = emptyList(),
 
     var showNewLocationCard : Boolean = false,
     // Variable for checking if there is an error:
@@ -46,6 +45,7 @@ data class NewPlace(
     val address: String,
     val pickedDate: LocalDate,
     val descriptions: String,
+    var imageUri: Uri?,
     )
 
 
@@ -76,7 +76,7 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     // Variables for picture:
     var imageUri: Uri? = null,
-    var bitmap: Bitmap? = null,
+    var bitmap: List<Bitmap?> = emptyList(), // TODO tror ikke det er liste men usikker på hva
 
     // Show the date picker when the user want to pick a date
     var showDatePicker: Boolean = false,
@@ -97,12 +97,7 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 // TODO: Use this is the functions in viewmodel where errors can happen:
 private const val logTag = "MyPageViewModel"
 
-class MyPageViewModel : ViewModel() {
-
-    // TODO: Make own repository for places that the user saves, use this as a placeholder meanwhile
-    private val placeListRepository = PlaceListRepositoryImpl() // TODO do we use this repository?
-    //private val placeInfoRepository = PlaceInfoRepositoryImpl() //<- fikse denne
-
+class MyPageViewModel(private val placeRepository: PlaceRepository) : ViewModel() {
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
 
@@ -113,6 +108,7 @@ class MyPageViewModel : ViewModel() {
         loadList()
     }
 
+    // TODO can a place be added without a picture? This is not fixed
 
 
     /*
@@ -123,7 +119,38 @@ class MyPageViewModel : ViewModel() {
     }
 
      */
+    /**
+     * Update the imageUri variable when the picture is added in mypagescreen
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateImageUri(uri : Uri?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    imageUri = uri
+                )
+            }
+        }
+    }
 
+    // TODO, usikker på hvordan det skal se ut her
+    /**
+     * The function will update the bitmap variable of newPlaceUiState
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateBitMap(bitmap : List<Bitmap?>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(
+                    bitmap = bitmap
+                )
+            }
+        }
+    }
+
+    /**
+     * Update the missingInfo variable to false if there are no spots missing information
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun notMissingInfo() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -135,6 +162,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Update the isReady variable if all the required spots are filled in
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateIsReady() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -148,6 +178,9 @@ class MyPageViewModel : ViewModel() {
 
     // Functions to check if there is a field missing:
 
+    /**
+     * updates if location-name is missing
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateLocationNameMissing(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -160,6 +193,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * updates if address is missing
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateAddressMissing(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -172,6 +208,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * updates if description is missing
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateDescriptionsMissing(){
         _newPlaceUiState.update { currentNewPlaceUiState ->
@@ -182,6 +221,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Is updated if the locationNameIsMissing was true and now there is a location
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateLocationNameMissingFalse(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -194,6 +236,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Is updated if the addressIsMissing was true and now there is an address
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateAddressMissingFalse(){
         viewModelScope.launch(Dispatchers.IO) {
@@ -206,6 +251,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Is updated if the descriptionIsMissing was true and now there is a description
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateDescriptionsMissingFalse(){
         _newPlaceUiState.update { currentNewPlaceUiState ->
@@ -222,12 +270,16 @@ class MyPageViewModel : ViewModel() {
     fun addLocation(locationName: String,
                     address: String,
                     pickedDate: LocalDate,
-                    descriptions: String) {
+                    descriptions: String,
+                    imageUri: Uri?
+                    // TODO add bitmap?
+    ) {
         val LocationObject = NewPlace(
             locationName = locationName,
             address = address,
             pickedDate = pickedDate,
-            descriptions = descriptions
+            descriptions = descriptions,
+            imageUri = imageUri
             )
         // TODO add locationObject to the database
     }
@@ -247,6 +299,8 @@ class MyPageViewModel : ViewModel() {
                     addressIsMissing = false,
                     descriptions = "",
                     descriptionsIsMissing = false,
+                    imageUri = null,
+                    // TODO add bitmap ?
                     pickedDate = LocalDate.now(),
                     isReady = false,
                     missingInfo = false
@@ -255,6 +309,9 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Update if datepicker should be shown
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun showDatePicker() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -267,7 +324,7 @@ class MyPageViewModel : ViewModel() {
     }
 
     /**
-     * Update if the datepicker is shown or not
+     * Update if the datepicker is dismissed
      */
     @OptIn(ExperimentalMaterial3Api::class)
     fun dismissDatePicker() {
@@ -281,6 +338,10 @@ class MyPageViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Function used to save the date picked in MyPageScreen of the user
+     * It update the date picked
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun saveSelectedDate() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -380,6 +441,27 @@ class MyPageViewModel : ViewModel() {
         // TODO load the list of the users customs places, will probably look similar to the list in maplistviewmodel
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun toggleFavourite(place: PlaceInfo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (place.isFavourite) {
+                placeRepository.unmakeFavourite(id = place.id)
+                _myPageUiState.update { currentMyPageUiState ->
+                    currentMyPageUiState.copy(
+                        places = placeRepository.getCustomPlaces()
+                    )
+                }
+            } else {
+                placeRepository.makeFavourite(id = place.id)
+                _myPageUiState.update { currentMyPageUiState ->
+                    currentMyPageUiState.copy(
+                        places = placeRepository.getCustomPlaces()
+                    )
+                }
+            }
+        }
+    }
+
     /**
      * showSnackbar is set to false and the snackbar disappear
      */
@@ -397,6 +479,22 @@ class MyPageViewModel : ViewModel() {
             currentMyPageUiState.copy(showSnackbar = false) }
         viewModelScope.launch (Dispatchers.IO) {
             // TODO: Add what gets updated when the API fails
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+
+                return MyPageViewModel(
+                    placeRepository = (application as ApplicationSkumring).dbRepository
+                ) as T
+            }
         }
     }
 }

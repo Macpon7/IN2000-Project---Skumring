@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.AirConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import java.time.LocalDateTime
 
 @Entity(
