@@ -1,7 +1,9 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
@@ -23,6 +25,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
+
+private const val TAG = "MyPageViewModel"
 data class MyPageUiState(
     val places: List<PlaceInfo> = emptyList(),
 
@@ -97,7 +101,7 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 // TODO: Use this is the functions in viewmodel where errors can happen:
 private const val logTag = "MyPageViewModel"
 
-class MyPageViewModel(private val placeRepository: PlaceRepository) : ViewModel() {
+class MyPageViewModel(private val placeRepository: PlaceRepository, private val context: Context) : ViewModel(){
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
 
@@ -122,6 +126,11 @@ class MyPageViewModel(private val placeRepository: PlaceRepository) : ViewModel(
     /**
      * Update the imageUri variable when the picture is added in mypagescreen
      */
+
+    suspend fun addNewLocation(contentUri: Uri, fileName: String){
+        Log.d(TAG,"contentUri: $contentUri, filename is $fileName")
+        placeRepository.saveImageToInternalStorage(context = context, contentUri = contentUri, fileName = fileName)
+    }
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateImageUri(uri : Uri?) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -489,10 +498,11 @@ class MyPageViewModel(private val placeRepository: PlaceRepository) : ViewModel(
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as ApplicationSkumring
 
                 return MyPageViewModel(
-                    placeRepository = (application as ApplicationSkumring).dbRepository
+                    placeRepository = application.dbRepository,
+                    context = application.context
                 ) as T
             }
         }

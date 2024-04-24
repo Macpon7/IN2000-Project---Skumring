@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao
@@ -17,29 +19,11 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.LocationForeca
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
-import java.time.LocalDateTime
-import androidx.lifecycle.asLiveData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceDetailsDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.AirConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.nio.file.Path
+import java.time.LocalDateTime
 
 private const val logTag = "PlaceInfoRepository"
 
@@ -53,6 +37,8 @@ interface PlaceRepository {
     suspend fun removeCustomPlace(id: Int)
     suspend fun makeFavourite(id: Int)
     suspend fun unmakeFavourite(id: Int)
+    suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, fileName: String): Boolean
+
 }
 class PlaceRepositoryImpl(
     //Creates and initializes the database
@@ -68,16 +54,16 @@ class PlaceRepositoryImpl(
     }
 
     //Image database implementation
-    fun insertImagePath(path: String){
-        val imageEntity: ImageEntity = ImageEntity(imgPath = path)
-        imageDao.insertSingleImage(imageEntity)
-    }
+    //fun insertImagePath(path: String){
+    //    val imageEntity: ImageEntity = ImageEntity(imgPath = path)
+     //   imageDao.insertSingleImage(imageEntity)
+    //}
 
 
     //https://www.youtube.com/watch?v=4Ob0plBL084
 
     //flyttes til viewModelen?
-    fun uriParserToBytes(uriString: String){
+    /*fun uriParserToBytes(uriString: String){
         val uri = Uri.parse(uriString)
         val Bytes = contentResolver.openInputStream(uri)?.use{
             it.readBytes()
@@ -100,9 +86,10 @@ class PlaceRepositoryImpl(
         val result: Unit = imageDao.checkDefaultImage(placeId)
         if (result == true)
     }
+    */
 
     //henter fra viewmodelfacoty
-    suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, fileName: String): Boolean {
+    override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, fileName: String): Boolean {
         return withContext(Dispatchers.IO) {
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
@@ -117,6 +104,9 @@ class PlaceRepositoryImpl(
 
                 outputStream = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                val path = file.absolutePath
+                Log.d(logTag, path)
+
 
                 return@withContext true
             } catch (e: IOException) {
