@@ -122,6 +122,9 @@ fun SettingsScreen(
     }
 }
 
+/**
+ * Functions for the content of settingscreen
+ */
 @Composable
 fun ContentSettings(settingsViewModel: SettingsViewModel) {
     Column(modifier = Modifier.padding(16.dp)) {
@@ -129,15 +132,11 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
         // Content for notification:
         Notification(settingsViewModel = settingsViewModel)
 
-        /*
         // Content for choose mode:
-        ChooseMode(settingsViewModel = settingsViewModel)
-         */
+        ChooseTheme(settingsViewModel = settingsViewModel)
 
         // Content for choosing language:
         ChooseLanguage(settingsViewModel = settingsViewModel)
-
-
 
         // Content for choosing StartLocation:
         StartLocation(settingsViewModel = settingsViewModel)
@@ -187,6 +186,7 @@ fun PreviewNotification(settingsViewModel: SettingsViewModel = viewModel()) {
  * Function to decide if the user want dark or lightmode
  * Should be shown in a dropdownmeny
  * Alternatives: Dark, light, follow system(default)
+ * Shown as a dropdownmenu
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -195,8 +195,8 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
     ExposedDropdownMenuBox(
-        expanded = settingsUiState.dropdownExpandedTheme
-        , onExpandedChange = {settingsViewModel.expandDropdownTheme()} ) {
+        expanded = settingsUiState.dropdownExpandedTheme,
+        onExpandedChange = {settingsViewModel.expandDropdownTheme()} ) {
         TextField(
             modifier = Modifier.menuAnchor(),
             readOnly = true,
@@ -288,6 +288,8 @@ fun PreviewChooseMode(settingsViewModel: SettingsViewModel = viewModel()) {
 
 /**
  * Function to decide for norwegian or english language
+ * Can also choose to follow the system
+ * Shown as a dropdownmenu
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -333,7 +335,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
                             option = "English") // TODO xml, hvordan gjør man det?
                     })
                 DropdownMenuItem(
-                    text = {Text( text = stringResource(R.string.norwegian))},
+                    text = {Text(text = stringResource(R.string.norwegian))},
                     onClick = {
                         settingsViewModel.updateLanguage(
                             language = Language.NORWEGIAN,
@@ -355,6 +357,7 @@ fun PreviewChooseLanguage(settingsViewModel: SettingsViewModel = viewModel()) {
 
 /**
  * Function to show a chosen location or phones position as default
+ * Shown as a dropdownmenu
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -407,12 +410,14 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
 
 @Composable
 @Preview
-fun PreviewStartLocation(    settingsViewModel: SettingsViewModel = viewModel(), ) {
+fun PreviewStartLocation(settingsViewModel: SettingsViewModel = viewModel(), ) {
     StartLocation(settingsViewModel)
 }
 
 /**
- * TODO
+ * Function to show how to show the mean of transportation to a location
+ * Here it shows the alternative: walk, bike or drive
+ * Shown as a dropdownmenu
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -421,8 +426,8 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
     ExposedDropdownMenuBox(
-        expanded = settingsUiState.dropdownExpandedLocationAs
-        , onExpandedChange = {settingsViewModel.expandDropdownLanguage()} ) {
+        expanded = settingsUiState.dropdownExpandedLocationAs,
+        onExpandedChange = {settingsViewModel.expandDropdownLanguage()} ) {
         TextField(
             modifier = Modifier.menuAnchor(),
             readOnly = true,
@@ -440,7 +445,7 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
         )
         ExposedDropdownMenu(
             expanded = settingsUiState.dropdownExpandedLocationAs,
-            onDismissRequest = { /*TODO*/ }) {
+            onDismissRequest = { settingsViewModel.expandDropdownLocationAs() }) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(R.string.walk)) },
                 onClick = {
@@ -472,8 +477,6 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
         text = "${stringResource(R.string.selected_means_of_transportation)}: ${settingsUiState.locationAs}",
     )
 }
-
-
 
 @Composable
 @Preview
