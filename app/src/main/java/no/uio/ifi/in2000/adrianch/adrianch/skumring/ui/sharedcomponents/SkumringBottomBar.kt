@@ -16,6 +16,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites.FavoritesDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreenDestination
 
 
@@ -26,7 +27,7 @@ fun SkumringBottomBar(
 ) {
     // List with the screens, will be updated when we have more screens:
     val screens = listOf(
-        HomeDestination, MapListDestination, FavoritesDestination
+        HomeDestination, MapListDestination, MyPageDestination, FavoritesDestination
     )
 
     NavigationBar(

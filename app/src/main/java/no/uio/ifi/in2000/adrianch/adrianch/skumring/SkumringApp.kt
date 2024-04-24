@@ -15,14 +15,18 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.SkumringNavHos
 fun SkumringApp(
     navController: NavHostController = rememberNavController()
 ) {
-    val db = AppDatabase.getDatabase(LocalContext.current)
+    val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
 
     val dbRepository: PlaceInfoRepository = PlaceInfoRepositoryImpl(
         placeInfoDao = db.placeInfoDao(),
         forecastDao = db.forecastDao(),
         imageDao = db.imageDao()
         )
-    SkumringNavHost(navController = navController, placeInfoRepository = dbRepository)
+    SkumringNavHost(
+        navController = navController,
+        placeInfoRepository = dbRepository,
+        context = context)
 }
 
 
