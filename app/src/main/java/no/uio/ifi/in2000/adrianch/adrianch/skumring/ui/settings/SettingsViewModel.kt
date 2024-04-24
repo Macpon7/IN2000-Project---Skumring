@@ -19,12 +19,13 @@ data class SettingsUiState(
 
 
     var language: Language = Language.FOLLOW_SYSTEM,
+    var selectedDropDownOptionLanguage: String = "Follow system",
+
+    var dropdownExpandedLanguage: Boolean = false,
+
 
     var selectedDefaultLocation: Location = Location.PHONES_LOCATION,
     var selectedDropDownOptionLocation : String = "Phone's location",
-
-    var showShow_Location_as: Show_Location_as = Show_Location_as.WALK,
-
     var dropdownExpandedStartLocation: Boolean = false,
 
 
@@ -43,17 +44,6 @@ class SettingsViewModel : ViewModel() {
 
     private val _settingsUiState = MutableStateFlow(SettingsUiState())
     val settingsUiState: StateFlow<SettingsUiState> = _settingsUiState.asStateFlow()
-
-    // Functions for dropdownmenu:
-
-    // TODO
-    fun expandDropdownStartLocation() {
-        viewModelScope.launch (Dispatchers.IO) {
-            _settingsUiState.update {currentSettingsUiState ->
-                currentSettingsUiState.copy(dropdownExpandedStartLocation = !currentSettingsUiState.dropdownExpandedStartLocation)
-            }
-        }
-    }
 
     // TODO
     fun updateNotificationEnabled(isChecked : Boolean) {
@@ -76,11 +66,34 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+
+
     // TODO comments
-    fun updateLanguage(language : Language) {
+    fun updateLanguage(language : Language, option : String) {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
-                currentSettingsUiState.copy(language = language)
+                currentSettingsUiState.copy(
+                    language = language,
+                    selectedDropDownOptionLanguage = option)
+            }
+        }
+    }
+
+    fun expandDropdownLanguage() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(
+                    dropdownExpandedLanguage = !currentSettingsUiState.dropdownExpandedLanguage)
+            }
+        }
+    }
+
+    // TODO comments
+    fun expandDropdownStartLocation() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(
+                    dropdownExpandedStartLocation = !currentSettingsUiState.dropdownExpandedStartLocation)
             }
         }
     }
