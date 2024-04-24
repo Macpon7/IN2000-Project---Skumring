@@ -12,16 +12,20 @@ import kotlinx.coroutines.launch
 
 data class SettingsUiState(
 
-    var notificationEnabled : Boolean = false,
+    var notificationEnabled: Boolean = false,
 
     // Variables for choosing mode:
-    var selectedMode : String = "", // TODO skal lagres som enum
+    var selectedTheme: Theme = Theme.FOLLOW_SYSTEM,
 
-    var selectedDefaultLocation : String = "", // TODO skal lagres som enum
 
-    var language : String = "", // TODO skal lagres som enum
+    var language: Language = Language.FOLLOW_SYSTEM,
 
-    var dropdownExpandedStartLocation : Boolean = false,
+    var selectedDefaultLocation: Location = Location.PHONES_LOCATION,
+    var selectedDropDownOptionLocation : String = "Phone's location",
+
+    var showShow_Location_as: Show_Location_as = Show_Location_as.WALK,
+
+    var dropdownExpandedStartLocation: Boolean = false,
 
 
     // Variable for checking if there is an error:
@@ -42,6 +46,7 @@ class SettingsViewModel : ViewModel() {
 
     // Functions for dropdownmenu:
 
+    // TODO
     fun expandDropdownStartLocation() {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
@@ -50,7 +55,7 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
-
+    // TODO
     fun updateNotificationEnabled(isChecked : Boolean) {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
@@ -60,17 +65,19 @@ class SettingsViewModel : ViewModel() {
     }
 
     /**
-     * Function for updating the string selectedMode in SettingsUiState
+     * Function for updating the string selectedMode in
+     * TODO more comments
      */
-    fun updateSelectedMode(mode : String) {
+    fun updateSelectedMode(theme : Theme) {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
-                currentSettingsUiState.copy(selectedMode = mode)
+                currentSettingsUiState.copy(selectedTheme = theme)
             }
         }
     }
 
-    fun updateLanguage(language : String) {
+    // TODO comments
+    fun updateLanguage(language : Language) {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
                 currentSettingsUiState.copy(language = language)
@@ -78,13 +85,23 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
-    fun updateSelectedDefaultLocation(location : String) {
+    /**
+     * Function to update selected default location
+     * The function update the variable selectedDefaultLocation which is of the enum-class Location
+     * It also update the variable option which is a string
+     * The variable option is used to save the strings that is shown in the screens
+     */
+    fun updateSelectedDefaultLocation(location : Location, option : String) {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
-                currentSettingsUiState.copy(selectedDefaultLocation = location)
+                currentSettingsUiState.copy(
+                    selectedDefaultLocation = location,
+                    selectedDropDownOptionLocation = option)
             }
         }
     }
+
+    //Functions for snackbar:
 
     /**
      * Set showSnackbar to false, so when the snackbar refresh it will be shown again
