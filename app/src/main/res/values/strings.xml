@@ -1,6 +1,6 @@
 <resources>
     <!-- Navigation -->
-    <string name="app_name">Skumring</string>
+    <string name="app_name" translatable="false">Skumring</string>
     <string name="back_button">Tilbake</string>
     <string name="nav_map_button">Kart</string>
     <string name="nav_home_button">Hjem</string>
@@ -31,10 +31,27 @@
     <string name="language_option">Språk</string>
     <string name="distance_unit">Avstander</string>
     <string name="temp_unit">Temperatur</string>
+    <!-- MyPageScreen -->
+    <string name="no_location">Ingen lokasjon lagret</string>
+    <string name="new_location">Ny plassering lagt til!</string>
+    <string name="mypage_add_photo">Legg til bilde</string>
+    <string name="location_name">Stedets navn</string>
+    <string name="address">Stedets addresse</string>
+    <string name="time">Velg dato</string>
+    <string name="description">Beskrivelse</string>
+    <string name="add_photo">Legg til bilde</string>
+    <string name="add_location">Legg til sted</string>
+    <string name="add_date" translatable="false">OK</string>
+    <string name="cancel">Avbryt</string>
+    <string name="error_location_name">Skriv et navn</string>
+    <string name="error_address">Skriv inn en addresse</string>
+    <string name="error_description">Skriv en beskrivelse</string>
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
     <string name="golden_hour">Gylne time</string>
     <string name="blue_hour">Blåtime</string>
     <string name="home_distance">Avstand:</string>
+    <string name="app_version" translatable="false">0.3</string>
+    <string name="home_user_loc">Din posisjon</string>
 </resources>

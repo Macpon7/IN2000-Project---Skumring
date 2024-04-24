@@ -3,16 +3,21 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
 private const val logTag = "PlaceInfoViewModel"
 
@@ -23,10 +28,17 @@ data class PlaceInfoUiState(
         description = "",
         lat = "",
         long = "",
-        sunEvents = emptyList()),
+        isFavourite = false,
+        isCustomPlace = false,
+        hasNotification = false,
+        images = emptyList(),
+        sunEvents = emptyList()
+        ),
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
+    // Variable for if we should show loading wheel or not:
+    var isLoading: Boolean = true,
     // Variable that change according to the error message we get:
     var errorMessage: String = "No error",
     // Variable for snackbar:
@@ -34,26 +46,30 @@ data class PlaceInfoUiState(
 )
 
 
-class PlaceInfoViewModel : ViewModel() {
-    private val oldPlaceInfoRepository: OldPlaceInfoRepository = OldPlaceInfoRepositoryImpl()
-
+class PlaceInfoViewModel(
+    private val placeRepository: PlaceRepository,
+): ViewModel() {
+    private val forecastRepository: ForecastRepository = ForecastRepositoryImpl()
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
 
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
 
-    fun loadPlaceInfo(lat: String, long: String, id: Int = 0){
-        viewModelScope.launch(Dispatchers.IO){
+    fun loadPlaceInfo(id: Int){
+        val job = viewModelScope.launch(Dispatchers.IO){
             Log.d(logTag, "loadPlaceInfo called")
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
-                    val placeInfoObject = oldPlaceInfoRepository.getPlaceInfo(lat, long, id)
-                    currentPlaceInfoUiState.copy(placeInfo = placeInfoObject)
+                    val placeInfoObject = placeRepository.getPlace(id)
+                    currentPlaceInfoUiState.copy(placeInfo = placeInfoObject, isLoading = false)
                 } catch(e: Exception) {
-                    Log.e(logTag, "Error getting pins in loadPlaceInfo", e)
+                    Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)
                     currentPlaceInfoUiState.copy(showSnackbar = true,
                         errorMessage = "Error getting pins in loadPlaceInfo")
                 }
             }
+        }
+        job.invokeOnCompletion {
+            Log.d(logTag, "New place in UiState: ${placeInfoUiState.value.placeInfo}")
         }
     }
 
@@ -69,12 +85,28 @@ class PlaceInfoViewModel : ViewModel() {
     /**
      *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
      */
-    fun refresh(lat: String, long: String, id: Int = 0 ) {
+    fun refresh(id: Int = 0 ) {
         _placeInfoUiState.update {currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch (Dispatchers.IO) {
-            loadPlaceInfo(lat, long, id)
+            loadPlaceInfo(id)
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                val application = checkNotNull(extras[APPLICATION_KEY])
+
+                return PlaceInfoViewModel(
+                    placeRepository = (application as ApplicationSkumring).dbRepository
+                ) as T
+            }
         }
     }
 }

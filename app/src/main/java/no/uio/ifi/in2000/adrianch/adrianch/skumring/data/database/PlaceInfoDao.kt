@@ -13,17 +13,39 @@ interface PlaceInfoDao {
     @Update
     suspend fun update(place: PlaceInfoEntity)
 
-    @Query("SELECT * FROM placeInfo")
+    @Query("SELECT * FROM placeInfo WHERE id!=0")
     fun getAllPlaces(): List<PlaceInfoEntity>
     // for tester: fun getAllPlaces(): List<PlaceInfoEntity>
 
-    //Features vi kan implementere etter hvert
-    /*
-    @Query("UPDATE placeInfo SET isFavorite = True WHERE id = :placeId")
-    suspend fun markAsFavorite(placeId: Long)
+    //@Query("SELECT * FROM placeInfo WHERE id = :placeId")
+    //suspend fun getPlace(placeId: Int)
 
-    @Query("UPDATE placeInfo SET isFavorite = False WHERE id = :placeId")
-    suspend fun unmarkAsFavorite(placeId: Long)
+    @Query("SELECT * FROM placeInfo WHERE id=:placeId")
+    fun getOnePlace(placeId: Int): PlaceInfoEntity
 
-     */
+    @Query("SELECT * FROM placeInfo WHERE id=0")
+    fun getUserLocationPlace(): PlaceInfoEntity
+
+    @Query("SELECT * FROM placeInfo WHERE is_favourite = 1")
+    fun getFavourites(): List<PlaceInfoEntity>
+
+    @Query("SELECT * FROM placeInfo WHERE is_custom_place = 1")
+    fun getCustomPlaces(): List<PlaceInfoEntity>
+
+    //@Insert(onConflict = OnConflictStrategy.REPLACE) use this?
+    @Insert
+    fun insertCustomPlace(place: PlaceInfoEntity)
+
+    @Query("SELECT is_custom_place FROM placeInfo WHERE id = :placeId")
+    fun checkIfCustomPlace(placeId: Int): Boolean
+
+    @Query("DELETE FROM placeInfo WHERE id= :placeId")
+    fun deleteCustomPlace(placeId: Int)
+
+    @Query("UPDATE placeInfo SET is_favourite = 1 WHERE id = :placeId")
+    fun markAsFavorite(placeId: Int)
+
+    @Query("UPDATE placeInfo SET is_favourite = 0 WHERE id = :placeId")
+    fun unmarkAsFavorite(placeId: Int)
+
 }

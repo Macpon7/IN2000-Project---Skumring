@@ -1,22 +1,47 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
-import java.util.*
 import androidx.room.TypeConverter
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-/*
 class RoomConverters {
-    //Example
+    /**
+     * Using the built in format functions in LocalDateTime, this converter saves a
+     * [LocalDateTime] object as an ISO formatted string
+     */
     @TypeConverter
-    fun convertDateToLong(date: Date) : Long{
-        return date.time
+    fun convertLocalDateTimeToString(localDateTime: LocalDateTime): String {
+        return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
     }
-    //now the reverse
 
+    /**
+     * Using the built in parser in LocalDateTime, this takes in an ISO formatted string and
+     * returns a an instance of [LocalDateTime]
+     */
     @TypeConverter
-    fun convertLongToDate(timeLong: Long) : Date{
-        return Date(timeLong)
+    fun convertStringToLocalDateTime(string: String): LocalDateTime {
+        return LocalDateTime.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+    }
+
+    /**
+     * Converts bool to int. True = 1, False = 0
+     */
+    @TypeConverter
+    fun convertBoolToInt(boolean: Boolean): Int {
+        return if (boolean) {
+            1
+        } else {
+            0
+        }
+    }
+
+    /**
+     * Converts int to bool. 1 = True, 0 = False
+     */
+    @TypeConverter
+    fun convertIntToBool(int: Int): Boolean {
+        // This expression will be true if int==1, and false in every other case
+        return int == 1
     }
 }
-
- */
 
 

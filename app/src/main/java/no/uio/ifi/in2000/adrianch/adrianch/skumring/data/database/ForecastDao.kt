@@ -3,16 +3,16 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
+import androidx.room.Upsert
 
 @Dao
 interface ForecastDao {
     @Insert
-    suspend fun insertForecasts(forecasts: Array<ForecastEntity>)
+    fun insertForecasts(forecasts: List<ForecastEntity>)
 
-    @Update
-    suspend fun updateForecasts(forecasts: Array<ForecastEntity>)
+    @Upsert
+    fun upsertForecasts(forecasts: List<ForecastEntity>)
 
     @Query("SELECT * FROM forecasts WHERE place_id = :placeId")
-    suspend fun getForecasts(placeId: Int): Array<ForecastEntity>
+    fun getForecasts(placeId: Int): List<ForecastEntity>
 }

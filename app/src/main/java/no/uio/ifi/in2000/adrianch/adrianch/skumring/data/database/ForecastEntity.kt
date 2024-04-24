@@ -5,9 +5,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.AirConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.CloudConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
+import java.time.LocalDateTime
 
 @Entity(
     tableName = "forecasts",
@@ -19,7 +20,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherCondi
 data class ForecastEntity(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name = "place_id") var placeId: Int,
-    @ColumnInfo(name = "sunset_date_time") var sunsetDateTime: String,
+    @ColumnInfo(name = "sunset_date_time") var sunsetDateTime: LocalDateTime,
     @ColumnInfo(name = "weather_rating") var weatherRating: WeatherConditionsRating,
     @ColumnInfo(name = "cloud_condition_low") var cloudConditionLow: CloudConditions,
     @ColumnInfo(name = "cloud_condition_medium") var cloudConditionMedium: CloudConditions,
@@ -27,5 +28,5 @@ data class ForecastEntity(
     @ColumnInfo(name = "air_condition") var airCondition: AirConditions,
     @ColumnInfo(name = "sunset_temp") var sunsetTemp: String,
     @ColumnInfo(name = "weather_icon") var weatherIcon: String,
-    var timestamp: String
+    var timestamp: LocalDateTime
 )
