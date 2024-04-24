@@ -27,7 +27,7 @@ fun SkumringBottomBar(
 ) {
     // List with the screens, will be updated when we have more screens:
     val screens = listOf(
-        HomeDestination, MapListDestination, MyPageDestination, FavoritesDestination
+        HomeDestination, MapListDestination, FavoritesDestination, MyPageDestination
     )
 
     NavigationBar(
