@@ -26,8 +26,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
 
 data class FavoritesUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class) constructor(
     val places: List<PlaceSummary> = emptyList(),
-    var clickedId: Int = 1,
-
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -39,8 +37,7 @@ data class FavoritesUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalM
 
 private const val logTag = "FavoritesViewModel"
 
-class FavoritesViewModel(placeInfoRepository: PlaceInfoRepository): ViewModel() {
-    private val mapRepository = MapRepositoryImpl()
+class FavoritesViewModel(): ViewModel() {
     private val placeListRepository = PlaceListRepositoryImpl()
 
     private val _favoritesUiState = MutableStateFlow(FavoritesUiState())

@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -78,16 +79,18 @@ import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.presetPlacesDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
 private const val logTag = "FavoritesScreen"
 
-object FavoritesDestination2 : NavigationDestination {
-    override val icon = Icons.Outlined.Place
-    override val buttonTitle = R.string.nav_map_button
+object FavoritesDestination : NavigationDestination {
+    override val icon = Icons.Outlined.FavoriteBorder
+    override val buttonTitle = R.string.nav_fav_button
     override val route = "favorite"
     override val titleRes = R.string.app_name
 }
@@ -151,7 +154,7 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             .padding(8.dp),
             verticalArrangement = Arrangement.Top
         ) {
-            FavoriteListContent(navController = navController, favoriteViewModel = favoritesViewModel)
+            FavoriteListContent(navController = navController, favoriteViewModel = favoritesViewModel, favoritesUiState = favoritesUiState)
         }
     }
 }
@@ -159,8 +162,10 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoriteListContent(navController : NavController, favoriteViewModel: FavoritesViewModel) {
-    val favoriteUiState: FavoritesUiState by favoriteViewModel.favoritesUiState.collectAsState()
+fun FavoriteListContent(navController : NavController,
+                        favoriteViewModel: FavoritesViewModel,
+                        favoritesUiState: FavoritesUiState
+                        ) {
     /*
     SearchBar(query = text,
         onQueryChange = {text = it} ,
@@ -171,153 +176,27 @@ fun FavoriteListContent(navController : NavController, favoriteViewModel: Favori
      //TODO legge til søkefelt
     }
      */
-}
 
-
-@Composable
-fun BottomSheetContent(
-    place: PlaceSummary,
-    navController: NavController,
-    favoriteViewModel: FavoritesViewModel
-) {
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-    )
-    {
-        Text(text = place.name, style = MaterialTheme.typography.headlineMedium)
-        Button(onClick = {
-            //favoriteViewModel.hideBottomSheet()
-            navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
-        }) {
-            Text(text = "More details", style = MaterialTheme.typography.labelMedium)
-        }
-    }
-}
-
-
-/**
- * Cards with information about places
- */
-@Composable
-fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
-    BoxWithConstraints {
-        if (maxWidth < 400.dp) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick), //Click to infoscreen
-            ){
-
-                //Box for picture:
-                Box(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Image Placeholder",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                Row (
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
-                )
-                {
-                    Text(
-                        text = name,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                    Row {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
-                        }
-                    }
-                }
-
-                //Text for description. Do we want weather condition in the future?
-                Text(
-                    text = description,
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally))
-            }
+    Column (Modifier.verticalScroll(rememberScrollState())) {
+        if (favoritesUiState.places.isEmpty()){
+            Text(text = "No Places")
         } else {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick), //Click to infoscreen
-            ){
-
-                //Box for picture:
-                Box(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Image Placeholder",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                Row (
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
-                )
-                {
-                    Text(
-                        text = name,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Row {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
-                        }
+            favoritesUiState.places.forEach { place ->
+                ListCard(
+                    name = place.name,
+                    description = place.description,
+                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                        navController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
                     }
-                }
-
-                //Text for description. Do we want weather condition in the future?
-                Text(
-                    text = description,
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally)
                 )
             }
         }
     }
 }
+
 
 @Preview
 @Composable
-fun FavoritesTest(navController: NavHostController = rememberNavController()) {
+fun PreviewFavorites(navController: NavHostController = rememberNavController()) {
     FavoritesScreen(navController = navController)
 }
