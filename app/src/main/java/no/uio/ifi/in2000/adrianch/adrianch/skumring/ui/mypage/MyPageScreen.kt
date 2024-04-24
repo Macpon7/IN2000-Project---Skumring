@@ -252,180 +252,174 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
     }) {
 
         Card {
-            // Make it scrollable:
-            LazyColumn (modifier = Modifier.padding(8.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                item {
-                    // String with name
-                    OutlinedTextField(
-                        value = newPlaceUiState.locationName,
-                        // Take variable from newPlaceUiState
-                        onValueChange = { myPageViewModel.updateNewLocationName(it) },
-                        label = { Text(stringResource(R.string.location_name)) },
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        singleLine = true,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Info,
-                                contentDescription = "addresse"
-                            )
-                        },
-                        supportingText = {
-                            if (newPlaceUiState.locationNameIsMissing) {
-                                Text(text = stringResource(R.string.error_location_name))
-                            }
-                        },
-                        isError = (newPlaceUiState.locationNameIsMissing)
+            // String with name
+            OutlinedTextField(
+                value = newPlaceUiState.locationName,
+                // Take variable from newPlaceUiState
+                onValueChange = { myPageViewModel.updateNewLocationName(it) },
+                label = { Text(stringResource(R.string.location_name)) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = "addresse"
                     )
+                },
+                supportingText = {
+                    if (newPlaceUiState.locationNameIsMissing) {
+                        Text(text = stringResource(R.string.error_location_name))
+                    }
+                },
+                isError = (newPlaceUiState.locationNameIsMissing)
+            )
 
-                    // Brukeren skal skrive inn addresse:
-                    OutlinedTextField(
-                        value = newPlaceUiState.address,
-                        onValueChange = { myPageViewModel.updateNewLocationAddress(it) },
-                        label = { Text(stringResource(R.string.address)) },
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        singleLine = true,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.LocationOn,
-                                contentDescription = "addresse"
-                            )
-                        },
-                        supportingText = {
-                            if (newPlaceUiState.addressIsMissing) {
-                                Text(text = stringResource(R.string.error_address))
-                            }
-                        },
-                        isError = newPlaceUiState.addressIsMissing
+            // Brukeren skal skrive inn addresse:
+            OutlinedTextField(
+                value = newPlaceUiState.address,
+                onValueChange = { myPageViewModel.updateNewLocationAddress(it) },
+                label = { Text(stringResource(R.string.address)) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.LocationOn,
+                        contentDescription = "addresse"
                     )
-                    // TODO logikken skjer i viewmodel, sender inn string med addresse
+                },
+                supportingText = {
+                    if (newPlaceUiState.addressIsMissing) {
+                        Text(text = stringResource(R.string.error_address))
+                    }
+                },
+                isError = newPlaceUiState.addressIsMissing
+            )
+            // TODO logikken skjer i viewmodel, sender inn string med addresse
 
 
-                    /*
-                // Alternative to OutlinedTextField for datepicker
-                OutlinedButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { myPageViewModel.showDatePicker() }) {
-                    Text(text = newPlaceUiState.pickedDate.format(
-                        DateTimeFormatter.ISO_LOCAL_DATE
-                    ))
+            /*
+        // Alternative to OutlinedTextField for datepicker
+        OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { myPageViewModel.showDatePicker() }) {
+            Text(text = newPlaceUiState.pickedDate.format(
+                DateTimeFormatter.ISO_LOCAL_DATE
+            ))
+        }
+         */
+
+            // Time skal lages made datepicker dialog
+            OutlinedTextField(
+                value = newPlaceUiState.pickedDate.format(
+                    DateTimeFormatter.ISO_LOCAL_DATE
+                ),
+                onValueChange = { },
+                modifier = Modifier.clickable(
+                    enabled = true,
+                    onClick = {
+                        myPageViewModel.showDatePicker()
+                    }
+                ),
+                enabled = false,
+                readOnly = true,
+                isError = newPlaceUiState.dateTextFieldError,
+                label = { Text(stringResource(R.string.time)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.DateRange,
+                        contentDescription = "Date"
+                    )
                 }
-                 */
+            )
+            Spacer(modifier = Modifier.height(5.dp))
 
-                    // Time skal lages made datepicker dialog
-                    OutlinedTextField(
-                        value = newPlaceUiState.pickedDate.format(
-                            DateTimeFormatter.ISO_LOCAL_DATE
-                        ),
-                        onValueChange = { },
-                        modifier = Modifier.clickable(
-                            enabled = true,
-                            onClick = {
-                                myPageViewModel.showDatePicker()
-                            }
-                        ),
-                        enabled = false,
-                        readOnly = true,
-                        isError = newPlaceUiState.dateTextFieldError,
-                        label = { Text(stringResource(R.string.time)) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.DateRange,
-                                contentDescription = "Date"
-                            )
-                        }
+            // String with description
+            OutlinedTextField(
+                value = newPlaceUiState.descriptions,
+                onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
+                label = { Text(stringResource(R.string.description)) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Create,
+                        contentDescription = "description"
                     )
-                    Spacer(modifier = Modifier.height(5.dp))
+                },
+                supportingText = {
+                    if (newPlaceUiState.descriptionsIsMissing) {
+                        Text(text = stringResource(R.string.error_description))
+                    }
+                },
+                isError = newPlaceUiState.descriptionsIsMissing
+            )
 
-                    // String with description
-                    OutlinedTextField(
-                        value = newPlaceUiState.descriptions,
-                        onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
-                        label = { Text(stringResource(R.string.description)) },
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        singleLine = true,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Create,
-                                contentDescription = "description"
-                            )
-                        },
-                        supportingText = {
-                            if (newPlaceUiState.descriptionsIsMissing) {
-                                Text(text = stringResource(R.string.error_description))
-                            }
-                        },
-                        isError = newPlaceUiState.descriptionsIsMissing
-                    )
+            // Button to add photo
+            PickImageFromGallery(myPageViewModel = myPageViewModel)
 
-                    // Button to add photo
-                    PickImageFromGallery(myPageViewModel = myPageViewModel)
+            // Button that is pressed when the location is added:
+            Button(
+                onClick = {
 
-                    // Button that is pressed when the location is added:
-                    Button(
-                        onClick = {
+                    if (newPlaceUiState.locationName == "") {
+                        myPageViewModel.updateLocationNameMissing()
+                    }
+                    if (newPlaceUiState.descriptions == "") {
+                        myPageViewModel.updateDescriptionsMissing()
+                    }
+                    if (newPlaceUiState.address == "") {
+                        myPageViewModel.updateAddressMissing()
+                    }
 
-                            if (newPlaceUiState.locationName == "") {
-                                myPageViewModel.updateLocationNameMissing()
-                            }
-                            if (newPlaceUiState.descriptions == "") {
-                                myPageViewModel.updateDescriptionsMissing()
-                            }
-                            if (newPlaceUiState.address == "") {
-                                myPageViewModel.updateAddressMissing()
-                            }
+                    if (newPlaceUiState.locationName != "") {
+                        myPageViewModel.updateLocationNameMissingFalse()
+                    }
+                    if (newPlaceUiState.descriptions != "") {
+                        myPageViewModel.updateDescriptionsMissingFalse()
+                    }
+                    if (newPlaceUiState.address != "") {
+                        myPageViewModel.updateAddressMissingFalse()
+                    }
 
-                            if (newPlaceUiState.locationName != "") {
-                                myPageViewModel.updateLocationNameMissingFalse()
-                            }
-                            if (newPlaceUiState.descriptions != "") {
-                                myPageViewModel.updateDescriptionsMissingFalse()
-                            }
-                            if (newPlaceUiState.address != "") {
-                                myPageViewModel.updateAddressMissingFalse()
-                            }
-
-                            if (newPlaceUiState.locationName != "" &&
-                                newPlaceUiState.descriptions != "" &&
-                                newPlaceUiState.address != ""
-                            ) {
-                                myPageViewModel.notMissingInfo()
-                                myPageViewModel.updateIsReady()
-                            }
-
-                            if (!newPlaceUiState.missingInfo && newPlaceUiState.isReady) {
-                                myPageViewModel.addLocation(
-                                    locationName = newPlaceUiState.locationName,
-                                    address = newPlaceUiState.address,
-                                    pickedDate = newPlaceUiState.pickedDate,
-                                    descriptions = newPlaceUiState.descriptions,
-                                    imageUri = newPlaceUiState.imageUri
-                                )
-
-                                myPageViewModel.refreshNewPlaceUiState()
-
-                                // Only update the first time, since then it will always be true
-                                // TODO: Unless a card can be deleted, but this is not implemented yet
-                                if (!myPageUiState.showLocations)
-                                // TODO the app crash here ?
-                                {
-                                    myPageViewModel.showNewLocations()
-                                }
-                            }
-
-                        },
-                        modifier = Modifier.padding(vertical = 8.dp),
+                    if (newPlaceUiState.locationName != "" &&
+                        newPlaceUiState.descriptions != "" &&
+                        newPlaceUiState.address != ""
                     ) {
-                        Text(text = stringResource(R.string.add_location))
-                        Icons.Outlined.Check
+                        myPageViewModel.notMissingInfo()
+                        myPageViewModel.updateIsReady()
                     }
 
-                    if (newPlaceUiState.missingInfo) {
-                        Text(text = "Please fill in the missing fields")
+                    if (!newPlaceUiState.missingInfo && newPlaceUiState.isReady) {
+                        myPageViewModel.addLocation(
+                            locationName = newPlaceUiState.locationName,
+                            address = newPlaceUiState.address,
+                            pickedDate = newPlaceUiState.pickedDate,
+                            descriptions = newPlaceUiState.descriptions,
+                            imageUri = newPlaceUiState.imageUri
+                        )
+
+                        myPageViewModel.refreshNewPlaceUiState()
+
+                        // Only update the first time, since then it will always be true
+                        // TODO: Unless a card can be deleted, but this is not implemented yet
+                        if (!myPageUiState.showLocations)
+                        // TODO the app crash here ?
+                        {
+                            myPageViewModel.showNewLocations()
+                        }
                     }
-                }
+
+                },
+                modifier = Modifier.padding(vertical = 8.dp),
+            ) {
+                Text(text = stringResource(R.string.add_location))
+                Icons.Outlined.Check
             }
+
+            if (newPlaceUiState.missingInfo) {
+                Text(text = "Please fill in the missing fields")
+            }
+
         }
     }
 }
@@ -473,6 +467,7 @@ fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
         }
     Button(onClick = { launcher.launch("image/*") }) {
         Text(text = stringResource(R.string.add_photo))
+
         Icons.Outlined.Add
     }
 }
