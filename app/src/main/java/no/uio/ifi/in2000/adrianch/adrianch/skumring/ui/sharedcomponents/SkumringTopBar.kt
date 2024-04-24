@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -19,6 +20,7 @@ fun SkumringTopBar(
     title: String,
     canNavigateBack: Boolean,
     modifier: Modifier = Modifier,
+    actions: @Composable RowScope.()->Unit = {}, // Can add action button to topbar
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigateUp: () -> Unit = {}
 ) {
@@ -26,6 +28,7 @@ fun SkumringTopBar(
         title = { Text(title) },
         modifier = modifier,
         scrollBehavior = scrollBehavior,
+        actions = actions,
         navigationIcon = {
             if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {

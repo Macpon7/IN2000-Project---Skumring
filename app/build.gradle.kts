@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("androidx.room")
+    id("com.google.relay") version "0.3.11"
 }
 
 android {
@@ -139,7 +140,9 @@ dependencies {
     //androidTestImplementation("androidx.test:rules:$testRulesVersion")
 
 
-
+    // Location
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.31.3-beta")
 
 
 }
