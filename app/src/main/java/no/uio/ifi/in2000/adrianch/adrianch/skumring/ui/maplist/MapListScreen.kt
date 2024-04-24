@@ -75,6 +75,7 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
@@ -396,125 +397,5 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 true
             }
         )
-    }
-}
-
-/**
- * Cards with information about places
- */
-@Composable
-fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
-    BoxWithConstraints {
-        if (maxWidth < 400.dp) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick), //Click to infoscreen
-            ){
-
-                //Box for picture:
-                Box(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Image Placeholder",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                Row (
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
-                )
-                {
-                    Text(
-                        text = name,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                    Row {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
-                        }
-                    }
-                }
-
-                //Text for description. Do we want weather condition in the future?
-                Text(
-                    text = description,
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally))
-            }
-        } else {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick), //Click to infoscreen
-            ){
-
-                //Box for picture:
-                Box(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Image Placeholder",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                Row (
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
-                )
-                {
-                    Text(
-                        text = name,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Row {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
-                        }
-                    }
-                }
-
-                //Text for description. Do we want weather condition in the future?
-                Text(
-                    text = description,
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-            }
-        }
     }
 }
