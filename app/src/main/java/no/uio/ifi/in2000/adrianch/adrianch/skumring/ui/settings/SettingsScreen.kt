@@ -222,24 +222,68 @@ fun ChooseMode(settingsViewModel: SettingsViewModel) {
         )
     }
 }
- */
 
-/*
 @Composable
 @Preview
 fun PreviewChooseMode(settingsViewModel: SettingsViewModel = viewModel()) {
     ChooseMode(settingsViewModel)
 }
+ */
 
 /**
  * Function to decide for norwegian or english language
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
-    val languageOptions = listOf(stringResource(R.string.norwegian), stringResource(R.string.english)) //TODO make enum class?
+    ExposedDropdownMenuBox(
+        expanded = settingsUiState.dropdownExpandedLanguage,
+        onExpandedChange = {settingsViewModel.expandDropdownLanguage()}) {
+        TextField(
+            modifier = Modifier.menuAnchor(),
+            readOnly = true,
+            value = settingsUiState.selectedDropDownOptionLanguage,
+            onValueChange = {},
+            label = {Text(
+                text = stringResource(R.string.choose_language),
+                modifier = Modifier.padding(bottom = 8.dp),
+                fontWeight = FontWeight.Bold
+            )},
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(
+                expanded = settingsUiState.dropdownExpandedLanguage)},
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        ExposedDropdownMenu(
+            expanded = settingsUiState.dropdownExpandedLanguage,
+            onDismissRequest = { settingsViewModel.expandDropdownStartLocation() }
+        ) {
+            DropdownMenuItem(
+                text = {Text(text = stringResource(R.string.english))},
+                onClick = {
+                    settingsViewModel.updateLanguage(
+                        language = Language.FOLLOW_SYSTEM
+                        ,option = "Follow system")
+                })
+            DropdownMenuItem(
+                text = {Text(text = stringResource(R.string.english))},
+                onClick = {
+                    settingsViewModel.updateLanguage(
+                        language = Language.ENGLISH
+                        ,option = "English")
+                })
+            DropdownMenuItem(
+                text = {Text( text = stringResource(R.string.norwegian))},
+                onClick = {
+                    settingsViewModel.updateLanguage(
+                        language = Language.NORWEGIAN
+                        ,option = "Norwegian")
+                })
+        }
+    }
 
+    /*
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
         Text(
             text = stringResource(R.string.choose_language),
@@ -261,21 +305,19 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
                 )
             }
         }
-        Text(
-            text = "${stringResource(R.string.selected_language)}: ${settingsUiState.language}",
-        )
-    }
+    }'
+     */
+
+    Text(
+        text = "${stringResource(R.string.selected_language)}: ${settingsUiState.language}",
+    )
 }
 
- */
-
-/*
 @Composable
 @Preview
 fun PreviewChooseLanguage(settingsViewModel: SettingsViewModel = viewModel()) {
     ChooseLanguage(settingsViewModel)
 }
- */
 
 /**
  * Function to show a chosen location or phones position as default
@@ -298,7 +340,8 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
                 modifier = Modifier.padding(bottom = 8.dp),
                 fontWeight = FontWeight.Bold
             )},
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = settingsUiState.dropdownExpandedStartLocation)},
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(
+                expanded = settingsUiState.dropdownExpandedStartLocation)},
             colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
         ExposedDropdownMenu(
