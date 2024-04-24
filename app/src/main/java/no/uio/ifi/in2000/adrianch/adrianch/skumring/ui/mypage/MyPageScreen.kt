@@ -122,8 +122,7 @@ fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewMo
                 actions = {
                     IconButton(
                         onClick = {
-                                  //TODO, navigate to settingsScreen
-                            },
+                            navController.navigate(route = "settings")                            },
                         modifier = Modifier.padding(end = 16.dp)
                     ) {
                         Icon(Icons.Default.Settings, contentDescription = "Settings")
