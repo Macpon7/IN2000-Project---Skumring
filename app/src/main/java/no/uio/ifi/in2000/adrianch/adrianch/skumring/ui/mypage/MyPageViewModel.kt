@@ -30,7 +30,7 @@ private const val TAG = "MyPageViewModel"
 data class MyPageUiState(
     val places: List<PlaceInfo> = emptyList(),
 
-    var showNewLocationCard : Boolean = false,
+    var showNewPlaceDialog : Boolean = false,
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
@@ -157,148 +157,51 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
         }
     }
 
-    /**
-     * Update the missingInfo variable to false if there are no spots missing information
-     */
     @OptIn(ExperimentalMaterial3Api::class)
-    fun notMissingInfo() {
+    fun addLocation() {
         viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(
-                    missingInfo = false
-                )
+                var isNameMissing = false
+                var isDescriptionMissing = false
+                var isAddressMissing = false
+
+                var isReady = true
+
+                // Check that input fields are good
+                if (currentNewPlaceUiState.locationName == "") {
+                    isNameMissing = true
+                    isReady = false
+                }
+                if (currentNewPlaceUiState.descriptions == "") {
+                    isDescriptionMissing = true
+                    isReady = false
+                }
+                if (currentNewPlaceUiState.address == "") {
+                    isAddressMissing = true
+                    isReady = false
+                }
+
+                if (!isReady) {
+                    currentNewPlaceUiState.copy(
+                        locationNameIsMissing = isNameMissing,
+                        addressIsMissing = isAddressMissing,
+                        descriptionsIsMissing = isDescriptionMissing
+                    )
+                } else {
+                    //TODO save as new place
+                    currentNewPlaceUiState.copy()
+                }
             }
         }
     }
 
-    /**
-     * Update the isReady variable if all the required spots are filled in
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateIsReady() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(
-                    isReady = true
-                )
-            }
-        }
-    }
-
-    // Functions to check if there is a field missing:
-
-    /**
-     * updates if location-name is missing
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateLocationNameMissing(){
-        viewModelScope.launch(Dispatchers.IO) {
-            _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(
-                    locationNameIsMissing = true,
-                    missingInfo = true
-                )
-            }
-        }
-    }
-
-    /**
-     * updates if address is missing
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateAddressMissing(){
-        viewModelScope.launch(Dispatchers.IO) {
-            _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(
-                    addressIsMissing = true,
-                    missingInfo = true
-                )
-            }
-        }
-    }
-
-    /**
-     * updates if description is missing
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateDescriptionsMissing(){
-        _newPlaceUiState.update { currentNewPlaceUiState ->
-            currentNewPlaceUiState.copy(
-                descriptionsIsMissing = true,
-                missingInfo = true
-            )
-        }
-    }
-
-    /**
-     * Is updated if the locationNameIsMissing was true and now there is a location
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateLocationNameMissingFalse(){
-        viewModelScope.launch(Dispatchers.IO) {
-            _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(
-                    locationNameIsMissing = false,
-                    missingInfo = false
-                )
-            }
-        }
-    }
-
-    /**
-     * Is updated if the addressIsMissing was true and now there is an address
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateAddressMissingFalse(){
-        viewModelScope.launch(Dispatchers.IO) {
-            _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(
-                    addressIsMissing = false,
-                    missingInfo = false
-                )
-            }
-        }
-    }
-
-    /**
-     * Is updated if the descriptionIsMissing was true and now there is a description
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateDescriptionsMissingFalse(){
-        _newPlaceUiState.update { currentNewPlaceUiState ->
-            currentNewPlaceUiState.copy(
-                descriptionsIsMissing = false,
-                missingInfo = false
-            )
-        }
-    }
-
-    /**
-     * Function for adding location to the database
-     */
-    fun addLocation(locationName: String,
-                    address: String,
-                    pickedDate: LocalDate,
-                    descriptions: String,
-                    imageUri: Uri?
-                    // TODO add bitmap?
-    ) {
-        val LocationObject = NewPlace(
-            locationName = locationName,
-            address = address,
-            pickedDate = pickedDate,
-            descriptions = descriptions,
-            imageUri = imageUri
-            )
-        // TODO add locationObject to the database
-    }
 
     /**
      * Functions for updating NewPlaceUiState:
      *
      */
     @OptIn(ExperimentalMaterial3Api::class)
-    fun refreshNewPlaceUiState(){
+    fun resetNewPlaceUiState(){
         viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(
@@ -419,7 +322,7 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
     fun showNewForm() {
         viewModelScope.launch (Dispatchers.IO) {
             _myPageUiState.update { currentMyPageUiState ->
-                currentMyPageUiState.copy(showNewLocationCard = true)
+                currentMyPageUiState.copy(showNewPlaceDialog = true)
             }
         }
     }
@@ -438,7 +341,7 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
     fun hideNewForm() {
         viewModelScope.launch (Dispatchers.IO) {
             _myPageUiState.update {currentMyPageUiState ->
-                currentMyPageUiState.copy(showNewLocationCard = false)
+                currentMyPageUiState.copy(showNewPlaceDialog = false)
             }
         }
     }
