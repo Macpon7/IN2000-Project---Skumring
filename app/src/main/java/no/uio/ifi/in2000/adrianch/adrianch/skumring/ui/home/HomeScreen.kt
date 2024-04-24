@@ -79,7 +79,6 @@ fun HomeScreen(
 ) {
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
     val locationPermissions = rememberMultiplePermissionsState(
         permissions = listOf(
@@ -117,7 +116,7 @@ fun HomeScreen(
                 modifier = Modifier.padding(start = 10.dp)
             )
                 HorizontalInfoCardRow(
-                    mapListUiState = mapListUiState,
+                    homeUiState = homeUiState,
                     navHostController = navController
                 )
             }
@@ -320,17 +319,21 @@ fun MoreDetailsButton() {
  * For displaying the HorizontalInfoCards in a row. When clicked, navigate to PlaceInfoScreen
  */
 @Composable
-fun HorizontalInfoCardRow (mapListUiState: MapListUiState, navHostController: NavHostController) {
-    LazyRow {
-        items(mapListUiState.places) {place ->
-            HorizontalInfoCardContent(
-                name = place.name,
-                distance = place.description, //, should be distance
-                onItemClick = {
-                    navHostController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
-                },
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
-            )
+fun HorizontalInfoCardRow (homeUiState: HomeUiState, navHostController: NavHostController) {
+    if (homeUiState.favoritePlaces.isEmpty()) {
+        Text(text = "No favourites")
+    } else {
+        LazyRow {
+            items(homeUiState.favoritePlaces) {place ->
+                HorizontalInfoCardContent(
+                    name = place.name,
+                    distance = place.description, //, should be distance
+                    onItemClick = {
+                        navHostController.navigate("placeinfoscreen/${place.id}")
+                    },
+                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
+                )
+            }
         }
     }
 }

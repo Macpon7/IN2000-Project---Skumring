@@ -15,7 +15,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import java.time.LocalDate
 
 data class HomeUiState(
@@ -28,6 +31,8 @@ data class HomeUiState(
     val sunsetDate: String = "",
     val sunsetWeatherIcon: String? = "",
     val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
+
+    var favoritePlaces: List<PlaceInfo> = emptyList(),
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -55,8 +60,18 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
 
     private fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
-            loadUserLocation()
+            loadFavourites()
             updateWeather()
+        }
+    }
+
+    private fun loadFavourites() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _homeUiState.update { currentHomeUiState ->
+                val favourites = placeRepository.getFavourites()
+
+                currentHomeUiState.copy(favoritePlaces = favourites)
+            }
         }
     }
 
@@ -85,6 +100,8 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
         viewModelScope.launch(Dispatchers.IO){
             try {
                 _homeUiState.update{ currenthomeUiState->
+                    loadUserLocation()
+
                     Log.d(logTag, "fetching sunsetweather")
                     val sunsetWeather = placeInfo.getLocalSunsetWeather(
                         lat = _homeUiState.value.lat,
