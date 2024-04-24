@@ -83,7 +83,7 @@ class SettingsViewModel : ViewModel() {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
                 currentSettingsUiState.copy(
-                    dropdownExpandedTheme = !currentSettingsUiState.dropdownExpandedLanguage)
+                    dropdownExpandedTheme = !currentSettingsUiState.dropdownExpandedTheme)
             }
         }
     }
@@ -155,7 +155,7 @@ class SettingsViewModel : ViewModel() {
             _settingsUiState.update {currentSettingsUiState ->
                 currentSettingsUiState.copy(
                     locationAs = locationAs,
-                    selectedDropDownOptionLocation = option)
+                    selectedLocationAs = option)
             }
         }
     }

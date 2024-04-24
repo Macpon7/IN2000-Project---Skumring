@@ -198,7 +198,7 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
         expanded = settingsUiState.dropdownExpandedTheme,
         onExpandedChange = {settingsViewModel.expandDropdownTheme()} ) {
         TextField(
-            modifier = Modifier.menuAnchor(),
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
             readOnly = true,
             value = settingsUiState.selectedDropDownOptionTheme,
             onValueChange = {},
@@ -217,6 +217,7 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
             onDismissRequest = { settingsViewModel.expandDropdownTheme() }
         ) {
             DropdownMenuItem(
+                modifier = Modifier.fillMaxWidth(),
                 text = { Text(text = stringResource(R.string.follow_system)) },
                 onClick = {
                     settingsViewModel.updateTheme(
@@ -225,6 +226,7 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                     )
                 })
             DropdownMenuItem(
+                modifier = Modifier.fillMaxWidth(),
                 text = { Text(text = stringResource(R.string.light_mode)) },
                 onClick = {
                     settingsViewModel.updateTheme(
@@ -233,6 +235,7 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                     )
                 })
             DropdownMenuItem(
+                modifier = Modifier.fillMaxWidth(),
                 text = { Text(text = stringResource(R.string.dark_mode)) },
                 onClick = {
                     settingsViewModel.updateTheme(
@@ -244,7 +247,7 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
     }
 
     Text(
-        text = "${stringResource(R.string.selected_theme)}: ${settingsUiState.theme}",
+        text = "${stringResource(R.string.selected_theme)}: ${settingsUiState.selectedDropDownOptionTheme}",
     )
 
     /* Code for radiobuttons
@@ -302,7 +305,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
             expanded = settingsUiState.dropdownExpandedLanguage,
             onExpandedChange = {settingsViewModel.expandDropdownLanguage()}) {
             TextField(
-                modifier = Modifier.menuAnchor(),
+                modifier = Modifier.menuAnchor().fillMaxWidth(),
                 readOnly = true,
                 value = settingsUiState.selectedDropDownOptionLanguage,
                 onValueChange = {},
@@ -321,6 +324,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
                 onDismissRequest = { settingsViewModel.expandDropdownLanguage() }
             ) {
                 DropdownMenuItem(
+                    modifier = Modifier.fillMaxWidth(),
                     text = {Text(text = stringResource(R.string.follow_system))},
                     onClick = {
                         settingsViewModel.updateLanguage(
@@ -328,6 +332,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
                             option = "Follow system") // TODO xml, hvordan gjør man det?
                     })
                 DropdownMenuItem(
+                    modifier = Modifier.fillMaxWidth(),
                     text = {Text(text = stringResource(R.string.english))},
                     onClick = {
                         settingsViewModel.updateLanguage(
@@ -335,6 +340,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
                             option = "English") // TODO xml, hvordan gjør man det?
                     })
                 DropdownMenuItem(
+                    modifier = Modifier.fillMaxWidth(),
                     text = {Text(text = stringResource(R.string.norwegian))},
                     onClick = {
                         settingsViewModel.updateLanguage(
@@ -344,7 +350,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
             }
         }
         Text(
-            text = "${stringResource(R.string.selected_language)}: ${settingsUiState.selectedDropDownOptionLocation}",
+            text = "${stringResource(R.string.selected_language)}: ${settingsUiState.selectedDropDownOptionLanguage}",
         )
     }
 }
@@ -369,7 +375,7 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
         expanded = settingsUiState.dropdownExpandedStartLocation,
         onExpandedChange = {settingsViewModel.expandDropdownStartLocation()}) {
         TextField(
-            modifier = Modifier.menuAnchor(),
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
             readOnly = true,
             value = settingsUiState.selectedDropDownOptionLocation,
             onValueChange = {},
@@ -387,6 +393,7 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
             onDismissRequest = { settingsViewModel.expandDropdownStartLocation() }
         ) {
             DropdownMenuItem(
+                modifier = Modifier.fillMaxWidth(),
                 text = {Text(text = "Costume location")},
                 onClick = {
                 settingsViewModel.updateSelectedDefaultLocation(
@@ -397,6 +404,7 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
 
             })
             DropdownMenuItem(
+                modifier = Modifier.fillMaxWidth(),
                 text = {Text( text = "Phone's location")},
                 onClick = {
                 settingsViewModel.updateSelectedDefaultLocation(
@@ -427,9 +435,9 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
 
     ExposedDropdownMenuBox(
         expanded = settingsUiState.dropdownExpandedLocationAs,
-        onExpandedChange = {settingsViewModel.expandDropdownLanguage()} ) {
+        onExpandedChange = {settingsViewModel.expandDropdownLocationAs()} ) {
         TextField(
-            modifier = Modifier.menuAnchor(),
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
             readOnly = true,
             value = settingsUiState.selectedLocationAs,
             onValueChange = {},
@@ -447,6 +455,7 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
             expanded = settingsUiState.dropdownExpandedLocationAs,
             onDismissRequest = { settingsViewModel.expandDropdownLocationAs() }) {
             DropdownMenuItem(
+                modifier = Modifier.fillMaxWidth(),
                 text = { Text(text = stringResource(R.string.walk)) },
                 onClick = {
                     settingsViewModel.updateSelectedLocationAs(
@@ -455,6 +464,7 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
                     )
                 })
             DropdownMenuItem(
+                modifier = Modifier.fillMaxWidth(),
                 text = { Text(text = stringResource(R.string.bike)) },
                 onClick = {
                     settingsViewModel.updateSelectedLocationAs(
@@ -463,6 +473,7 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
                     )
                 })
             DropdownMenuItem(
+                modifier = Modifier.fillMaxWidth(),
                 text = { Text(text = stringResource(R.string.drive)) },
                 onClick = {
                     settingsViewModel.updateSelectedLocationAs(
@@ -474,7 +485,7 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
     }
 
     Text(
-        text = "${stringResource(R.string.selected_means_of_transportation)}: ${settingsUiState.locationAs}",
+        text = "${stringResource(R.string.selected_means_of_transportation)}: ${settingsUiState.selectedLocationAs}",
     )
 }
 
