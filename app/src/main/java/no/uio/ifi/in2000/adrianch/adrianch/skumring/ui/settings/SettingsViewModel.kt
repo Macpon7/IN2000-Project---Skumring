@@ -10,24 +10,34 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Ui state for settings
+ * Variables for notifications, theme, language, defaultlocation and snackbar
+ */
 data class SettingsUiState(
 
+    // Variables for choosing notification on/off:
     var notificationEnabled: Boolean = false,
 
-    // Variables for choosing mode:
-    var selectedTheme: Theme = Theme.FOLLOW_SYSTEM,
+    // Variables for choosing theme:
+    var theme: Theme = Theme.FOLLOW_SYSTEM,
+    var selectedDropDownOptionTheme : String = "Follow system",
+    var dropdownExpandedTheme : Boolean = false,
 
-
+    // Variables for choosing language:
     var language: Language = Language.FOLLOW_SYSTEM,
     var selectedDropDownOptionLanguage: String = "Follow system",
-
     var dropdownExpandedLanguage: Boolean = false,
 
-
-    var selectedDefaultLocation: Location = Location.PHONES_LOCATION,
+    // Variables for choosing Location:
+    var location: Location = Location.PHONES_LOCATION,
     var selectedDropDownOptionLocation : String = "Phone's location",
     var dropdownExpandedStartLocation: Boolean = false,
 
+    // variables for choosing show location as
+    var locationAs : Show_Location_as = Show_Location_as.WALK,
+    var selectedLocationAs : String = "Walk",
+    var dropdownExpandedLocationAs: Boolean = false,
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -58,15 +68,25 @@ class SettingsViewModel : ViewModel() {
      * Function for updating the string selectedMode in
      * TODO more comments
      */
-    fun updateSelectedMode(theme : Theme) {
+    fun updateTheme(theme : Theme, option : String) {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
-                currentSettingsUiState.copy(selectedTheme = theme)
+                currentSettingsUiState.copy(
+                    theme = theme,
+                    selectedDropDownOptionTheme = option
+                )
             }
         }
     }
 
-
+    fun expandDropdownTheme() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(
+                    dropdownExpandedTheme = !currentSettingsUiState.dropdownExpandedLanguage)
+            }
+        }
+    }
 
     // TODO comments
     fun updateLanguage(language : Language, option : String) {
@@ -108,7 +128,33 @@ class SettingsViewModel : ViewModel() {
         viewModelScope.launch (Dispatchers.IO) {
             _settingsUiState.update {currentSettingsUiState ->
                 currentSettingsUiState.copy(
-                    selectedDefaultLocation = location,
+                    location = location,
+                    selectedDropDownOptionLocation = option)
+            }
+        }
+    }
+
+    // TODO comments
+    fun expandDropdownLocationAs() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(
+                    dropdownExpandedLocationAs = !currentSettingsUiState.dropdownExpandedLocationAs)
+            }
+        }
+    }
+
+    /**
+     * Function to update selected default location
+     * The function update the variable selectedDefaultLocation which is of the enum-class Location
+     * It also update the variable option which is a string
+     * The variable option is used to save the strings that is shown in the screens
+     */
+    fun updateSelectedLocationAs(locationAs: Show_Location_as, option : String) {
+        viewModelScope.launch (Dispatchers.IO) {
+            _settingsUiState.update {currentSettingsUiState ->
+                currentSettingsUiState.copy(
+                    locationAs = locationAs,
                     selectedDropDownOptionLocation = option)
             }
         }

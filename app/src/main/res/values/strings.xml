@@ -49,6 +49,12 @@
     <string name="choose_language">Velg språk</string>
     <string name="selected_language">Valgt språk</string>
 
+    <string name="means_of_transportation">Velg fremkomstmiddel</string>
+    <string name="walk">Gå</string>
+    <string name="bike">Sykle</string>
+    <string name="drive">Kjøre</string>
+    <string name="selected_means_of_transportation">Valgt fremkomstmiddel</string>
+
     <!-- MyPageScreen -->
     <string name="no_location">Ingen lokasjon lagret</string>
     <string name="new_location">Ny plassering lagt til!</string>

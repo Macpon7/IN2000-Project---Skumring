@@ -47,6 +47,12 @@
     <string name="choose_language">Choose language</string>
     <string name="selected_language">Selected language</string>
 
+    <string name="means_of_transportation">Means of transportation</string>
+    <string name="walk">Walk</string>
+    <string name="bike">Bike</string>
+    <string name="drive">Drive</string>
+    <string name="selected_means_of_transportation">Selected mean of transportation</string>
+
     <!-- MyPageScreen -->
     <string name="no_location">You have no locations saved yet</string>
     <string name="new_location">New location added!</string>
