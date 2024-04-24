@@ -71,8 +71,8 @@ import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import java.time.format.DateTimeFormatter
 

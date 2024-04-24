@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites.FavoritesDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites.FavoritesScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeViewModel
@@ -46,6 +48,9 @@ fun SkumringNavHost(
         }
         composable(route = MyPageDestination.route) {
             MyPageScreen(myPageViewModel = MyPageViewModel(), navController = navController)
+        }
+        composable(route = FavoritesDestination.route){
+            FavoritesScreen(navController = navController)
         }
         composable(
             route = PlaceInfoScreenDestination.route,
