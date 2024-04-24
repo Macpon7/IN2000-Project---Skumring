@@ -11,13 +11,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarResult
@@ -130,11 +130,14 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
         // Content for notification:
         Notification(settingsViewModel = settingsViewModel)
 
+        /*
         // Content for choose mode:
         ChooseMode(settingsViewModel = settingsViewModel)
 
         // Content for choosing language:
         ChooseLanguage(settingsViewModel = settingsViewModel)
+
+         */
 
         // Content for StartLocation:
         StartLocation(settingsViewModel = settingsViewModel)
@@ -176,6 +179,7 @@ fun PreviewNotification(settingsViewModel: SettingsViewModel = viewModel()) {
     Notification(settingsViewModel)
 }
 
+/*
 /**
  * Function to decide if the user want dark or lightmode
  * Should be shown in a dropdownmeny
@@ -218,7 +222,9 @@ fun ChooseMode(settingsViewModel: SettingsViewModel) {
         )
     }
 }
+ */
 
+/*
 @Composable
 @Preview
 fun PreviewChooseMode(settingsViewModel: SettingsViewModel = viewModel()) {
@@ -261,22 +267,23 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
     }
 }
 
+ */
+
+/*
 @Composable
 @Preview
 fun PreviewChooseLanguage(settingsViewModel: SettingsViewModel = viewModel()) {
     ChooseLanguage(settingsViewModel)
 }
+ */
 
 /**
- * Function to show a choosen location or phones position as default
+ * Function to show a chosen location or phones position as default
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartLocation(settingsViewModel: SettingsViewModel) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
-
-    // TODO xml
-    val locationOptions = listOf("Chosen Location", "Phone's Position")
 
     ExposedDropdownMenuBox(
         expanded = settingsUiState.dropdownExpandedStartLocation,
@@ -284,7 +291,7 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
         TextField(
             modifier = Modifier.menuAnchor(),
             readOnly = true,
-            value = settingsUiState.selectedDefaultLocation,
+            value = settingsUiState.selectedDropDownOptionLocation,
             onValueChange = {},
             label = {Text(
                 text = stringResource(R.string.choose_default_location),
@@ -298,31 +305,26 @@ fun StartLocation(settingsViewModel: SettingsViewModel) {
             expanded = settingsUiState.dropdownExpandedStartLocation,
             onDismissRequest = { settingsViewModel.expandDropdownStartLocation() }
         ) {
-            locationOptions.forEach {location ->
-                Row(
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = location == settingsUiState.selectedDefaultLocation,
-                        onClick = {
-                            settingsViewModel.updateSelectedDefaultLocation(location)
+            DropdownMenuItem(
+                text = {Text(text = "Costume location")},
+                onClick = {
+                settingsViewModel.updateSelectedDefaultLocation(
+                    location = Location.COSTUME_LOCATION
+                    ,option = "Costume location") // TODO xml
 
-                            if (location == "chosen location") {
-                                // TODO show a dropdown meny or a searchbar to choose location?
-                            }
-                        },
-                    )
-                    Text(
-                        text = location,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
+                // TODO show a dropdown meny or a searchbar to choose location?
+
+            })
+            DropdownMenuItem(
+                text = {Text( text = "Phone's location")},
+                onClick = {
+                settingsViewModel.updateSelectedDefaultLocation(
+                    location = Location.PHONES_LOCATION
+                    ,option = "Phone's location") // TODO xml
+            })
         }
     }
-
-    Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDefaultLocation}")
+    Text(text = "${stringResource(R.string.default_location)}: ${settingsUiState.selectedDropDownOptionLocation}")
 }
 
 @Composable
