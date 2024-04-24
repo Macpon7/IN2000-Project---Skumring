@@ -27,22 +27,26 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <!-- SettingsScreen -->
-    <string name="theme_option">Display mode</string>
     <string name="language_option">Language</string>
     <string name="distance_unit">Distances</string>
     <string name="temp_unit">Temperatures</string>
     <string name="settings">Settings</string>
+
     <string name="notifications">Varslinger</string>
+
     <string name="choose_default_location">Choose default location</string>
     <string name="default_location">Default location</string>
-    <string name="selected_mode">Selected mode</string>
-    <string name="mode">Mode</string>
-    <string name="follow_system">Følg systemet</string>
+
+    <string name="choose_theme">Velg tema</string>
+    <string name="selected_theme">Selected theme</string>
+    <string name="theme">Theme</string>
+    <string name="follow_system">Follow system</string>
 
     <string name="norwegian">Norwegian</string>
     <string name="english">English</string>
     <string name="choose_language">Choose language</string>
     <string name="selected_language">Selected language</string>
+
     <!-- MyPageScreen -->
     <string name="no_location">You have no locations saved yet</string>
     <string name="new_location">New location added!</string>

@@ -27,16 +27,19 @@
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
     <!-- SettingsScreen -->
-    <string name="theme_option">Fargemodus</string>
     <string name="language_option">Språk</string>
     <string name="distance_unit">Avstander</string>
     <string name="temp_unit">Temperatur</string>
     <string name="settings">Innstillinger</string>
+
     <string name="notifications">Varslinger</string>
+
     <string name="choose_default_location">Velg standard lokasjon</string>
     <string name="default_location">Standard lokasjon</string>
-    <string name="selected_mode">Valgt tema</string>
-    <string name="mode">Tema</string>
+
+    <string name="choose_theme">Velg tema</string>
+    <string name="selected_theme">Valgt tema</string>
+    <string name="theme">Tema</string>
     <string name="follow_system">Følg systemet</string>
     <string name="light_mode" translatable="false">Light mode</string>
     <string name="dark_mode" translatable="false">Dark mode</string>
