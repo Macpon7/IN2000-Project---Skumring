@@ -5,6 +5,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -426,6 +427,7 @@ fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             newPlaceUiState.imageUri = uri
+            Log.d("Uri","imageUri is $newPlaceUiState.imageUri")
         }
 
     Box() {

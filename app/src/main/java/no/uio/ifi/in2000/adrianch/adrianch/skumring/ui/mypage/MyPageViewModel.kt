@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
@@ -99,6 +101,7 @@ class MyPageViewModel : ViewModel() {
 
     // TODO: Make own repository for places that the user saves, use this as a placeholder meanwhile
     private val placeListRepository = PlaceListRepositoryImpl() // TODO do we use this repository?
+    //private val placeInfoRepository = PlaceInfoRepositoryImpl() //<- fikse denne
 
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
@@ -109,6 +112,17 @@ class MyPageViewModel : ViewModel() {
     init {
         loadList()
     }
+
+
+
+    /*
+    fun uploadNewImage(uri: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            placeInfoRepository.insertImage(uri)
+        }
+    }
+
+     */
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun notMissingInfo() {

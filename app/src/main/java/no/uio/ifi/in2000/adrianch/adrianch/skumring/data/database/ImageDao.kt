@@ -7,9 +7,19 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ImageDao {
+
+    @Insert
+    fun insertSingleImage(image: ImageEntity)
+
     @Insert
     fun insert(image: List<ImageEntity>)
 
-    @Query("SELECT * FROM images WHERE place_id = :placeId")
-    fun getImages(placeId: Int): Flow<List<ImageEntity>>
+    @Query("SELECT img_path FROM images WHERE place_id = :place_id")
+    suspend fun checkDefaultImage(place_id: String)
+
+    @Query("SELECT * FROM images")
+    suspend fun getAllPlaces()
+
+    //@Query("SELECT * FROM images WHERE place_id = :placeId")
+    //fun getImages(placeId: Int): Flow<List<ImageEntity>>
 }

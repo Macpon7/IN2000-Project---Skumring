@@ -1,10 +1,16 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
+import android.content.ContentResolver
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.locationforecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.OldPlaceInfoRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceDetailsDataSource
@@ -17,6 +23,11 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.nio.file.Path
 import java.time.LocalDateTime
 
 private const val logTag = "PlaceInfoRepository"
@@ -71,6 +82,71 @@ class PlaceInfoRepositoryImpl(
             }
         }
     }
+
+    //Image database implementation
+    fun insertImagePath(path: String){
+        val imageEntity: ImageEntity = ImageEntity(imgPath = path)
+        imageDao.insertSingleImage(imageEntity)
+    }
+
+
+    //https://www.youtube.com/watch?v=4Ob0plBL084
+
+    //flyttes til viewModelen?
+    fun uriParserToBytes(uriString: String){
+        val uri = Uri.parse(uriString)
+        val Bytes = contentResolver.openInputStream(uri)?.use{
+            it.readBytes()
+        }
+        return Bytes
+    }
+
+    fun saveToInternalLocalStorage(bytes: Bytes, filesDir: File, filename: String){
+        val file = File(filesDir, filename)
+       FileOutputStream(file).use{
+            it.write()
+        }
+        return file.toURI() //to get the path to internal storage
+    }
+
+        ///data/data/your.app.package.name/files/
+    ///data/data/your.app.package.name/files/image.jpg
+
+    suspend fun checkIsImageDefault(placeId: String){
+        val result: Unit = imageDao.checkDefaultImage(placeId)
+        if (result == true)
+    }
+
+    //henter fra viewmodelfacoty
+    suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, fileName: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            var inputStream: InputStream? = null
+            var outputStream: FileOutputStream? = null
+            try {
+                val contentResolver: ContentResolver = context.contentResolver
+                inputStream = contentResolver.openInputStream(contentUri)
+                val bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
+
+                val fileDir: File = context.filesDir
+               // val fileName = "image.jpg"
+                val file = File(fileDir, fileName)
+
+                outputStream = FileOutputStream(file)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+
+                return@withContext true
+            } catch (e: IOException) {
+                e.printStackTrace()
+                return@withContext false
+            } finally {
+                inputStream?.close()
+                outputStream?.close()
+            }
+        }
+    }
+
+    //bruke ImageDetails() under model
+
 
     override suspend fun getAllPlaces(): List<PlaceInfo> {
         //TODO("Not yet implemented")
