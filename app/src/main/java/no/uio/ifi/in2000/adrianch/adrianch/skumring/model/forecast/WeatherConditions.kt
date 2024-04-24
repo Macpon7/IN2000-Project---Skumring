@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast
 
 data class WeatherConditions (
     val weatherRating: WeatherConditionsRating,

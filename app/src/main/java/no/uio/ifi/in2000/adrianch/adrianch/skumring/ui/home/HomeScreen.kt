@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Button
@@ -30,7 +31,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,9 +57,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListUiState
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListViewModel
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
@@ -74,13 +72,11 @@ object HomeDestination : NavigationDestination {//This one is used in the Skumri
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
-    homeViewModel: HomeViewModel = viewModel(),
-    mapListViewModel: MapListViewModel = viewModel()
+    homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
+    navController: NavHostController
 ) {
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
     val locationPermissions = rememberMultiplePermissionsState(
         permissions = listOf(
@@ -118,7 +114,7 @@ fun HomeScreen(
                 modifier = Modifier.padding(start = 10.dp)
             )
                 HorizontalInfoCardRow(
-                    mapListUiState = mapListUiState,
+                    homeUiState = homeUiState,
                     navHostController = navController
                 )
             }
@@ -321,17 +317,21 @@ fun MoreDetailsButton() {
  * For displaying the HorizontalInfoCards in a row. When clicked, navigate to PlaceInfoScreen
  */
 @Composable
-fun HorizontalInfoCardRow (mapListUiState: MapListUiState, navHostController: NavHostController) {
-    LazyRow {
-        items(mapListUiState.places) {place ->
-            HorizontalInfoCardContent(
-                name = place.name,
-                distance = place.description, //, should be distance
-                onItemClick = {
-                    navHostController.navigate("placeinfoscreen/${place.lat}/${place.long}/${place.id}")
-                },
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
-            )
+fun HorizontalInfoCardRow (homeUiState: HomeUiState, navHostController: NavHostController) {
+    if (homeUiState.favoritePlaces.isEmpty()) {
+        Text(text = "No favourites")
+    } else {
+        LazyRow {
+            items(homeUiState.favoritePlaces) {place ->
+                HorizontalInfoCardContent(
+                    name = place.name,
+                    distance = place.description, //, should be distance
+                    onItemClick = {
+                        navHostController.navigate("placeinfoscreen/${place.id}")
+                    },
+                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
+                )
+            }
         }
     }
 }

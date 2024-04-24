@@ -8,22 +8,23 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.placeinfo.PlaceListRepositoryImpl
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.PlaceSummary
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 data class MyPageUiState(
-    val pins: List<PinInfo> = emptyList(),
-    val places: List<PlaceSummary> = emptyList(),
+    val places: List<PlaceInfo> = emptyList(),
 
     var showNewLocationCard : Boolean = false,
     // Variable for checking if there is an error:
@@ -96,11 +97,7 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 // TODO: Use this is the functions in viewmodel where errors can happen:
 private const val logTag = "MyPageViewModel"
 
-class MyPageViewModel : ViewModel() {
-
-    // TODO: Make own repository for places that the user saves, use this as a placeholder meanwhile
-    private val placeListRepository = PlaceListRepositoryImpl() // TODO do we use this repository?
-
+class MyPageViewModel(private val placeRepository: PlaceRepository) : ViewModel() {
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
 
@@ -435,6 +432,27 @@ class MyPageViewModel : ViewModel() {
         // TODO load the list of the users customs places, will probably look similar to the list in maplistviewmodel
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun toggleFavourite(place: PlaceInfo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (place.isFavourite) {
+                placeRepository.unmakeFavourite(id = place.id)
+                _myPageUiState.update { currentMyPageUiState ->
+                    currentMyPageUiState.copy(
+                        places = placeRepository.getCustomPlaces()
+                    )
+                }
+            } else {
+                placeRepository.makeFavourite(id = place.id)
+                _myPageUiState.update { currentMyPageUiState ->
+                    currentMyPageUiState.copy(
+                        places = placeRepository.getCustomPlaces()
+                    )
+                }
+            }
+        }
+    }
+
     /**
      * showSnackbar is set to false and the snackbar disappear
      */
@@ -452,6 +470,22 @@ class MyPageViewModel : ViewModel() {
             currentMyPageUiState.copy(showSnackbar = false) }
         viewModelScope.launch (Dispatchers.IO) {
             // TODO: Add what gets updated when the API fails
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras,
+            ): T {
+                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+
+                return MyPageViewModel(
+                    placeRepository = (application as ApplicationSkumring).dbRepository
+                ) as T
+            }
         }
     }
 }

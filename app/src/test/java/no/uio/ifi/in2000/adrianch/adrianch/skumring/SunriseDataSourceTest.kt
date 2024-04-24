@@ -1,20 +1,16 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring
 
-import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.Geometry
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.Properties
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.Solarmidnight
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.Solarnoon
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunActivity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.Sunrise
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.SunriseInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.Sunset
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.When
-import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.time.LocalDate
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -29,7 +25,7 @@ class SunriseDataSourceTest {
 
         geometry = Geometry(
             type = "Point",
-            coordinates = listOf(10, 60)
+            coordinates = listOf(10.0f, 60.0f)
         ),
         `when` = When(
             interval = listOf("2024-03-06T23:20:00Z", "2024-03-07T23:30:00Z")

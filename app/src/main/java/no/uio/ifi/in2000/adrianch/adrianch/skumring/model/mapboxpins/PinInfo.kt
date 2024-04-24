@@ -11,7 +11,8 @@ import com.mapbox.geojson.Point
 data class PinInfo(
     val id: Int,
     val lat: String,
-    val long: String,
-    var point: Point = Point.fromLngLat(0.0, 0.0)
+    val long: String
     //val color: String
-)
+) {
+    val point: Point = Point.fromLngLat(long.toDouble(), lat.toDouble())
+}

@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,7 +33,9 @@ class ListCard {
  * Cards with information about places
  */
 @Composable
-fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
+fun ListCard(name: String, description: String, isFavourite: Boolean,
+             onItemClick: () -> Unit,
+             onFavouriteClick: () -> Unit) {
     BoxWithConstraints {
         if (maxWidth < 400.dp) {
             Card(
@@ -72,11 +74,13 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
                         fontSize = 20.sp
                     )
                     Row {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
+                        IconButton(onClick = { onFavouriteClick() }) {
+                            if (isFavourite) {
+                                Icon(imageVector = Icons.Filled.Favorite, contentDescription = "")
+                            } else {
+                                Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
+
+                            }
                         }
                     }
                 }
@@ -127,11 +131,8 @@ fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.width(20.dp))
                     Row {
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(onClick = { onFavouriteClick() }) {
                             Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "")
                         }
                     }
                 }

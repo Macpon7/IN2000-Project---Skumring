@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -44,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.placeinfo.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
@@ -57,7 +55,7 @@ private const val logTag = "PlaceInfoScreen"
 object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
     override val buttonTitle = null
-    override val route = "placeinfoscreen/{lat}/{long}/{id}"
+    override val route = "placeinfoscreen/{id}"
     override val titleRes = null
 }
 
@@ -65,17 +63,10 @@ object PlaceInfoScreenDestination : NavigationDestination {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PlaceInfoScreen(
-    placeViewModel: PlaceInfoViewModel = viewModel(),
-    lat: String,
-    long: String,
+    placeViewModel: PlaceInfoViewModel = viewModel(factory = PlaceInfoViewModel.Factory),
     id: Int,
     navController: NavHostController
 ) {
-
-    LaunchedEffect(key1 = id) {
-        Log.d(logTag, "LaunchedEffect launched with key $id")
-        placeViewModel.loadPlaceInfo(lat = lat, long = long, id = id)
-    }
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
@@ -92,7 +83,7 @@ fun PlaceInfoScreen(
             when (result) {
                 // If you press refresh
                 SnackbarResult.ActionPerformed -> {
-                    placeViewModel.refresh(lat = lat, long = long, id = id)
+                    placeViewModel.refresh(id = id)
                 }
                 // If you click somewhere on the screen
                 SnackbarResult.Dismissed -> {
@@ -115,22 +106,23 @@ fun PlaceInfoScreen(
         snackbarHost = {
             SnackbarHost(hostState = placeUiState.snackbarHostState)
         }) {innerPadding ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding) // Padding for topbar
         ) {
-            when {
+            /*if (placeUiState.isLoading) {
                 // The content won't load before the content is ready
-                placeUiState.placeInfo.name.isEmpty() -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                else -> {
-                    ContentInfoScreen(placeUiState.placeInfo.description, placeUiState)
-                }
-            }
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            } else {*/
+            ContentInfoScreen(
+                description = placeUiState.placeInfo.description,
+                placeInfoUiState = placeUiState
+                )
+            //}
         }
     }
 }
@@ -158,7 +150,9 @@ fun PlacePicture() {
  * This exclude the top- and bottomBar
  */
 @Composable
-fun ContentInfoScreen(description: String, placeInfoUiState: PlaceInfoUiState) {
+fun ContentInfoScreen(
+    description: String,
+    placeInfoUiState: PlaceInfoUiState) {
     Column (
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.Center,
@@ -197,7 +191,7 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
         //The accurately forecast sunsets, always show this:
         if (placeInfoUiState.placeInfo.sunEvents.size > 3) {
             placeInfoUiState.placeInfo.sunEvents.subList(0, 3).forEach {
-                SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
+                SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
             }
 
             // Dropdown menu for long-term forecast, optional to show:
@@ -223,7 +217,7 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
             // Check if the arrow-icon is clicked on
             if (showLongTermForecast) {
                 placeInfoUiState.placeInfo.sunEvents.subList(3, placeInfoUiState.placeInfo.sunEvents.size).forEach {
-                    SunEventInfo(time = it.sunset.time, conditions = it.sunset.conditions)
+                    SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
                 }
             }
         }
@@ -232,15 +226,19 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
 
 @Composable
 fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
-    val dateString = if (time.dayOfYear == LocalDateTime.now().dayOfYear) {
-        // The current date we are formatting is today
-        "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
-    } else if (time.dayOfYear == LocalDateTime.now().plusDays(1).dayOfYear) {
-        // The current date we are formatting is tomorrow
-        "I Morgen ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
-    } else {
-        // The current date we are formatting is after tomorrow
-        time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+    val dateString = when (time.dayOfYear) {
+        LocalDateTime.now().dayOfYear -> {
+            // The current date we are formatting is today
+            "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+        }
+        LocalDateTime.now().plusDays(1).dayOfYear -> {
+            // The current date we are formatting is tomorrow
+            "I Morgen ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+        }
+        else -> {
+            // The current date we are formatting is after tomorrow
+            time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+        }
     }
 
     val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
