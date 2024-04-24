@@ -19,9 +19,11 @@ private const val logTag = "PlaceInfoRepository"
 interface PlaceRepository {
     suspend fun getAllPlaces(): List<PlaceInfo>
     suspend fun getPlace(id: Int): PlaceInfo
+    suspend fun getUserLocationPlace(): PlaceInfo
+    suspend fun updateUserLocationPlace(place: PlaceInfo)
     suspend fun getFavourites(): List<PlaceInfo>
     suspend fun getCustomPlaces(): List<PlaceInfo>
-    suspend fun insertCustomPlace(place: PlaceInfoEntity)
+    suspend fun insertCustomPlace(place: PlaceInfo)
     suspend fun removeCustomPlace(id: Int)
     suspend fun makeFavourite(id: Int)
     suspend fun unmakeFavourite(id: Int)
@@ -198,34 +200,6 @@ class PlaceRepositoryImpl(
     override suspend fun getPlace(placeId: Int): PlaceInfo {
         Log.d(logTag, "Trying to load place with id: $placeId from DB")
 
-        // Brukt til testing
-        /*return PlaceInfo(
-            id = 1,
-            name = "Holmenkollen",
-            description="Kjent topp med utsikt over Oslo",
-            lat="59.9640303",
-            long="10.6651817",
-            isFavourite=false,
-            isCustomPlace=false,
-            hasNotification=false,
-            images= emptyList(),
-            sunEvents= listOf(
-                SunEvent(
-                    time= LocalDateTime.parse("2024-04-16T20:38"),
-                    tempAtEvent="4.3",
-                    weatherIcon="clearsky_night",
-                    conditions=WeatherConditions(
-                        weatherRating= WeatherConditionsRating.EXCELLENT,
-                        cloudConditionLow= CloudConditions.CLEAR,
-                        cloudConditionMedium=CloudConditions.CLEAR,
-                        cloudConditionHigh=CloudConditions.CLEAR,
-                        airCondition= AirConditions.MID
-                    )
-                )
-            )
-        )*/
-
-
         val placeEntity: PlaceInfoEntity = placeInfoDao.getOnePlace(placeId = placeId)
 
         //TODO fetch images
@@ -246,9 +220,81 @@ class PlaceRepositoryImpl(
         )
     }
 
+    /**
+     *
+     */
+    override suspend fun getUserLocationPlace(): PlaceInfo {
+        Log.d(logTag, "Trying to load place with current user location from DB")
+
+        val placeEntity: PlaceInfoEntity = placeInfoDao.getUserLocationPlace()
+
+        //TODO fetch images
+        return PlaceInfo(
+            id = placeEntity.id,
+            name = placeEntity.name,
+            description = placeEntity.description,
+            lat = placeEntity.latitude,
+            long = placeEntity.longitude,
+            isFavourite = placeEntity.isFavourite,
+            isCustomPlace = placeEntity.isCustomPlace,
+            hasNotification = placeEntity.hasNotification,
+            images = emptyList(),
+            sunEvents = getForecastData(
+                placeId = placeEntity.id,
+                lat = placeEntity.latitude,
+                long = placeEntity.longitude)
+        )
+    }
+
+    /**
+     *
+     */
+    override suspend fun updateUserLocationPlace(place: PlaceInfo) {
+        val entity = PlaceInfoEntity(
+            id = place.id,
+            name = place.name,
+            description = place.description,
+            latitude = place.lat,
+            longitude = place.long,
+            isCustomPlace = place.isCustomPlace,
+            isFavourite = place.isFavourite,
+            hasNotification = place.hasNotification
+        )
+
+
+        placeInfoDao.update(entity)
+    }
+
+    /**
+     * TODO
+     */
     override suspend fun getFavourites(): List<PlaceInfo> {
-        TODO("Not yet implemented")
-        //placeInfoDao.getPlace(id)
+        val placesFromDb = placeInfoDao.getFavourites()
+
+        // Id there are noe favourites, return an empty list
+        if (placesFromDb.isEmpty()) {
+            return emptyList()
+        }
+
+        return placesFromDb.map {
+            // TODO get images from DB and convert to List<ImageDetails>
+            PlaceInfo(
+                id = it.id,
+                name = it.name,
+                description = it.description,
+                lat = it.latitude,
+                long = it.longitude,
+                isFavourite = it.isFavourite,
+                isCustomPlace = it.isCustomPlace,
+                hasNotification = false,
+                images = emptyList(),
+                sunEvents = getForecastData(
+                    placeId = it.id,
+                    lat = it.latitude,
+                    long = it.longitude
+                )
+            )
+        }
     }
 
     override suspend fun getCustomPlaces(): List<PlaceInfo> {
@@ -258,10 +304,10 @@ class PlaceRepositoryImpl(
 
 
 //works but should take another input
-    override suspend fun insertCustomPlace(place: PlaceInfoEntity){
+    override suspend fun insertCustomPlace(place: PlaceInfo){
         //input is PlaceInfo object
         //API is called so user can access weather forecast immidieately
-        placeInfoDao.insertCustomPlace(place)
+        //placeInfoDao.insertCustomPlace(place)
     }
 
     /**

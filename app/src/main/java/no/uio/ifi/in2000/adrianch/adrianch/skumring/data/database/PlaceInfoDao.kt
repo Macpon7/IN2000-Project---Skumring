@@ -13,7 +13,7 @@ interface PlaceInfoDao {
     @Update
     suspend fun update(place: PlaceInfoEntity)
 
-    @Query("SELECT * FROM placeInfo")
+    @Query("SELECT * FROM placeInfo WHERE id!=0")
     fun getAllPlaces(): List<PlaceInfoEntity>
     // for tester: fun getAllPlaces(): List<PlaceInfoEntity>
 
@@ -22,6 +22,9 @@ interface PlaceInfoDao {
 
     @Query("SELECT * FROM placeInfo WHERE id=:placeId")
     fun getOnePlace(placeId: Int): PlaceInfoEntity
+
+    @Query("SELECT * FROM placeInfo WHERE id=0")
+    fun getUserLocationPlace(): PlaceInfoEntity
 
     @Query("SELECT * FROM placeInfo WHERE is_favourite = 1")
     fun getFavourites(): List<PlaceInfoEntity>
