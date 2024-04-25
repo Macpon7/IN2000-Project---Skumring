@@ -39,11 +39,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
@@ -59,6 +66,41 @@ object PlaceInfoScreenDestination : NavigationDestination {
     override val route = "placeinfoscreen/{id}"
     override val titleRes = null
 }
+
+@Preview
+@Composable
+fun PreviewContentInfoScreen() {
+    ContentInfoScreen(
+        description = "",
+        placeInfoUiState = PlaceInfoUiState(
+           placeInfo = PlaceInfo(
+               id = 0,
+               name = "",
+               description = "",
+               lat = "",
+               long = "",
+               isFavourite = false,
+               isCustomPlace = false,
+               hasNotification = false,
+               images = emptyList(),
+               sunEvents = listOf(
+                   SunEvent(
+                       time = LocalDateTime.now(),
+                       tempAtEvent = "4.7",
+                       weatherIcon = "suncloudy",
+                       conditions = WeatherConditions(
+                           weatherRating = WeatherConditionsRating.EXCELLENT,
+                           cloudConditionLow = CloudConditions.CLEAR,
+                           cloudConditionHigh = CloudConditions.CLEAR,
+                           cloudConditionMedium = CloudConditions.CLEAR,
+                           airCondition = AirConditions.LOW
+                       )
+                   )
+               )
+           )
+        ))
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
