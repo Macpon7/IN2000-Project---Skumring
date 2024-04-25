@@ -70,6 +70,11 @@ fun PlaceInfoScreen(
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        placeViewModel.loadPlaceInfo(id = id)
+    }
+
+
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
         LaunchedEffect(placeUiState.snackbarHostState) {
