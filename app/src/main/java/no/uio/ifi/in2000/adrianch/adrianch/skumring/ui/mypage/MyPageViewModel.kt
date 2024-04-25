@@ -26,7 +26,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 
-private const val TAG = "MyPage"
+private const val TAG = "MyPageViewModel"
 data class MyPageUiState(
     val places: List<PlaceInfo> = emptyList(),
 
@@ -116,12 +116,12 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
 
 
     /**
-     * The function will add an image to the database by adding the path
+     * The function will add an image to the database by adding the path to the internal location where the image is stored
      */
     suspend fun addImage(contentUri: Uri, placeId: Int){
         Log.d(TAG,"contentUri: $contentUri, placeId is $placeId")
         val succeeded: Boolean = placeRepository.saveImageToInternalStorage(context = context, contentUri = contentUri, placeId = placeId)
-        Log.d("MyPage", "MyPageViewModel: succeeded adding $succeeded")
+        Log.d(TAG, "is image added to internal storage: $succeeded")
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
