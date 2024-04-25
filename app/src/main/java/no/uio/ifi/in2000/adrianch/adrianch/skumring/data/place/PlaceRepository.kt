@@ -1,6 +1,9 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place
 
 import android.util.Log
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao
@@ -47,12 +50,19 @@ class PlaceRepositoryImpl(
         // 3. Send back the list of PlaceInfo objects
 
         // The first result from DB is without forecast information
-        val allPlaces = getAllPlacesFromDb()
+        var allPlaces = getAllPlacesFromDb()
 
         // Here we fetch the forecast info for each place
-        // TODO parallelize these calls
-        allPlaces.forEach {
-            it.sunEvents = getForecastData(it.id, it.lat, it.long)
+        runBlocking {
+            allPlaces = allPlaces.map {
+                async {
+                    it.copy(sunEvents = getForecastData(
+                        placeId = it.id,
+                        lat = it.lat,
+                        long = it.long)
+                    )
+                }
+            }.awaitAll()
         }
 
         return allPlaces
