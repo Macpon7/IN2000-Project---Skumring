@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
+    <string name="app_name">Skumring</string>
     <string name="back_button">Back</string>
     <string name="nav_map_button">Map</string>
     <string name="nav_home_button">Home</string>
@@ -26,10 +27,25 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <!-- SettingsScreen -->
-    <string name="theme_option">Display mode</string>
-    <string name="language_option">Language</string>
-    <string name="distance_unit">Distances</string>
-    <string name="temp_unit">Temperatures</string>
+    <string name="settings">Settings</string>
+
+    <string name="choose_theme">Choose theme</string>
+    <string name="theme">Theme</string>
+    <string name="follow_system">Follow system</string>
+
+    <string name="choose_default_location">Choose default location</string>
+    <string name="costum_location">Costum location</string>
+    <string name="phones_location">Phone location</string>
+
+    <string name="norwegian">Norwegian</string>
+    <string name="english">English</string>
+    <string name="choose_language">Choose language</string>
+
+    <string name="means_of_transportation">Means of transportation</string>
+    <string name="walk">Walk</string>
+    <string name="bike">Bike</string>
+    <string name="drive">Drive</string>
+
     <!-- MyPageScreen -->
     <string name="no_location">You have no locations saved yet</string>
     <string name="new_location">New location added!</string>

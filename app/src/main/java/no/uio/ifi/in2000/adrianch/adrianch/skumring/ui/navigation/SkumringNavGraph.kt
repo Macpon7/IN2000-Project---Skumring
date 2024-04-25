@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -18,6 +17,8 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreen
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreenDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.SettingsScreen
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.SettingsScreenDestination
 
 @Composable
 fun SkumringNavHost(
@@ -54,6 +55,9 @@ fun SkumringNavHost(
                     id = id
                 )
             }
+        }
+        composable(route = SettingsScreenDestination.route) {
+            SettingsScreen(navController = navController)
         }
     }
 }

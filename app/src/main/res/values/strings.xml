@@ -27,10 +27,28 @@
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
     <!-- SettingsScreen -->
-    <string name="theme_option">Fargemodus</string>
-    <string name="language_option">Språk</string>
-    <string name="distance_unit">Avstander</string>
-    <string name="temp_unit">Temperatur</string>
+    <string name="settings">Innstillinger</string>
+
+    <string name="choose_theme">Velg tema</string>
+    <string name="theme">Tema</string>
+    <string name="follow_system">Følg systemet</string>
+
+    <string name="choose_default_location">Velg standard lokasjon</string>
+    <string name="costum_location">Egendefinert sted</string>
+    <string name="phones_location">Phone location</string>
+
+    <string name="light_mode" translatable="false">Light mode</string>
+    <string name="dark_mode" translatable="false">Dark mode</string>
+
+    <string name="norwegian">Norsk</string>
+    <string name="english">Engelsk</string>
+    <string name="choose_language">Velg språk</string>
+
+    <string name="means_of_transportation">Velg fremkomstmiddel</string>
+    <string name="walk">Gå</string>
+    <string name="bike">Sykle</string>
+    <string name="drive">Kjøre</string>
+
     <!-- MyPageScreen -->
     <string name="no_location">Ingen lokasjon lagret</string>
     <string name="new_location">Ny plassering lagt til!</string>
