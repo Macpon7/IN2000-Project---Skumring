@@ -26,7 +26,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 
-private const val TAG = "MyPageViewModel"
+private const val TAG = "MyPage"
 data class MyPageUiState(
     val places: List<PlaceInfo> = emptyList(),
 
@@ -115,22 +115,15 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
     // TODO can a place be added without a picture? This is not fixed
 
 
-    /*
-    fun uploadNewImage(uri: String){
-        viewModelScope.launch(Dispatchers.IO) {
-            placeInfoRepository.insertImage(uri)
-        }
-    }
-
-     */
     /**
-     * Update the imageUri variable when the picture is added in mypagescreen
+     * The function will add an image to the database by adding the path
      */
-
-    suspend fun addNewLocation(contentUri: Uri, fileName: String){
-        Log.d(TAG,"contentUri: $contentUri, filename is $fileName")
-        placeRepository.saveImageToInternalStorage(context = context, contentUri = contentUri, fileName = fileName)
+    suspend fun addImage(contentUri: Uri, placeId: Int){
+        Log.d(TAG,"contentUri: $contentUri, placeId is $placeId")
+        val succeeded: Boolean = placeRepository.saveImageToInternalStorage(context = context, contentUri = contentUri, placeId = placeId)
+        Log.d("MyPage", "MyPageViewModel: succeeded adding $succeeded")
     }
+
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateImageUri(uri : Uri?) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -189,11 +182,19 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
                     )
                 } else {
                     //TODO save as new place
+                    //If image is not
+
+                    Log.d(TAG, "In MyPageViewModel Uri is ${newPlaceUiState.value.imageUri}")
+                    newPlaceUiState.value.imageUri?.let { addImage(contentUri = it, placeId = 0) //TODO make this the placeId that is generated for the new place
+                    Log.d(TAG, "saving image")}
+                    hideNewForm()
+                    resetNewPlaceUiState()
                     currentNewPlaceUiState.copy()
                 }
             }
         }
     }
+
 
 
     /**
