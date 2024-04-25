@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +51,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-private const val logTag = "PlaceInfoScreen"
+private const val TAG = "PlaceInfoScreen"
 
 object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
@@ -69,6 +70,12 @@ fun PlaceInfoScreen(
 ) {
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        Log.d(TAG, "LaunchedEffect called, loading place with id: $id")
+        placeViewModel.loadPlaceInfo(id = id)
+    }
+
 
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
@@ -93,19 +100,15 @@ fun PlaceInfoScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            SkumringTopBar(
-                title = placeUiState.placeInfo.name,
-                canNavigateBack = true,
-                navigateUp = { navController.popBackStack() })
-        },
-        bottomBar = {
-            SkumringBottomBar(navController = navController)
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = placeUiState.snackbarHostState)
-        }) {innerPadding ->
+    Scaffold(topBar = {
+        SkumringTopBar(title = placeUiState.placeInfo.name,
+            canNavigateBack = true,
+            navigateUp = { navController.popBackStack() })
+    }, bottomBar = {
+        SkumringBottomBar(navController = navController)
+    }, snackbarHost = {
+        SnackbarHost(hostState = placeUiState.snackbarHostState)
+    }) { innerPadding ->
 
         Box(
             modifier = Modifier
@@ -119,9 +122,8 @@ fun PlaceInfoScreen(
                 )
             } else {*/
             ContentInfoScreen(
-                description = placeUiState.placeInfo.description,
-                placeInfoUiState = placeUiState
-                )
+                description = placeUiState.placeInfo.description, placeInfoUiState = placeUiState
+            )
             //}
         }
     }
@@ -139,8 +141,7 @@ fun PlacePicture() {
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
         Text(
-            text = "Place Display Placeholder",
-            modifier = Modifier.align(Alignment.Center)
+            text = "Place Display Placeholder", modifier = Modifier.align(Alignment.Center)
         )
     }
 }
@@ -151,12 +152,13 @@ fun PlacePicture() {
  */
 @Composable
 fun ContentInfoScreen(
-    description: String,
-    placeInfoUiState: PlaceInfoUiState) {
-    Column (
+    description: String, placeInfoUiState: PlaceInfoUiState
+) {
+    Column(
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         //Picture of the place:
         PlacePicture()
 
@@ -195,15 +197,11 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
             }
 
             // Dropdown menu for long-term forecast, optional to show:
-            Row(
-                modifier = Modifier
-                    .clickable { showLongTermForecast = !showLongTermForecast }
-                    .padding(top = 6.dp)
-            ) {
+            Row(modifier = Modifier
+                .clickable { showLongTermForecast = !showLongTermForecast }
+                .padding(top = 6.dp)) {
                 Text(
-                    text = "Langtidsvarsel:",
-                    fontSize = 20.sp,
-                    modifier = Modifier.weight(1f)
+                    text = "Langtidsvarsel:", fontSize = 20.sp, modifier = Modifier.weight(1f)
                 )
                 Icon(
                     imageVector = if (showLongTermForecast) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
@@ -216,7 +214,9 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
 
             // Check if the arrow-icon is clicked on
             if (showLongTermForecast) {
-                placeInfoUiState.placeInfo.sunEvents.subList(3, placeInfoUiState.placeInfo.sunEvents.size).forEach {
+                placeInfoUiState.placeInfo.sunEvents.subList(
+                    3, placeInfoUiState.placeInfo.sunEvents.size
+                ).forEach {
                     SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
                 }
             }
@@ -231,10 +231,18 @@ fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
             // The current date we are formatting is today
             "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
         }
+
         LocalDateTime.now().plusDays(1).dayOfYear -> {
             // The current date we are formatting is tomorrow
-            "I Morgen ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+            "I Morgen ${
+                time.format(
+                    DateTimeFormatter.ofPattern(
+                        "d'.' MMMM':'", Locale.getDefault()
+                    )
+                )
+            }"
         }
+
         else -> {
             // The current date we are formatting is after tomorrow
             time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
@@ -250,19 +258,16 @@ fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
     }
 
     SunEventInfoCard(
-        dateString = dateString,
-        timeString = timeString,
-        conditionsString = conditionsString
+        dateString = dateString, timeString = timeString, conditionsString = conditionsString
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 12.dp),
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 12.dp),
         onClick = { /* Click listener goes here */ } // TODO Make a button to show more
     ) {
         Column(
@@ -288,9 +293,7 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
 
             // Good vs. bad weather:
             Text(
-                text = conditionsString,
-                textAlign = TextAlign.Start,
-                fontSize = 14.sp
+                text = conditionsString, textAlign = TextAlign.Start, fontSize = 14.sp
             )
         }
     }

@@ -18,17 +18,30 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 class ListCard {
 }
+
+/**
+ * Cards with information about places
+ */
+@Preview
+@Composable
+fun ListCardPreview () {
+    ListCard(name = "Holmenkollen stadion", description = "Holmenkollen er et fantastisk fint sted å ta bilde av dine nære og kjære under en utrolig fin solnedgang", isFavourite = false, onItemClick = {}, onFavouriteClick = {})
+}
+
 /**
  * Cards with information about places
  */
@@ -42,8 +55,8 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick), //Click to infoscreen
-            ){
+                    .clickable(onClick = onItemClick) //Click to infoscreen
+            ) {
 
                 //Box for picture:
                 Box(
@@ -57,50 +70,65 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-
-                Row (
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+                Box( //Box for content description
                     modifier = Modifier
+                        .height(100.dp)
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
-                )
-                {
-                    Text(
-                        text = name,
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .padding(vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 8.dp)
                     )
-                    Row {
-                        IconButton(onClick = { onFavouriteClick() }) {
-                            if (isFavourite) {
-                                Icon(imageVector = Icons.Filled.Favorite, contentDescription = "")
-                            } else {
-                                Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
+                    {
+                        Text(
+                            text = name,
+                            modifier = Modifier
+                                .padding(vertical = 2.dp),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                        Row {
+                            IconButton(onClick = { onFavouriteClick() }) {
+                                if (isFavourite) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Favorite,
+                                        contentDescription = "",
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Filled.FavoriteBorder,
+                                        contentDescription = "",
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
 
+                                }
                             }
                         }
                     }
+                    //Text for description. Do we want weather condition in the future?
+                    Text(
+                        text = description,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier
+                            .padding(vertical = 2.dp, horizontal = 8.dp)
+                            .padding(bottom = 6.dp)
+                           .align(Alignment.BottomStart)
+                    )
                 }
-
-                //Text for description. Do we want weather condition in the future?
-                Text(
-                    text = description,
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally))
             }
         } else {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick), //Click to infoscreen
-            ){
-
+                    .clickable(onClick = onItemClick) //Click to infoscreen
+            ) {
                 //Box for picture:
                 Box(
                     modifier = Modifier
@@ -113,38 +141,57 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-
-                Row (
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
+                Box( //Box for content description
                     modifier = Modifier
+                        .height(100.dp)
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
-                )
-                {
-                    Text(
-                        text = name,
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .padding(vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 8.dp),
                     )
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Row {
-                        IconButton(onClick = { onFavouriteClick() }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
+                    {
+                        Text(
+                            text = name,
+                            modifier = Modifier
+                                .padding(vertical = 2.dp),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        Row {
+                            IconButton(onClick = { onFavouriteClick() }) {
+                                if (isFavourite) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Favorite,
+                                        contentDescription = "",
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Filled.FavoriteBorder,
+                                        contentDescription = "",
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                }
+                            }
                         }
                     }
+                    //Text for description. Do we want weather condition in the future?
+                    Text(
+                        text = description,
+                        modifier = Modifier
+                            .padding(vertical = 2.dp, horizontal = 10.dp)
+                            .padding(bottom = 8.dp)
+                            .align(Alignment.BottomCenter),
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
                 }
-
-                //Text for description. Do we want weather condition in the future?
-                Text(
-                    text = description,
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
             }
         }
     }

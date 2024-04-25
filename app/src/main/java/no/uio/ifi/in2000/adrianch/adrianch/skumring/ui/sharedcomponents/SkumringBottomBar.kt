@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents
 
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -32,7 +33,7 @@ fun SkumringBottomBar(
 
     NavigationBar(
         modifier = modifier,
-        containerColor = Color.LightGray,
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -70,8 +71,8 @@ fun SkumringBottomBar(
                         }
                     }
                 },
-                colors = NavigationBarItemDefaults.colors(
-                    unselectedTextColor = Color.Gray, selectedTextColor = Color.White
+               colors = NavigationBarItemDefaults.colors(
+                 unselectedTextColor = MaterialTheme.colorScheme.inverseOnSurface, selectedTextColor = MaterialTheme.colorScheme.inverseOnSurface,
                 ),
             )
         }
