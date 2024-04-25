@@ -367,11 +367,10 @@ BoxWithConstraints {
             ) {
                 Box(
                     //List and list icon
-                    contentAlignment = Alignment.CenterStart,
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .width(buttonWidth / 2)
                         .height(buttonHeight)
-                        .padding(start = 80.dp),
                 ) {
                     Icon(
                         modifier = Modifier
@@ -379,15 +378,15 @@ BoxWithConstraints {
                             .padding(start = 10.dp),
                         imageVector = Icons.Default.Menu,
                         contentDescription = "Theme Icon",
-                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
+                        tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                        else MaterialTheme.colorScheme.secondary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
                         text = "List",
                         style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
+                        color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                        else MaterialTheme.colorScheme.secondary
                     )
                 }
                 Box( //map and map icon
