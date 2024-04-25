@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 
-
+//helper functions
 //kode for default steder og custom steder
 class ImageRepository(private val context: Context) {
     //Note:    //kombinere ID og navn til en string. hvert sted har sin mappe
