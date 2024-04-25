@@ -3,26 +3,19 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarResult
@@ -233,35 +226,8 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
             .fillMaxWidth()
     ) {
         //The accurately forecast sunsets, always show this:
-        if (placeInfoUiState.placeInfo.sunEvents.size > 3) {
-            placeInfoUiState.placeInfo.sunEvents.subList(0, 3).forEach {
-                SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
-            }
-
-            // Dropdown menu for long-term forecast, optional to show:
-            Row(modifier = Modifier
-                .clickable { showLongTermForecast = !showLongTermForecast }
-                .padding(top = 6.dp)) {
-                Text(
-                    text = "Langtidsvarsel:", fontSize = 20.sp, modifier = Modifier.weight(1f)
-                )
-                Icon(
-                    imageVector = if (showLongTermForecast) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = "Toggle Long Term Forecast",
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .size(36.dp)
-                )
-            }
-
-            // Check if the arrow-icon is clicked on
-            if (showLongTermForecast) {
-                placeInfoUiState.placeInfo.sunEvents.subList(
-                    3, placeInfoUiState.placeInfo.sunEvents.size
-                ).forEach {
-                    SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
-                }
-            }
+        placeInfoUiState.placeInfo.sunEvents.forEach {
+            SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
         }
     }
 }

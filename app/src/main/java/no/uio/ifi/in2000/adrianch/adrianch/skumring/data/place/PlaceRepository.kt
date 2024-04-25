@@ -1,9 +1,20 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place
 
+import android.content.ContentResolver
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
@@ -12,9 +23,13 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.LocationForeca
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 import java.time.LocalDateTime
 
-private const val logTag = "PlaceInfoRepository"
+private const val TAG = "PlaceRepository"
 
 interface PlaceRepository {
     suspend fun getAllPlaces(): List<PlaceInfo>
@@ -26,6 +41,8 @@ interface PlaceRepository {
     suspend fun removeCustomPlace(id: Int)
     suspend fun makeFavourite(id: Int)
     suspend fun unmakeFavourite(id: Int)
+    suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int): Boolean
+
 }
 class PlaceRepositoryImpl(
     //Creates and initializes the database
@@ -40,6 +57,53 @@ class PlaceRepositoryImpl(
         // If we need to do anything on initialization of DB, this is the place to do it
     }
 
+    //Image database implementation
+    fun insertImagePath(path: String){
+        //TODO endre argumentet til ImageEntity slik at placeId ikke er 1, men id til det nyopprettete stedet
+        val imageEntity: ImageEntity = ImageEntity(placeId = 1, imgPath = path)
+        imageDao.insertSingleImage(imageEntity)
+    }
+
+
+
+     override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int): Boolean {
+        return withContext(Dispatchers.IO) {
+            var inputStream: InputStream? = null
+            var outputStream: FileOutputStream? = null
+            try {
+                val contentResolver: ContentResolver = context.contentResolver
+                inputStream = contentResolver.openInputStream(contentUri)
+                val bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
+
+                val fileDir = File(context.filesDir, "/placeImages/")
+                if (!fileDir.exists()) {
+                    fileDir.mkdir()
+                }
+
+                val fileName = "$placeId.jpg"
+                val file = File(fileDir, fileName)
+
+                outputStream = FileOutputStream(file)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                insertImagePath("/placeImages/$fileName")
+                Log.d("MyPage", "added to database")
+                Log.d("MyPage", "the new path is /placeImages/$fileName")
+
+                return@withContext true
+            } catch (e: IOException) {
+                Log.e(TAG, "Error saving image", e)
+                e.printStackTrace()
+                return@withContext false
+            } finally {
+                inputStream?.close()
+                outputStream?.close()
+            }
+        }
+    }
+
+    //bruke ImageDetails() under model
+
+
     override suspend fun getAllPlaces(): List<PlaceInfo> {
         //TODO("Not yet implemented")
         // 1. Get all places from DB (missing SunEvents)
@@ -47,12 +111,19 @@ class PlaceRepositoryImpl(
         // 3. Send back the list of PlaceInfo objects
 
         // The first result from DB is without forecast information
-        val allPlaces = getAllPlacesFromDb()
+        var allPlaces = getAllPlacesFromDb()
 
         // Here we fetch the forecast info for each place
-        // TODO parallelize these calls
-        allPlaces.forEach {
-            it.sunEvents = getForecastData(it.id, it.lat, it.long)
+        runBlocking {
+            allPlaces = allPlaces.map {
+                async {
+                    it.copy(sunEvents = getForecastData(
+                        placeId = it.id,
+                        lat = it.lat,
+                        long = it.long)
+                    )
+                }
+            }.awaitAll()
         }
 
         return allPlaces
@@ -123,7 +194,10 @@ class PlaceRepositoryImpl(
         val fullForecast = locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
 
         // Group all the forecast data by date
-        val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
+        var forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }.toSortedMap()
+
+        // Remove all data that is long term forecast. This means that we only keep the data for today, tomorrow, and the day after tomorrow
+        forecastGroupedByDate = forecastGroupedByDate.headMap(forecastGroupedByDate.keys.elementAt(3))
 
         // Send our map to a function which will return a list of SunEvent objects
         return forecastRepository.makeSunEvents(
@@ -197,7 +271,7 @@ class PlaceRepositoryImpl(
      * Gets a PlaceInfo object from our database, given an id
      */
     override suspend fun getPlace(placeId: Int): PlaceInfo {
-        Log.d(logTag, "Trying to load place with id: $placeId from DB")
+        Log.d(TAG, "Trying to load place with id: $placeId from DB")
 
         val placeEntity: PlaceInfoEntity = placeInfoDao.getOnePlace(placeId = placeId)
 
@@ -223,7 +297,7 @@ class PlaceRepositoryImpl(
      *
      */
     override suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo {
-        Log.d(logTag, "Trying to create PlaceInfo object at user's current location")
+        Log.d(TAG, "Trying to create PlaceInfo object at user's current location")
 
         //TODO fetch images
         return PlaceInfo(
@@ -314,13 +388,7 @@ class PlaceRepositoryImpl(
         placeInfoDao.unmarkAsFavorite(placeId)
     }
 
-    //Image features
 
-    suspend fun insertDefaultImage(path: String){
-        //painterResource(R.drawable.solnedgang)
-       // var imageEntity: ImageEntity = ImageEntity(placeId = 1, )
-        //imageDao.insert()
-    }
 }
 
 

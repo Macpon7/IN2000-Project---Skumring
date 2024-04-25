@@ -10,13 +10,14 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherPerHou
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.SortedMap
 import kotlin.math.abs
 
 private const val TAG = "PlaceInfoRepository" //log for error-handling
 
 interface ForecastRepository {
     suspend fun makeSunEvents(
-        forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>, lat: String, long: String
+        forecastGroupedByDate: SortedMap<LocalDate, List<WeatherPerHour>>, lat: String, long: String
     ): List<SunEvent>
 
     suspend fun findClosestWeather(
@@ -49,7 +50,7 @@ class ForecastRepositoryImpl(
      * the time of sunset and a statement on the conditions for photography.
      */
     override suspend fun makeSunEvents(
-        forecastGroupedByDate: Map<LocalDate, List<WeatherPerHour>>, lat: String, long: String
+        forecastGroupedByDate: SortedMap<LocalDate, List<WeatherPerHour>>, lat: String, long: String
     ): List<SunEvent> {
         // The list we will eventually return
         val sunEventsList = mutableListOf<SunEvent>()

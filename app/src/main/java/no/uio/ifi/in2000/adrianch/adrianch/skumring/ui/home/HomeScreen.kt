@@ -1,9 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,8 +31,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -62,9 +57,13 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherDetails
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherPerHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
+import java.time.LocalDateTime
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
@@ -92,6 +91,12 @@ fun HomeScreen(
     LaunchedEffect(true) {
         locationPermissions.launchMultiplePermissionRequest()
     }
+
+    //Load information for the HomeScreen every time the user navigates here
+    LaunchedEffect(Unit) {
+        homeViewModel.loadHomeScreen()
+    }
+
     Scaffold(
         topBar = {
             SkumringTopBar(
@@ -110,7 +115,7 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
-            SunsetInfoCard(homeUiState.sunsetTime, homeUiState.weatherConditions, homeUiState.temp) //add blueHourTime and goldenHourTime later
+            SunsetInfoCard(homeUiState.sunsetTime, homeUiState.weatherConditions, homeUiState.temp, homeUiState.sunsetWeatherIcon)//add blueHourTime and goldenHourTime later
             Text(
                 text = stringResource(R.string.home_favourite_places),
                 style = MaterialTheme.typography.headlineSmall,
@@ -129,13 +134,12 @@ fun HomeScreen(
  * An infocard in HomeScreen that shows time for sunset, sunset weather conditions, golden hour and blue hour at the users location
  */
 @Composable
-fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRating, temp: String) { //, add goldenHourTime: String, blueHourTime: String later
+fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRating, temp: String, icon: String?) { //, add goldenHourTime: String, blueHourTime: String later
     Card(
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
-
     ) {
         Box( //Need box as an overlay over card for color gradient
             modifier = Modifier
@@ -194,23 +198,24 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                         textAlign = TextAlign.Center,
                     )
                 }
-                    Box { //Weather icon and temperature at sunset, in box because it needs to overlap
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.weathersymbolcloudy), //Change to dynamic icon when possible
-                            contentDescription = "Weather icon cloudy",
-                            tint = Color.Unspecified,
-                            modifier = Modifier
-                                .padding(start = 45.dp) //To get the icon in the middle of the screen
-                        )
+                if (icon != null) {
+                    WeatherIconCheck(weatherCondition = icon) //shows the icon that fits the weather forecast
+                } else {
+                    Icon ( //if icon is null, "show image not found"
+                        painterResource(id = R.drawable.image_not_found),
+                        contentDescription = "Weather icon cloudy",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(140.dp)
+                    )
+                }
                         Text(
                             text = "$temp °C",
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier
-                                .align(Alignment.BottomCenter)
+                               // .align(Alignment.BottomCenter)
                                 .padding(bottom = 5.dp)
                         )
-                    }
                 Divider( //for dividing sunset today info from golden hour and blue hour times
                     modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
