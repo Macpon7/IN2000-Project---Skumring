@@ -42,6 +42,7 @@ class RoomConverters {
         // This expression will be true if int==1, and false in every other case
         return int == 1
     }
+
 }
 
 
