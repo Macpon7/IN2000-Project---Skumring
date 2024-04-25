@@ -195,8 +195,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                 if (icon != null) {
                     WeatherIconCheck(weatherCondition = icon) //shows the icon that fits the weather forecast
                 } else {
-                    //if icon is null, "show image not found"
-                    Icon (
+                    Icon ( //if icon is null, "show image not found"
                         painterResource(id = R.drawable.image_not_found),
                         contentDescription = "Weather icon cloudy",
                         tint = Color.Unspecified,
