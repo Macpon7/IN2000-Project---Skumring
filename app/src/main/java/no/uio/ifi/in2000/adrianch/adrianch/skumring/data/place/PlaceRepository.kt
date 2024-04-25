@@ -26,7 +26,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.time.LocalDateTime
 
-private const val logTag = "PlaceRepository"
+private const val TAG = "PlaceRepository"
 
 interface PlaceRepository {
     suspend fun getAllPlaces(): List<PlaceInfo>
@@ -62,10 +62,7 @@ class PlaceRepositoryImpl(
 
 
 
-
-
-    //henter fra viewmodelfacoty
-    override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int): Boolean {
+     override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int): Boolean {
         return withContext(Dispatchers.IO) {
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
@@ -90,7 +87,7 @@ class PlaceRepositoryImpl(
 
                 return@withContext true
             } catch (e: IOException) {
-                Log.e(logTag, "Error saving image", e)
+                Log.e(TAG, "Error saving image", e)
                 e.printStackTrace()
                 return@withContext false
             } finally {
@@ -260,7 +257,7 @@ class PlaceRepositoryImpl(
      * Gets a PlaceInfo object from our database, given an id
      */
     override suspend fun getPlace(placeId: Int): PlaceInfo {
-        Log.d(logTag, "Trying to load place with id: $placeId from DB")
+        Log.d(TAG, "Trying to load place with id: $placeId from DB")
 
         val placeEntity: PlaceInfoEntity = placeInfoDao.getOnePlace(placeId = placeId)
 
@@ -286,7 +283,7 @@ class PlaceRepositoryImpl(
      *
      */
     override suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo {
-        Log.d(logTag, "Trying to create PlaceInfo object at user's current location")
+        Log.d(TAG, "Trying to create PlaceInfo object at user's current location")
 
         //TODO fetch images
         return PlaceInfo(
@@ -377,13 +374,7 @@ class PlaceRepositoryImpl(
         placeInfoDao.unmarkAsFavorite(placeId)
     }
 
-    //Image features
 
-    suspend fun insertDefaultImage(path: String){
-        //painterResource(R.drawable.solnedgang)
-       // var imageEntity: ImageEntity = ImageEntity(placeId = 1, )
-        //imageDao.insert()
-    }
 }
 
 
