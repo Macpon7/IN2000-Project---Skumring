@@ -1,5 +1,4 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
-import android.net.Uri
 import androidx.room.TypeConverter
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -44,21 +43,6 @@ class RoomConverters {
         return int == 1
     }
 
-    /**
-     * Converts string to Uri
-     */
-    @TypeConverter
-    fun convertStringtoUri(string: String): Uri {
-        return Uri.parse(string)
-    }
-
-    /**
-     * Converts Uri to String
-     */
-    @TypeConverter
-    fun convertUriToString(uri: Uri): String{
-        return uri.toString()
-    }
 }
 
 
