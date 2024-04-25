@@ -180,12 +180,15 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                 ExposedDropdownMenuDefaults.TrailingIcon(
                 expanded = settingsUiState.dropdownExpandedTheme)},
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            /*
             leadingIcon = {
                 Icon( // TODO
                     imageVector = settingsUiState.theme.iconImageVector,
                     contentDescription = "FOLLOW_SYSTEM"
                 )
             }
+
+             */
         )
         ExposedDropdownMenu(
             modifier = Modifier.fillMaxWidth(),
@@ -200,12 +203,15 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                         theme = Theme.FOLLOW_SYSTEM
                     )
                 },
+                /*
                 leadingIcon = {
                     Icon( // TODO
                         imageVector = Icons.Outlined.Settings,
                         contentDescription = "FOLLOW_SYSTEM"
                     )
                 }
+
+                 */
             )
             DropdownMenuItem(
                 modifier = Modifier,
