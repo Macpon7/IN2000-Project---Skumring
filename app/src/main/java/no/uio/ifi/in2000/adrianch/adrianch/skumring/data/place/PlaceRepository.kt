@@ -123,7 +123,10 @@ class PlaceRepositoryImpl(
         val fullForecast = locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
 
         // Group all the forecast data by date
-        val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
+        var forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }.toSortedMap()
+
+        // Remove all data that is long term forecast. This means that we only keep the data for today, tomorrow, and the day after tomorrow
+        forecastGroupedByDate = forecastGroupedByDate.headMap(forecastGroupedByDate.keys.elementAt(3))
 
         // Send our map to a function which will return a list of SunEvent objects
         return forecastRepository.makeSunEvents(
