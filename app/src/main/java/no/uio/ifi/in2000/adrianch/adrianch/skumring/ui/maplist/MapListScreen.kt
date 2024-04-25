@@ -20,22 +20,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Place
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -54,14 +48,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -514,132 +505,5 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 true
             }
         )
-    }
-}
-
-/**
- * Cards with information about places
- */
-@Composable
-fun ListCard(name: String, description: String, onItemClick: () -> Unit) {
-    BoxWithConstraints {
-        if (maxWidth < 400.dp) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick) //Click to infoscreen
-
-
-            ){
-
-                //Box for picture:
-                Box(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Image Placeholder",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                Row (
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
-                )
-                {
-                    Text(
-                        text = name,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                    Row {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "", tint = MaterialTheme.colorScheme.onSecondaryContainer)
-
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "", tint = MaterialTheme.colorScheme.onSecondaryContainer)
-                        }
-                    }
-                }
-
-                //Text for description. Do we want weather condition in the future?
-                Text(
-                    text = description,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally))
-            }
-        } else {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
-                    .clickable(onClick = onItemClick), //Click to infoscreen
-            ){
-
-                //Box for picture:
-                Box(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Image Placeholder",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-
-                Row (
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
-                )
-                {
-                    Text(
-                        text = name,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Row {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "", tint = MaterialTheme.colorScheme.onSecondaryContainer )
-                        }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(imageVector = Icons.Filled.Notifications, contentDescription = "", tint = MaterialTheme.colorScheme.onSecondaryContainer)
-                        }
-                    }
-                }
-
-                //Text for description. Do we want weather condition in the future?
-                Text(
-                    text = description,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-            }
-        }
     }
 }
