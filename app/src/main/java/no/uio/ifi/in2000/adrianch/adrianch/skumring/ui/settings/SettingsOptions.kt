@@ -17,11 +17,11 @@ enum class Language {
 }
 
 enum class Location {
-    COSTUME_LOCATION,
+    COSTUM_LOCATION,
     PHONES_LOCATION
 }
 
-enum class Show_Location_as {
+enum class LocationAs {
     DRIVE,
     BIKE,
     WALK
