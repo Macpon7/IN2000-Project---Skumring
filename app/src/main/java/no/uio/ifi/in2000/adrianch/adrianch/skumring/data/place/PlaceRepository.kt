@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
@@ -25,7 +26,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.time.LocalDateTime
 
-private const val logTag = "PlaceInfoRepository"
+private const val logTag = "PlaceRepository"
 
 interface PlaceRepository {
     suspend fun getAllPlaces(): List<PlaceInfo>
@@ -37,7 +38,7 @@ interface PlaceRepository {
     suspend fun removeCustomPlace(id: Int)
     suspend fun makeFavourite(id: Int)
     suspend fun unmakeFavourite(id: Int)
-    suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, fileName: String): Boolean
+    suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int): Boolean
 
 }
 class PlaceRepositoryImpl(
@@ -54,42 +55,17 @@ class PlaceRepositoryImpl(
     }
 
     //Image database implementation
-    //fun insertImagePath(path: String){
-    //    val imageEntity: ImageEntity = ImageEntity(imgPath = path)
-     //   imageDao.insertSingleImage(imageEntity)
-    //}
-
-
-    //https://www.youtube.com/watch?v=4Ob0plBL084
-
-    //flyttes til viewModelen?
-    /*fun uriParserToBytes(uriString: String){
-        val uri = Uri.parse(uriString)
-        val Bytes = contentResolver.openInputStream(uri)?.use{
-            it.readBytes()
-        }
-        return Bytes
+    fun insertImagePath(path: String){
+        val imageEntity: ImageEntity = ImageEntity(placeId = 1, imgPath = path)
+        imageDao.insertSingleImage(imageEntity)
     }
 
-    fun saveToInternalLocalStorage(bytes: Bytes, filesDir: File, filename: String){
-        val file = File(filesDir, filename)
-       FileOutputStream(file).use{
-            it.write()
-        }
-        return file.toURI() //to get the path to internal storage
-    }
 
-        ///data/data/your.app.package.name/files/
-    ///data/data/your.app.package.name/files/image.jpg
 
-    suspend fun checkIsImageDefault(placeId: String){
-        val result: Unit = imageDao.checkDefaultImage(placeId)
-        if (result == true)
-    }
-    */
+
 
     //henter fra viewmodelfacoty
-    override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, fileName: String): Boolean {
+    override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int): Boolean {
         return withContext(Dispatchers.IO) {
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
@@ -98,18 +74,23 @@ class PlaceRepositoryImpl(
                 inputStream = contentResolver.openInputStream(contentUri)
                 val bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
 
-                val fileDir: File = context.filesDir
-               // val fileName = "image.jpg"
+                val fileDir = File(context.filesDir, "/placeImages/")
+                if (!fileDir.exists()) {
+                    fileDir.mkdir()
+                }
+
+                val fileName = "$placeId.jpg"
                 val file = File(fileDir, fileName)
 
                 outputStream = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                val path = file.absolutePath
-                Log.d(logTag, path)
-
+                insertImagePath("/placeImages/$fileName")
+                Log.d("MyPage", "added to database")
+                Log.d("MyPage", "the new path is /placeImages/$fileName")
 
                 return@withContext true
             } catch (e: IOException) {
+                Log.e(logTag, "Error saving image", e)
                 e.printStackTrace()
                 return@withContext false
             } finally {
