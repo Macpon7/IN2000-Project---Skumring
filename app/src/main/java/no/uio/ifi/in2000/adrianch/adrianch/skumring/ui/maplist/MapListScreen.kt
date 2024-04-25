@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Place
@@ -46,12 +47,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -166,10 +172,8 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
      */
 
-    ThemeSwitcher (
+    ToggleButtonThemeSwitcher (
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
-        size = 65.dp, //Size of the button
-        padding = 3.dp,
         onClick = { mapListViewModel.toggleMapListState() }
     )
     Surface {
@@ -213,103 +217,214 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
 }
 
+
 /**
- * Creates the toggle button. Switches between list view and map view
+ * Preview function for ToggleButtonThemeSwitcher
+ */
+@Preview
+@Composable
+fun ToggleButtonThemeSwitcherPreview() {
+    var isMapTheme by remember { mutableStateOf(false) }
+    ToggleButtonThemeSwitcher(
+        mapTheme = isMapTheme,
+        onClick = { isMapTheme = !isMapTheme }
+    )
+}
+
+
+
+/**
+ * Togglebutton that switches between Map view and List view
  */
 @Composable
-fun ThemeSwitcher(
+fun ToggleButtonThemeSwitcher(
     mapTheme: Boolean = false,
-    size: Dp = 100.dp, //rectangular form
-    toggleButtonSize: Dp = 190.dp,
-    iconSize: Dp = size / 3,
-    padding: Dp = 10.dp,
     borderWidth: Dp = 1.dp,
-    parentShape: RoundedCornerShape = RoundedCornerShape(20.dp), //shape of the buttons
-    toggleShape: RoundedCornerShape = RoundedCornerShape(20.dp),
+    parentShape: RoundedCornerShape = RoundedCornerShape(20.dp), // shape of the buttons
     animationSpec: AnimationSpec<Dp> = tween(durationMillis = 300),
     onClick: () -> Unit
 ) {
 
-    val offset by animateDpAsState(
-        targetValue = if (mapTheme) 0.dp else toggleButtonSize,
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val buttonHeightFactor = 0.15f //Height of the button
+    val buttonHeight = screenWidth * buttonHeightFactor //how high the button is based on the screenwidth
+    val buttonWidth =  screenWidth //Width of the button
+
+    //how much the togglebutton should offset to the side based on size of the screen
+    val offsetSmallScreen by animateDpAsState(
+        targetValue = if (mapTheme) 0.dp else (buttonWidth/2 - buttonWidth/24),
         animationSpec = animationSpec, label = ""
     )
 
-    //button container
-    Box(modifier = Modifier
-        .width(size * 6)
-        .height(size)
-        .clip(shape = parentShape)
-        .clickable { onClick() }
-        .background(MaterialTheme.colorScheme.onSecondary)
-    ) {
-        //toggle animation
+    //how much the togglebutton should offset to the side based on size of the screen
+    val offsetLargeScreen by animateDpAsState(
+        targetValue = if (mapTheme) 0.dp else (buttonWidth/2 - buttonWidth/50),
+        animationSpec = animationSpec, label = ""
+    )
+
+BoxWithConstraints {
+    if (maxWidth < 400.dp) {
+        // button container
         Box(
             modifier = Modifier
-                .width(toggleButtonSize) //size of the toggle button
-                .height(size)
-                .offset(x = offset)
-                .padding(all = padding)
-                .clip(shape = toggleShape)
-                .background(MaterialTheme.colorScheme.secondary)
-        )
-        //the icons and text representing list and map views
-        Row(
-            modifier = Modifier
-                .border(
-                    border = BorderStroke(
-                        width = borderWidth,
-                        color = MaterialTheme.colorScheme.secondary
-                    ),
-                    shape = parentShape
-                ),
-            verticalAlignment = Alignment.CenterVertically
+                .width(buttonWidth)
+                .height(buttonHeight)
+                .clip(shape = parentShape)
+                .clickable { onClick() }
+                .background(MaterialTheme.colorScheme.onSecondary)
         ) {
+            // toggle animation
             Box(
                 modifier = Modifier
-                    .width(size * 3)
-                    .height(size),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .size(iconSize)
-                        .offset((-30).dp, 0.dp),
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Theme Icon",
-                    tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                    else MaterialTheme.colorScheme.secondary
-                )
-                Text(
-                    text = "List",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if(mapTheme) MaterialTheme.colorScheme.onSecondary
-                    else MaterialTheme.colorScheme.secondary
-                )
-            }
-            Box(
+                    .width(buttonWidth / 2) // size of the toggle button
+                    .height(buttonHeight)
+                    .offset(x = offsetSmallScreen)
+                    .clip(shape = parentShape)
+                    .background(MaterialTheme.colorScheme.secondary)
+
+            )
+            // the icons and text representing list and map views
+            Row(
                 modifier = Modifier
-                    .width(size * 3)
-                    .height(size),
-                contentAlignment = Alignment.Center
+                    .border(
+                        border = BorderStroke(
+                            width = borderWidth,
+                            color = MaterialTheme.colorScheme.secondary
+                        ),
+                        shape = parentShape
+                    ),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
+                Box(
+                    //List and list icon
+                    contentAlignment = Alignment.CenterStart,
                     modifier = Modifier
-                        .size(iconSize)
-                        .offset((-30).dp, 0.dp),
-                    imageVector = Icons.Default.Place,
-                    contentDescription = "Theme Icon",
-                    tint = if (mapTheme) MaterialTheme.colorScheme.secondary
-                    else MaterialTheme.colorScheme.onSecondary
-                )
-                Text(
-                    text = "Map",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if(mapTheme) MaterialTheme.colorScheme.secondary
-                    else MaterialTheme.colorScheme.onSecondary
-                )
+                        .width(buttonWidth / 2)
+                        .height(buttonHeight)
+                        .padding(start = 80.dp),
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .offset((-30).dp),
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Theme Icon",
+                        tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                        else MaterialTheme.colorScheme.secondary
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 5.dp),
+                        text = "List",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                        else MaterialTheme.colorScheme.secondary
+                    )
+                }
+                Box( //map and map icon
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .width(buttonWidth / 2)
+                        .height(buttonHeight)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .offset((-30).dp, 0.dp),
+                        imageVector = Icons.Default.Place,
+                        contentDescription = "place icon",
+                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 15.dp),
+                        text = "Map",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
+                    )
+                }
             }
         }
+    } else { //if screen is bigger
+        Box(
+            modifier = Modifier
+                .width(buttonWidth)
+                .height(buttonHeight/2)
+                .clip(shape = parentShape)
+                .clickable { onClick() }
+                .background(MaterialTheme.colorScheme.onSecondary)
+        ) {
+            // toggle animation
+            Box(
+                modifier = Modifier
+                    .width(buttonWidth / 2) // size of the toggle button
+                    .height(buttonHeight/2)
+                    .offset(x = offsetLargeScreen)
+                    .clip(shape = parentShape)
+                    .background(MaterialTheme.colorScheme.secondary)
+
+            )
+            // the icons and text representing list and map views
+            Row(
+                modifier = Modifier
+                    .border(
+                        border = BorderStroke(
+                            width = borderWidth,
+                            color = MaterialTheme.colorScheme.secondary
+                        ),
+                        shape = parentShape
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    //List and list icon
+                    contentAlignment = Alignment.CenterStart,
+                    modifier = Modifier
+                        .width(buttonWidth / 2)
+                        .height(buttonHeight)
+                        .padding(start = 80.dp),
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .offset((-30).dp)
+                            .padding(start = 10.dp),
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Theme Icon",
+                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 15.dp),
+                        text = "List",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
+                    )
+                }
+                Box( //map and map icon
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .width(buttonWidth / 2)
+                        .height(buttonHeight)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .offset((-30).dp, 0.dp),
+                        imageVector = Icons.Default.Place,
+                        contentDescription = "place icon",
+                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 15.dp),
+                        text = "Map",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
+                    )
+                }
+            }
+        }
+    }
+
     }
 }
 
