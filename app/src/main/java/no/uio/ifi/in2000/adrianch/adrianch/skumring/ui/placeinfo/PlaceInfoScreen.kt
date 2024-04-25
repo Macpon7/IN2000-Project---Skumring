@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +51,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-private const val logTag = "PlaceInfoScreen"
+private const val TAG = "PlaceInfoScreen"
 
 object PlaceInfoScreenDestination : NavigationDestination {
     override val icon = null
@@ -71,6 +72,7 @@ fun PlaceInfoScreen(
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
     LaunchedEffect(Unit) {
+        Log.d(TAG, "LaunchedEffect called, loading place with id: $id")
         placeViewModel.loadPlaceInfo(id = id)
     }
 
