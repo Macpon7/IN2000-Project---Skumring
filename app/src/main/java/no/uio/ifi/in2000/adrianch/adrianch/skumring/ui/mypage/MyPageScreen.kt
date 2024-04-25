@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -179,6 +180,9 @@ fun ContentMyPage(navController : NavController,
                   ) {
 
     Column (Modifier.verticalScroll(rememberScrollState())) {
+        //Slik leser vi inn fra assets/presetImages
+        //Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/holmenkollen.jpg")).asImageBitmap(), contentDescription = null)
+
         if (myPageUiState.places.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_location),
