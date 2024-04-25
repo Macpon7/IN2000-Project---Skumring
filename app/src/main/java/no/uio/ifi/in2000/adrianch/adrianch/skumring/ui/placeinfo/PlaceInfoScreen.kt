@@ -69,8 +69,10 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
 private const val TAG = "PlaceInfoScreen"
@@ -188,170 +190,17 @@ fun PlaceInfoScreen(
     }
 }
 
-/*
-@Composable
-fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRating, temp: String, icon: String?) { //, add goldenHourTime: String, blueHourTime: String later
-    Card(
-        shape = RoundedCornerShape(15.dp),
-        modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth()
-    ) {
-        Box( //Need box as an overlay over card for color gradient
-            modifier = Modifier
-                .background(Brush.verticalGradient(listOf(
-                    MaterialTheme.colorScheme.scrim,
-                    MaterialTheme.colorScheme.surfaceTint,
-                    MaterialTheme.colorScheme.outlineVariant, //outlineVariant
-                )
-                  ))
-        )
-         {//Displaying the information in the card
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.home_sunset),
-                    color = MaterialTheme.colorScheme.onPrimary, //outline
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                )
-                Box { //Sunset icon and time of sunset, in box because it needs to overlap
-                    Icon(
-                        painter = painterResource(id = R.drawable.sunsetsymbol),
-                        contentDescription = "Sunset Icon",
-                        tint = Color.Unspecified,
-                        modifier = Modifier
-                            .size(140.dp)
-                    )
-                    Text(
-                        text = sunsetTime,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 10.dp, top = 125.dp)
-                    )
-                }
-                Row( //For displaying weather conditions
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.weather_condition),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        textAlign = TextAlign.Center,
-                    )
-                    Text( //text changing based on weather conditions, in different textbox because of change of color
-                        text = " $weatherConditions",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                    )
-                }
-                if (icon != null) {
-                    WeatherIconCheck(weatherCondition = icon) //shows the icon that fits the weather forecast
-                } else {
-                    Icon ( //if icon is null, "show image not found"
-                        painterResource(id = R.drawable.image_not_found),
-                        contentDescription = "Weather icon cloudy",
-                        tint = Color.Unspecified,
-                        modifier = Modifier.size(140.dp)
-                    )
-                }
-                        Text(
-                            text = "$temp °C",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier
-                               // .align(Alignment.BottomCenter)
-                                .padding(bottom = 5.dp)
-                        )
-                Divider( //for dividing sunset today info from golden hour and blue hour times
-                    modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    thickness = 1.dp
-                )
-                    Row( //For displaying Golden hour and Blue hour times on a row
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 40.dp, end = 60.dp)
 
-                    ) {
-                        Text(
-                            text = stringResource(R.string.golden_hour),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            textAlign = TextAlign.Center,
-                        )
-                        Text(
-                            text = stringResource(R.string.blue_hour),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            textAlign = TextAlign.Center,
-                        )
-
-                    }
-                    Row( //for displaying time and icon for Golden hour and Blue Hour
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 40.dp, end = 40.dp, bottom = 10.dp)
-
-                    ) {
-                        Box { //Golden hour icon and time
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
-                                contentDescription = "yellow sun icon",
-                                tint = Color.Unspecified,
-                                modifier = Modifier.padding(end = 10.dp)
-
-                            )
-                            Text(
-                                text = "19:09 -20:31", //change this later to $goldenHourTime
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.surfaceVariant,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(start = 20.dp)
-                            )
-                        }
-                        Box {  //Blue hour icon and time
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
-                                contentDescription = "blue sun icon",
-                                tint = Color.Unspecified,
-                            )
-                            Text(
-                                text = "20:31-21:05", //change this later to $blueHourTime
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.surfaceVariant,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(start = 20.dp)
-                            )
-                        }
-                    }
-                    MoreDetailsButton()
-            }
-        }
-    }
-}
- */
 
 /**
  * Picture of the place
  */
+@SuppressLint("SimpleDateFormat")
 @Composable
-fun PlaceInfoCard() {
+fun PlaceInfoCard(dateString: String, timeString: String, conditionsString: String) {
+
+   // val dateFormat = remember { SimpleDateFormat("d. MMMM", Locale.getDefault())}
+   // val currentDate = remember{dateFormat.format(Date())}
     /*
     Box(modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -371,19 +220,17 @@ fun PlaceInfoCard() {
                         .fillMaxWidth()
                         .height(200.dp)
                         .background(Color.Gray)
-                        .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomEnd = 0.dp, bottomStart = 0.dp))
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = 20.dp,
+                                topEnd = 20.dp,
+                                bottomEnd = 0.dp,
+                                bottomStart = 0.dp
+                            )
+                        )
                 ) {
                    // Image(painter = painterResource(id = R.drawable.sunset_picture), contentDescription = "sunset default picture")
                 }
-                /* //if we want name of place
-                    Text( //for the Title
-                        text = "Holmenkollen",
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier
-                            .padding(start = 10.dp, top = 10.dp)
-                    )
-                 */
                     Text( //for image description
                         text = "Lorem ipsum is simply dummy text for the printing and typesetting industry. Lorem Impsum bla bla bla bla, legge til noe her sånn at man ser om det funker, det er bra det vet du. Trenger den enda mer? Uff, det her var slitsomt, men snart får vi se om det funker ",
                         style = MaterialTheme.typography.bodyMedium,
@@ -393,7 +240,7 @@ fun PlaceInfoCard() {
                         color = MaterialTheme.colorScheme.onSecondary //change text color
                     )
                 Text(
-                    text = "Today, april 2.".uppercase(),
+                    text = dateString.uppercase(), //"Today, april 2.".uppercase(),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
@@ -410,19 +257,21 @@ fun PlaceInfoCard() {
                     painter = painterResource(id = R.drawable.sunsetsymbol),
                     contentDescription = "Sunset Icon",
                     tint = Color.Unspecified,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .size(60.dp)
                 )
                 Text(
-                    text = "20:05",//sunsetTime,
+                    text = timeString,//sunset time
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(bottom = 5.dp, top = 3.dp)
                 )
                 Text( //text changing based on weather conditions, in different textbox because of change of color
-                    text = "Sunset conditions: POOR",//" $weatherConditions",
+                    text = "Sunset conditions: $conditionsString",//" $weatherConditions",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
@@ -554,7 +403,7 @@ fun ContentInfoScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //Picture of the place:
-        PlaceInfoCard()
+       // PlaceInfoCard(dateString = dateString, timeString = timeString, conditionsString = conditionsString) //do I need h
 
         //Add space between pictures and text
         Spacer(modifier = Modifier.height(20.dp))
@@ -575,8 +424,9 @@ fun ContentInfoScreen(
     }
 }
 
+/*
 @Composable
-fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
+fun SunEventInfoContentTwo(placeInfoUiState: PlaceInfoUiState) {
     var showLongTermForecast by remember { mutableStateOf(false) }
 
     Column(
@@ -586,33 +436,78 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
     ) {
         //The accurately forecast sunsets, always show this:
         placeInfoUiState.placeInfo.sunEvents.forEach {
-            SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
+            SunEventInfo(
+                time = it.time, conditions = it.conditions.weatherRating, isTomorrow = it.time.dayOfYear == LocalDateTime.now().plusDays(1).dayOfYear)
+        }
+    }
+}
+ */
+
+@Composable
+fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
+    var showLongTermForecast by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .verticalScroll(state = rememberScrollState(), enabled = true)
+            .fillMaxWidth()
+    ) {
+
+        //Shows the sunset events for today
+        val firstEvent = placeInfoUiState.placeInfo.sunEvents.firstOrNull()
+        if (firstEvent != null) {
+            SunEventInfoToday(
+                time = firstEvent.time,
+                conditions = firstEvent.conditions.weatherRating,
+                isTomorrow = false
+            )
+        }
+
+        //Shows the sunset events for tomorrow and the following days
+        placeInfoUiState.placeInfo.sunEvents.forEachIndexed { index, event ->
+            SunEventInfoTomorrow(
+                time = event.time, conditions = event.conditions.weatherRating, dayOffset = index + 1)
         }
     }
 }
 
+/**
+ * Displays information about the sunset events for today, date, time and weather conditions
+ */
 @Composable
-fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
-    val dateString = when (time.dayOfYear) {
-        LocalDateTime.now().dayOfYear -> {
-            // The current date we are formatting is today
-            "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
-        }
+fun SunEventInfoToday(time: LocalDateTime, conditions: WeatherConditionsRating, isTomorrow: Boolean) {
+    val dateString = "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
 
-        LocalDateTime.now().plusDays(1).dayOfYear -> {
+    val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+
+    val conditionsString = when (conditions) {
+        WeatherConditionsRating.POOR -> "Det blir dårlige forhold.."
+        WeatherConditionsRating.DECENT -> "Det blir OK forhold"
+        WeatherConditionsRating.EXCELLENT -> "Det blir fantastiske forhold!"
+    }
+    PlaceInfoCard(dateString = dateString, timeString = timeString, conditionsString = conditionsString)
+}
+
+/**
+ * Displays information about the sun events for tomorrow and the following days. Date, time and weather conditions
+ */
+@Composable
+fun SunEventInfoTomorrow(time: LocalDateTime, conditions: WeatherConditionsRating, dayOffset: Int) {
+    val date = LocalDateTime.now().plusDays(dayOffset.toLong())
+    val dateString = when {
+        dayOffset == 1 -> {
             // The current date we are formatting is tomorrow
             "I Morgen ${
-                time.format(
+                date.format(
                     DateTimeFormatter.ofPattern(
                         "d'.' MMMM':'", Locale.getDefault()
                     )
                 )
             }"
         }
-
         else -> {
             // The current date we are formatting is after tomorrow
-            time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+            date.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
         }
     }
 
@@ -623,11 +518,42 @@ fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
         WeatherConditionsRating.DECENT -> "Det blir OK forhold"
         WeatherConditionsRating.EXCELLENT -> "Det blir fantastiske forhold!"
     }
-
     SunEventInfoCard(
         dateString = dateString, timeString = timeString, conditionsString = conditionsString
     )
 }
+
+
+
+/* //min versjon
+@Composable
+fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating, isTomorrow: Boolean) {
+    val tomorrowDate = LocalDateTime.now().plusDays(1)
+    val dateString = if(isTomorrow) {
+          //  LocalDateTime.now().plusDays(1).dayOfYear -> {
+                // The current date we are formatting is tomorrow
+                "I Morgen ${tomorrowDate.format(DateTimeFormatter.ofPattern(
+                            "d'.' MMMM':'", Locale.getDefault()))}"
+            } else {
+            // The current date we are formatting is after tomorrow
+            time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+        }
+
+    val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+
+    val conditionsString = when (conditions) {
+        WeatherConditionsRating.POOR -> "Det blir dårlige forhold.."
+        WeatherConditionsRating.DECENT -> "Det blir OK forhold"
+        WeatherConditionsRating.EXCELLENT -> "Det blir fantastiske forhold!"
+    }
+    SunEventInfoCard(
+        dateString = dateString, timeString = timeString, conditionsString = conditionsString
+    )
+}
+
+ */
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -665,3 +591,65 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
         }
     }
 }
+
+/*
+
+@Composable
+fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
+    val dateString = when (time.dayOfYear) {
+        LocalDateTime.now().dayOfYear -> {
+            // The current date we are formatting is today
+            "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+        }
+
+        LocalDateTime.now().plusDays(1).dayOfYear -> {
+            // The current date we are formatting is tomorrow
+            "I Morgen ${
+                time.format(
+                    DateTimeFormatter.ofPattern(
+                        "d'.' MMMM':'", Locale.getDefault()
+                    )
+                )
+            }"
+        }
+
+        else -> {
+            // The current date we are formatting is after tomorrow
+            time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+        }
+    }
+
+    val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+
+    val conditionsString = when (conditions) {
+        WeatherConditionsRating.POOR -> "Det blir dårlige forhold.."
+        WeatherConditionsRating.DECENT -> "Det blir OK forhold"
+        WeatherConditionsRating.EXCELLENT -> "Det blir fantastiske forhold!"
+    }
+
+    PlaceInfoCard(dateString = dateString, timeString = timeString, conditionsString = conditionsString)
+
+    SunEventInfoCard(
+        dateString = dateString, timeString = timeString, conditionsString = conditionsString
+    )
+}
+
+ */
+
+/*
+@Composable
+fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
+    var showLongTermForecast by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .verticalScroll(state = rememberScrollState(), enabled = true)
+            .fillMaxWidth()
+    ) {
+        //The accurately forecast sunsets, always show this:
+        placeInfoUiState.placeInfo.sunEvents.forEach {
+            SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
+        }
+    }
+}
+ */
