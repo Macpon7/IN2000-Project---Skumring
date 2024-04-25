@@ -68,10 +68,10 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
     init {
-        loadHomeScreen()
+        //loadHomeScreen()
     }
 
-    private fun loadHomeScreen(){
+    fun loadHomeScreen(){
         viewModelScope.launch(Dispatchers.IO){
             loadFavourites()
             updateWeather()

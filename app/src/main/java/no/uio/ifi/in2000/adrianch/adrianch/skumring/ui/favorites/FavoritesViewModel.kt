@@ -37,11 +37,11 @@ class FavoritesViewModel(private val placeRepository: PlaceRepository): ViewMode
     val favoritesUiState: StateFlow<FavoritesUiState> = _favoritesUiState.asStateFlow()
 
     init {
-           loadList()
+           //loadList()
     }
 
     @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
-    private fun loadList(){
+    fun loadList(){
         viewModelScope.launch(Dispatchers.IO) {
             _favoritesUiState.update { currentfavoritesUiState ->
                 try {

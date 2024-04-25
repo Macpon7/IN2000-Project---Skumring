@@ -428,7 +428,7 @@ class MyPageViewModel(private val placeRepository: PlaceRepository) : ViewModel(
     /**
      * Load the list of places
      */
-    private fun loadList(){
+    fun loadList(){
         // TODO load the list of the users customs places, will probably look similar to the list in maplistviewmodel
     }
 

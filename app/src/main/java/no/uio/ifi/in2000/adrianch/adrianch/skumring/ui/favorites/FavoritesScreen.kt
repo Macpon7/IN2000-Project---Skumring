@@ -50,6 +50,11 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
 
     val favoritesUiState: FavoritesUiState by favoritesViewModel.favoritesUiState.collectAsState()
 
+    // Load the list of favourites every time the user navigates to this screen
+    LaunchedEffect(Unit) {
+        favoritesViewModel.loadList()
+    }
+
     // Check if there is an error, if so show a snackbar:
     if (favoritesUiState.showSnackbar) {
         LaunchedEffect(favoritesUiState.snackbarHostState) {

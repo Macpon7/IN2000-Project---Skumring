@@ -95,6 +95,11 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
 
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
+    // Load all places every time the user navigates to this screen
+    LaunchedEffect(Unit) {
+        mapListViewModel.loadPlaces()
+    }
+
     // Check if there is an error, if so show a snackbar:
     if (mapListUiState.showSnackbar) {
         LaunchedEffect(mapListUiState.snackbarHostState) {
