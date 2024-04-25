@@ -6,6 +6,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
@@ -108,12 +111,19 @@ class PlaceRepositoryImpl(
         // 3. Send back the list of PlaceInfo objects
 
         // The first result from DB is without forecast information
-        val allPlaces = getAllPlacesFromDb()
+        var allPlaces = getAllPlacesFromDb()
 
         // Here we fetch the forecast info for each place
-        // TODO parallelize these calls
-        allPlaces.forEach {
-            it.sunEvents = getForecastData(it.id, it.lat, it.long)
+        runBlocking {
+            allPlaces = allPlaces.map {
+                async {
+                    it.copy(sunEvents = getForecastData(
+                        placeId = it.id,
+                        lat = it.lat,
+                        long = it.long)
+                    )
+                }
+            }.awaitAll()
         }
 
         return allPlaces
@@ -184,7 +194,10 @@ class PlaceRepositoryImpl(
         val fullForecast = locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
 
         // Group all the forecast data by date
-        val forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }
+        var forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }.toSortedMap()
+
+        // Remove all data that is long term forecast. This means that we only keep the data for today, tomorrow, and the day after tomorrow
+        forecastGroupedByDate = forecastGroupedByDate.headMap(forecastGroupedByDate.keys.elementAt(3))
 
         // Send our map to a function which will return a list of SunEvent objects
         return forecastRepository.makeSunEvents(

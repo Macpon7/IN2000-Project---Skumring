@@ -52,7 +52,7 @@ class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel(
 
     // TODO make this work instead of having the user press a button
     init {
-        loadPlaces()
+        //loadPlaces()
     }
 
     @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)

@@ -94,6 +94,10 @@ object MyPageDestination : NavigationDestination {
 fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewModel = viewModel(factory = MyPageViewModel.Factory)) {
     val myPageUiState: MyPageUiState by myPageViewModel.myPageUiState.collectAsState()
 
+    // Load the list of custom places every time the user navigates to this screen
+    LaunchedEffect(Unit) {
+        myPageViewModel.loadList()
+    }
 
     // Check if there is an error, if so show a snackbar:
     if (myPageUiState.showSnackbar) {
