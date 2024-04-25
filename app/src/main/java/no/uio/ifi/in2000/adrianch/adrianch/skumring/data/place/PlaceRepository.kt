@@ -56,6 +56,7 @@ class PlaceRepositoryImpl(
 
     //Image database implementation
     fun insertImagePath(path: String){
+        //TODO endre argumentet til ImageEntity slik at placeId ikke er 1, men id til det nyopprettete stedet
         val imageEntity: ImageEntity = ImageEntity(placeId = 1, imgPath = path)
         imageDao.insertSingleImage(imageEntity)
     }
