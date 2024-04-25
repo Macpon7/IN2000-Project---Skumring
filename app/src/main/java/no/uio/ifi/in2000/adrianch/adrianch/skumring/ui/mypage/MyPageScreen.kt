@@ -61,17 +61,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
+import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
+import java.io.File
 import java.time.format.DateTimeFormatter
+
+private const val TAG = "MyPageScreen"
 
 object MyPageDestination : NavigationDestination {
     override val icon = Icons.Outlined.AccountCircle
@@ -379,7 +387,11 @@ fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             newPlaceUiState.imageUri = uri
-            Log.d("Uri","imageUri is $newPlaceUiState.imageUri")
+            Log.d(
+                TAG,
+                "imageUri is $newPlaceUiState.imageUri"
+            )
+
         }
 
     Box() {
@@ -408,9 +420,11 @@ fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
         }
     Button(onClick = { launcher.launch("image/*") }) {
         Text(text = stringResource(R.string.add_photo))
-
         Icons.Outlined.Add
     }
+
+
+
 }
 
 @Composable
