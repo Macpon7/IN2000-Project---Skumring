@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -71,14 +72,15 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                         modifier = Modifier
                             .padding(vertical = 2.dp),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Row {
                         IconButton(onClick = { onFavouriteClick() }) {
                             if (isFavourite) {
-                                Icon(imageVector = Icons.Filled.Favorite, contentDescription = "")
+                                Icon(imageVector = Icons.Filled.Favorite, contentDescription = "", tint =  MaterialTheme.colorScheme.onSecondaryContainer)
                             } else {
-                                Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "")
+                                Icon(imageVector = Icons.Filled.FavoriteBorder, contentDescription = "", tint = MaterialTheme.colorScheme.onSecondaryContainer)
 
                             }
                         }
@@ -91,7 +93,9 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                     modifier = Modifier
                         .padding(vertical = 2.dp)
                         .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally))
+                        .align(Alignment.CenterHorizontally),
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             }
         } else {
             Card(
@@ -100,7 +104,6 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                     .padding(top = 12.dp)
                     .clickable(onClick = onItemClick), //Click to infoscreen
             ){
-
                 //Box for picture:
                 Box(
                     modifier = Modifier
@@ -113,13 +116,12 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-
                 Row (
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp)
+                        .padding(start = 8.dp, end = 8.dp),
                 )
                 {
                     Text(
@@ -127,7 +129,8 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                         modifier = Modifier
                             .padding(vertical = 2.dp),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Spacer(modifier = Modifier.width(20.dp))
                     Row {
@@ -143,7 +146,8 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                     modifier = Modifier
                         .padding(vertical = 2.dp)
                         .padding(bottom = 4.dp)
-                        .align(Alignment.CenterHorizontally)
+                        .align(Alignment.CenterHorizontally),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
         }

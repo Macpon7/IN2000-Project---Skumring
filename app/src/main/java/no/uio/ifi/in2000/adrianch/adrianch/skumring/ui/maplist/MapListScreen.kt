@@ -20,13 +20,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Place
@@ -254,7 +252,7 @@ fun ToggleButtonThemeSwitcher(
         targetValue = if (mapTheme) 0.dp else (buttonWidth/2 - buttonWidth/50),
         animationSpec = animationSpec, label = ""
     )
-    
+
 BoxWithConstraints {
     if (maxWidth < 400.dp) {
         // button container
@@ -264,7 +262,7 @@ BoxWithConstraints {
                 .height(buttonHeight)
                 .clip(shape = parentShape)
                 .clickable { onClick() }
-                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .background(MaterialTheme.colorScheme.onSecondary)
         ) {
             // toggle animation
             Box(
@@ -273,7 +271,7 @@ BoxWithConstraints {
                     .height(buttonHeight)
                     .offset(x = offsetSmallScreen)
                     .clip(shape = parentShape)
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(MaterialTheme.colorScheme.secondary)
 
             )
             // the icons and text representing list and map views
@@ -282,7 +280,7 @@ BoxWithConstraints {
                     .border(
                         border = BorderStroke(
                             width = borderWidth,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.secondary
                         ),
                         shape = parentShape
                     ),
@@ -301,15 +299,15 @@ BoxWithConstraints {
                             .offset((-30).dp),
                         imageVector = Icons.Default.Menu,
                         contentDescription = "Theme Icon",
-                        tint = if (mapTheme) MaterialTheme.colorScheme.secondaryContainer
-                        else MaterialTheme.colorScheme.primary
+                        tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                        else MaterialTheme.colorScheme.secondary
                     )
                     Text(
                         modifier = Modifier.padding(start = 5.dp),
                         text = "List",
                         style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.secondaryContainer
-                        else MaterialTheme.colorScheme.primary
+                        color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                        else MaterialTheme.colorScheme.secondary
                     )
                 }
                 Box( //map and map icon
@@ -323,15 +321,15 @@ BoxWithConstraints {
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
                         contentDescription = "place icon",
-                        tint = if (mapTheme) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.secondaryContainer
+                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
                         text = "Map",
                         style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.secondaryContainer
+                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
                     )
                 }
             }
@@ -343,7 +341,7 @@ BoxWithConstraints {
                 .height(buttonHeight/2)
                 .clip(shape = parentShape)
                 .clickable { onClick() }
-                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .background(MaterialTheme.colorScheme.onSecondary)
         ) {
             // toggle animation
             Box(
@@ -352,7 +350,7 @@ BoxWithConstraints {
                     .height(buttonHeight/2)
                     .offset(x = offsetLargeScreen)
                     .clip(shape = parentShape)
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(MaterialTheme.colorScheme.secondary)
 
             )
             // the icons and text representing list and map views
@@ -361,7 +359,7 @@ BoxWithConstraints {
                     .border(
                         border = BorderStroke(
                             width = borderWidth,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.secondary
                         ),
                         shape = parentShape
                     ),
@@ -381,15 +379,15 @@ BoxWithConstraints {
                             .padding(start = 10.dp),
                         imageVector = Icons.Default.Menu,
                         contentDescription = "Theme Icon",
-                        tint = if (mapTheme) MaterialTheme.colorScheme.secondaryContainer
-                        else MaterialTheme.colorScheme.primary
+                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
                         text = "List",
                         style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.secondaryContainer
-                        else MaterialTheme.colorScheme.primary
+                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
                     )
                 }
                 Box( //map and map icon
@@ -403,15 +401,15 @@ BoxWithConstraints {
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
                         contentDescription = "place icon",
-                        tint = if (mapTheme) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.secondaryContainer
+                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
                         text = "Map",
                         style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.secondaryContainer
+                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.onSecondary
                     )
                 }
             }
@@ -498,6 +496,8 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 )
             ),
             onClick = {
+                val lat = it.point.latitude().toString()
+                val long = it.point.longitude().toString()
                 val id = it.getData()!!.asString
                 Log.d(logTag, "Clicked on pin with id: $id")
                 mapListViewModel.showBottomSheet(id.toInt())
