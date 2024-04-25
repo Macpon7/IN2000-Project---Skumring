@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -129,7 +130,7 @@ fun SettingsScreen(
  */
 @Composable
 fun ContentSettings(settingsViewModel: SettingsViewModel) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(30.dp)) {
 
         // Content for choose mode:
         ChooseTheme(settingsViewModel = settingsViewModel)
@@ -164,9 +165,8 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                 .menuAnchor()
                 .fillMaxWidth()
                 .padding(
-                    bottom = 12.dp,
-                    start = 2.dp,
-                    end = 2.dp ),
+                    bottom = 16.dp,
+                    top = 16.dp),
             readOnly = true,
             value = settingsUiState.selectedDropDownOptionTheme,
             onValueChange = {},
@@ -178,7 +178,13 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
                 expanded = settingsUiState.dropdownExpandedTheme)},
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            leadingIcon = {
+                Icon( // TODO
+                    imageVector = settingsUiState.theme.iconImageVector,
+                    contentDescription = "FOLLOW_SYSTEM"
+                )
+            }
         )
         ExposedDropdownMenu(
             modifier = Modifier.fillMaxWidth(),
@@ -192,7 +198,14 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                     settingsViewModel.updateTheme(
                         theme = Theme.FOLLOW_SYSTEM
                     )
-                })
+                },
+                leadingIcon = {
+                    Icon( // TODO
+                        imageVector = Icons.Outlined.Settings,
+                        contentDescription = "FOLLOW_SYSTEM"
+                    )
+                }
+            )
             DropdownMenuItem(
                 modifier = Modifier,
                 text = { Text(text = stringResource(R.string.light_mode)) },
@@ -239,7 +252,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .padding(bottom = 16.dp),
                 readOnly = true,
                 value = settingsUiState.selectedDropDownOptionLanguage,
                 onValueChange = {},
@@ -309,7 +322,7 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
+                .padding(bottom = 16.dp),
             readOnly = true,
             value = settingsUiState.selectedDropDownOptionLocation,
             onValueChange = {},
@@ -328,7 +341,7 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
         ) {
             DropdownMenuItem(
                 modifier = Modifier,
-                text = {Text(text = "Costum location")},
+                text = {Text(text = stringResource(R.string.costum_location))},
                 onClick = {
                 settingsViewModel.updateSelectedDefaultLocation(
                     location = Location.COSTUM_LOCATION
@@ -339,7 +352,7 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
             })
             DropdownMenuItem(
                 modifier = Modifier,
-                text = {Text( text = "Phone's location")},
+                text = {Text(text = stringResource(R.string.phones_location))},
                 onClick = {
                 settingsViewModel.updateSelectedDefaultLocation(
                     location = Location.PHONES_LOCATION
@@ -373,7 +386,7 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
+                .padding(bottom = 16.dp),
             readOnly = true,
             value = settingsUiState.selectedLocationAs,
             onValueChange = {},
