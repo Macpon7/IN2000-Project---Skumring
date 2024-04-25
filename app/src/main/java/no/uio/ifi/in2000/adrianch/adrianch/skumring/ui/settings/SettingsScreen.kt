@@ -174,7 +174,8 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                 text = stringResource(R.string.choose_theme),
                 modifier = Modifier.padding(bottom = 8.dp),
                 fontWeight = FontWeight.Bold
-            )},
+            )
+                    },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
                 expanded = settingsUiState.dropdownExpandedTheme)},
@@ -213,7 +214,8 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                     settingsViewModel.updateTheme(
                         theme = Theme.LIGHT_MODE
                     )
-                })
+                }
+            )
             DropdownMenuItem(
                 modifier = Modifier,
                 text = { Text(text = stringResource(R.string.dark_mode)) },
@@ -221,7 +223,8 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                     settingsViewModel.updateTheme(
                         theme = Theme.DARK_MODE
                     )
-                })
+                }
+            )
         }
     }
 }
@@ -260,7 +263,8 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
                     text = stringResource(R.string.choose_language),
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold
-                )},
+                )
+                        },
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(
                     expanded = settingsUiState.dropdownExpandedLanguage)},
@@ -277,7 +281,8 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
                         settingsViewModel.updateLanguage(
                             language = Language.FOLLOW_SYSTEM
                         )
-                    })
+                    }
+                )
                 DropdownMenuItem(
                     modifier = Modifier,
                     text = {Text(text = stringResource(R.string.english))},
@@ -285,7 +290,8 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
                         settingsViewModel.updateLanguage(
                             language = Language.ENGLISH,
                         )
-                    })
+                    }
+                )
                 DropdownMenuItem(
                     modifier = Modifier,
                     text = {Text(text = stringResource(R.string.norwegian))},
@@ -293,7 +299,8 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
                         settingsViewModel.updateLanguage(
                             language = Language.NORWEGIAN,
                         )
-                    })
+                    }
+                )
             }
     }
 }
@@ -329,8 +336,8 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
             label = {Text(
                 text = stringResource(R.string.choose_default_location),
                 modifier = Modifier.padding(bottom = 8.dp),
-                fontWeight = FontWeight.Bold
-            )},
+                fontWeight = FontWeight.Bold)
+                    },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(
                 expanded = settingsUiState.dropdownExpandedStartLocation)},
             colors = ExposedDropdownMenuDefaults.textFieldColors()
@@ -348,8 +355,8 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
                 )
 
                 // TODO show a dropdown meny or a searchbar to choose location?
-
-            })
+                }
+            )
             DropdownMenuItem(
                 modifier = Modifier,
                 text = {Text(text = stringResource(R.string.phones_location))},
@@ -357,7 +364,8 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
                 settingsViewModel.updateSelectedDefaultLocation(
                     location = Location.PHONES_LOCATION
                 )
-            })
+                }
+            )
         }
     }
 }
@@ -393,8 +401,8 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
             label = {Text(
                 text = stringResource(R.string.means_of_transportation),
                 modifier = Modifier.padding(bottom = 8.dp),
-                fontWeight = FontWeight.Bold
-            )},
+                fontWeight = FontWeight.Bold)
+                    },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
                     expanded = settingsUiState.dropdownExpandedLocationAs)},
@@ -410,7 +418,8 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
                     settingsViewModel.updateSelectedLocationAs(
                         locationAs = LocationAs.WALK,
                     )
-                })
+                }
+            )
             DropdownMenuItem(
                 modifier = Modifier,
                 text = { Text(text = stringResource(R.string.bike)) },
@@ -426,7 +435,8 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
                     settingsViewModel.updateSelectedLocationAs(
                         locationAs = LocationAs.DRIVE,
                     )
-                })
+                }
+            )
         }
     }
 }
