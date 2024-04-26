@@ -11,8 +11,14 @@
     <string name="nav_settings_button">Settings</string>
 
     <!-- SnackBar -->
-    <string name="no_error">No errors</string>
     <string name="refresh">Refresh</string>
+
+    <!-- ErrorMessages: -->
+    <string name="error_message_no_error">No error</string>
+
+    <string name="error_message_loadUserLocation">Error updating user location</string>
+    <string name="error_message_getting_sunset">Error getting sunset data</string>
+    <string name="error_message_loading_list">Error loading list</string>
 
     <!-- HomeScreen -->
     <string name="conditions_are_good">The conditions will be good tonight!</string>
