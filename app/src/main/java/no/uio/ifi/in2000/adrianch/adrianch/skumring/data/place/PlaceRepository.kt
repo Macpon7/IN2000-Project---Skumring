@@ -170,7 +170,7 @@ class PlaceRepositoryImpl(
             // If there is good data AND it is less than 1 hour old, compute the list and return it
             return dataFromDb.map {
                 SunEvent(
-                    time = it.sunsetDateTime,
+                    sunsetTime = it.sunsetDateTime,
                     tempAtEvent = it.sunsetTemp,
                     weatherIcon = it.weatherIcon,
                     conditions = WeatherConditions(
@@ -224,7 +224,7 @@ class PlaceRepositoryImpl(
             ForecastEntity(
                 id = oldId,
                 placeId = placeId,
-                sunsetDateTime = it.time,
+                sunsetDateTime = it.sunsetTime,
                 weatherRating = it.conditions.weatherRating,
                 cloudConditionLow = it.conditions.cloudConditionLow,
                 cloudConditionMedium = it.conditions.cloudConditionMedium,

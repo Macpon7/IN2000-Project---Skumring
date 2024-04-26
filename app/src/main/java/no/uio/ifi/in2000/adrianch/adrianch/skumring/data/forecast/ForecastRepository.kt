@@ -69,7 +69,7 @@ class ForecastRepositoryImpl(
 
                 sunEventsList.add(
                     SunEvent(
-                        time = sunsetTime,
+                        sunsetTime = sunsetTime,
                         tempAtEvent = sunsetWeather.instant.air_temperature.toString(),
                         //if icon is null for any reason, use the string "no_icon" instead
                         weatherIcon = sunsetWeather.icon ?: "no_icon",

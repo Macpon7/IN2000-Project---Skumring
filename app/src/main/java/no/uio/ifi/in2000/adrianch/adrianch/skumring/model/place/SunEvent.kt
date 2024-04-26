@@ -10,7 +10,9 @@ import java.time.LocalDateTime
  * what the conditions will be like.
  */
 data class SunEvent (
-    val time: LocalDateTime,
+    val sunsetTime: LocalDateTime,
+    val goldenHourTime: LocalDateTime,
+    val blueHourTime: LocalDateTime,
     val tempAtEvent: String,
     val weatherIcon: String,
     val conditions: WeatherConditions
