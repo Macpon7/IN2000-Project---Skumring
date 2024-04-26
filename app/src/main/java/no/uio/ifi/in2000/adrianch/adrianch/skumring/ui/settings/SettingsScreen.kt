@@ -11,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -88,11 +87,12 @@ fun SettingsScreen(
                     .background(color = Color.White)
                     .padding(vertical = 10.dp) // Choose the size of the topbar
             ) {
-                IconButton(onClick = {navController.popBackStack()},
+                IconButton(
+                    onClick = { navController.popBackStack() },
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Arrow back" ,
+                        contentDescription = "Arrow back",
                         modifier = Modifier.size(30.dp) // Set the size of the Icon inside the IconButton
                     )
                 }
@@ -109,11 +109,11 @@ fun SettingsScreen(
         },
         snackbarHost = { SnackbarHost(hostState = settingsUiState.snackbarHostState) },
     ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
-        Column (
+        Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState()) //makes the column scrollable
                 .padding(innerPadding)
-                .background(color = MaterialTheme.colorScheme.surface),
+                .background(color = MaterialTheme.colorScheme.background),
         ) {
             ContentSettings(settingsViewModel)
         }
@@ -159,27 +159,35 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
 
     ExposedDropdownMenuBox(
         expanded = settingsUiState.dropdownExpandedTheme,
-        onExpandedChange = {settingsViewModel.expandDropdownTheme()}) {
+        onExpandedChange = { settingsViewModel.expandDropdownTheme() }) {
         TextField(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
                 .padding(
                     bottom = 16.dp,
-                    top = 16.dp),
+                    top = 16.dp
+                ),
             readOnly = true,
-            value = settingsUiState.selectedDropDownOptionTheme,
+            value = settingsUiState.selectedDropDownOptionTheme, // TODO change text color?
             onValueChange = {},
-            label = {Text(
-                text = stringResource(R.string.choose_theme),
-                modifier = Modifier.padding(bottom = 8.dp),
-                fontWeight = FontWeight.Bold
-            )
-                    },
+            label = {
+                Text(
+                    text = stringResource(R.string.choose_theme),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    fontWeight = FontWeight.Bold
+                )
+            },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
-                expanded = settingsUiState.dropdownExpandedTheme)},
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    expanded = settingsUiState.dropdownExpandedTheme
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
             /*
             leadingIcon = {
                 Icon( // TODO
@@ -187,7 +195,6 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                     contentDescription = "FOLLOW_SYSTEM"
                 )
             }
-
              */
         )
         ExposedDropdownMenu(
@@ -197,7 +204,12 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
         ) {
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.follow_system)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.follow_system),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateTheme(
                         theme = Theme.FOLLOW_SYSTEM
@@ -210,12 +222,16 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                         contentDescription = "FOLLOW_SYSTEM"
                     )
                 }
-
                  */
             )
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.light_mode)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.light_mode),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateTheme(
                         theme = Theme.LIGHT_MODE
@@ -224,7 +240,12 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
             )
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.dark_mode)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.dark_mode),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateTheme(
                         theme = Theme.DARK_MODE
@@ -254,60 +275,63 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
-        ExposedDropdownMenuBox(
-            expanded = settingsUiState.dropdownExpandedLanguage,
-            onExpandedChange = {settingsViewModel.expandDropdownLanguage()}) {
-            TextField(
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                readOnly = true,
-                value = settingsUiState.selectedDropDownOptionLanguage,
-                onValueChange = {},
-                label = {Text(
+    ExposedDropdownMenuBox(
+        expanded = settingsUiState.dropdownExpandedLanguage,
+        onExpandedChange = { settingsViewModel.expandDropdownLanguage() }) {
+        TextField(
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            readOnly = true,
+            value = settingsUiState.selectedDropDownOptionLanguage,
+            onValueChange = {},
+            label = {
+                Text(
                     text = stringResource(R.string.choose_language),
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold
                 )
-                        },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = settingsUiState.dropdownExpandedLanguage)},
-                colors = ExposedDropdownMenuDefaults.textFieldColors()
+            },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = settingsUiState.dropdownExpandedLanguage
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        ExposedDropdownMenu(
+            expanded = settingsUiState.dropdownExpandedLanguage,
+            onDismissRequest = { settingsViewModel.expandDropdownLanguage() }
+        ) {
+            DropdownMenuItem(
+                modifier = Modifier,
+                text = { Text(text = stringResource(R.string.follow_system)) },
+                onClick = {
+                    settingsViewModel.updateLanguage(
+                        language = Language.FOLLOW_SYSTEM
+                    )
+                }
             )
-            ExposedDropdownMenu(
-                expanded = settingsUiState.dropdownExpandedLanguage,
-                onDismissRequest = { settingsViewModel.expandDropdownLanguage() }
-            ) {
-                DropdownMenuItem(
-                    modifier = Modifier,
-                    text = {Text(text = stringResource(R.string.follow_system))},
-                    onClick = {
-                        settingsViewModel.updateLanguage(
-                            language = Language.FOLLOW_SYSTEM
-                        )
-                    }
-                )
-                DropdownMenuItem(
-                    modifier = Modifier,
-                    text = {Text(text = stringResource(R.string.english))},
-                    onClick = {
-                        settingsViewModel.updateLanguage(
-                            language = Language.ENGLISH,
-                        )
-                    }
-                )
-                DropdownMenuItem(
-                    modifier = Modifier,
-                    text = {Text(text = stringResource(R.string.norwegian))},
-                    onClick = {
-                        settingsViewModel.updateLanguage(
-                            language = Language.NORWEGIAN,
-                        )
-                    }
-                )
-            }
+            DropdownMenuItem(
+                modifier = Modifier,
+                text = { Text(text = stringResource(R.string.english)) },
+                onClick = {
+                    settingsViewModel.updateLanguage(
+                        language = Language.ENGLISH,
+                    )
+                }
+            )
+            DropdownMenuItem(
+                modifier = Modifier,
+                text = { Text(text = stringResource(R.string.norwegian)) },
+                onClick = {
+                    settingsViewModel.updateLanguage(
+                        language = Language.NORWEGIAN,
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -330,7 +354,7 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
 
     ExposedDropdownMenuBox(
         expanded = settingsUiState.dropdownExpandedStartLocation,
-        onExpandedChange = {settingsViewModel.expandDropdownStartLocation()}) {
+        onExpandedChange = { settingsViewModel.expandDropdownStartLocation() }) {
         TextField(
             modifier = Modifier
                 .menuAnchor()
@@ -339,13 +363,18 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
             readOnly = true,
             value = settingsUiState.selectedDropDownOptionLocation,
             onValueChange = {},
-            label = {Text(
-                text = stringResource(R.string.choose_default_location),
-                modifier = Modifier.padding(bottom = 8.dp),
-                fontWeight = FontWeight.Bold)
-                    },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(
-                expanded = settingsUiState.dropdownExpandedStartLocation)},
+            label = {
+                Text(
+                    text = stringResource(R.string.choose_default_location),
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = settingsUiState.dropdownExpandedStartLocation
+                )
+            },
             colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
         ExposedDropdownMenu(
@@ -354,22 +383,22 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
         ) {
             DropdownMenuItem(
                 modifier = Modifier,
-                text = {Text(text = stringResource(R.string.costum_location))},
+                text = { Text(text = stringResource(R.string.costum_location)) },
                 onClick = {
-                settingsViewModel.updateSelectedDefaultLocation(
-                    location = Location.COSTUM_LOCATION
-                )
+                    settingsViewModel.updateSelectedDefaultLocation(
+                        location = Location.COSTUM_LOCATION
+                    )
 
-                // TODO show a dropdown meny or a searchbar to choose location?
+                    // TODO show a dropdown meny or a searchbar to choose location?
                 }
             )
             DropdownMenuItem(
                 modifier = Modifier,
-                text = {Text(text = stringResource(R.string.phones_location))},
+                text = { Text(text = stringResource(R.string.phones_location)) },
                 onClick = {
-                settingsViewModel.updateSelectedDefaultLocation(
-                    location = Location.PHONES_LOCATION
-                )
+                    settingsViewModel.updateSelectedDefaultLocation(
+                        location = Location.PHONES_LOCATION
+                    )
                 }
             )
         }
@@ -378,7 +407,7 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
 
 @Composable
 @Preview
-fun PreviewStartLocation(settingsViewModel: SettingsViewModel = viewModel(), ) {
+fun PreviewStartLocation(settingsViewModel: SettingsViewModel = viewModel()) {
     ChooseStartLocation(settingsViewModel)
 }
 
@@ -395,7 +424,7 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
 
     ExposedDropdownMenuBox(
         expanded = settingsUiState.dropdownExpandedLocationAs,
-        onExpandedChange = {settingsViewModel.expandDropdownLocationAs()} ) {
+        onExpandedChange = { settingsViewModel.expandDropdownLocationAs() }) {
         TextField(
             modifier = Modifier
                 .menuAnchor()
@@ -404,14 +433,18 @@ fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
             readOnly = true,
             value = settingsUiState.selectedLocationAs,
             onValueChange = {},
-            label = {Text(
-                text = stringResource(R.string.means_of_transportation),
-                modifier = Modifier.padding(bottom = 8.dp),
-                fontWeight = FontWeight.Bold)
-                    },
+            label = {
+                Text(
+                    text = stringResource(R.string.means_of_transportation),
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    fontWeight = FontWeight.Bold
+                )
+            },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = settingsUiState.dropdownExpandedLocationAs)},
+                    expanded = settingsUiState.dropdownExpandedLocationAs
+                )
+            },
             colors = ExposedDropdownMenuDefaults.textFieldColors()
         )
         ExposedDropdownMenu(
