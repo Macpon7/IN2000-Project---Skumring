@@ -61,7 +61,7 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             val result = favoritesUiState.snackbarHostState.showSnackbar(
                 message = favoritesUiState.errorMessage,
                 withDismissAction = true,
-                actionLabel = "Refresh",
+                actionLabel = "Refresh", // TODO xml
             )
 
             // If the snackbar is dismissed, reset the boolean of the error-variable
@@ -104,7 +104,10 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             .padding(8.dp),
             verticalArrangement = Arrangement.Top
         ) {
-            FavoriteListContent(navController = navController, favoriteViewModel = favoritesViewModel, favoritesUiState = favoritesUiState)
+            FavoriteListContent(
+                navController = navController,
+                favoriteViewModel = favoritesViewModel,
+                favoritesUiState = favoritesUiState)
         }
     }
 }
@@ -129,7 +132,7 @@ fun FavoriteListContent(navController : NavController,
 
     Column (Modifier.verticalScroll(rememberScrollState())) {
         if (favoritesUiState.places.isEmpty()){
-            Text(text = "No Places")
+            Text(text = stringResource(R.string.no_places))
         } else {
             favoritesUiState.places.forEach { place ->
                 ListCard(

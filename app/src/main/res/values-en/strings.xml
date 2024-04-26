@@ -29,6 +29,9 @@
     <string name="places_nearby">Nearby places</string>
     <string name="search_hint">Search</string>
 
+    <!-- FavoritesScreen -->
+    <string name="no_places">No places</string>
+
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Picture taken</string>
     <string name="walking_distance">Walking distance</string>

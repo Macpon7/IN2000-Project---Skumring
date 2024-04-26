@@ -29,6 +29,9 @@
     <string name="places_nearby">Steder i nærheten</string>
     <string name="search_hint">Søk</string>
 
+    <!-- FavoritesScreen -->
+    <string name="no_places">Ingen steder lagret enda</string>
+
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Bilde tatt</string>
     <string name="walking_distance">Gangavstand</string>

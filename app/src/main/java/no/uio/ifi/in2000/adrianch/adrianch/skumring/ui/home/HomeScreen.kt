@@ -97,6 +97,8 @@ fun HomeScreen(
         homeViewModel.loadHomeScreen()
     }
 
+    // TODO add snackbar
+
     Scaffold(
         topBar = {
             SkumringTopBar(
@@ -115,7 +117,12 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
-            SunsetInfoCard(homeUiState.sunsetTime, homeUiState.weatherConditions, homeUiState.temp, homeUiState.sunsetWeatherIcon)//add blueHourTime and goldenHourTime later
+            SunsetInfoCard(
+                // TODO add blueHourTime and goldenHourTime later
+                homeUiState.sunsetTime,
+                homeUiState.weatherConditions,
+                homeUiState.temp,
+                homeUiState.sunsetWeatherIcon)
             Text(
                 text = stringResource(R.string.home_favourite_places),
                 style = MaterialTheme.typography.headlineSmall,
@@ -216,12 +223,12 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                                // .align(Alignment.BottomCenter)
                                 .padding(bottom = 5.dp)
                         )
-                Divider( //for dividing sunset today info from golden hour and blue hour times
+                Divider( // For dividing sunset today info from golden hour and blue hour times
                     modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     thickness = 1.dp
                 )
-                    Row( //For displaying Golden hour and Blue hour times on a row
+                    Row( // For displaying Golden hour and Blue hour times on a row
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
@@ -262,7 +269,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
 
                             )
                             Text(
-                                text = "19:09 -20:31", //change this later to $goldenHourTime
+                                text = "19:09 -20:31", // TODO change this later to $goldenHourTime
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 textAlign = TextAlign.Center,
@@ -276,7 +283,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                                 tint = Color.Unspecified,
                             )
                             Text(
-                                text = "20:31-21:05", //change this later to $blueHourTime
+                                text = "20:31-21:05", // TODO change this later to $blueHourTime
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 textAlign = TextAlign.Center,
@@ -330,7 +337,7 @@ fun MoreDetailsButton() {
 @Composable
 fun HorizontalInfoCardRow (homeUiState: HomeUiState, navHostController: NavHostController) {
     if (homeUiState.favoritePlaces.isEmpty()) {
-        Text(text = "No favourites")
+        Text(text = stringResource(R.string.no_favourites))
     } else {
         LazyRow {
             items(homeUiState.favoritePlaces) {place ->
