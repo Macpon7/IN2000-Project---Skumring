@@ -31,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -94,7 +96,31 @@ fun HomeScreen(
         homeViewModel.loadHomeScreen()
     }
 
-    // TODO add snackbar
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
+    // Check if there is an error, if so show a snackbar:
+    if (homeUiState.showSnackbar) {
+        LaunchedEffect(homeUiState.snackbarHostState) {
+            val result = homeUiState.snackbarHostState.showSnackbar(
+                message = homeUiState.errorMessage,
+                withDismissAction = true,
+                actionLabel = context.getString(R.string.refresh),
+            )
+            // If the snackbar is dismissed, reset the boolean of the showSnackbar-variable
+            // The snackbar will reappear is we get a new error
+            when (result) {
+                // If you press refresh
+                SnackbarResult.ActionPerformed -> {
+                    homeViewModel.refresh()
+                }
+                // If you click somewhere on the screen
+                SnackbarResult.Dismissed -> {
+                    homeViewModel.snackbarDismissed()
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
