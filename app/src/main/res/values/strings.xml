@@ -37,6 +37,13 @@
     <string name="walking_distance">Gangavstand</string>
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
+    <string name="place_display_placeholder" translatable="false">Place display placeholder</string>
+
+    <string name="bad_conditions">Det blir dårlige forhold</string>
+    <string name="ok_conditions">Det blir OK forhold</string>
+    <string name="good_conditions">Det blir fantastiske forhold</string>
+
+    <string name="sundown">Solnedgang</string>
 
     <!-- SettingsScreen -->
     <string name="settings">Innstillinger</string>
