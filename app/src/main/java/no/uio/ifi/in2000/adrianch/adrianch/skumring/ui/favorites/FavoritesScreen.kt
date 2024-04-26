@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,6 +51,9 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
 
     val favoritesUiState: FavoritesUiState by favoritesViewModel.favoritesUiState.collectAsState()
 
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
     // Load the list of favourites every time the user navigates to this screen
     LaunchedEffect(Unit) {
         favoritesViewModel.loadList()
@@ -61,7 +65,7 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             val result = favoritesUiState.snackbarHostState.showSnackbar(
                 message = favoritesUiState.errorMessage,
                 withDismissAction = true,
-                actionLabel = "Refresh", // TODO xml
+                actionLabel = context.getString(R.string.refresh),
             )
 
             // If the snackbar is dismissed, reset the boolean of the error-variable

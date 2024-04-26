@@ -11,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -30,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -57,13 +57,16 @@ fun SettingsScreen(
 ) {
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
     // Check if there is an error, if so show a snackbar:
     if (settingsUiState.showSnackbar) {
         LaunchedEffect(settingsUiState.snackbarHostState) {
             val result = settingsUiState.snackbarHostState.showSnackbar(
                 message = settingsUiState.errorMessage,
                 withDismissAction = true,
-                actionLabel = "Refresh",
+                actionLabel = context.getString(R.string.refresh),
             )
             // If the snackbar is dismissed, reset the boolean of the showSnackbar-variable
             // The snackbar will reappear is we get a new error
@@ -187,7 +190,6 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                     contentDescription = "FOLLOW_SYSTEM"
                 )
             }
-
              */
         )
         ExposedDropdownMenu(
@@ -210,7 +212,6 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
                         contentDescription = "FOLLOW_SYSTEM"
                     )
                 }
-
                  */
             )
             DropdownMenuItem(

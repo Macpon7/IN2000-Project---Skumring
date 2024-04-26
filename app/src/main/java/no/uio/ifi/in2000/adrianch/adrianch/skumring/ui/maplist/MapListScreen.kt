@@ -95,6 +95,9 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
 
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
     // Load all places every time the user navigates to this screen
     LaunchedEffect(Unit) {
         mapListViewModel.loadPlaces()
@@ -106,7 +109,7 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
             val result = mapListUiState.snackbarHostState.showSnackbar(
                 message = mapListUiState.errorMessage,
                 withDismissAction = true,
-                actionLabel = "Refresh", // TODO xml
+                actionLabel = context.getString(R.string.refresh),
             )
 
             // If the snackbar is dismissed, reset the boolean of the error-variable
