@@ -19,6 +19,7 @@
     <string name="error_message_loadUserLocation">Error updating user location</string>
     <string name="error_message_getting_sunset">Error getting sunset data</string>
     <string name="error_message_loading_list">Error loading list</string>
+    <string name="error_message_getting_places_from_database">Error getting places from database</string>
 
     <!-- HomeScreen -->
     <string name="conditions_are_good">The conditions will be good tonight!</string>

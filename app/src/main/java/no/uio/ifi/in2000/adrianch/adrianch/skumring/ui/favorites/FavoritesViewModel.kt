@@ -3,8 +3,6 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +19,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
-data class FavoritesUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class) constructor(
+data class FavoritesUiState(
     val places: List<PlaceInfo> = emptyList(),
 
     // Variable for checking if there is an error:
@@ -45,7 +43,6 @@ class FavoritesViewModel(
            //loadList()
     }
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
     fun loadList(){
         viewModelScope.launch(Dispatchers.IO) {
             _favoritesUiState.update { currentfavoritesUiState ->
@@ -62,7 +59,6 @@ class FavoritesViewModel(
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     fun toggleFavourite(place: PlaceInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             if (place.isFavourite) {
@@ -90,7 +86,6 @@ class FavoritesViewModel(
         _favoritesUiState.update { currentfavoritesUiState->
             currentfavoritesUiState.copy(
                 showSnackbar = false,
-                errorMessage = context.getString(R.string.error_message_no_error)
             )
         }
     }

@@ -183,7 +183,6 @@ class HomeViewModel(
         _homeUiState.update { currentMapUiState ->
             currentMapUiState.copy(
                 showSnackbar = false,
-                errorMessage = context.getString(R.string.error_message_no_error)
             )
         }
     }
