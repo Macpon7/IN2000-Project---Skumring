@@ -1,6 +1,11 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour
 
 data class GoldenHourBlueHour(
+    val goldenHour: String,
+    val blueHour: String,
+)
+
+data class SunriseSunset(
     val results: Results,
     val status: String
 )
