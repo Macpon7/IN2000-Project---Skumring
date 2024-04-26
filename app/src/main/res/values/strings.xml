@@ -8,24 +8,33 @@
     <string name="nav_info_button">Info</string>
     <string name="nav_personal_button">Min side</string>
     <string name="nav_settings_button">Instillinger</string>
+
+    <!-- SnackBar -->
+    <string name="no_error">Ingen feil</string>
+    <string name="refresh">Last inn på nytt</string>
+
     <!-- HomeScreen -->
-    <string name="home_greeting">Hei</string>
     <string name="conditions_are_good">Det blir gode forhold i kveld!</string>
     <string name="conditions_are_bad">Det blir dårlige forhold i kveld.</string>
     <string name="home_sunset">Solnedgang i dag</string>
     <string name="list_title">Fine steder i dag</string>
     <string name="home_more_details_button">Mer informasjon</string>
     <string name="home_favourite_places">Favorittsteder</string>
+    <string name="no_favourites">Ingen favoritter!</string>
+    <string name="error_sunset">Feil med å få data</string>
+
     <!-- MapListScreen -->
     <string name="toggle_list">Liste</string>
     <string name="toggle_map">Kart</string>
     <string name="places_nearby">Steder i nærheten</string>
     <string name="search_hint">Søk</string>
+
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Bilde tatt</string>
     <string name="walking_distance">Gangavstand</string>
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
+
     <!-- SettingsScreen -->
     <string name="settings">Innstillinger</string>
 
@@ -64,6 +73,8 @@
     <string name="error_location_name">Skriv et navn</string>
     <string name="error_address">Skriv inn en addresse</string>
     <string name="error_description">Skriv en beskrivelse</string>
+    <string name="missing_fields">Skriv inn de manglende feltene</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>

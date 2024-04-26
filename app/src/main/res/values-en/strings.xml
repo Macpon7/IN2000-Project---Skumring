@@ -9,23 +9,32 @@
     <string name="nav_personal_button">My Page</string>
     <string name="nav_info_button">Info</string>
     <string name="nav_settings_button">Settings</string>
+
+    <!-- SnackBar -->
+    <string name="no_error">No errors</string>
+    <string name="refresh">Refresh</string>
+
     <!-- HomeScreen -->
-    <string name="home_greeting">Hello</string>
     <string name="conditions_are_good">The conditions will be good tonight!</string>
     <string name="conditions_are_bad">The conditions will be bad tonight.</string>
     <string name="home_sunset">Sunset today</string>
     <string name="list_title">Nice locations today</string>
     <string name="home_favourite_places">Favourite places</string>
+    <string name="no_favourites">No favourites!</string>
+    <string name="error_sunset">Error with getting data</string>
+
     <!-- MapListScreen -->
     <string name="toggle_list">List</string>
     <string name="toggle_map">Map</string>
     <string name="places_nearby">Nearby places</string>
     <string name="search_hint">Search</string>
+
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Picture taken</string>
     <string name="walking_distance">Walking distance</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
+
     <!-- SettingsScreen -->
     <string name="settings">Settings</string>
 
@@ -60,6 +69,8 @@
     <string name="error_location_name">Write a name</string>
     <string name="error_address">Write an address</string>
     <string name="error_description">Write a description</string>
+    <string name="missing_fields">Please fill in the missing fields</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">"Weather conditions: "</string>
     <string name="temp_at_sunset">Temperature at sunset</string>
