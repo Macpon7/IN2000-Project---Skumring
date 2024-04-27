@@ -6,6 +6,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,6 +52,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -74,6 +76,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -198,6 +201,7 @@ fun PlaceInfoScreen(
 @Composable
 fun PlaceInfoCard(
     sunEvent: SunEvent,
+    placeInfo: PlaceInfo,
     imageDetails: ImageDetails,
     dateString: String,
     timeString: String
@@ -222,26 +226,25 @@ fun PlaceInfoCard(
                         )
                     )
             ) {
-                /*
-                if(placeInfo.id < 16) {
-                    Image(
-                        painter = painterResource(id = imageDetails.path.toInt()),
-                        contentDescription = imageDetails.description
-                    )
-                }else {
-                    val context = LocalContext.current
-                    val imagePath = File(context.filesDir, imageDetails.path)
-                    val imagePainter = imagePath.path.toInt()
-                    Image(
-                        painter = painterResource(imagePainter), contentDescription = null
+                if(placeInfo.sunEvents.isNotEmpty()) {
+                    if (placeInfo.id < 16) {
+                        Image(
+                            painter = painterResource(id = imageDetails.path.toInt()),
+                            contentDescription = imageDetails.description
+                        )
+                    } else {
+                        val context = LocalContext.current
+                        val imagePath = File(context.filesDir, imageDetails.path)
+                        val imagePainter = imagePath.path.toInt()
+                        Image(
+                            painter = painterResource(imagePainter), contentDescription = null
 
-                    )
-                }
-                 */
+                        )
+                    }
+               }
             }
-
             Text( //for image description
-                text = "${imageDetails.description}, Lorem ipsum is simply dummy text for the printing and typesetting industry. Lorem Impsum bla bla bla bla, legge til noe her sånn at man ser om det funker, det er bra det vet du. Trenger den enda mer? Uff, det her var slitsomt, men snart får vi se om det funker ",
+                text = "${imageDetails.description}, Placeholder text before the actual text works and we get a place that displays the actual thing we want to display blalbaasdfgldfjs", //"${placeInfoUiState.placeInfo.description}",
                 style = typography.bodyMedium,
                 modifier = Modifier.padding(start = 10.dp, bottom = 20.dp, end = 10.dp, top = 5.dp),
                 maxLines = 2,
@@ -312,7 +315,11 @@ fun PlaceInfoCard(
                     .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
 
             ) {
-                WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
+                Box(
+                    modifier = Modifier.size(80.dp)
+                ) {
+                    WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
+                }
 
                 Box {
                     Text(
@@ -494,8 +501,11 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                         .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
 
                 ) {
-                    WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
-
+                    Box(
+                        modifier = Modifier.size(60.dp)
+                    ) {
+                        WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
+                    }
                     Box {
                         Text(
                             text = stringResource(R.string.golden_hour),
@@ -568,19 +578,19 @@ fun ContentInfoScreen(
     placeInfoUiState: PlaceInfoUiState
 ) {
     Column(
-        modifier = Modifier.padding(8.dp),
+       // modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         //Add space between pictures and text
-        Spacer(modifier = Modifier.height(20.dp))
+       // Spacer(modifier = Modifier.height(20.dp))
 
-
+/*
         //Description of the place:
         Column(
             modifier = Modifier
-                .padding()
+              //  .padding()
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.Start,
 
@@ -593,10 +603,12 @@ fun ContentInfoScreen(
             )
              */
 
+ */
+
             SunEventInfoContent(placeInfoUiState)
         }
     }
-}
+//}
 
 @Composable
 fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
@@ -606,19 +618,20 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
         modifier = Modifier
             .verticalScroll(state = rememberScrollState(), enabled = true)
             .fillMaxWidth()
-            .padding(20.dp)
+            .padding(10.dp)
     ) {
-
         // Shows the sunset events for today
         val firstEvent = placeInfoUiState.placeInfo.sunEvents.firstOrNull()
         if (firstEvent != null) {
             SunEventInfoToday(placeInfoUiState)
         }
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Shows the sunset events for tomorrow and the following days
         placeInfoUiState.placeInfo.sunEvents.forEachIndexed { index, _ ->
             SunEventInfoTomorrow(placeInfoUiState, dayOffset)
             dayOffset++
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -644,7 +657,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 
         val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-        PlaceInfoCard(sunEvent, imageDetails, dateString, timeString)
+        PlaceInfoCard(sunEvent, placeInfo, imageDetails, dateString, timeString)
     }
 }
 
@@ -659,7 +672,6 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, dayOffset: Int) {
 
         if (index < sunEvents.size) {
             val sunEvent = sunEvents[index]
-
 
             val date = LocalDateTime.now().plusDays(dayOffset.toLong())
             val dateString = if (dayOffset == 1) {
