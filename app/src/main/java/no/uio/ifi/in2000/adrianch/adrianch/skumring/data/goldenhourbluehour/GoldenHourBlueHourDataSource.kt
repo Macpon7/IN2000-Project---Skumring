@@ -49,19 +49,25 @@ class GoldenHourBlueHourDataSource {
      * date: String - ISO formatted date (YYYY-MM-DD)
      */
     suspend fun fetchGoldenHourBlueHourTime(lat: String, long: String, date: LocalDate): GoldenHourBlueHour {
-        val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
-        // Fetches info for Central European TZ
-        val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&$dateString"
-        val response = fetchSunriseSunset(path)
-        val goldenHourDateTime: LocalDateTime = formatTime(
-            time = response.results.golden_hour,
-            date = dateString)
-        val blueHourDateTime: LocalDateTime = formatTime(
-            time = response.results.dusk,
-            date = dateString)
-        Log.d(logTag, "Golden hour: $goldenHourDateTime, Blue hour: $blueHourDateTime")
+        try {
+            val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            // Fetches info for Central European TZ
+            val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&$dateString"
+            val response = fetchSunriseSunset(path)
+            val goldenHourDateTime: LocalDateTime = formatTime(
+                time = response.results.golden_hour,
+                date = dateString)
+            val blueHourDateTime: LocalDateTime = formatTime(
+                time = response.results.dusk,
+                date = dateString)
+            Log.d(logTag, "Golden hour: $goldenHourDateTime, Blue hour: $blueHourDateTime")
 
-        return GoldenHourBlueHour(goldenHour = goldenHourDateTime, blueHour = blueHourDateTime)
+            return GoldenHourBlueHour(goldenHour = goldenHourDateTime, blueHour = blueHourDateTime)
+        } catch (e: Exception) {
+            Log.e(logTag, "Failed fetching Golden/Blue Hour", e)
+            throw e
+        }
+
     }
 
     /**
