@@ -23,6 +23,9 @@ class GoldenHourBlueHourDataSource {
         }
     }
 
+    /**
+     * Gets response body from API that gets us golden and blue hour
+     */
     private suspend fun fetchSunriseSunset(path: String): SunriseSunset {
         try {
             val response: HttpResponse = client.get(path)
@@ -33,20 +36,43 @@ class GoldenHourBlueHourDataSource {
         }
     }
 
+    /**
+     * Calls SunriseSunset.io with given latitude, longitude and date and returns
+     * golden hour and blue hour for said parameters.
+     *
+     * Inputs:
+     *
+     * lat: String - Latitude coordinate
+     *
+     * long: String - Longitude coordinate
+     *
+     * date: String - ISO formatted date (YYYY-MM-DD)
+     */
     suspend fun fetchGoldenHourBlueHourTime(lat: String, long: String, date: LocalDate): GoldenHourBlueHour {
         val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
         // Fetches info for Central European TZ
         val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&$dateString"
         val response = fetchSunriseSunset(path)
-        val goldenHourTime: String = dateString + " " + fixTimeFormat(response.results.golden_hour)
-        val blueHourTime: String = dateString + " " + fixTimeFormat(response.results.dusk)
-        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
-        val goldenHourTimeFormatted = LocalDateTime.parse(goldenHourTime, formatter)
-        val blueHourTimeFormatted = LocalDateTime.parse(blueHourTime, formatter)
-        Log.d(logTag, "Golden hour: ${goldenHourTimeFormatted}, Blue hour: ${blueHourTimeFormatted}")
-        return GoldenHourBlueHour(goldenHour = goldenHourTimeFormatted, blueHour = blueHourTimeFormatted)
+        val goldenHourDateTime: LocalDateTime = formatTime(
+            time = response.results.golden_hour,
+            date = dateString)
+        val blueHourDateTime: LocalDateTime = formatTime(
+            time = response.results.dusk,
+            date = dateString)
+        Log.d(logTag, "Golden hour: $goldenHourDateTime, Blue hour: $blueHourDateTime")
+
+        return GoldenHourBlueHour(goldenHour = goldenHourDateTime, blueHour = blueHourDateTime)
     }
 
+    /**
+     * Auxiliary functions that lets us convert from the format provided by the API
+     * to a LocalDateTime object
+     */
+    private fun formatTime(time: String, date: String): LocalDateTime {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
+        val dateTimeString = date + " " + fixTimeFormat(time)
+        return LocalDateTime.parse(dateTimeString, formatter)
+    }
     private fun fixTimeFormat(time: String): String {
         return if (time[1] == ':') {
             "0$time"
