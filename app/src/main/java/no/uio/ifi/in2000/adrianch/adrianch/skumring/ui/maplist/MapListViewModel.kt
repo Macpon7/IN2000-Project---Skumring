@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +20,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
@@ -34,6 +37,9 @@ data class MapListUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMat
     var mapListToggle: MapListToggleState = MapListToggleState.MAP,
     var sheetState: SheetState = SheetState(skipPartiallyExpanded = true),
     var showBottomSheet: Boolean = false,
+    var userLat: String = "59.943735",
+    var userLong: String = "10.718393",
+    var userBearing: Float = 0.0f,
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -45,10 +51,12 @@ data class MapListUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMat
 
 private const val logTag = "MapListViewModel"
 
-class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel() {
+class MapListViewModel(private val placeRepository: PlaceRepository, context: Context): ViewModel() {
 
     private val _mapListUiState = MutableStateFlow(MapListUiState())
     val mapListUiState: StateFlow<MapListUiState> = _mapListUiState.asStateFlow()
+
+    private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
 
     // TODO make this work instead of having the user press a button
     init {
@@ -158,6 +166,18 @@ class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel(
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    private suspend fun updateUserLocation() {
+        _mapListUiState.update { currentMapUiState ->
+            val userloc = userLocationRepository.getUserLocation()
+            currentMapUiState.copy(
+                userLat = userloc.lat,
+                userLong = userloc.long,
+                userBearing = userloc.bearing
+            )
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     companion object {
         val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
@@ -168,7 +188,8 @@ class MapListViewModel(private val placeRepository: PlaceRepository): ViewModel(
                 val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return MapListViewModel(
-                    placeRepository = (application as ApplicationSkumring).dbRepository
+                    placeRepository = (application as ApplicationSkumring).dbRepository,
+                    context = application.context
                 ) as T
             }
         }
