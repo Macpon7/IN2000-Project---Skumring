@@ -185,7 +185,7 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
     ) {
         //The accurately forecast sunsets, always show this:
         placeInfoUiState.placeInfo.sunEvents.forEach {
-            SunEventInfo(time = it.sunsetTime, conditions = it.conditions.weatherRating)
+            SunEventInfo(time = it.time, conditions = it.conditions.weatherRating)
         }
     }
 }

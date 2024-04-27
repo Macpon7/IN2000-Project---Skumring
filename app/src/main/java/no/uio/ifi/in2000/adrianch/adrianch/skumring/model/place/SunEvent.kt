@@ -10,7 +10,7 @@ import java.time.LocalDateTime
  * what the conditions will be like.
  */
 data class SunEvent (
-    val sunsetTime: LocalDateTime,
+    val time: LocalDateTime,
     //val goldenHourTime: LocalDateTime,
     //val blueHourTime: LocalDateTime,
     val tempAtEvent: String,

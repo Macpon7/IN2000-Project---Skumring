@@ -117,9 +117,9 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
                 _homeUiState.update{ currentHomeUiState->
                     currentHomeUiState.copy(
                         temp = userPlace.sunEvents[0].tempAtEvent,
-                        sunsetTime = userPlace.sunEvents[0].sunsetTime.toLocalTime().format(
+                        sunsetTime = userPlace.sunEvents[0].time.toLocalTime().format(
                             DateTimeFormatter.ofPattern("HH':'mm")),
-                        sunsetDate = userPlace.sunEvents[0].sunsetTime.toLocalDate().format(
+                        sunsetDate = userPlace.sunEvents[0].time.toLocalDate().format(
                             DateTimeFormatter.ISO_LOCAL_DATE),
                         sunsetWeatherIcon = userPlace.sunEvents[0].weatherIcon,
                         weatherConditions = userPlace.sunEvents[0].conditions.weatherRating,
