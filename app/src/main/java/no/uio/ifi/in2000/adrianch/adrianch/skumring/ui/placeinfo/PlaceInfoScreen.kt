@@ -6,9 +6,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,20 +19,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -55,25 +50,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImagePainter.State.Empty.painter
-import coil.compose.rememberImagePainter
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
@@ -83,16 +71,11 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.ImageDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreenDestination.icon
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
-import java.io.File
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 
 private const val TAG = "PlaceInfoScreen"
@@ -136,11 +119,10 @@ fun PreviewContentInfoScreen() {
                         )
                     )
                 )
-            ))
+            )
+        )
     }
 }
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -148,7 +130,8 @@ fun PreviewContentInfoScreen() {
 @Composable
 fun PlaceInfoScreen(
     placeViewModel: PlaceInfoViewModel = viewModel(factory = PlaceInfoViewModel.Factory),
-    id: Int, navController: NavHostController
+    id: Int,
+    navController: NavHostController
 ) {
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
@@ -208,181 +191,189 @@ fun PlaceInfoScreen(
 }
 
 
-
 /**
  * Picture of the place
  */
 @SuppressLint("SimpleDateFormat")
 @Composable
-fun PlaceInfoCard(placeInfo: PlaceInfo, sunEvent: SunEvent, imageDetails: ImageDetails,  dateString: String, timeString: String) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(560.dp),
-            elevation = CardDefaults.cardElevation(10.dp),
-            colors = CardDefaults.cardColors( MaterialTheme.colorScheme.secondary)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+fun PlaceInfoCard(
+    sunEvent: SunEvent,
+    imageDetails: ImageDetails,
+    dateString: String,
+    timeString: String
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(560.dp),
+        elevation = CardDefaults.cardElevation(10.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary)
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
 
-                Box( //for the image
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .background(Color.Gray)
-                        .clip(
-                            RoundedCornerShape(
-                                topStart = 20.dp,
-                                topEnd = 20.dp,
-                                bottomEnd = 0.dp,
-                                bottomStart = 0.dp
-                            )
+            Box( //for the image
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(Color.Gray)
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = 20.dp, topEnd = 20.dp, bottomEnd = 0.dp, bottomStart = 0.dp
                         )
-                ) {
-                    /*
-                    if(placeInfo.id < 16) {
-                        Image(
-                            painter = painterResource(id = imageDetails.path.toInt()),
-                            contentDescription = imageDetails.description
-                        )
-                    }else {
-                        val context = LocalContext.current
-                        val imagePath = File(context.filesDir, imageDetails.path)
-                        val imagePainter = imagePath.path.toInt()
-                        Image(
-                            painter = painterResource(imagePainter), contentDescription = null
-
-                        )
-                    }
-                     */
-                }
-
-                    Text( //for image description
-                        text = "${imageDetails.description}, Lorem ipsum is simply dummy text for the printing and typesetting industry. Lorem Impsum bla bla bla bla, legge til noe her sånn at man ser om det funker, det er bra det vet du. Trenger den enda mer? Uff, det her var slitsomt, men snart får vi se om det funker ",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(start = 10.dp, bottom = 20.dp, end = 10.dp, top = 5.dp),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onSecondary //change text color
                     )
-                Text(
-                   text = dateString.uppercase(),
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSecondary //change text color
-                )
-                Divider( //for dividing sunset today info from golden hour and blue hour times
-                    modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp),
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    thickness = 1.dp
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.sunsetsymbol),
-                    contentDescription = "Sunset Icon",
-                    tint = Color.Unspecified,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(60.dp)
-                )
-                Text(
-                    text = timeString, //"${sunEvent.time}",//sunset time //Use timeString instead??
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 5.dp, top = 3.dp)
-                )
-                Text( //text changing based on weather conditions, in different textbox because of change of color
-                    text = "Sunset conditions: {$sunEvent.conditions}",//" $weatherConditions",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 3.dp)
-                )
+            ) {
+                /*
+                if(placeInfo.id < 16) {
+                    Image(
+                        painter = painterResource(id = imageDetails.path.toInt()),
+                        contentDescription = imageDetails.description
+                    )
+                }else {
+                    val context = LocalContext.current
+                    val imagePath = File(context.filesDir, imageDetails.path)
+                    val imagePainter = imagePath.path.toInt()
+                    Image(
+                        painter = painterResource(imagePainter), contentDescription = null
 
-                Text(
-                    text = "Temperature at sunset: ${sunEvent.tempAtEvent}",//"$temp °C",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 5.dp)
-                )
-                Divider( //for dividing sunset today info from golden hour and blue hour times
-                    modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp),
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    thickness = 1.dp
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
-
-                ) {
-                    WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
-
-                    Box {
-                        Text(
-                            text = stringResource(R.string.golden_hour),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(bottom = 0.dp)
-                        )//Golden hour icon and time
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
-                            contentDescription = "yellow sun icon",
-                            tint = Color.Unspecified,
-                            modifier = Modifier.padding(start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp)
-
-                        )
-                        Text(
-                            text = "19:09 -20:31", //change this later to $goldenHourTime
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp)
-                        )
-                    }
-                    Box {
-                        Text(
-                            text = stringResource(R.string.blue_hour),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            textAlign = TextAlign.Center,
-                        )//Blue hour icon and time
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
-                            contentDescription = "blue sun icon",
-                            tint = Color.Unspecified,
-                            modifier = Modifier.padding(start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp)
-                        )
-                        Text(
-                            text = "20:31-21:05", //change this later to $blueHourTime
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp)
-                        )
-                    }
-
+                    )
                 }
+                 */
+            }
+
+            Text( //for image description
+                text = "${imageDetails.description}, Lorem ipsum is simply dummy text for the printing and typesetting industry. Lorem Impsum bla bla bla bla, legge til noe her sånn at man ser om det funker, det er bra det vet du. Trenger den enda mer? Uff, det her var slitsomt, men snart får vi se om det funker ",
+                style = typography.bodyMedium,
+                modifier = Modifier.padding(start = 10.dp, bottom = 20.dp, end = 10.dp, top = 5.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSecondary //change text color
+            )
+            Text(
+                text = dateString.uppercase(),
+                fontWeight = FontWeight.Bold,
+                style = typography.titleMedium,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSecondary //change text color
+            )
+            Divider( //for dividing sunset today info from golden hour and blue hour times
+                modifier = Modifier.padding(
+                    start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
+                ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.sunsetsymbol),
+                contentDescription = "Sunset Icon",
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(60.dp)
+            )
+            Text(
+                text = timeString, //"${sunEvent.time}",//sunset time //Use timeString instead??
+                style = typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onPrimary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 5.dp, top = 3.dp)
+            )
+            Text( //text changing based on weather conditions, in different textbox because of change of color
+                text = "Sunset conditions: {$sunEvent.conditions}",//" $weatherConditions",
+                style = typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 3.dp)
+            )
+
+            Text(
+                text = "Temperature at sunset: ${sunEvent.tempAtEvent}",//"$temp °C",
+                style = typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 5.dp)
+            )
+            Divider( //for dividing sunset today info from golden hour and blue hour times
+                modifier = Modifier.padding(
+                    start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
+                ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
+
+            ) {
+                WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
+
+                Box {
+                    Text(
+                        text = stringResource(R.string.golden_hour),
+                        style = typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 0.dp)
+                    )//Golden hour icon and time
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
+                        contentDescription = "yellow sun icon",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.padding(
+                            start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                        )
+
+                    )
+                    Text(
+                        text = "19:09 -20:31", //change this later to $goldenHourTime
+                        style = typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(
+                            start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                        )
+                    )
+                }
+                Box {
+                    Text(
+                        text = stringResource(R.string.blue_hour),
+                        style = typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )//Blue hour icon and time
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
+                        contentDescription = "blue sun icon",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.padding(
+                            start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                        )
+                    )
+                    Text(
+                        text = "20:31-21:05", //change this later to $blueHourTime
+                        style = typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(
+                            start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                        )
+                    )
                 }
 
             }
         }
+
+    }
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -396,8 +387,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
         targetValue = if (expandedState) 180f else 0f, label = ""
     )
 
-    Card(
-        elevation = CardDefaults.cardElevation(10.dp),
+    Card(elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
         modifier = Modifier
             .fillMaxWidth()
@@ -406,7 +396,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                     durationMillis = 300, easing = LinearOutSlowInEasing
                 )
             ),
-        onClick = {expandedState = !expandedState}
+        onClick = { expandedState = !expandedState }
 
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -414,21 +404,15 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
             Text( //the date
                 text = dateString.uppercase(),
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                style = typography.titleMedium,
+                modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSecondary //change text color
             )
             Divider( //for dividing the date from the sunset info
                 modifier = Modifier.padding(
-                    start = 18.dp,
-                    end = 18.dp,
-                    top = 10.dp,
-                    bottom = 15.dp
-                ),
-                color = MaterialTheme.colorScheme.onSecondary,
-                thickness = 1.dp
+                    start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
+                ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
             )
             Icon( //Sunset icon
                 painter = painterResource(id = R.drawable.sunsetsymbol),
@@ -440,7 +424,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
             )
             Text( //Time of sunset
                 text = timeString, //"${sunEvent.time}",
-                style = MaterialTheme.typography.headlineSmall,
+                style = typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -449,7 +433,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
             )
             Text( //text changes based on weather conditions
                 text = "Sunset conditions: ${sunEvent.conditions}",//" $weatherConditions",
-                style = MaterialTheme.typography.bodyMedium,
+                style = typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -460,7 +444,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
 
             Text( //temperature at sunset
                 text = "Temperature at sunset: ${sunEvent.tempAtEvent}",//"$temp °C",
-                style = MaterialTheme.typography.bodyMedium,
+                style = typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -469,12 +453,10 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                     .padding(bottom = 5.dp)
             )
             Box( //Box for the button
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.tertiary)
+                modifier = Modifier.background(MaterialTheme.colorScheme.tertiary)
             ) {
                 Divider(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    thickness = 1.dp
+                    color = MaterialTheme.colorScheme.onSecondaryContainer, thickness = 1.dp
                 )
                 Button(
                     onClick = {
@@ -503,84 +485,72 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                 }
             }
             //if button pushed, show the rest of the information
-            if(expandedState) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
+            if (expandedState) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
 
-            ) {
-                WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
+                ) {
+                    WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
 
-                Box {
-                    Text(
-                        text = stringResource(R.string.golden_hour),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(bottom = 0.dp)
-                    )//Golden hour icon and time
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
-                        contentDescription = "yellow sun icon",
-                        tint = Color.Unspecified,
-                        modifier = Modifier.padding(
-                            start = 0.dp,
-                            bottom = 22.dp,
-                            top = 22.dp,
-                            end = 22.dp
+                    Box {
+                        Text(
+                            text = stringResource(R.string.golden_hour),
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(bottom = 0.dp)
+                        )//Golden hour icon and time
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
+                            contentDescription = "yellow sun icon",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.padding(
+                                start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                            )
+
                         )
-
-                    )
-                    Text(
-                        text = "19:09 -20:31", //change this later to $goldenHourTime
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(
-                            start = 25.dp,
-                            bottom = 22.dp,
-                            top = 22.dp,
-                            end = 22.dp
+                        Text(
+                            text = "19:09 -20:31", //change this later to $goldenHourTime
+                            style = typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(
+                                start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                            )
                         )
-                    )
+                    }
+                    Box {
+                        Text(
+                            text = stringResource(R.string.blue_hour),
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            textAlign = TextAlign.Center,
+                        )//Blue hour icon and time
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
+                            contentDescription = "blue sun icon",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.padding(
+                                start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                            )
+                        )
+                        Text(
+                            text = "20:31-21:05", //change this later to $blueHourTime
+                            style = typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(
+                                start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                            )
+                        )
+                    }
                 }
-                Box {
-                    Text(
-                        text = stringResource(R.string.blue_hour),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )//Blue hour icon and time
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
-                        contentDescription = "blue sun icon",
-                        tint = Color.Unspecified,
-                        modifier = Modifier.padding(
-                            start = 0.dp,
-                            bottom = 22.dp,
-                            top = 22.dp,
-                            end = 22.dp
-                        )
-                    )
-                    Text(
-                        text = "20:31-21:05", //change this later to $blueHourTime
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(
-                            start = 25.dp,
-                            bottom = 22.dp,
-                            top = 22.dp,
-                            end = 22.dp
-                        )
-                    )
-                }
-            }
 
             }
         }
@@ -594,7 +564,8 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
  * This exclude the top- and bottomBar
  */
 @Composable
-fun ContentInfoScreen(placeInfoUiState: PlaceInfoUiState
+fun ContentInfoScreen(
+    placeInfoUiState: PlaceInfoUiState
 ) {
     Column(
         modifier = Modifier.padding(8.dp),
@@ -614,7 +585,11 @@ fun ContentInfoScreen(placeInfoUiState: PlaceInfoUiState
             horizontalAlignment = Alignment.Start,
 
             ) {
-            Text(text = placeInfoUiState.placeInfo.description, modifier = Modifier.padding(bottom = 4.dp), fontSize = 20.sp)
+            Text(
+                text = placeInfoUiState.placeInfo.description,
+                modifier = Modifier.padding(bottom = 4.dp),
+                fontSize = 20.sp
+            )
 
             SunEventInfoContent(placeInfoUiState)
         }
@@ -623,7 +598,6 @@ fun ContentInfoScreen(placeInfoUiState: PlaceInfoUiState
 
 @Composable
 fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
-    var showLongTermForecast by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -634,7 +608,8 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
         //Shows the sunset events for today
         val firstEvent = placeInfoUiState.placeInfo.sunEvents.firstOrNull()
         if (firstEvent != null) {
-            SunEventInfoToday(placeInfoUiState
+            SunEventInfoToday(
+                placeInfoUiState
             )
         }
         //Shows the sunset events for tomorrow and the following days
@@ -650,14 +625,14 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
 @Composable
 fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 
-    var placeInfo = placeInfoUiState.placeInfo
-    var sunEvents = placeInfo.sunEvents
+    val placeInfo = placeInfoUiState.placeInfo
+    val sunEvents = placeInfo.sunEvents
     //var imageDetails = placeInfo.images[0]
     // var time = LocalDateTime.now()
 
     if (placeInfo.sunEvents.isNotEmpty()) {
-        var sunEvent = sunEvents[0]
-        var imageDetails = placeInfo.images.getOrElse(0) { ImageDetails("", "") }
+        val sunEvent = sunEvents[0]
+        val imageDetails = placeInfo.images.getOrElse(0) { ImageDetails("", "") }
         var time = LocalDateTime.now()
 
 
@@ -666,7 +641,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 
         val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-        PlaceInfoCard(placeInfo, sunEvent, imageDetails, dateString, timeString)
+        PlaceInfoCard(sunEvent, imageDetails, dateString, timeString)
     }
 }
 
@@ -677,7 +652,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
 
 
-    var sunEvents = placeInfoUiState.placeInfo.sunEvents
+    val sunEvents = placeInfoUiState.placeInfo.sunEvents
 
     if (sunEvents.isNotEmpty()) {
         val sunEvent = sunEvents[1]
@@ -707,7 +682,6 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
         SunEventInfoCard(sunEvent, dateString, timeString)
     }
 }
-
 
 
 /* //Original SunEventInfoCard
