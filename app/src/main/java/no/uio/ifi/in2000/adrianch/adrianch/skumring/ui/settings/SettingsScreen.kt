@@ -132,17 +132,32 @@ fun SettingsScreen(
 fun ContentSettings(settingsViewModel: SettingsViewModel) {
     Column(modifier = Modifier.padding(30.dp)) {
 
+        //Global variable for color of the text
+        val TextColor: Color = MaterialTheme.colorScheme.onSurface
+
         // Content for choose mode:
-        ChooseTheme(settingsViewModel = settingsViewModel)
+        ChooseTheme(
+            settingsViewModel = settingsViewModel,
+            textColor = TextColor
+        )
 
         // Content for choosing language:
-        ChooseLanguage(settingsViewModel = settingsViewModel)
+        ChooseLanguage(
+            settingsViewModel = settingsViewModel,
+            textColor = TextColor
+        )
 
         // Content for choosing StartLocation:
-        ChooseStartLocation(settingsViewModel = settingsViewModel)
+        ChooseStartLocation(
+            settingsViewModel = settingsViewModel,
+            textColor = TextColor
+        )
 
         // Content for choosing LocationAs:
-        ChooseLocationAs(settingsViewModel = settingsViewModel)
+        ChooseLocationAs(
+            settingsViewModel = settingsViewModel,
+            textColor = TextColor
+        )
     }
 }
 
@@ -153,7 +168,10 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChooseTheme(settingsViewModel: SettingsViewModel) {
+fun ChooseTheme(
+    settingsViewModel: SettingsViewModel,
+    textColor: Color
+) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
@@ -259,7 +277,7 @@ fun ChooseTheme(settingsViewModel: SettingsViewModel) {
 @Composable
 @Preview
 fun PreviewChooseTheme(settingsViewModel: SettingsViewModel = viewModel()) {
-    ChooseTheme(settingsViewModel)
+    //ChooseTheme(settingsViewModel)
 }
 
 /**
@@ -271,7 +289,10 @@ fun PreviewChooseTheme(settingsViewModel: SettingsViewModel = viewModel()) {
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
+fun ChooseLanguage(
+    settingsViewModel: SettingsViewModel,
+    textColor: Color
+) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
@@ -338,7 +359,7 @@ fun ChooseLanguage(settingsViewModel: SettingsViewModel) {
 @Composable
 @Preview
 fun PreviewChooseLanguage(settingsViewModel: SettingsViewModel = viewModel()) {
-    ChooseLanguage(settingsViewModel)
+    //ChooseLanguage(settingsViewModel)
 }
 
 /**
@@ -348,7 +369,10 @@ fun PreviewChooseLanguage(settingsViewModel: SettingsViewModel = viewModel()) {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
+fun ChooseStartLocation(
+    settingsViewModel: SettingsViewModel,
+    textColor: Color
+) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
@@ -408,7 +432,7 @@ fun ChooseStartLocation(settingsViewModel: SettingsViewModel) {
 @Composable
 @Preview
 fun PreviewStartLocation(settingsViewModel: SettingsViewModel = viewModel()) {
-    ChooseStartLocation(settingsViewModel)
+    //ChooseStartLocation(settingsViewModel)
 }
 
 /**
@@ -418,7 +442,10 @@ fun PreviewStartLocation(settingsViewModel: SettingsViewModel = viewModel()) {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChooseLocationAs(settingsViewModel: SettingsViewModel) {
+fun ChooseLocationAs(
+    settingsViewModel:
+    SettingsViewModel, textColor: Color
+) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
