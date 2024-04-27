@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -56,9 +57,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -187,7 +191,7 @@ fun PlaceInfoScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {*/
-            ContentInfoScreen(placeUiState)
+            SunEventInfoContent(placeUiState)
             //}
         }
     }
@@ -206,6 +210,8 @@ fun PlaceInfoCard(
     dateString: String,
     timeString: String
 ) {
+    var expanded by remember {mutableStateOf(false)}
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -226,6 +232,7 @@ fun PlaceInfoCard(
                         )
                     )
             ) {
+                /*
                 if(placeInfo.sunEvents.isNotEmpty()) {
                     if (placeInfo.id < 16) {
                         Image(
@@ -242,14 +249,20 @@ fun PlaceInfoCard(
                         )
                     }
                }
+
+                 */
             }
-            Text( //for image description
-                text = "${imageDetails.description}, Placeholder text before the actual text works and we get a place that displays the actual thing we want to display blalbaasdfgldfjs", //"${placeInfoUiState.placeInfo.description}",
+            ClickableText(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSecondary)) {
+                        append("imageDetails.description, Placeholder text before the actual text works and we get a place that displays the actual thing we want to display blalbaasdfgldfjs")
+                    }
+                },
                 style = typography.bodyMedium,
-                modifier = Modifier.padding(start = 10.dp, bottom = 20.dp, end = 10.dp, top = 5.dp),
-                maxLines = 2,
+                maxLines = if (expanded) Int.MAX_VALUE else 2,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSecondary //change text color
+                onClick = { expanded = !expanded },
+                modifier = Modifier.padding(start = 10.dp, bottom = 20.dp, end = 10.dp, top = 5.dp)
             )
             Text(
                 text = dateString.uppercase(),
@@ -412,13 +425,15 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                 text = dateString.uppercase(),
                 fontWeight = FontWeight.Bold,
                 style = typography.titleMedium,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSecondary //change text color
             )
             Divider( //for dividing the date from the sunset info
                 modifier = Modifier.padding(
-                    start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
+                    start = 18.dp, end = 18.dp, top = 5.dp, bottom = 15.dp
                 ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
             )
             Icon( //Sunset icon
@@ -448,7 +463,6 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                     .fillMaxWidth()
                     .padding(bottom = 3.dp)
             )
-
             Text( //temperature at sunset
                 text = "Temperature at sunset: ${sunEvent.tempAtEvent}",//"$temp °C",
                 style = typography.bodyMedium,
@@ -477,7 +491,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                         .padding(start = 0.dp, end = 0.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.home_more_details_button),
+                        text = if (expandedState) "Less details" else stringResource(R.string.home_more_details_button),
                         color = MaterialTheme.colorScheme.onTertiary,
                         style = typography.titleMedium
                     )
@@ -569,6 +583,8 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
 }
 
 
+
+
 /**
  * Function with alle the content of the homescreen
  * This exclude the top- and bottomBar
@@ -615,6 +631,8 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
     var dayOffset = 1
 
     Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .verticalScroll(state = rememberScrollState(), enabled = true)
             .fillMaxWidth()
@@ -625,13 +643,13 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
         if (firstEvent != null) {
             SunEventInfoToday(placeInfoUiState)
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         // Shows the sunset events for tomorrow and the following days
-        placeInfoUiState.placeInfo.sunEvents.forEachIndexed { index, _ ->
+        placeInfoUiState.placeInfo.sunEvents.forEachIndexed { _, _ ->
             SunEventInfoTomorrow(placeInfoUiState, dayOffset)
             dayOffset++
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
@@ -649,7 +667,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
     if (placeInfo.sunEvents.isNotEmpty()) {
         val sunEvent = sunEvents[0]
         val imageDetails = placeInfo.images.getOrElse(0) { ImageDetails("", "") }
-        var time = LocalDateTime.now()
+        val time = LocalDateTime.now()
 
 
         val dateString =
