@@ -279,7 +279,7 @@ fun PlaceInfoCard(
                     .padding(bottom = 5.dp, top = 3.dp)
             )
             Text( //text changing based on weather conditions, in different textbox because of change of color
-                text = "Sunset conditions: {$sunEvent.conditions}",//" $weatherConditions",
+                text = "Sunset conditions: ${sunEvent.conditions.weatherRating}",//" $weatherConditions",
                 style = typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
@@ -432,7 +432,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                     .padding(bottom = 5.dp, top = 3.dp)
             )
             Text( //text changes based on weather conditions
-                text = "Sunset conditions: ${sunEvent.conditions}",//" $weatherConditions",
+                text = "Sunset conditions: ${sunEvent.conditions.weatherRating}",
                 style = typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
@@ -585,11 +585,13 @@ fun ContentInfoScreen(
             horizontalAlignment = Alignment.Start,
 
             ) {
+            /*
             Text(
                 text = placeInfoUiState.placeInfo.description,
                 modifier = Modifier.padding(bottom = 4.dp),
                 fontSize = 20.sp
             )
+             */
 
             SunEventInfoContent(placeInfoUiState)
         }
@@ -598,23 +600,25 @@ fun ContentInfoScreen(
 
 @Composable
 fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
+    var dayOffset = 1
 
     Column(
         modifier = Modifier
             .verticalScroll(state = rememberScrollState(), enabled = true)
             .fillMaxWidth()
+            .padding(20.dp)
     ) {
 
-        //Shows the sunset events for today
+        // Shows the sunset events for today
         val firstEvent = placeInfoUiState.placeInfo.sunEvents.firstOrNull()
         if (firstEvent != null) {
-            SunEventInfoToday(
-                placeInfoUiState
-            )
+            SunEventInfoToday(placeInfoUiState)
         }
-        //Shows the sunset events for tomorrow and the following days
-        placeInfoUiState.placeInfo.sunEvents.forEachIndexed { index, event ->
-            SunEventInfoTomorrow(placeInfoUiState)
+
+        // Shows the sunset events for tomorrow and the following days
+        placeInfoUiState.placeInfo.sunEvents.forEachIndexed { index, _ ->
+            SunEventInfoTomorrow(placeInfoUiState, dayOffset)
+            dayOffset++
         }
     }
 }
@@ -627,8 +631,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 
     val placeInfo = placeInfoUiState.placeInfo
     val sunEvents = placeInfo.sunEvents
-    //var imageDetails = placeInfo.images[0]
-    // var time = LocalDateTime.now()
+
 
     if (placeInfo.sunEvents.isNotEmpty()) {
         val sunEvent = sunEvents[0]
@@ -648,37 +651,39 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 /**
  * Displays information about the sun events for tomorrow and the following days. Date, time and weather conditions
  */
-@Composable
-fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
 
+
+@Composable
+fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, dayOffset: Int) {
 
     val sunEvents = placeInfoUiState.placeInfo.sunEvents
+    val index = dayOffset - 1
 
-    if (sunEvents.isNotEmpty()) {
-        val sunEvent = sunEvents[1]
-        val dayOffset = 1  //kan jeg gjøre det sånn eller må jeg sende den med??
+        if (index < sunEvents.size) {
+            val sunEvent = sunEvents[index]
 
-        val date = LocalDateTime.now().plusDays(dayOffset.toLong())
-        val dateString = when {
-            dayOffset == 1 -> {
+
+            val date = LocalDateTime.now().plusDays(dayOffset.toLong())
+            val dateString = if (dayOffset == 1) {
+
+                // if (dayOffset == 1) {
                 // The current date we are formatting is tomorrow
-                "I Morgen ${
+                 "I Morgen ${
                     date.format(
                         DateTimeFormatter.ofPattern(
                             "d'.' MMMM':'", Locale.getDefault()
                         )
                     )
                 }"
-            }
 
-            else -> {
+            } else {
                 // The current date we are formatting is after tomorrow
-                date.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+                 date.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
             }
+            val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+
+            SunEventInfoCard(sunEvent, dateString, timeString)
         }
-
-        val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
-
-        SunEventInfoCard(sunEvent, dateString, timeString)
     }
-}
+
+
