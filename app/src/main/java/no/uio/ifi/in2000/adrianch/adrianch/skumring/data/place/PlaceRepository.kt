@@ -179,7 +179,9 @@ class PlaceRepositoryImpl(
                         cloudConditionMedium = it.cloudConditionMedium,
                         cloudConditionHigh = it.cloudConditionHigh,
                         airCondition = it.airCondition
-                    )
+                    ),
+                    goldenHourTime = it.goldenHourDateTime,
+                    blueHourTime = it.blueHourDateTime
                 )
             }
         }
@@ -232,6 +234,8 @@ class PlaceRepositoryImpl(
                 airCondition = it.conditions.airCondition,
                 sunsetTemp = it.tempAtEvent,
                 weatherIcon = it.weatherIcon,
+                goldenHourDateTime = it.goldenHourTime,
+                blueHourDateTime = it.blueHourTime,
                 timestamp = currentTimeStamp
             )
         }

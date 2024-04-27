@@ -46,3 +46,13 @@ class GoldenHourBlueHourDataSource {
         return GoldenHourBlueHour(goldenHour = goldenHourTimeFormatted, blueHour = blueHourTimeFormatted)
     }
 }
+
+suspend fun main() {
+    val dataSource = GoldenHourBlueHourDataSource()
+    val lat = "59.911491"  // Example latitude for Oslo, Norway
+    val long = "10.757933" // Example longitude for Oslo, Norway
+    val date = LocalDate.now()
+    val blah = GoldenHourBlueHourDataSource()
+    val gbh = blah.fetchGoldenHourBlueHourTime(lat = lat, long = long, date = date)
+    println("Blue hour: ${gbh.blueHour}")
+}
