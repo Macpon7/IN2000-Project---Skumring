@@ -11,8 +11,8 @@ import java.time.LocalDateTime
  */
 data class SunEvent (
     val sunsetTime: LocalDateTime,
-    val goldenHourTime: LocalDateTime,
-    val blueHourTime: LocalDateTime,
+    //val goldenHourTime: LocalDateTime,
+    //val blueHourTime: LocalDateTime,
     val tempAtEvent: String,
     val weatherIcon: String,
     val conditions: WeatherConditions

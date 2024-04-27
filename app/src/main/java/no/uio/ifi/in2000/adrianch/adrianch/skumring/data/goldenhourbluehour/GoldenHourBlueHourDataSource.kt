@@ -43,7 +43,7 @@ class GoldenHourBlueHourDataSource {
         val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
         val goldenHourTimeFormatted = LocalDateTime.parse(goldenHourTime, formatter)
         val blueHourTimeFormatted = LocalDateTime.parse(blueHourTime, formatter)
-        Log.d(logTag, "Golden hour: ${response.results.golden_hour}, Blue hour: ${response.results.dusk}")
+        Log.d(logTag, "Golden hour: ${goldenHourTimeFormatted}, Blue hour: ${blueHourTimeFormatted}")
         return GoldenHourBlueHour(goldenHour = goldenHourTimeFormatted, blueHour = blueHourTimeFormatted)
     }
 
