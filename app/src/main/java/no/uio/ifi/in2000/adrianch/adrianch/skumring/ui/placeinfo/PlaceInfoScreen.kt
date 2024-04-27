@@ -651,8 +651,6 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 /**
  * Displays information about the sun events for tomorrow and the following days. Date, time and weather conditions
  */
-
-
 @Composable
 fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, dayOffset: Int) {
 
@@ -665,8 +663,6 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, dayOffset: Int) {
 
             val date = LocalDateTime.now().plusDays(dayOffset.toLong())
             val dateString = if (dayOffset == 1) {
-
-                // if (dayOffset == 1) {
                 // The current date we are formatting is tomorrow
                  "I Morgen ${
                     date.format(
