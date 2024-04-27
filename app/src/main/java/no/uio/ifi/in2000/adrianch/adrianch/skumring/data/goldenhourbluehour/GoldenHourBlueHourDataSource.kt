@@ -10,6 +10,7 @@ import io.ktor.serialization.gson.gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.GoldenHourBlueHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.SunriseSunset
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 private const val logTag: String = "GHBHDataSource"
@@ -36,8 +37,12 @@ class GoldenHourBlueHourDataSource {
         // Fetches info for Central European TZ
         val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&$dateString"
         val response = fetchSunriseSunset(path)
+        val goldenHourTime: String = dateString + " " + response.results.golden_hour
+        val blueHourTime: String = dateString + " " + response.results.dusk
+        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a")
+        val goldenHourTimeFormatted = LocalDateTime.parse(goldenHourTime, formatter)
+        val blueHourTimeFormatted = LocalDateTime.parse(blueHourTime, formatter)
         Log.d(logTag, "Golden hour: ${response.results.golden_hour}, Blue hour: ${response.results.dusk}")
-        return GoldenHourBlueHour(goldenHour = response.results.golden_hour, blueHour = response.results.dusk)
+        return GoldenHourBlueHour(goldenHour = goldenHourTimeFormatted, blueHour = blueHourTimeFormatted)
     }
-
 }

@@ -1,12 +1,14 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast
 
 import android.util.Log
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.goldenhourbluehour.GoldenHourBlueHourDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.sunrise.SunriseDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherPerHour
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.GoldenHourBlueHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -39,10 +41,12 @@ interface ForecastRepository {
  * An implementation of [ForecastRepository].
  * @property sunriseDataSource instance of [SunriseDataSource]
  * @property locationForecastDataSource instance of [LocationForecastDataSource]
+ * @property goldenHourBlueHourDataSource instance of [GoldenHourBlueHourDataSource]
  */
 class ForecastRepositoryImpl(
     private val sunriseDataSource: SunriseDataSource = SunriseDataSource(),
     private val locationForecastDataSource: LocationForecastDataSource = LocationForecastDataSource(),
+    private val goldenHourBlueHourDataSource: GoldenHourBlueHourDataSource = GoldenHourBlueHourDataSource()
 ) : ForecastRepository {
     /**
      * Given a map containing lists of [WeatherPerHour] objects (where the key is a [LocalDate] and
@@ -64,6 +68,8 @@ class ForecastRepositoryImpl(
                     lat = lat, long = long, date = it.key
                 )
 
+                val goldenHourBlueHour: GoldenHourBlueHour = goldenHourBlueHourDataSource.fetchGoldenHourBlueHourTime(lat = lat, long = long, date = it.key)
+
                 // it.value is the list of WeatherPerHour objects for this date
                 val sunsetWeather = findClosestWeather(sunsetTime, it.value)
 
@@ -73,7 +79,9 @@ class ForecastRepositoryImpl(
                         tempAtEvent = sunsetWeather.instant.air_temperature.toString(),
                         //if icon is null for any reason, use the string "no_icon" instead
                         weatherIcon = sunsetWeather.icon ?: "no_icon",
-                        conditions = getWeatherConditions(sunsetWeather)
+                        conditions = getWeatherConditions(sunsetWeather),
+                        goldenHourTime = goldenHourBlueHour.goldenHour,
+                        blueHourTime = goldenHourBlueHour.blueHour
                     )
                 )
             } catch (e: Exception) {

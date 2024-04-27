@@ -1,8 +1,11 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour
 
+import java.time.LocalDate
+import java.time.LocalDateTime
+
 data class GoldenHourBlueHour(
-    val goldenHour: String,
-    val blueHour: String,
+    val goldenHour: LocalDateTime,
+    val blueHour: LocalDateTime,
 )
 
 data class SunriseSunset(
