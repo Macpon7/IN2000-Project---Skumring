@@ -58,6 +58,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -71,11 +72,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImagePainter.State.Empty.painter
+import coil.compose.rememberImagePainter
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.ImageDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
@@ -84,6 +88,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.Skumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -105,7 +110,6 @@ object PlaceInfoScreenDestination : NavigationDestination {
 fun PreviewContentInfoScreen() {
     Surface {
         ContentInfoScreen(
-            description = "",
             placeInfoUiState = PlaceInfoUiState(
                 placeInfo = PlaceInfo(
                     id = 0,
@@ -154,7 +158,6 @@ fun PlaceInfoScreen(
         placeViewModel.loadPlaceInfo(id = id)
     }
 
-
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
         LaunchedEffect(placeUiState.snackbarHostState) {
@@ -177,7 +180,6 @@ fun PlaceInfoScreen(
             }
         }
     }
-
     Scaffold(topBar = {
         SkumringTopBar(title = placeUiState.placeInfo.name,
             canNavigateBack = true,
@@ -199,9 +201,7 @@ fun PlaceInfoScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {*/
-            ContentInfoScreen(
-                description = placeUiState.placeInfo.description, placeInfoUiState = placeUiState
-            )
+            ContentInfoScreen(placeUiState)
             //}
         }
     }
@@ -214,8 +214,7 @@ fun PlaceInfoScreen(
  */
 @SuppressLint("SimpleDateFormat")
 @Composable
-fun PlaceInfoCard(dateString: String, timeString: String, conditionsString: String) {
-
+fun PlaceInfoCard(placeInfo: PlaceInfo, sunEvent: SunEvent, imageDetails: ImageDetails,  dateString: String, timeString: String) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -239,10 +238,26 @@ fun PlaceInfoCard(dateString: String, timeString: String, conditionsString: Stri
                             )
                         )
                 ) {
-                   // Image(painter = painterResource(id = R.drawable.sunset_picture), contentDescription = "sunset default picture")
+                    /*
+                    if(placeInfo.id < 16) {
+                        Image(
+                            painter = painterResource(id = imageDetails.path.toInt()),
+                            contentDescription = imageDetails.description
+                        )
+                    }else {
+                        val context = LocalContext.current
+                        val imagePath = File(context.filesDir, imageDetails.path)
+                        val imagePainter = imagePath.path.toInt()
+                        Image(
+                            painter = painterResource(imagePainter), contentDescription = null
+
+                        )
+                    }
+                     */
                 }
+
                     Text( //for image description
-                        text = "Lorem ipsum is simply dummy text for the printing and typesetting industry. Lorem Impsum bla bla bla bla, legge til noe her sånn at man ser om det funker, det er bra det vet du. Trenger den enda mer? Uff, det her var slitsomt, men snart får vi se om det funker ",
+                        text = "${imageDetails.description}, Lorem ipsum is simply dummy text for the printing and typesetting industry. Lorem Impsum bla bla bla bla, legge til noe her sånn at man ser om det funker, det er bra det vet du. Trenger den enda mer? Uff, det her var slitsomt, men snart får vi se om det funker ",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(start = 10.dp, bottom = 20.dp, end = 10.dp, top = 5.dp),
                         maxLines = 2,
@@ -250,7 +265,7 @@ fun PlaceInfoCard(dateString: String, timeString: String, conditionsString: Stri
                         color = MaterialTheme.colorScheme.onSecondary //change text color
                     )
                 Text(
-                    text = dateString.uppercase(), //"Today, april 2.".uppercase(),
+                   text = dateString.uppercase(),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
@@ -272,7 +287,7 @@ fun PlaceInfoCard(dateString: String, timeString: String, conditionsString: Stri
                         .size(60.dp)
                 )
                 Text(
-                    text = timeString,//sunset time
+                    text = timeString, //"${sunEvent.time}",//sunset time //Use timeString instead??
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center,
@@ -281,7 +296,7 @@ fun PlaceInfoCard(dateString: String, timeString: String, conditionsString: Stri
                         .padding(bottom = 5.dp, top = 3.dp)
                 )
                 Text( //text changing based on weather conditions, in different textbox because of change of color
-                    text = "Sunset conditions: $conditionsString",//" $weatherConditions",
+                    text = "Sunset conditions: {$sunEvent.conditions}",//" $weatherConditions",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
@@ -292,7 +307,7 @@ fun PlaceInfoCard(dateString: String, timeString: String, conditionsString: Stri
                 )
 
                 Text(
-                    text = "Temperature at sunset: 18 C",//"$temp °C",
+                    text = "Temperature at sunset: ${sunEvent.tempAtEvent}",//"$temp °C",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
@@ -314,13 +329,8 @@ fun PlaceInfoCard(dateString: String, timeString: String, conditionsString: Stri
                         .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
 
                 ) {
-                    Icon ( //if icon is null, "show image not found"
-                        painterResource(id = R.drawable.rain_icon),
-                        contentDescription = "Weather icon cloudy",
-                        tint = Color.Unspecified,
-                        modifier = Modifier.size(60.dp)
+                    WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
 
-                    )
                     Box {
                         Text(
                             text = stringResource(R.string.golden_hour),
@@ -352,9 +362,6 @@ fun PlaceInfoCard(dateString: String, timeString: String, conditionsString: Stri
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.surfaceVariant,
                             textAlign = TextAlign.Center,
-                           // modifier = Modifier.padding(start = 10.dp)
-
-
                         )//Blue hour icon and time
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
@@ -380,13 +387,13 @@ fun PlaceInfoCard(dateString: String, timeString: String, conditionsString: Stri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: String, icon: String?) {
+fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String) {
 
     var expandedState by remember { mutableStateOf(false) }
 
     //Rotationstate of arrow
     val rotationState by animateFloatAsState(
-        targetValue = if (expandedState) 180f else 0f
+        targetValue = if (expandedState) 180f else 0f, label = ""
     )
 
     Card(
@@ -394,10 +401,11 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
         modifier = Modifier
             .fillMaxWidth()
-            .animateContentSize(animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing
-            )
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 300, easing = LinearOutSlowInEasing
+                )
             ),
-           // shape = shape,
         onClick = {expandedState = !expandedState}
 
     ) {
@@ -431,7 +439,7 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
                     .size(40.dp)
             )
             Text( //Time of sunset
-                text = timeString,
+                text = timeString, //"${sunEvent.time}",
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Center,
@@ -440,7 +448,7 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
                     .padding(bottom = 5.dp, top = 3.dp)
             )
             Text( //text changes based on weather conditions
-                text = "Sunset conditions: $conditionsString",//" $weatherConditions",
+                text = "Sunset conditions: ${sunEvent.conditions}",//" $weatherConditions",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
@@ -451,7 +459,7 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
             )
 
             Text( //temperature at sunset
-                text = "Temperature at sunset: 18 C",//"$temp °C",
+                text = "Temperature at sunset: ${sunEvent.tempAtEvent}",//"$temp °C",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontWeight = FontWeight.Bold,
@@ -503,19 +511,8 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
                     .fillMaxWidth()
                     .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
 
-            ) { //MUST FIX WEATHERICONCHECK, Doesnt get the right icon. Should get it from placeUiState
-                if (icon != null) {
-                    WeatherIconCheck(weatherCondition = icon)
-                }
-               /*
-                Icon( //if icon is null, "show image not found"
-                    painterResource(id = R.drawable.rain_icon),
-                    contentDescription = "Weather icon cloudy",
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(60.dp))
-
-                */
-
+            ) {
+                WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
 
                 Box {
                     Text(
@@ -558,9 +555,6 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.surfaceVariant,
                         textAlign = TextAlign.Center,
-                        // modifier = Modifier.padding(start = 10.dp)
-
-
                     )//Blue hour icon and time
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
@@ -600,16 +594,13 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
  * This exclude the top- and bottomBar
  */
 @Composable
-fun ContentInfoScreen(
-    description: String, placeInfoUiState: PlaceInfoUiState
+fun ContentInfoScreen(placeInfoUiState: PlaceInfoUiState
 ) {
     Column(
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        //Picture of the place:
-       // PlaceInfoCard(dateString = dateString, timeString = timeString, conditionsString = conditionsString) //do I need h
 
         //Add space between pictures and text
         Spacer(modifier = Modifier.height(20.dp))
@@ -623,13 +614,12 @@ fun ContentInfoScreen(
             horizontalAlignment = Alignment.Start,
 
             ) {
-            Text(text = description, modifier = Modifier.padding(bottom = 4.dp), fontSize = 20.sp)
+            Text(text = placeInfoUiState.placeInfo.description, modifier = Modifier.padding(bottom = 4.dp), fontSize = 20.sp)
 
             SunEventInfoContent(placeInfoUiState)
         }
     }
 }
-
 
 @Composable
 fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
@@ -644,17 +634,12 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
         //Shows the sunset events for today
         val firstEvent = placeInfoUiState.placeInfo.sunEvents.firstOrNull()
         if (firstEvent != null) {
-            SunEventInfoToday(
-                time = firstEvent.time,
-                conditions = firstEvent.conditions.weatherRating,
-                isTomorrow = false
+            SunEventInfoToday(placeInfoUiState
             )
         }
-
         //Shows the sunset events for tomorrow and the following days
         placeInfoUiState.placeInfo.sunEvents.forEachIndexed { index, event ->
-            SunEventInfoTomorrow(
-                time = event.time, conditions = event.conditions.weatherRating, dayOffset = index + 1, placeInfoUiState.String) //What should I send in??
+            SunEventInfoTomorrow(placeInfoUiState)
         }
     }
 }
@@ -663,84 +648,65 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
  * Displays information about the sunset events for today, date, time and weather conditions
  */
 @Composable
-fun SunEventInfoToday(time: LocalDateTime, conditions: WeatherConditionsRating, isTomorrow: Boolean) {
-    val dateString = "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 
-    val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+    var placeInfo = placeInfoUiState.placeInfo
+    var sunEvents = placeInfo.sunEvents
+    //var imageDetails = placeInfo.images[0]
+    // var time = LocalDateTime.now()
 
-    val conditionsString = when (conditions) {
-        WeatherConditionsRating.POOR -> "Det blir dårlige forhold.."
-        WeatherConditionsRating.DECENT -> "Det blir OK forhold"
-        WeatherConditionsRating.EXCELLENT -> "Det blir fantastiske forhold!"
+    if (placeInfo.sunEvents.isNotEmpty()) {
+        var sunEvent = sunEvents[0]
+        var imageDetails = placeInfo.images.getOrElse(0) { ImageDetails("", "") }
+        var time = LocalDateTime.now()
+
+
+        val dateString =
+            "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+
+        val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+
+        PlaceInfoCard(placeInfo, sunEvent, imageDetails, dateString, timeString)
     }
-    PlaceInfoCard(dateString = dateString, timeString = timeString, conditionsString = conditionsString)
 }
 
 /**
  * Displays information about the sun events for tomorrow and the following days. Date, time and weather conditions
  */
 @Composable
-fun SunEventInfoTomorrow(time: LocalDateTime, conditions: WeatherConditionsRating, dayOffset: Int, icon: String?) {
-    val date = LocalDateTime.now().plusDays(dayOffset.toLong())
-    val dateString = when {
-        dayOffset == 1 -> {
-            // The current date we are formatting is tomorrow
-            "I Morgen ${
-                date.format(
-                    DateTimeFormatter.ofPattern(
-                        "d'.' MMMM':'", Locale.getDefault()
-                    )
-                )
-            }"
-        }
-        else -> {
-            // The current date we are formatting is after tomorrow
-            date.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
-        }
-    }
-
-    val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
-
-    val conditionsString = when (conditions) {
-        WeatherConditionsRating.POOR -> "Det blir dårlige forhold.."
-        WeatherConditionsRating.DECENT -> "Det blir OK forhold"
-        WeatherConditionsRating.EXCELLENT -> "Det blir fantastiske forhold!"
-    }
-    SunEventInfoCard(
-        dateString = dateString, timeString = timeString, conditionsString = conditionsString, icon = icon, //need to fix this to something else than icon
-    )
-}
+fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
 
 
+    var sunEvents = placeInfoUiState.placeInfo.sunEvents
 
-/* //min versjon
-@Composable
-fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating, isTomorrow: Boolean) {
-    val tomorrowDate = LocalDateTime.now().plusDays(1)
-    val dateString = if(isTomorrow) {
-          //  LocalDateTime.now().plusDays(1).dayOfYear -> {
+    if (sunEvents.isNotEmpty()) {
+        val sunEvent = sunEvents[1]
+        val dayOffset = 1  //kan jeg gjøre det sånn eller må jeg sende den med??
+
+        val date = LocalDateTime.now().plusDays(dayOffset.toLong())
+        val dateString = when {
+            dayOffset == 1 -> {
                 // The current date we are formatting is tomorrow
-                "I Morgen ${tomorrowDate.format(DateTimeFormatter.ofPattern(
-                            "d'.' MMMM':'", Locale.getDefault()))}"
-            } else {
-            // The current date we are formatting is after tomorrow
-            time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+                "I Morgen ${
+                    date.format(
+                        DateTimeFormatter.ofPattern(
+                            "d'.' MMMM':'", Locale.getDefault()
+                        )
+                    )
+                }"
+            }
+
+            else -> {
+                // The current date we are formatting is after tomorrow
+                date.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
+            }
         }
 
-    val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+        val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-    val conditionsString = when (conditions) {
-        WeatherConditionsRating.POOR -> "Det blir dårlige forhold.."
-        WeatherConditionsRating.DECENT -> "Det blir OK forhold"
-        WeatherConditionsRating.EXCELLENT -> "Det blir fantastiske forhold!"
+        SunEventInfoCard(sunEvent, dateString, timeString)
     }
-    SunEventInfoCard(
-        dateString = dateString, timeString = timeString, conditionsString = conditionsString
-    )
 }
-
- */
-
 
 
 
