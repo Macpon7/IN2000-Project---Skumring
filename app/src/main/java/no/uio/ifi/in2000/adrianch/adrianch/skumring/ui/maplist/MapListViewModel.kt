@@ -163,18 +163,25 @@ class MapListViewModel(private val placeRepository: PlaceRepository, context: Co
         }
         viewModelScope.launch (Dispatchers.IO) {
             loadPlaces()
+            updateUserLocation()
         }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    private suspend fun updateUserLocation() {
-        _mapListUiState.update { currentMapUiState ->
-            val userloc = userLocationRepository.getUserLocation()
-            currentMapUiState.copy(
-                userLat = userloc.lat,
-                userLong = userloc.long,
-                userBearing = userloc.bearing
-            )
+    private fun updateUserLocation() {
+        viewModelScope.launch (Dispatchers.IO) {
+            try {
+                _mapListUiState.update { currentMapUiState ->
+                    val userLoc = userLocationRepository.getUserLocation()
+                    currentMapUiState.copy(
+                        userLat = userLoc.lat,
+                        userLong = userLoc.long,
+                        userBearing = userLoc.bearing
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e(logTag, "Error updating user location", e)
+            }
         }
     }
 
