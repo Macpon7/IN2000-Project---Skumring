@@ -12,6 +12,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.Sun
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 private const val logTag: String = "GHBHDataSource"
 
@@ -37,22 +38,30 @@ class GoldenHourBlueHourDataSource {
         // Fetches info for Central European TZ
         val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&$dateString"
         val response = fetchSunriseSunset(path)
-        val goldenHourTime: String = dateString + " " + response.results.golden_hour
-        val blueHourTime: String = dateString + " " + response.results.dusk
-        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a")
+        val goldenHourTime: String = dateString + " " + fixTimeFormat(response.results.golden_hour)
+        val blueHourTime: String = dateString + " " + fixTimeFormat(response.results.dusk)
+        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
         val goldenHourTimeFormatted = LocalDateTime.parse(goldenHourTime, formatter)
         val blueHourTimeFormatted = LocalDateTime.parse(blueHourTime, formatter)
         Log.d(logTag, "Golden hour: ${response.results.golden_hour}, Blue hour: ${response.results.dusk}")
         return GoldenHourBlueHour(goldenHour = goldenHourTimeFormatted, blueHour = blueHourTimeFormatted)
     }
+
+    private fun fixTimeFormat(time: String): String {
+        return if (time[1] == ':') {
+            "0$time"
+        } else {
+            time
+        }
+    }
 }
 
-suspend fun main() {
-    val dataSource = GoldenHourBlueHourDataSource()
-    val lat = "59.911491"  // Example latitude for Oslo, Norway
-    val long = "10.757933" // Example longitude for Oslo, Norway
-    val date = LocalDate.now()
-    val blah = GoldenHourBlueHourDataSource()
-    val gbh = blah.fetchGoldenHourBlueHourTime(lat = lat, long = long, date = date)
-    println("Blue hour: ${gbh.blueHour}")
-}
+//suspend fun main() {
+//    val dataSource = GoldenHourBlueHourDataSource()
+//    val lat = "59.911491"  // Example latitude for Oslo, Norway
+//    val long = "10.757933" // Example longitude for Oslo, Norway
+//    val date = LocalDate.now()
+//    val blah = GoldenHourBlueHourDataSource()
+//    val gbh = blah.fetchGoldenHourBlueHourTime(lat = lat, long = long, date = date)
+//    println("Blue hour: ${gbh.blueHour}")
+//}
