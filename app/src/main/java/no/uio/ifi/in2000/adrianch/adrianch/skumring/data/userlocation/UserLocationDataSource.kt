@@ -24,6 +24,7 @@ class UserLocationDataSource (private val context: Context) {
     // Default loc is coordinates over OJD to be returned if we fail to access location
     private var long = "10.718393"
     private var lat = "59.943735"
+    private var bearing = 0.0f
 
     // Available function that returns user location object we designed
     // If it fails to fetch location, the users location defaults to OJD
@@ -31,12 +32,13 @@ class UserLocationDataSource (private val context: Context) {
         val userLocation = getLastLocation()
         return if (userLocation == null) {
             Log.d(logTag, "Failed to get loc")
-            UserLocation(long = long, lat = lat)
+            UserLocation(long = long, lat = lat, bearing = bearing)
         } else {
             long = userLocation.longitude.toString()
             lat = userLocation.latitude.toString()
+            bearing = userLocation.bearing
             Log.d(logTag, "Lat = $lat, long = $long")
-            UserLocation(long = long, lat = lat)
+            UserLocation(long = long, lat = lat, bearing = bearing)
         }
     }
 
