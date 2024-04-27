@@ -9,6 +9,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -69,6 +70,7 @@ import com.mapbox.maps.plugin.annotation.AnnotationConfig
 import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
+import com.mapbox.maps.plugin.compass.generated.CompassSettings
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
@@ -343,7 +345,7 @@ BoxWithConstraints {
         Box(
             modifier = Modifier
                 .width(buttonWidth)
-                .height(buttonHeight/2)
+                .height(buttonHeight / 2)
                 .clip(shape = parentShape)
                 .clickable { onClick() }
                 .background(MaterialTheme.colorScheme.onSecondary)
@@ -352,7 +354,7 @@ BoxWithConstraints {
             Box(
                 modifier = Modifier
                     .width(buttonWidth / 2) // size of the toggle button
-                    .height(buttonHeight/2)
+                    .height(buttonHeight / 2)
                     .offset(x = offsetLargeScreen)
                     .clip(shape = parentShape)
                     .background(MaterialTheme.colorScheme.secondary)
@@ -460,6 +462,11 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
     val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
     //var point: Point by remember { mutableStateOf(testPoint) }
     val context = LocalContext.current
+    val style: String = if (isSystemInDarkTheme()) {
+        Style.DARK
+        } else {
+            Style.OUTDOORS
+        }
 
     MapboxMap(
         modifier = Modifier
@@ -469,11 +476,11 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
         mapInitOptionsFactory = { context ->
             MapInitOptions(
                 context = context,
-                styleUri = Style.OUTDOORS,
+                styleUri = style,
                 cameraOptions = CameraOptions.Builder()
                     .center(Point.fromLngLat(10.71839307051461, 59.943735106220444))
                     .zoom(10.0)
-                    .build()
+                    .build(),
             )
         },
         onMapLongClickListener = {
@@ -509,5 +516,6 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 true
             }
         )
+        CompassSettings {  }
     }
 }
