@@ -486,7 +486,12 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
-        }
+        },
+        compassSettings = CompassSettings {
+            enabled = true
+            visibility = true
+            fadeWhenFacingNorth = false
+            }
     ) {
         PointAnnotationGroup(
             annotations = mapListUiState.pins.map {pinInfo ->
@@ -516,6 +521,5 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 true
             }
         )
-        CompassSettings {  }
     }
 }
