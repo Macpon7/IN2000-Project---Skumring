@@ -192,7 +192,7 @@ fun ChooseTheme(
             label = {
                 Text(
                     text = stringResource(R.string.choose_theme),
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = textColor,
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold
                 )
@@ -225,7 +225,7 @@ fun ChooseTheme(
                 text = {
                     Text(
                         text = stringResource(R.string.follow_system),
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = textColor
                     )
                 },
                 onClick = {
@@ -247,7 +247,7 @@ fun ChooseTheme(
                 text = {
                     Text(
                         text = stringResource(R.string.light_mode),
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = textColor
                     )
                 },
                 onClick = {
@@ -261,7 +261,7 @@ fun ChooseTheme(
                 text = {
                     Text(
                         text = stringResource(R.string.dark_mode),
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = textColor
                     )
                 },
                 onClick = {
@@ -311,7 +311,8 @@ fun ChooseLanguage(
                 Text(
                     text = stringResource(R.string.choose_language),
                     modifier = Modifier.padding(bottom = 8.dp),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = textColor
                 )
             },
             trailingIcon = {
@@ -327,7 +328,12 @@ fun ChooseLanguage(
         ) {
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.follow_system)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.follow_system),
+                        color = textColor
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateLanguage(
                         language = Language.FOLLOW_SYSTEM
@@ -336,7 +342,12 @@ fun ChooseLanguage(
             )
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.english)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.english),
+                        color = textColor
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateLanguage(
                         language = Language.ENGLISH,
@@ -345,7 +356,12 @@ fun ChooseLanguage(
             )
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.norwegian)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.norwegian),
+                        color = textColor
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateLanguage(
                         language = Language.NORWEGIAN,
@@ -391,7 +407,8 @@ fun ChooseStartLocation(
                 Text(
                     text = stringResource(R.string.choose_default_location),
                     modifier = Modifier.padding(bottom = 8.dp),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = textColor
                 )
             },
             trailingIcon = {
@@ -407,7 +424,12 @@ fun ChooseStartLocation(
         ) {
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.costum_location)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.costum_location),
+                        color = textColor
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateSelectedDefaultLocation(
                         location = Location.COSTUM_LOCATION
@@ -418,7 +440,12 @@ fun ChooseStartLocation(
             )
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.phones_location)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.phones_location),
+                        color = textColor
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateSelectedDefaultLocation(
                         location = Location.PHONES_LOCATION
@@ -464,7 +491,8 @@ fun ChooseLocationAs(
                 Text(
                     text = stringResource(R.string.means_of_transportation),
                     modifier = Modifier.padding(bottom = 8.dp),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = textColor
                 )
             },
             trailingIcon = {
@@ -479,7 +507,12 @@ fun ChooseLocationAs(
             onDismissRequest = { settingsViewModel.expandDropdownLocationAs() }) {
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.walk)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.walk),
+                        color = textColor
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateSelectedLocationAs(
                         locationAs = LocationAs.WALK,
@@ -488,7 +521,12 @@ fun ChooseLocationAs(
             )
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.bike)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.bike),
+                        color = textColor
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateSelectedLocationAs(
                         locationAs = LocationAs.BIKE,
@@ -496,7 +534,12 @@ fun ChooseLocationAs(
                 })
             DropdownMenuItem(
                 modifier = Modifier,
-                text = { Text(text = stringResource(R.string.drive)) },
+                text = {
+                    Text(
+                        text = stringResource(R.string.drive),
+                        color = textColor
+                    )
+                },
                 onClick = {
                     settingsViewModel.updateSelectedLocationAs(
                         locationAs = LocationAs.DRIVE,
