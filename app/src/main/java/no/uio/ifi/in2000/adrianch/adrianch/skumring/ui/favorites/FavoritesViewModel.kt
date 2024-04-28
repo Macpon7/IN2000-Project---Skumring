@@ -1,8 +1,8 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -15,24 +15,27 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
-
-data class FavoritesUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class) constructor(
+data class FavoritesUiState(
     val places: List<PlaceInfo> = emptyList(),
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
-    var errorMessage: String = "No error",
+    var errorMessage: String = "",
     // Variable for snackbar:
     val snackbarHostState: SnackbarHostState = SnackbarHostState()
 )
 
 private const val logTag = "FavoritesViewModel"
 
-class FavoritesViewModel(private val placeRepository: PlaceRepository): ViewModel() {
+@SuppressLint("StaticFieldLeak")
+class FavoritesViewModel(
+    private val context: Context,
+    private val placeRepository: PlaceRepository): ViewModel() {
     private val _favoritesUiState = MutableStateFlow(FavoritesUiState())
     val favoritesUiState: StateFlow<FavoritesUiState> = _favoritesUiState.asStateFlow()
 
@@ -40,7 +43,6 @@ class FavoritesViewModel(private val placeRepository: PlaceRepository): ViewMode
            //loadList()
     }
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
     fun loadList(){
         viewModelScope.launch(Dispatchers.IO) {
             _favoritesUiState.update { currentfavoritesUiState ->
@@ -48,15 +50,15 @@ class FavoritesViewModel(private val placeRepository: PlaceRepository): ViewMode
                     val placeSummaryList = placeRepository.getFavourites()
                     currentfavoritesUiState.copy(places = placeSummaryList)
                 } catch(e: Exception) {
-                    Log.e(logTag, "Error getting pins in loadList", e)
-                    currentfavoritesUiState.copy(showSnackbar = true,
-                        errorMessage = "Error getting pins in loadList")
+                    Log.e(logTag, "Error loading list", e)
+                    currentfavoritesUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.getString(R.string.error_message_loading_list))
                 }
             }
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     fun toggleFavourite(place: PlaceInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             if (place.isFavourite) {
@@ -77,15 +79,20 @@ class FavoritesViewModel(private val placeRepository: PlaceRepository): ViewMode
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    /**
+     * Set showSnackbar to false, so when the snackbar refresh it will be shown again
+     */
     fun snackbarDismissed() {
         _favoritesUiState.update { currentfavoritesUiState->
-            currentfavoritesUiState.copy(showSnackbar = false)
+            currentfavoritesUiState.copy(
+                showSnackbar = false,
+            )
         }
     }
 
-    // For refreshing when you use snackbar in MapListScreen:
-    @OptIn(ExperimentalMaterial3Api::class)
+    /**
+     *  This function refresh loadPlaceInfo when you use snackbar in favouritescreen:
+     */
     fun refreshList() {
         _favoritesUiState.update {currentfavoritesUiState ->
             currentfavoritesUiState.copy(showSnackbar = false) }
@@ -104,7 +111,8 @@ class FavoritesViewModel(private val placeRepository: PlaceRepository): ViewMode
                 val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return FavoritesViewModel(
-                    placeRepository = (application as ApplicationSkumring).dbRepository
+                    placeRepository = (application as ApplicationSkumring).dbRepository,
+                    context = application.context
                 ) as T
             }
         }
