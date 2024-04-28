@@ -524,6 +524,10 @@ fun MapArea(mapListUiState: MapListUiState,
                 true
             }
         )
+        PointAnnotation(
+            point = userPoint,
+            iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.sunsetsymbol)!!.toBitmap()
+        )
 
     }
 }
