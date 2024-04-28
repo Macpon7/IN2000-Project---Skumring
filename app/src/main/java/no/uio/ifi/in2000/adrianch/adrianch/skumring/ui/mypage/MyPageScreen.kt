@@ -34,6 +34,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -291,7 +292,12 @@ fun NewPlaceDialog(
         myPageViewModel.resetNewPlaceUiState()
     }) {
 
-        Card(modifier = Modifier.padding(all = 8.dp)) {
+        Card(
+            modifier = Modifier.padding(all = 8.dp),
+             colors = CardDefaults.cardColors(
+                 containerColor = MaterialTheme.colorScheme.primaryContainer
+             )
+        ) {
             // String with name
             OutlinedTextField(
                 value = newPlaceUiState.locationName,
