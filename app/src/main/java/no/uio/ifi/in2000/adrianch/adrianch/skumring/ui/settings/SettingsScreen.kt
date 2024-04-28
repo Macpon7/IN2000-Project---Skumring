@@ -2,21 +2,15 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -32,16 +26,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
 object SettingsScreenDestination : NavigationDestination {
     override val icon = null
@@ -50,6 +43,7 @@ object SettingsScreenDestination : NavigationDestination {
     override val titleRes = null
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     settingsViewModel: SettingsViewModel = viewModel(factory = SettingsViewModel.Factory),
@@ -85,28 +79,9 @@ fun SettingsScreen(
 
     Scaffold(
         topBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White)
-                    .padding(vertical = 10.dp) // Choose the size of the topbar
-            ) {
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Arrow back",
-                        modifier = Modifier.size(30.dp) // Set the size of the Icon inside the IconButton
-                    )
-                }
-                Text(
-                    text = stringResource(R.string.settings),
-                    textAlign = TextAlign.Center,
-                    fontSize = 24.sp,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            SkumringTopBar(title = stringResource(R.string.settings),
+                canNavigateBack = true,
+                navigateUp = { navController.popBackStack() })
         },
         bottomBar = {
             SkumringBottomBar(navController = navController)
@@ -157,7 +132,7 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
             textColor = TextColor,
             focusedContainerColor = FocusedContainerColor,
             unfocusedContainerColor = UnfocusedContainerColor
-            )
+        )
 
         // Content for choosing StartLocation:
         ChooseStartLocation(
@@ -165,7 +140,7 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
             textColor = TextColor,
             focusedContainerColor = FocusedContainerColor,
             unfocusedContainerColor = UnfocusedContainerColor
-            )
+        )
 
         // Content for choosing LocationAs:
         ChooseLocationAs(
@@ -173,7 +148,7 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
             textColor = TextColor,
             focusedContainerColor = FocusedContainerColor,
             unfocusedContainerColor = UnfocusedContainerColor
-            )
+        )
     }
 }
 
@@ -221,8 +196,8 @@ fun ChooseTheme(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
+                focusedContainerColor = focusedContainerColor,
+                unfocusedContainerColor = unfocusedContainerColor
             ),
             /*
             leadingIcon = {
@@ -340,7 +315,10 @@ fun ChooseLanguage(
                     expanded = settingsUiState.dropdownExpandedLanguage
                 )
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedContainerColor = focusedContainerColor,
+                unfocusedContainerColor = unfocusedContainerColor
+            ),
         )
         ExposedDropdownMenu(
             expanded = settingsUiState.dropdownExpandedLanguage,
@@ -438,7 +416,10 @@ fun ChooseStartLocation(
                     expanded = settingsUiState.dropdownExpandedStartLocation
                 )
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedContainerColor = focusedContainerColor,
+                unfocusedContainerColor = unfocusedContainerColor
+            )
         )
         ExposedDropdownMenu(
             expanded = settingsUiState.dropdownExpandedStartLocation,
@@ -524,7 +505,10 @@ fun ChooseLocationAs(
                     expanded = settingsUiState.dropdownExpandedLocationAs
                 )
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedContainerColor = focusedContainerColor,
+                unfocusedContainerColor = unfocusedContainerColor
+            )
         )
         ExposedDropdownMenu(
             expanded = settingsUiState.dropdownExpandedLocationAs,
