@@ -196,19 +196,26 @@ fun ContentMyPage(
 ) {
 
     // Global variable for color of the text
-    val mainColor: Color = MaterialTheme.colorScheme.onSurface
+    val mainColor: Color = MaterialTheme.colorScheme.onPrimary
 
-    // Colors for Textfield in dropdownmenu:
+    // Colors for the container when it is clicked on:
     val focusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
+    val focusedTextColor: Color = MaterialTheme.colorScheme.primaryContainer
+    val focusedCursorColor: Color = MaterialTheme.colorScheme.onPrimary
+
+    // Colors for the container when it is not clicked on:
     val unfocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
 
-    // TODO
+    // Colors for the text inside when the textfield is not clicked on:
+    val unfocusedTextColor: Color = MaterialTheme.colorScheme.onPrimary
+    val unfocusedCursorColor: Color = MaterialTheme.colorScheme.onPrimary
+
     // Colors for errors in Textfield:
-    val errorTextColor: Color
-    val errorContainerColor : Color
-    val errorCursorColor: Color
-    val errorLeadingIconColor: Color
-    val errorSupportingText: Color
+    val errorTextColor: Color = MaterialTheme.colorScheme.onError
+    val errorContainerColor : Color = MaterialTheme.colorScheme.primaryContainer
+    val errorCursorColor: Color = MaterialTheme.colorScheme.error
+    val errorLeadingIconColor: Color = MaterialTheme.colorScheme.error
+    val errorSupportingText: Color = MaterialTheme.colorScheme.error
 
 
     Column(Modifier.verticalScroll(rememberScrollState())) {
@@ -244,7 +251,14 @@ fun ContentMyPage(
             myPageViewModel = myPageViewModel,
             mainColor = mainColor,
             focusedContainerColor = focusedContainerColor,
-            unfocusedContainerColor = unfocusedContainerColor
+            unfocusedContainerColor = unfocusedContainerColor,
+            unfocusedTextColor = unfocusedTextColor,
+
+            errorTextColor = errorTextColor,
+            errorContainerColor = errorContainerColor,
+            errorCursorColor = errorCursorColor,
+            errorLeadingIconColor = errorLeadingIconColor,
+            errorSupportingText = errorSupportingText
         )
     }
 }
@@ -259,7 +273,15 @@ fun NewPlaceDialog(
     myPageViewModel: MyPageViewModel,
     mainColor: Color,
     focusedContainerColor: Color,
-    unfocusedContainerColor: Color
+    unfocusedContainerColor: Color,
+    unfocusedTextColor: Color,
+
+    errorTextColor: Color,
+    errorContainerColor : Color,
+    errorCursorColor: Color,
+    errorLeadingIconColor: Color,
+    errorSupportingText: Color
+
 ) {
     val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
