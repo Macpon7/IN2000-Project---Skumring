@@ -7,10 +7,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.Feature
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.Place
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.Properties
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.ReverseGeocoding
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.ReverseGeocodeLocation
 
