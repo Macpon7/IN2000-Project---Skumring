@@ -60,6 +60,7 @@ import androidx.navigation.NavHostController
 import com.google.gson.JsonPrimitive
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.ImageHolder
 import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
@@ -487,6 +488,7 @@ fun MapArea(mapListUiState: MapListUiState,
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
         },
+        locationComponentSettings = LocationComponentSettings
         ) {
         PointAnnotationGroup(
             annotations = mapListUiState.pins.map {pinInfo ->
@@ -515,10 +517,6 @@ fun MapArea(mapListUiState: MapListUiState,
                 //navController.navigate("infoscreen/${lat}/${long}/${id}")
                 true
             }
-        )
-        createDefault2DPuck(
-            withBearing = true,
-
         )
     }
 }
