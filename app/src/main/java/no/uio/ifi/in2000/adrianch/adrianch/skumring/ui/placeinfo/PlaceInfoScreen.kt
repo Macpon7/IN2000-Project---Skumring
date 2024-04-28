@@ -1,13 +1,11 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,7 +39,6 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -67,16 +64,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.ImageDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
@@ -97,50 +88,6 @@ object PlaceInfoScreenDestination : NavigationDestination {
     override val titleRes = null
 }
 
-/*
-@Preview
-@Composable
-fun PreviewContentInfoScreen(placeRepository: PlaceRepository) {
-    val placeRepository: PlaceRepository = FakePlaceRepository()
-    Surface {
-        SunEventInfoContent(
-            placeInfoUiState = PlaceInfoUiState(
-                placeInfo = PlaceInfo(
-                    id = 0,
-                    name = "Holmenkollen",
-                    description = "Et fantastisk fint sted å ta bilde av dine nære og kjære under en solnedgang som ikke kan sammenlignes med noe annet",
-                    lat = "",
-                    long = "",
-                    isFavourite = false,
-                    isCustomPlace = false,
-                    hasNotification = false,
-                    images = emptyList(),
-                    sunEvents = listOf(
-                        SunEvent(
-                            time = LocalDateTime.now(),
-                            tempAtEvent = "4.7",
-                            weatherIcon = "suncloudy",
-                            conditions = WeatherConditions(
-                                weatherRating = WeatherConditionsRating.EXCELLENT,
-                                cloudConditionLow = CloudConditions.CLEAR,
-                                cloudConditionHigh = CloudConditions.CLEAR,
-                                cloudConditionMedium = CloudConditions.CLEAR,
-                                airCondition = AirConditions.LOW
-                            )
-                        )
-                    )
-                )
-            ),
-            placeInfoViewModel = PlaceInfoViewModel(context = context,
-                placeRepository = placeRepository
-            )
-        )
-    }
-}
-*/
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -151,6 +98,8 @@ fun PlaceInfoScreen(
 ) {
 
     val placeUiState: PlaceInfoUiState by placeInfoViewModel.placeInfoUiState.collectAsState()
+
+    //for snackbar
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -180,7 +129,6 @@ fun PlaceInfoScreen(
             }
         }
     }
-
     Scaffold(topBar = {
         SkumringTopBar(title = placeUiState.placeInfo.name,
             canNavigateBack = true,
@@ -203,18 +151,18 @@ fun PlaceInfoScreen(
                 )
             } else {*/
             SunEventInfoContent(placeUiState, placeInfoViewModel)
-        //}
+            //}
         }
     }
 }
 
 
 /**
- * Picture of the place
+ * Shows information
  */
 @SuppressLint("SimpleDateFormat")
 @Composable
-fun PlaceInfoCard(
+fun TodayInfoCard(
     sunEvent: SunEvent,
     placeInfo: PlaceInfo,
     imageDetails: ImageDetails,
@@ -225,7 +173,10 @@ fun PlaceInfoCard(
     placeInfoViewModel: PlaceInfoViewModel
 ) {
 
-    var expanded by remember {mutableStateOf(false)}
+    //for the clickable text
+    var expanded by remember { mutableStateOf(false) }
+
+    //for remembering if placeinfo is favourite or not
     var isFavourite by remember { mutableStateOf(placeInfo.isFavourite) }
 
     Card(
@@ -236,8 +187,8 @@ fun PlaceInfoCard(
         colors = CardDefaults.cardColors(cardColor)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-
-            Box( //for the image
+            //PlaceInfo image
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
@@ -248,6 +199,8 @@ fun PlaceInfoCard(
                         )
                     )
             ) {
+                //if placeInfo.id is smaller than 16, show image from imageDetails.path.
+                //If placeInfo.id is bigger than 16, load image from file path
                 /*
                 if(placeInfo.sunEvents.isNotEmpty()) {
                     if (placeInfo.id < 16) {
@@ -266,27 +219,34 @@ fun PlaceInfoCard(
                     }
                }
                 */
+                //IconButton for choosing place as favourite
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    IconButton(onClick = {
-                        if (!isFavourite) {
-                            placeInfoViewModel.addFavourite(placeInfo.id)
-                        } else {
-                            placeInfoViewModel.removeFavourite(placeInfo.id)
-                        }
-                        isFavourite = !isFavourite
-                    },
+                    IconButton(
+                        onClick = {
+                            //if isFavourite = true, add favourite
+                            if (!isFavourite) {
+                                placeInfoViewModel.addFavourite(placeInfo.id)
+                            //else remove favourite
+                            } else {
+                                placeInfoViewModel.removeFavourite(placeInfo.id)
+                            }
+                            isFavourite = !isFavourite
+                        },
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(top = 15.dp, end = 15.dp)){
-                        if(isFavourite) {
+                            .padding(top = 15.dp, end = 15.dp)
+                    ) {
+                        //if favourite, show filled heart
+                        if (isFavourite) {
                             Icon(
                                 imageVector = Icons.Filled.Favorite,
                                 modifier = Modifier.size(40.dp),
                                 contentDescription = "",
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer
                             )
+                            //if not favourite, show heart with border
                         } else {
                             Icon(
                                 imageVector = Icons.Filled.FavoriteBorder,
@@ -299,10 +259,15 @@ fun PlaceInfoCard(
                     }
                 }
             }
+            //Clickable text. If description is over two lines, show only the two lines. If clicked,
+            //shows the rest of the text
             ClickableText(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(textColor)) {
-                        append(imageDetails.description, "Placeholder text before the actual text works and we get a place that displays the actual thing we want to display blalbaasdfgldfjs")
+                        append(
+                            imageDetails.description,
+                            "Placeholder text before the actual text works and we get a place that displays the actual thing we want to display blalbaasdfgldfjs"
+                        )
                     }
                 },
                 style = typography.bodyMedium,
@@ -311,20 +276,21 @@ fun PlaceInfoCard(
                 onClick = { expanded = !expanded },
                 modifier = Modifier.padding(start = 10.dp, bottom = 20.dp, end = 10.dp, top = 5.dp)
             )
-
+            //For showing todays date
             Text(
                 text = dateString.uppercase(),
                 fontWeight = FontWeight.Bold,
                 style = typography.titleMedium,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                color = textColor //change text color
+                color = textColor
             )
-            Divider( //for dividing sunset today info from golden hour and blue hour times
+            Divider(
                 modifier = Modifier.padding(
                     start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
                 ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
             )
+            //Sunset Icon
             Icon(
                 painter = painterResource(id = R.drawable.sunsetsymbol),
                 contentDescription = "Sunset Icon",
@@ -333,8 +299,9 @@ fun PlaceInfoCard(
                     .fillMaxWidth()
                     .size(60.dp)
             )
+            //Time of sunset
             Text(
-                text = timeString, //"${sunEvent.time}",//sunset time //Use timeString instead??
+                text = timeString,
                 style = typography.headlineSmall,
                 color = textColor,
                 textAlign = TextAlign.Center,
@@ -342,8 +309,9 @@ fun PlaceInfoCard(
                     .fillMaxWidth()
                     .padding(bottom = 5.dp, top = 3.dp)
             )
-            Text( //text changing based on weather conditions, in different textbox because of change of color
-                text = "Sunset conditions: ${sunEvent.conditions.weatherRating}",//" $weatherConditions",
+            //Conditions at sunset
+            Text(
+                text = stringResource(R.string.weather_condition) + ": ${sunEvent.conditions.weatherRating}",
                 style = typography.bodyMedium,
                 color = textColor,
                 fontWeight = FontWeight.Bold,
@@ -353,8 +321,9 @@ fun PlaceInfoCard(
                     .padding(bottom = 3.dp)
             )
 
+            //Temperature at sunset
             Text(
-                text = "Temperature at sunset: ${sunEvent.tempAtEvent}",//"$temp °C",
+                text = stringResource(R.string.temp_at_sunset) +": ${sunEvent.tempAtEvent} °C",
                 style = typography.bodyMedium,
                 color = textColor,
                 fontWeight = FontWeight.Bold,
@@ -363,25 +332,26 @@ fun PlaceInfoCard(
                     .fillMaxWidth()
                     .padding(bottom = 5.dp)
             )
-            Divider( //for dividing sunset today info from golden hour and blue hour times
+            Divider(
                 modifier = Modifier.padding(
                     start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
                 ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
             )
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
-
             ) {
+                //Shows the weathericon that suits the weatherconditions today
                 Box(
                     modifier = Modifier.size(80.dp)
                 ) {
                     WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
                 }
-
+                //Box for golden hour icon and time
                 Box {
                     Text(
                         text = stringResource(R.string.golden_hour),
@@ -390,7 +360,7 @@ fun PlaceInfoCard(
                         color = textColor,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(bottom = 0.dp)
-                    )//Golden hour icon and time
+                    )
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
                         contentDescription = "yellow sun icon",
@@ -401,7 +371,7 @@ fun PlaceInfoCard(
 
                     )
                     Text(
-                        text = "19:09 -20:31", //change this later to $goldenHourTime
+                        text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -410,6 +380,7 @@ fun PlaceInfoCard(
                         )
                     )
                 }
+                //box for blue hour icon and time
                 Box {
                     Text(
                         text = stringResource(R.string.blue_hour),
@@ -427,7 +398,7 @@ fun PlaceInfoCard(
                         )
                     )
                     Text(
-                        text = "20:31-21:05", //change this later to $blueHourTime
+                        text = "20:31-21:05", //TODO //change this later to $blueHourTime
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -446,7 +417,9 @@ fun PlaceInfoCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String, textColor : Color, cardColor: Color) {
+fun SunEventInfoCard(
+    sunEvent: SunEvent, dateString: String, timeString: String, textColor: Color, cardColor: Color
+) {
 
     var expandedState by remember { mutableStateOf(false) }
 
@@ -631,51 +604,14 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String,
 }
 
 
-
-
 /**
  * Function with alle the content of the homescreen
  * This exclude the top- and bottomBar
  */
 @Composable
-fun ContentInfoScreen(
+fun SunEventInfoContent(
     placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel
 ) {
-    Column(
-       // modifier = Modifier.padding(8.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        //Add space between pictures and text
-       // Spacer(modifier = Modifier.height(20.dp))
-
-/*
-        //Description of the place:
-        Column(
-            modifier = Modifier
-              //  .padding()
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.Start,
-
-            ) {
-            /*
-            Text(
-                text = placeInfoUiState.placeInfo.description,
-                modifier = Modifier.padding(bottom = 4.dp),
-                fontSize = 20.sp
-            )
-             */
-
- */
-
-            SunEventInfoContent(placeInfoUiState, placeInfoViewModel)
-        }
-    }
-//}
-
-@Composable
-fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel) {
     var dayOffset = 1
 
     Column(
@@ -715,19 +651,33 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
 
     val sunEvents = placeInfo.sunEvents
 
-        if (placeInfo.sunEvents.isNotEmpty()) {
+    if (placeInfo.sunEvents.isNotEmpty()) {
         val sunEvent = sunEvents[0]
         val imageDetails = placeInfo.images.getOrElse(0) { ImageDetails("", "") }
-       // val date = LocalDateTime.now()
+        // val date = LocalDateTime.now()
 
 
-        val dateString =
-            "${stringResource(R.string.today)} ${sunEvent.time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+        val dateString = "${stringResource(R.string.today)} ${
+            sunEvent.time.format(
+                DateTimeFormatter.ofPattern(
+                    "d'.' MMMM':'", Locale.getDefault()
+                )
+            )
+        }"
 
         val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-        PlaceInfoCard(sunEvent, placeInfo, imageDetails, dateString, timeString, textColor,cardColor,placeInfoViewModel) //placeInfo,placeInfoViewModel = PlaceInfoViewModel()
-        }
+        TodayInfoCard(
+            sunEvent,
+            placeInfo,
+            imageDetails,
+            dateString,
+            timeString,
+            textColor,
+            cardColor,
+            placeInfoViewModel
+        ) //placeInfo,placeInfoViewModel = PlaceInfoViewModel()
+    }
 }
 
 
@@ -741,31 +691,114 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, dayOffset: Int) {
     val cardColor: Color = MaterialTheme.colorScheme.secondaryContainer
 
     val sunEvents = placeInfoUiState.placeInfo.sunEvents
+
     var index = dayOffset
 
-    while(index < sunEvents.size) {
+    while (index < sunEvents.size) {
 
-            val sunEvent = sunEvents[index]
+        val sunEvent = sunEvents[index]
 
-            val date = LocalDateTime.now().plusDays(1)
-            val dateString = if (index == dayOffset) {
-                // The current date we are formatting is tomorrow
-                 "${(stringResource(R.string.tomorrow))}  ${
-                    date.format(
-                        DateTimeFormatter.ofPattern(
-                            "d'.' MMMM':'", Locale.getDefault()
-                        )
+        val date = LocalDateTime.now().plusDays(1)
+        val dateString = if (index == dayOffset) {
+            // The current date we are formatting is tomorrow
+            "${(stringResource(R.string.tomorrow))}  ${
+                date.format(
+                    DateTimeFormatter.ofPattern(
+                        "d'.' MMMM':'", Locale.getDefault()
                     )
-                }"
-            } else {
-                // The current date we are formatting is after tomorrow
-                 date.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
-            }
-            val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
-
-            SunEventInfoCard(sunEvent, dateString, timeString, textColor, cardColor)
-        index ++
+                )
+            }"
+        } else {
+            // The current date we are formatting is after tomorrow
+            date.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
         }
+        index++
+
+        val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+
+        SunEventInfoCard(sunEvent, dateString, timeString, textColor, cardColor)
+
+    }
 }
 
 
+/*
+@Composable
+fun ContentInfoScreen(
+    placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel
+) {
+    Column(
+        // modifier = Modifier.padding(8.dp),
+        verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        //Add space between pictures and text
+        // Spacer(modifier = Modifier.height(20.dp))
+
+        /*
+                //Description of the place:
+                Column(
+                    modifier = Modifier
+                      //  .padding()
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.Start,
+
+                    ) {
+                    /*
+                    Text(
+                        text = placeInfoUiState.placeInfo.description,
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        fontSize = 20.sp
+                    )
+                     */
+
+         */
+
+        SunEventInfoContent(placeInfoUiState, placeInfoViewModel)
+    }
+}
+//}
+ */
+
+
+/*
+@Preview
+@Composable
+fun PreviewContentInfoScreen(placeRepository: PlaceRepository) {
+    val placeRepository: PlaceRepository = FakePlaceRepository()
+    Surface {
+        SunEventInfoContent(
+            placeInfoUiState = PlaceInfoUiState(
+                placeInfo = PlaceInfo(
+                    id = 0,
+                    name = "Holmenkollen",
+                    description = "Et fantastisk fint sted å ta bilde av dine nære og kjære under en solnedgang som ikke kan sammenlignes med noe annet",
+                    lat = "",
+                    long = "",
+                    isFavourite = false,
+                    isCustomPlace = false,
+                    hasNotification = false,
+                    images = emptyList(),
+                    sunEvents = listOf(
+                        SunEvent(
+                            time = LocalDateTime.now(),
+                            tempAtEvent = "4.7",
+                            weatherIcon = "suncloudy",
+                            conditions = WeatherConditions(
+                                weatherRating = WeatherConditionsRating.EXCELLENT,
+                                cloudConditionLow = CloudConditions.CLEAR,
+                                cloudConditionHigh = CloudConditions.CLEAR,
+                                cloudConditionMedium = CloudConditions.CLEAR,
+                                airCondition = AirConditions.LOW
+                            )
+                        )
+                    )
+                )
+            ),
+            placeInfoViewModel = PlaceInfoViewModel(context = context,
+                placeRepository = placeRepository
+            )
+        )
+    }
+}
+*/
