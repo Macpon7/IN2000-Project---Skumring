@@ -211,7 +211,7 @@ fun ContentMyPage(
     val unfocusedCursorColor: Color = MaterialTheme.colorScheme.onPrimary
 
     // Colors for errors in Textfield:
-    val errorTextColor: Color = MaterialTheme.colorScheme.onError
+    val errorTextColor: Color = MaterialTheme.colorScheme.onPrimary
     val errorContainerColor : Color = MaterialTheme.colorScheme.primaryContainer
     val errorCursorColor: Color = MaterialTheme.colorScheme.error
     val errorLeadingIconColor: Color = MaterialTheme.colorScheme.error
@@ -249,10 +249,16 @@ fun ContentMyPage(
     if (myPageUiState.showNewPlaceDialog) {
         NewPlaceDialog(
             myPageViewModel = myPageViewModel,
+
             mainColor = mainColor,
+
             focusedContainerColor = focusedContainerColor,
+            focusedTextColor = focusedTextColor,
+            focusedCursorColor = focusedCursorColor,
+
             unfocusedContainerColor = unfocusedContainerColor,
             unfocusedTextColor = unfocusedTextColor,
+            unfocusedCursorColor = unfocusedCursorColor,
 
             errorTextColor = errorTextColor,
             errorContainerColor = errorContainerColor,
@@ -272,9 +278,14 @@ fun ContentMyPage(
 fun NewPlaceDialog(
     myPageViewModel: MyPageViewModel,
     mainColor: Color,
+
     focusedContainerColor: Color,
+    focusedTextColor: Color,
+    focusedCursorColor: Color,
+
     unfocusedContainerColor: Color,
     unfocusedTextColor: Color,
+    unfocusedCursorColor: Color,
 
     errorTextColor: Color,
     errorContainerColor : Color,
@@ -365,7 +376,15 @@ fun NewPlaceDialog(
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         focusedContainerColor = focusedContainerColor,
+                        focusedTextColor = focusedTextColor,
+
                         unfocusedContainerColor = unfocusedContainerColor,
+                        unfocusedTextColor = unfocusedTextColor,
+
+                        errorTextColor = errorTextColor,
+                        errorContainerColor = errorContainerColor,
+                        errorCursorColor = errorCursorColor,
+                        errorLeadingIconColor = errorLeadingIconColor,
                         ),
                     isError = (newPlaceUiState.locationNameIsMissing)
                 )
@@ -393,7 +412,15 @@ fun NewPlaceDialog(
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         focusedContainerColor = focusedContainerColor,
-                        unfocusedContainerColor = unfocusedContainerColor
+                        focusedTextColor = focusedTextColor,
+
+                        unfocusedContainerColor = unfocusedContainerColor,
+                        unfocusedTextColor = unfocusedTextColor,
+
+                        errorTextColor = errorTextColor,
+                        errorContainerColor = errorContainerColor,
+                        errorCursorColor = errorCursorColor,
+                        errorLeadingIconColor = errorLeadingIconColor,
                     ),
                     isError = newPlaceUiState.addressIsMissing
                 )
@@ -469,7 +496,15 @@ fun NewPlaceDialog(
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         focusedContainerColor = focusedContainerColor,
-                        unfocusedContainerColor = unfocusedContainerColor
+                        focusedTextColor = focusedTextColor,
+
+                        unfocusedContainerColor = unfocusedContainerColor,
+                        unfocusedTextColor = unfocusedTextColor,
+
+                        errorTextColor = errorTextColor,
+                        errorContainerColor = errorContainerColor,
+                        errorCursorColor = errorCursorColor,
+                        errorLeadingIconColor = errorLeadingIconColor,
                     ),
                     isError = newPlaceUiState.descriptionsIsMissing,
                 )
