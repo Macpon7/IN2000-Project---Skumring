@@ -38,9 +38,10 @@ data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     var mapListToggle: MapListToggleState = MapListToggleState.MAP,
     var sheetState: SheetState = SheetState(skipPartiallyExpanded = true),
     var showBottomSheet: Boolean = false,
-    var userLat: String = "59.943735",
-    var userLong: String = "10.718393",
+    var userLat: String = "0",
+    var userLong: String = "0",
     var userBearing: Float = 0.0f,
+    var userLocUpdated: Boolean = false,
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -173,15 +174,17 @@ class MapListViewModel(
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    private fun updateUserLocation() {
+    fun updateUserLocation() {
         viewModelScope.launch (Dispatchers.IO) {
             try {
                 _mapListUiState.update { currentMapUiState ->
                     val userLoc = userLocationRepository.getUserLocation()
+                    Log.d(logTag, "Updating userlocation ${userLoc.long}, ${userLoc.lat}")
                     currentMapUiState.copy(
                         userLat = userLoc.lat,
                         userLong = userLoc.long,
-                        userBearing = userLoc.bearing
+                        userBearing = userLoc.bearing,
+                        userLocUpdated = true
                     )
                 }
             } catch (e: Exception) {

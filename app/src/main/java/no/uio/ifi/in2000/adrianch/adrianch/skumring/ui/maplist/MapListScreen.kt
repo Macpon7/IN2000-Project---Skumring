@@ -60,23 +60,17 @@ import androidx.navigation.NavHostController
 import com.google.gson.JsonPrimitive
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.ImageHolder
 import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
-import com.mapbox.maps.plugin.LocationPuck
-import com.mapbox.maps.plugin.LocationPuck2D
-import com.mapbox.maps.plugin.PuckBearing
+import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.annotation.AnnotationConfig
 import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
-import com.mapbox.maps.plugin.compass.generated.CompassSettings
-import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin
-import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
-import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
@@ -109,6 +103,7 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
     // Load all places every time the user navigates to this screen
     LaunchedEffect(Unit) {
         mapListViewModel.loadPlaces()
+        mapListViewModel.updateUserLocation()
     }
 
     // Check if there is an error, if so show a snackbar:
@@ -464,9 +459,10 @@ fun BottomSheetContent(
 fun MapArea(mapListUiState: MapListUiState,
             navController: NavController,
             mapListViewModel: MapListViewModel) {
-    // Can declare point to contain current location of user
-    val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
-    //var point: Point by remember { mutableStateOf(testPoint) }
+
+    val userPoint = Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
+    //Log.d(logTag, point.toString())
+    //val userPoint by remember { mutableStateOf((point)) }
     val context = LocalContext.current
 
     MapboxMap(
@@ -478,18 +474,25 @@ fun MapArea(mapListUiState: MapListUiState,
             MapInitOptions(
                 context = context,
                 styleUri = Style.OUTDOORS,
-                cameraOptions = CameraOptions.Builder()
-                    .center(Point.fromLngLat(10.71839307051461, 59.943735106220444))
-                    .zoom(10.0)
-                    .build(),
             )
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
         },
-        locationComponentSettings = LocationComponentSettings
         ) {
+
+        if (mapListUiState.userLocUpdated) {
+            MapEffect { mapView ->
+                Log.d(logTag, "userloc updated")
+                mapView.camera.flyTo(
+                    cameraOptions = CameraOptions.Builder()
+                        .center(userPoint)
+                        .zoom(10.0)
+                        .build()
+                )
+            }
+        }
         PointAnnotationGroup(
             annotations = mapListUiState.pins.map {pinInfo ->
                 val long = pinInfo.long.toDouble()
