@@ -605,7 +605,6 @@ fun SunEventInfoCard(
                         )
                     }
                 }
-
             }
         }
     }
@@ -620,7 +619,6 @@ fun SunEventInfoCard(
 fun SunEventInfoContent(
     placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel
 ) {
-    var dayOffset = 1
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -635,12 +633,13 @@ fun SunEventInfoContent(
         if (firstEvent != null) {
             SunEventInfoToday(placeInfoUiState, placeInfoViewModel)
         }
+
+        //space between the cards
         Spacer(modifier = Modifier.height(10.dp))
 
         // Shows the sunset events for tomorrow and the following days
         placeInfoUiState.placeInfo.sunEvents.forEachIndexed { _, _ ->
-            SunEventInfoTomorrow(placeInfoUiState, dayOffset)
-            dayOffset++
+            SunEventInfoTomorrow(placeInfoUiState)
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
@@ -656,15 +655,13 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
     val cardColor: Color = MaterialTheme.colorScheme.secondaryContainer
 
     val placeInfo = placeInfoUiState.placeInfo
-
     val sunEvents = placeInfo.sunEvents
 
     if (placeInfo.sunEvents.isNotEmpty()) {
         val sunEvent = sunEvents[0]
         val imageDetails = placeInfo.images.getOrElse(0) { ImageDetails("", "") }
-        // val date = LocalDateTime.now()
 
-
+        //the current date we are formatting to is today
         val dateString = "${stringResource(R.string.today)} ${
             sunEvent.time.format(
                 DateTimeFormatter.ofPattern(
@@ -684,30 +681,29 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
             textColor,
             cardColor,
             placeInfoViewModel
-        ) //placeInfo,placeInfoViewModel = PlaceInfoViewModel()
+        )
     }
 }
 
 
 /**
- * Displays information about the sun events for tomorrow and the following days. Date, time and weather conditions
+ * Displays information about the sun events for tomorrow and the following days.
+ * Date, time and weather conditions
  */
 @Composable
-fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, dayOffset: Int) {
+fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
 
     val textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
     val cardColor: Color = MaterialTheme.colorScheme.secondaryContainer
 
     val sunEvents = placeInfoUiState.placeInfo.sunEvents
-
-    var index = dayOffset
+    var index = 1
 
     while (index < sunEvents.size) {
-
         val sunEvent = sunEvents[index]
+        val date = LocalDateTime.now().plusDays(index.toLong())
 
-        val date = LocalDateTime.now().plusDays(1)
-        val dateString = if (index == dayOffset) {
+        val dateString = if (index == 1) {
             // The current date we are formatting is tomorrow
             "${(stringResource(R.string.tomorrow))}  ${
                 date.format(
@@ -722,6 +718,7 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, dayOffset: Int) {
         }
         index++
 
+        //time of day for sunset
         val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
         SunEventInfoCard(sunEvent, dateString, timeString, textColor, cardColor)
