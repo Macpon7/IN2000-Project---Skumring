@@ -1,6 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding
 
-data class ReverseGeoCoding(
+data class ReverseGeocoding(
     val attribution: String,
     val features: List<Feature>,
     val type: String
