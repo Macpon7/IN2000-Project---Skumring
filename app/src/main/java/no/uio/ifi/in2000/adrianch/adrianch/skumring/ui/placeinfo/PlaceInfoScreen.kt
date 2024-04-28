@@ -39,6 +39,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -64,10 +65,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.ImageDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
@@ -88,6 +96,9 @@ object PlaceInfoScreenDestination : NavigationDestination {
     override val titleRes = null
 }
 
+/**
+ * The screen with top bar and bottom bar
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -158,7 +169,8 @@ fun PlaceInfoScreen(
 
 
 /**
- * Shows information
+ * Shows information about the sunset today, as well as picture.
+ * You can also favourite the place
  */
 @SuppressLint("SimpleDateFormat")
 @Composable
@@ -320,7 +332,6 @@ fun TodayInfoCard(
                     .fillMaxWidth()
                     .padding(bottom = 3.dp)
             )
-
             //Temperature at sunset
             Text(
                 text = stringResource(R.string.temp_at_sunset) +": ${sunEvent.tempAtEvent} °C",
@@ -413,7 +424,6 @@ fun TodayInfoCard(
 
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -565,7 +575,6 @@ fun SunEventInfoCard(
                             modifier = Modifier.padding(
                                 start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                             )
-
                         )
                         Text(
                             text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
@@ -731,11 +740,22 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
 }
 
 
-/*
+/**
+ * Preview to show PlaceInfoScreen cards
+ */
 @Preview
 @Composable
-fun PreviewContentInfoScreen(placeRepository: PlaceRepository) {
-    val placeRepository: PlaceRepository = FakePlaceRepository()
+fun PreviewSunEventInfoScreen() {
+    val context = LocalContext.current
+    val database = AppDatabase.getDatabase(context = context)
+    val imageDao = database.imageDao()
+    val forecastDao = database.forecastDao()
+    val placeInfoDao = database.placeInfoDao()
+    val placeRepository = PlaceRepositoryImpl(
+        placeInfoDao = placeInfoDao,
+        forecastDao = forecastDao,
+        imageDao = imageDao
+    )
     Surface {
         SunEventInfoContent(
             placeInfoUiState = PlaceInfoUiState(
@@ -771,4 +791,4 @@ fun PreviewContentInfoScreen(placeRepository: PlaceRepository) {
         )
     }
 }
-*/
+
