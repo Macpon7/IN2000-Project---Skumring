@@ -463,8 +463,6 @@ fun MapArea(mapListUiState: MapListUiState,
             mapListViewModel: MapListViewModel) {
 
     val userPoint = Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
-    //Log.d(logTag, point.toString())
-    //val userPoint by remember { mutableStateOf((point)) }
     val context = LocalContext.current
 
     MapboxMap(
@@ -524,6 +522,7 @@ fun MapArea(mapListUiState: MapListUiState,
                 true
             }
         )
+        // User location
         PointAnnotation(
             point = userPoint,
             iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.sunsetsymbol)!!.toBitmap()
