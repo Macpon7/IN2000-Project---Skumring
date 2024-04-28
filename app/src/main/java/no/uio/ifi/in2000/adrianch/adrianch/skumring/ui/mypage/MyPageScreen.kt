@@ -33,6 +33,7 @@ import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -294,9 +295,9 @@ fun NewPlaceDialog(
 
         Card(
             modifier = Modifier.padding(all = 8.dp),
-             colors = CardDefaults.cardColors(
-                 containerColor = MaterialTheme.colorScheme.primaryContainer
-             )
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
         ) {
             // String with name
             OutlinedTextField(
@@ -309,7 +310,8 @@ fun NewPlaceDialog(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Outlined.Info,
-                        contentDescription = "addresse"
+                        contentDescription = "name",
+                        tint = textColor
                     )
                 },
                 supportingText = {
@@ -320,6 +322,10 @@ fun NewPlaceDialog(
                         )
                     }
                 },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedContainerColor = focusedContainerColor,
+                    unfocusedContainerColor = unfocusedContainerColor
+                ),
                 isError = (newPlaceUiState.locationNameIsMissing)
             )
 
@@ -333,7 +339,8 @@ fun NewPlaceDialog(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Outlined.LocationOn,
-                        contentDescription = "addresse"
+                        contentDescription = "addresse",
+                        tint = textColor
                     )
                 },
                 supportingText = {
@@ -388,7 +395,8 @@ fun NewPlaceDialog(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Outlined.DateRange,
-                        contentDescription = "Date"
+                        contentDescription = "Date",
+                        tint = textColor
                     )
                 },
                 colors = ExposedDropdownMenuDefaults.textFieldColors(
@@ -427,18 +435,23 @@ fun NewPlaceDialog(
             )
 
             // Button to add photo
-            PickImageFromGallery(myPageViewModel = myPageViewModel, textColor = textColor)
+            PickImageFromGallery(myPageViewModel = myPageViewModel)
 
             // Button that is pressed when the location is added:
             Button(
                 onClick = { myPageViewModel.addLocation() },
                 modifier = Modifier.padding(vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
             ) {
                 Text(
                     text = stringResource(R.string.add_location),
-                    color = textColor,
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
-                Icons.Outlined.Check
+                Icon(
+                    imageVector = Icons.Outlined.Check,
+                    contentDescription = "add place",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
 
             if (newPlaceUiState.missingInfo) {
@@ -457,7 +470,6 @@ fun NewPlaceDialog(
 @Composable
 fun PickImageFromGallery(
     myPageViewModel: MyPageViewModel,
-    textColor: Color,
 ) {
     val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
@@ -499,15 +511,21 @@ fun PickImageFromGallery(
         Spacer(modifier = Modifier.height(12.dp))
 
     }
-    Button(onClick = { launcher.launch("image/*") }) {
+    Button(
+        onClick = { launcher.launch("image/*") },
+        modifier = Modifier.padding(vertical = 8.dp),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+    ) {
         Text(
             text = stringResource(R.string.add_photo),
-            color = textColor,
+            color = MaterialTheme.colorScheme.onPrimary,
         )
-        Icons.Outlined.Add
+        Icon(
+            imageVector = Icons.Outlined.Add,
+            contentDescription = "add photo",
+            tint = MaterialTheme.colorScheme.onPrimary
+        )
     }
-
-
 }
 
 @Composable
