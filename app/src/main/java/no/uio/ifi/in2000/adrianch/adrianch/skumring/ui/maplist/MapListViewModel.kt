@@ -1,8 +1,8 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHostState
@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
@@ -30,7 +31,7 @@ enum class MapListToggleState (val stateAsBool: Boolean) {
     LIST(stateAsBool = true)
 }
 
-data class MapListUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class) constructor(
+data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val pins: List<PinInfo> = emptyList(),
     val places: List<PlaceInfo> = emptyList(),
     var clickedId: Int = 1,
@@ -44,14 +45,17 @@ data class MapListUiState @OptIn(ExperimentalMaterialApi::class, ExperimentalMat
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
-    var errorMessage: String = "No error",
+    var errorMessage: String = "",
     // Variable for snackbar:
     val snackbarHostState: SnackbarHostState = SnackbarHostState()
 )
 
 private const val logTag = "MapListViewModel"
 
-class MapListViewModel(private val placeRepository: PlaceRepository, context: Context): ViewModel() {
+@SuppressLint("StaticFieldLeak")
+class MapListViewModel(
+    private val context: Context,
+    private val placeRepository: PlaceRepository): ViewModel() {
 
     private val _mapListUiState = MutableStateFlow(MapListUiState())
     val mapListUiState: StateFlow<MapListUiState> = _mapListUiState.asStateFlow()
@@ -63,7 +67,7 @@ class MapListViewModel(private val placeRepository: PlaceRepository, context: Co
         //loadPlaces()
     }
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     fun loadPlaces(){
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(logTag, "Loading all places from DB")
@@ -82,8 +86,9 @@ class MapListViewModel(private val placeRepository: PlaceRepository, context: Co
                     currentMapListUiState.copy(places = places, pins = pins)
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting places from DB", e)
-                    currentMapListUiState.copy(showSnackbar = true,
-                        errorMessage = "Error getting places from database")
+                    currentMapListUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.getString(R.string.error_message_getting_places_from_database))
                 }
             }
         }.invokeOnCompletion {
@@ -91,7 +96,7 @@ class MapListViewModel(private val placeRepository: PlaceRepository, context: Co
         }
     }
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     fun toggleMapListState() {
         viewModelScope.launch(Dispatchers.IO) {
             _mapListUiState.update { currentMapListUiState ->

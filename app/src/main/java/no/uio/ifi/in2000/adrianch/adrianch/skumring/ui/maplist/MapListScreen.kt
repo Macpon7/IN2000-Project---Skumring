@@ -101,6 +101,9 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
 
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
     // Load all places every time the user navigates to this screen
     LaunchedEffect(Unit) {
         mapListViewModel.loadPlaces()
@@ -112,7 +115,7 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
             val result = mapListUiState.snackbarHostState.showSnackbar(
                 message = mapListUiState.errorMessage,
                 withDismissAction = true,
-                actionLabel = "Refresh",
+                actionLabel = context.getString(R.string.refresh),
             )
 
             // If the snackbar is dismissed, reset the boolean of the error-variable
@@ -219,7 +222,6 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
 }
 
-
 /**
  * Preview function for ToggleButtonThemeSwitcher
  */
@@ -232,8 +234,6 @@ fun ToggleButtonThemeSwitcherPreview() {
         onClick = { isMapTheme = !isMapTheme }
     )
 }
-
-
 
 /**
  * Togglebutton that switches between Map view and List view
@@ -315,7 +315,7 @@ BoxWithConstraints {
                     )
                     Text(
                         modifier = Modifier.padding(start = 5.dp),
-                        text = "List",
+                        text = stringResource(R.string.toggle_list),
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
@@ -337,7 +337,7 @@ BoxWithConstraints {
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "Map",
+                        text = stringResource(R.string.toggle_map),
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
@@ -349,7 +349,7 @@ BoxWithConstraints {
         Box(
             modifier = Modifier
                 .width(buttonWidth)
-                .height(buttonHeight/2)
+                .height(buttonHeight / 2)
                 .clip(shape = parentShape)
                 .clickable { onClick() }
                 .background(MaterialTheme.colorScheme.onSecondary)
@@ -358,11 +358,10 @@ BoxWithConstraints {
             Box(
                 modifier = Modifier
                     .width(buttonWidth / 2) // size of the toggle button
-                    .height(buttonHeight/2)
+                    .height(buttonHeight / 2)
                     .offset(x = offsetLargeScreen)
                     .clip(shape = parentShape)
                     .background(MaterialTheme.colorScheme.secondary)
-
             )
             // the icons and text representing list and map views
             Row(
@@ -394,7 +393,7 @@ BoxWithConstraints {
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "List",
+                        text = "List", // TODO xml
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
@@ -416,7 +415,7 @@ BoxWithConstraints {
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "Map",
+                        text = "Map", // TODO xml
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary

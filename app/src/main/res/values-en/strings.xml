@@ -9,23 +9,53 @@
     <string name="nav_personal_button">My Page</string>
     <string name="nav_info_button">Info</string>
     <string name="nav_settings_button">Settings</string>
+
+    <!-- SnackBar -->
+    <string name="refresh">Refresh</string>
+
+    <!-- ErrorMessages: -->
+    <string name="error_message_no_error">No error</string>
+
+    <string name="error_message_loadUserLocation">Error updating user location</string>
+    <string name="error_message_getting_sunset">Error getting sunset data</string>
+    <string name="error_message_loading_list">Error loading list</string>
+    <string name="error_message_getting_places_from_database">Error getting places from database</string>
+    <string name="error_message_getting_placeinfo">Error getting info about the place</string>
+
     <!-- HomeScreen -->
-    <string name="home_greeting">Hello</string>
     <string name="conditions_are_good">The conditions will be good tonight!</string>
     <string name="conditions_are_bad">The conditions will be bad tonight.</string>
     <string name="home_sunset">Sunset today</string>
     <string name="list_title">Nice locations today</string>
     <string name="home_favourite_places">Favourite places</string>
+    <string name="no_favourites">No favourites!</string>
+    <string name="error_sunset">Error with getting data</string>
+
+    <string name="conditions_poor">Poor</string>
+    <string name="conditions_decent">Decent</string>
+    <string name="conditions_excellent">Excellent</string>
+
     <!-- MapListScreen -->
     <string name="toggle_list">List</string>
     <string name="toggle_map">Map</string>
     <string name="places_nearby">Nearby places</string>
     <string name="search_hint">Search</string>
+
+    <!-- FavoritesScreen -->
+    <string name="no_places">No places</string>
+
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Picture taken</string>
     <string name="walking_distance">Walking distance</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
+
+    <string name="bad_conditions">There will be bad conditions</string>
+    <string name="ok_conditions">There will be OK conditions</string>
+    <string name="good_conditions">There will be good conditions</string>
+
+    <string name="sundown">Sundown</string>
+
     <!-- SettingsScreen -->
     <string name="settings">Settings</string>
 
@@ -60,6 +90,8 @@
     <string name="error_location_name">Write a name</string>
     <string name="error_address">Write an address</string>
     <string name="error_description">Write a description</string>
+    <string name="missing_fields">Please fill in the missing fields</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">"Weather conditions: "</string>
     <string name="temp_at_sunset">Temperature at sunset</string>

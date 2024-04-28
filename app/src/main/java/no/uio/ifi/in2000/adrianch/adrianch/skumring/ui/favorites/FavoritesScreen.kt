@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,6 +51,9 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
 
     val favoritesUiState: FavoritesUiState by favoritesViewModel.favoritesUiState.collectAsState()
 
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
     // Load the list of favourites every time the user navigates to this screen
     LaunchedEffect(Unit) {
         favoritesViewModel.loadList()
@@ -61,7 +65,7 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             val result = favoritesUiState.snackbarHostState.showSnackbar(
                 message = favoritesUiState.errorMessage,
                 withDismissAction = true,
-                actionLabel = "Refresh",
+                actionLabel = context.getString(R.string.refresh),
             )
 
             // If the snackbar is dismissed, reset the boolean of the error-variable
@@ -104,7 +108,10 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             .padding(8.dp),
             verticalArrangement = Arrangement.Top
         ) {
-            FavoriteListContent(navController = navController, favoriteViewModel = favoritesViewModel, favoritesUiState = favoritesUiState)
+            FavoriteListContent(
+                navController = navController,
+                favoriteViewModel = favoritesViewModel,
+                favoritesUiState = favoritesUiState)
         }
     }
 }
@@ -129,7 +136,7 @@ fun FavoriteListContent(navController : NavController,
 
     Column (Modifier.verticalScroll(rememberScrollState())) {
         if (favoritesUiState.places.isEmpty()){
-            Text(text = "No Places")
+            Text(text = stringResource(R.string.no_places))
         } else {
             favoritesUiState.places.forEach { place ->
                 ListCard(
