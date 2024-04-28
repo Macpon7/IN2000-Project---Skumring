@@ -143,6 +143,9 @@ fun PlaceInfoScreen(
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         Log.d(TAG, "LaunchedEffect called, loading place with id: $id")
         placeViewModel.loadPlaceInfo(id = id)
@@ -154,7 +157,7 @@ fun PlaceInfoScreen(
             val result = placeUiState.snackbarHostState.showSnackbar(
                 message = placeUiState.errorMessage,
                 withDismissAction = true,
-                actionLabel = "Refresh",
+                actionLabel = context.getString(R.string.refresh),
             )
             // If the snackbar is dismissed, reset the boolean of the showSnackbar-variable
             // The snackbar will reappear is we get a new error
@@ -170,6 +173,7 @@ fun PlaceInfoScreen(
             }
         }
     }
+
     Scaffold(topBar = {
         SkumringTopBar(title = placeUiState.placeInfo.name,
             canNavigateBack = true,
@@ -671,7 +675,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 
 
         val dateString =
-            "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+            "${stringResource(R.string.today)} ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
 
         val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
@@ -694,7 +698,7 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, dayOffset: Int) {
             val date = LocalDateTime.now().plusDays(dayOffset.toLong())
             val dateString = if (dayOffset == 1) {
                 // The current date we are formatting is tomorrow
-                 "I Morgen ${
+                 "${(R.string.tomorrow)} ${
                     date.format(
                         DateTimeFormatter.ofPattern(
                             "d'.' MMMM':'", Locale.getDefault()

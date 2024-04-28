@@ -8,29 +8,78 @@
     <string name="nav_info_button">Info</string>
     <string name="nav_personal_button">Min side</string>
     <string name="nav_settings_button">Instillinger</string>
+
+    <!-- SnackBar -->
+    <string name="refresh">Last inn på nytt</string>
+
+    <!-- ErrorMessages: -->
+    <string name="error_message_no_error">Ingen feil</string>
+
+    <string name="error_message_loadUserLocation">Feil med å oppdatere bruker lokasjon</string>
+    <string name="error_message_getting_sunset">Feil med å laste ned data om solnedgang</string>
+    <string name="error_message_loading_list">Feil med å laste inn liste</string>
+    <string name="error_message_getting_places_from_database">Feil med å laste inn steder fra databasen</string>
+    <string name="error_message_getting_placeinfo">Feil med å laste inn info om stedet</string>
+
     <!-- HomeScreen -->
-    <string name="home_greeting">Hei</string>
     <string name="conditions_are_good">Det blir gode forhold i kveld!</string>
     <string name="conditions_are_bad">Det blir dårlige forhold i kveld.</string>
     <string name="home_sunset">Solnedgang i dag</string>
     <string name="list_title">Fine steder i dag</string>
     <string name="home_more_details_button">Mer informasjon</string>
     <string name="home_favourite_places">Favorittsteder</string>
+    <string name="no_favourites">Ingen favoritter!</string>
+    <string name="error_sunset">Feil med å få data</string>
+
+    <string name="conditions_poor">Dårlig</string>
+    <string name="conditions_decent">Grei nok</string>
+    <string name="conditions_excellent">Fantastisk</string>
+
     <!-- MapListScreen -->
     <string name="toggle_list">Liste</string>
     <string name="toggle_map">Kart</string>
     <string name="places_nearby">Steder i nærheten</string>
     <string name="search_hint">Søk</string>
+
+    <!-- FavoritesScreen -->
+    <string name="no_places">Ingen steder lagret enda</string>
+
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Bilde tatt</string>
     <string name="walking_distance">Gangavstand</string>
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
+    <string name="place_display_placeholder" translatable="false">Place display placeholder</string>
+
+    <string name="bad_conditions">Det blir dårlige forhold</string>
+    <string name="ok_conditions">Det blir OK forhold</string>
+    <string name="good_conditions">Det blir fantastiske forhold</string>
+
+    <string name="sundown">Solnedgang</string>
+
     <!-- SettingsScreen -->
-    <string name="theme_option">Fargemodus</string>
-    <string name="language_option">Språk</string>
-    <string name="distance_unit">Avstander</string>
-    <string name="temp_unit">Temperatur</string>
+    <string name="settings">Innstillinger</string>
+
+    <string name="choose_theme">Velg tema</string>
+    <string name="theme">Tema</string>
+    <string name="follow_system">Følg systemet</string>
+
+    <string name="choose_default_location">Velg standard lokasjon</string>
+    <string name="costum_location">Egendefinert sted</string>
+    <string name="phones_location">Phone location</string>
+
+    <string name="light_mode" translatable="false">Light mode</string>
+    <string name="dark_mode" translatable="false">Dark mode</string>
+
+    <string name="norwegian">Norsk</string>
+    <string name="english">Engelsk</string>
+    <string name="choose_language">Velg språk</string>
+
+    <string name="means_of_transportation">Velg fremkomstmiddel</string>
+    <string name="walk">Gå</string>
+    <string name="bike">Sykle</string>
+    <string name="drive">Kjøre</string>
+
     <!-- MyPageScreen -->
     <string name="no_location">Ingen lokasjon lagret</string>
     <string name="new_location">Ny plassering lagt til!</string>
@@ -46,6 +95,8 @@
     <string name="error_location_name">Skriv et navn</string>
     <string name="error_address">Skriv inn en addresse</string>
     <string name="error_description">Skriv en beskrivelse</string>
+    <string name="missing_fields">Skriv inn de manglende feltene</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>

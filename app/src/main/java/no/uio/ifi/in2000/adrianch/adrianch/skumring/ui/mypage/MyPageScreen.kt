@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -62,22 +61,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
-import coil.request.ImageRequest
-import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
-import java.io.File
 import java.time.format.DateTimeFormatter
 
 private const val TAG = "MyPageScreen"
@@ -91,8 +84,14 @@ object MyPageDestination : NavigationDestination {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewModel = viewModel(factory = MyPageViewModel.Factory)) {
+fun MyPageScreen(
+    navController: NavHostController,
+    myPageViewModel: MyPageViewModel = viewModel(factory = MyPageViewModel.Factory)) {
+
     val myPageUiState: MyPageUiState by myPageViewModel.myPageUiState.collectAsState()
+
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
 
     // Load the list of custom places every time the user navigates to this screen
     LaunchedEffect(Unit) {
@@ -105,7 +104,7 @@ fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewMo
             val result = myPageUiState.snackbarHostState.showSnackbar(
                 message = myPageUiState.errorMessage,
                 withDismissAction = true,
-                actionLabel = "Refresh",
+                actionLabel = context.getString(R.string.refresh),
             )
 
             // If the snackbar is dismissed, reset the boolean of the error-variable
@@ -132,11 +131,12 @@ fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewMo
                 actions = {
                     IconButton(
                         onClick = {
-                                  //TODO, navigate to settingsScreen
-                            },
+                            navController.navigate(route = "settings")                            },
                         modifier = Modifier.padding(end = 16.dp)
                     ) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = "Settings")
                     }
                 }
             )
@@ -153,7 +153,9 @@ fun MyPageScreen(navController: NavHostController, myPageViewModel: MyPageViewMo
                           },
                 modifier = Modifier.padding(end = 16.dp)
             ) {
-                Icon(Icons.Filled.Add, "Add location")
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = "Add location")
             }
         }
         )
@@ -374,7 +376,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
             }
 
             if (newPlaceUiState.missingInfo) {
-                Text(text = "Please fill in the missing fields")
+                Text(text = stringResource(R.string.missing_fields))
             }
 
         }

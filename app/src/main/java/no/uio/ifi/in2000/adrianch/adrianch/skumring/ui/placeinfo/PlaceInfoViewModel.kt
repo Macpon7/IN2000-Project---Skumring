@@ -1,5 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
@@ -40,13 +43,15 @@ data class PlaceInfoUiState(
     // Variable for if we should show loading wheel or not:
     var isLoading: Boolean = true,
     // Variable that change according to the error message we get:
-    var errorMessage: String = "No error",
+    var errorMessage: String = "",
     // Variable for snackbar:
     val snackbarHostState: SnackbarHostState = SnackbarHostState()
 )
 
 
+@SuppressLint("StaticFieldLeak")
 class PlaceInfoViewModel(
+    private val context: Context,
     private val placeRepository: PlaceRepository,
 ): ViewModel() {
     private val forecastRepository: ForecastRepository = ForecastRepositoryImpl()
@@ -63,8 +68,9 @@ class PlaceInfoViewModel(
                     currentPlaceInfoUiState.copy(placeInfo = placeInfoObject, isLoading = false)
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)
-                    currentPlaceInfoUiState.copy(showSnackbar = true,
-                        errorMessage = "Error getting pins in loadPlaceInfo")
+                    currentPlaceInfoUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.getString(R.string.error_message_getting_placeinfo))
                 }
             }
         }
@@ -104,7 +110,8 @@ class PlaceInfoViewModel(
                 val application = checkNotNull(extras[APPLICATION_KEY])
 
                 return PlaceInfoViewModel(
-                    placeRepository = (application as ApplicationSkumring).dbRepository
+                    placeRepository = (application as ApplicationSkumring).dbRepository,
+                    context = application.context
                 ) as T
             }
         }
