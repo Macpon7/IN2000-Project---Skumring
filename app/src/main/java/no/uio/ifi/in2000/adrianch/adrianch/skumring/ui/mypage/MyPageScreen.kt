@@ -40,6 +40,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -53,6 +54,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -86,7 +88,8 @@ object MyPageDestination : NavigationDestination {
 @Composable
 fun MyPageScreen(
     navController: NavHostController,
-    myPageViewModel: MyPageViewModel = viewModel(factory = MyPageViewModel.Factory)) {
+    myPageViewModel: MyPageViewModel = viewModel(factory = MyPageViewModel.Factory)
+) {
 
     val myPageUiState: MyPageUiState by myPageViewModel.myPageUiState.collectAsState()
 
@@ -131,16 +134,18 @@ fun MyPageScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            navController.navigate(route = "settings")                            },
+                            navController.navigate(route = "settings")
+                        },
                         modifier = Modifier.padding(end = 16.dp)
                     ) {
                         Icon(
                             Icons.Default.Settings,
-                            contentDescription = "Settings")
+                            contentDescription = "Settings"
+                        )
                     }
                 }
             )
-        },bottomBar = {
+        }, bottomBar = {
             SkumringBottomBar(navController = navController)
         },
         snackbarHost = { SnackbarHost(hostState = myPageUiState.snackbarHostState) },
@@ -150,28 +155,29 @@ fun MyPageScreen(
                 onClick = {
                     // Show the form:
                     myPageViewModel.showNewForm()
-                          },
+                },
                 modifier = Modifier.padding(end = 16.dp)
             ) {
                 Icon(
                     Icons.Filled.Add,
-                    contentDescription = "Add location")
+                    contentDescription = "Add location"
+                )
             }
         }
-        )
+    )
     { innerPadding -> //Here is what will be shown inside the scaffold of the screen
-        Column (
+        Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
 
         ) {
-          ContentMyPage(
-              navController = navController,
-              myPageViewModel = myPageViewModel,
-              myPageUiState = myPageUiState
-          )
+            ContentMyPage(
+                navController = navController,
+                myPageViewModel = myPageViewModel,
+                myPageUiState = myPageUiState
+            )
         }
     }
 }
@@ -180,12 +186,20 @@ fun MyPageScreen(
  * Content of my page:
  */
 @Composable
-fun ContentMyPage(navController : NavController,
-                  myPageViewModel: MyPageViewModel,
-                  myPageUiState: MyPageUiState
-                  ) {
+fun ContentMyPage(
+    navController: NavController,
+    myPageViewModel: MyPageViewModel,
+    myPageUiState: MyPageUiState
+) {
 
-    Column (Modifier.verticalScroll(rememberScrollState())) {
+    // Global variable for color of the text
+    val TextColor: Color = MaterialTheme.colorScheme.onSurface
+
+    // Colors for Textfield in dropdownmenu:
+    val FocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
+    val UnfocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
+
+    Column(Modifier.verticalScroll(rememberScrollState())) {
         //Slik leser vi inn fra assets/presetImages
         //Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/holmenkollen.jpg")).asImageBitmap(), contentDescription = null)
 
@@ -196,7 +210,7 @@ fun ContentMyPage(navController : NavController,
                 modifier = Modifier.fillMaxWidth()
             )
         } else {
-            myPageUiState.places.forEach {place ->
+            myPageUiState.places.forEach { place ->
                 ListCard(
                     name = place.name,
                     description = place.description,
@@ -206,7 +220,7 @@ fun ContentMyPage(navController : NavController,
                             route = "placeinfoscreen/${place.id}"
                         )
                     },
-                    onFavouriteClick = {myPageViewModel.toggleFavourite(place = place)}
+                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) }
                 )
             }
         }
@@ -214,7 +228,10 @@ fun ContentMyPage(navController : NavController,
 
     //When the user click AddLocationButton this is shown
     if (myPageUiState.showNewPlaceDialog) {
-        NewPlaceDialog(myPageViewModel = myPageViewModel)
+        NewPlaceDialog(
+            myPageViewModel = myPageViewModel,
+            textColor = TextColor
+        )
     }
 }
 
@@ -224,8 +241,10 @@ fun ContentMyPage(navController : NavController,
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
-    val newPlaceUiState : NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
+fun NewPlaceDialog(
+    myPageViewModel: MyPageViewModel, textColor: Color,
+) {
+    val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
     // TODO keep the change when the phone change from standing to lying
 
@@ -238,14 +257,20 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 TextButton(onClick = {
                     myPageViewModel.saveSelectedDate()
                 }) {
-                    Text(text = stringResource(R.string.add_date))
+                    Text(
+                        text = stringResource(R.string.add_date),
+                        color = textColor,
+                    )
                 }
             },
             dismissButton = {
                 TextButton(onClick = {
                     myPageViewModel.dismissDatePicker()
                 }) {
-                    Text(text = stringResource(R.string.cancel))
+                    Text(
+                        text = stringResource(R.string.cancel),
+                        color = textColor,
+                    )
                 }
             }
 
@@ -260,7 +285,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
         myPageViewModel.resetNewPlaceUiState()
     }) {
 
-        Card (modifier = Modifier.padding(all = 8.dp)) {
+        Card(modifier = Modifier.padding(all = 8.dp)) {
             // String with name
             OutlinedTextField(
                 value = newPlaceUiState.locationName,
@@ -277,7 +302,10 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 },
                 supportingText = {
                     if (newPlaceUiState.locationNameIsMissing) {
-                        Text(text = stringResource(R.string.error_location_name))
+                        Text(
+                            text = stringResource(R.string.error_location_name),
+                            color = textColor,
+                        )
                     }
                 },
                 isError = (newPlaceUiState.locationNameIsMissing)
@@ -298,7 +326,10 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 },
                 supportingText = {
                     if (newPlaceUiState.addressIsMissing) {
-                        Text(text = stringResource(R.string.error_address))
+                        Text(
+                            text = stringResource(R.string.error_address),
+                            color = textColor,
+                        )
                     }
                 },
                 isError = newPlaceUiState.addressIsMissing
@@ -332,7 +363,12 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 enabled = false,
                 readOnly = true,
                 isError = newPlaceUiState.dateTextFieldError,
-                label = { Text(stringResource(R.string.time)) },
+                label = {
+                    Text(
+                        stringResource(R.string.time),
+                        color = textColor,
+                    )
+                },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Outlined.DateRange,
@@ -357,28 +393,36 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 },
                 supportingText = {
                     if (newPlaceUiState.descriptionsIsMissing) {
-                        Text(text = stringResource(R.string.error_description))
+                        Text(
+                            text = stringResource(R.string.error_description),
+                            color = textColor,
+                        )
                     }
                 },
                 isError = newPlaceUiState.descriptionsIsMissing
             )
 
             // Button to add photo
-            PickImageFromGallery(myPageViewModel = myPageViewModel)
+            PickImageFromGallery(myPageViewModel = myPageViewModel, textColor = textColor)
 
             // Button that is pressed when the location is added:
             Button(
                 onClick = { myPageViewModel.addLocation() },
                 modifier = Modifier.padding(vertical = 8.dp),
             ) {
-                Text(text = stringResource(R.string.add_location))
+                Text(
+                    text = stringResource(R.string.add_location),
+                    color = textColor,
+                )
                 Icons.Outlined.Check
             }
 
             if (newPlaceUiState.missingInfo) {
-                Text(text = stringResource(R.string.missing_fields))
+                Text(
+                    text = stringResource(R.string.missing_fields),
+                    color = textColor,
+                )
             }
-
         }
     }
 }
@@ -387,8 +431,11 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
  * In this function all the logic for adding picture happens
  */
 @Composable
-fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
-    val newPlaceUiState : NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
+fun PickImageFromGallery(
+    myPageViewModel: MyPageViewModel,
+    textColor: Color,
+) {
+    val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
     val context = LocalContext.current
     // TODO usikker på hvordan bitmap skal lagres i viewmodel
@@ -427,12 +474,14 @@ fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        }
+    }
     Button(onClick = { launcher.launch("image/*") }) {
-        Text(text = stringResource(R.string.add_photo))
+        Text(
+            text = stringResource(R.string.add_photo),
+            color = textColor,
+        )
         Icons.Outlined.Add
     }
-
 
 
 }
@@ -443,11 +492,11 @@ fun TestList(navController: NavHostController = rememberNavController()) {
     MyPageScreen(
         navController = navController,
         myPageViewModel = viewModel(factory = MyPageViewModel.Factory)
-        )
+    )
 }
 
 @Composable
 @Preview
 fun PreviewNewPlaceDialog(navController: NavHostController = rememberNavController()) {
-    NewPlaceDialog(myPageViewModel = viewModel(factory = MyPageViewModel.Factory))
+    //NewPlaceDialog(myPageViewModel = viewModel(factory = MyPageViewModel.Factory))
 }
