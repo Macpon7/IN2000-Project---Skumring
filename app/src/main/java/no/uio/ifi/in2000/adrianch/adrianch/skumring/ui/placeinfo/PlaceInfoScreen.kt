@@ -421,6 +421,7 @@ fun SunEventInfoCard(
     sunEvent: SunEvent, dateString: String, timeString: String, textColor: Color, cardColor: Color
 ) {
 
+    //state for remembering if button is pushed or not
     var expandedState by remember { mutableStateOf(false) }
 
     //Rotationstate of arrow
@@ -442,7 +443,8 @@ fun SunEventInfoCard(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
 
-            Text( //the date
+            //for showing the date
+            Text(
                 text = dateString.uppercase(),
                 fontWeight = FontWeight.Bold,
                 style = typography.titleMedium,
@@ -450,14 +452,15 @@ fun SunEventInfoCard(
                     .fillMaxWidth()
                     .padding(top = 10.dp),
                 textAlign = TextAlign.Center,
-                color = textColor //change text color
+                color = textColor
             )
             Divider( //for dividing the date from the sunset info
                 modifier = Modifier.padding(
                     start = 18.dp, end = 18.dp, top = 5.dp, bottom = 15.dp
                 ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
             )
-            Icon( //Sunset icon
+            //Sunset icon
+            Icon(
                 painter = painterResource(id = R.drawable.sunsetsymbol),
                 contentDescription = "Sunset Icon",
                 tint = Color.Unspecified,
@@ -465,8 +468,9 @@ fun SunEventInfoCard(
                     .fillMaxWidth()
                     .size(40.dp)
             )
-            Text( //Time of sunset
-                text = timeString, //"${sunEvent.time}",
+            //Time of sunset
+            Text(
+                text = timeString,
                 style = typography.headlineSmall,
                 color = textColor,
                 textAlign = TextAlign.Center,
@@ -474,8 +478,9 @@ fun SunEventInfoCard(
                     .fillMaxWidth()
                     .padding(bottom = 5.dp, top = 3.dp)
             )
-            Text( //text changes based on weather conditions
-                text = "Sunset conditions: ${sunEvent.conditions.weatherRating}",
+            //text changes based on weather conditions
+            Text(
+                text = stringResource(R.string.weather_condition) +": ${sunEvent.conditions.weatherRating}",
                 style = typography.bodyMedium,
                 color = textColor,
                 fontWeight = FontWeight.Bold,
@@ -485,7 +490,7 @@ fun SunEventInfoCard(
                     .padding(bottom = 3.dp)
             )
             Text( //temperature at sunset
-                text = "Temperature at sunset: ${sunEvent.tempAtEvent}",//"$temp °C",
+                text = stringResource(R.string.temp_at_sunset)+ ": ${sunEvent.tempAtEvent}°C",
                 style = typography.bodyMedium,
                 color = textColor,
                 fontWeight = FontWeight.Bold,
@@ -494,7 +499,8 @@ fun SunEventInfoCard(
                     .fillMaxWidth()
                     .padding(bottom = 5.dp)
             )
-            Box( //Box for the button
+            //Box for "show less"/"show more" button
+            Box(
                 modifier = Modifier.background(MaterialTheme.colorScheme.tertiary)
             ) {
                 Divider(
@@ -512,7 +518,7 @@ fun SunEventInfoCard(
                         .padding(start = 0.dp, end = 0.dp)
                 ) {
                     Text(
-                        text = if (expandedState) "Less details" else stringResource(R.string.home_more_details_button),
+                        text = if (expandedState) stringResource(R.string.placeInfo_less_details_button)else stringResource(R.string.placeInfo_more_details_button),
                         color = MaterialTheme.colorScheme.onTertiary,
                         style = typography.titleMedium
                     )
@@ -526,7 +532,7 @@ fun SunEventInfoCard(
                     )
                 }
             }
-            //if button pushed, show the rest of the information
+            //if button clicked, show the rest of the information
             if (expandedState) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -536,11 +542,13 @@ fun SunEventInfoCard(
                         .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
 
                 ) {
+                    //Weatherconditions icon for how the weather is at the date
                     Box(
                         modifier = Modifier.size(60.dp)
                     ) {
                         WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
                     }
+                    //golden hour text, icon and time
                     Box {
                         Text(
                             text = stringResource(R.string.golden_hour),
@@ -549,7 +557,7 @@ fun SunEventInfoCard(
                             color = textColor,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(bottom = 0.dp)
-                        )//Golden hour icon and time
+                        )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
                             contentDescription = "yellow sun icon",
@@ -560,7 +568,7 @@ fun SunEventInfoCard(
 
                         )
                         Text(
-                            text = "19:09 -20:31", //change this later to $goldenHourTime
+                            text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
                             style = typography.bodyMedium,
                             color = textColor,
                             textAlign = TextAlign.Center,
@@ -569,6 +577,7 @@ fun SunEventInfoCard(
                             )
                         )
                     }
+                    //blue hour text, icon and time
                     Box {
                         Text(
                             text = stringResource(R.string.blue_hour),
@@ -586,7 +595,7 @@ fun SunEventInfoCard(
                             )
                         )
                         Text(
-                            text = "20:31-21:05", //change this later to $blueHourTime
+                            text = "20:31-21:05", //TODO //change this later to $blueHourTime
                             style = typography.bodyMedium,
                             color = textColor,
                             textAlign = TextAlign.Center,
@@ -599,7 +608,6 @@ fun SunEventInfoCard(
 
             }
         }
-
     }
 }
 
