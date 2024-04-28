@@ -37,6 +37,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -230,7 +231,9 @@ fun ContentMyPage(
     if (myPageUiState.showNewPlaceDialog) {
         NewPlaceDialog(
             myPageViewModel = myPageViewModel,
-            textColor = TextColor
+            textColor = TextColor,
+            focusedContainerColor = FocusedContainerColor,
+            unfocusedContainerColor = UnfocusedContainerColor
         )
     }
 }
@@ -242,7 +245,10 @@ fun ContentMyPage(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewPlaceDialog(
-    myPageViewModel: MyPageViewModel, textColor: Color,
+    myPageViewModel: MyPageViewModel,
+    textColor: Color,
+    focusedContainerColor: Color,
+    unfocusedContainerColor: Color
 ) {
     val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
@@ -332,6 +338,10 @@ fun NewPlaceDialog(
                         )
                     }
                 },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedContainerColor = focusedContainerColor,
+                    unfocusedContainerColor = unfocusedContainerColor
+                ),
                 isError = newPlaceUiState.addressIsMissing
             )
             // TODO logikken skjer i viewmodel, sender inn string med addresse
@@ -374,7 +384,11 @@ fun NewPlaceDialog(
                         imageVector = Icons.Outlined.DateRange,
                         contentDescription = "Date"
                     )
-                }
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedContainerColor = focusedContainerColor,
+                    unfocusedContainerColor = unfocusedContainerColor
+                )
             )
             Spacer(modifier = Modifier.height(5.dp))
 
@@ -399,6 +413,10 @@ fun NewPlaceDialog(
                         )
                     }
                 },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedContainerColor = focusedContainerColor,
+                    unfocusedContainerColor = unfocusedContainerColor
+                ),
                 isError = newPlaceUiState.descriptionsIsMissing
             )
 
