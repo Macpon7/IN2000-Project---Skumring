@@ -66,6 +66,12 @@ class PlaceInfoViewModel(
         }
     }
 
+    fun removeFavourite(placeId : Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            placeRepository.unmakeFavourite(placeId)
+        }
+    }
+
     fun loadPlaceInfo(id: Int){
         val job = viewModelScope.launch(Dispatchers.IO){
             Log.d(logTag, "loadPlaceInfo called")
