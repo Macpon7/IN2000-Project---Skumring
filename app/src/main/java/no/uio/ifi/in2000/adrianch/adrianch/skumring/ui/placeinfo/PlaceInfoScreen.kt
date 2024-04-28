@@ -65,7 +65,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
@@ -80,7 +79,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
-import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -141,9 +139,8 @@ fun PlaceInfoScreen(
     navController: NavHostController
 ) {
 
-    val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
-    //Variable for using strings in not-composable
+    val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -212,7 +209,9 @@ fun PlaceInfoCard(
     placeInfo: PlaceInfo,
     imageDetails: ImageDetails,
     dateString: String,
-    timeString: String
+    timeString: String,
+    textColor: Color,
+    cardColor: Color
 ) {
     var expanded by remember {mutableStateOf(false)}
 
@@ -221,7 +220,7 @@ fun PlaceInfoCard(
             .fillMaxWidth()
             .height(560.dp),
         elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary)
+        colors = CardDefaults.cardColors(cardColor)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
 
@@ -253,13 +252,12 @@ fun PlaceInfoCard(
                         )
                     }
                }
-
-                 */
+                */
             }
             ClickableText(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSecondary)) {
-                        append("imageDetails.description, Placeholder text before the actual text works and we get a place that displays the actual thing we want to display blalbaasdfgldfjs")
+                    withStyle(style = SpanStyle(textColor)) {
+                        append(imageDetails.description, "Placeholder text before the actual text works and we get a place that displays the actual thing we want to display blalbaasdfgldfjs")
                     }
                 },
                 style = typography.bodyMedium,
@@ -268,13 +266,14 @@ fun PlaceInfoCard(
                 onClick = { expanded = !expanded },
                 modifier = Modifier.padding(start = 10.dp, bottom = 20.dp, end = 10.dp, top = 5.dp)
             )
+
             Text(
                 text = dateString.uppercase(),
                 fontWeight = FontWeight.Bold,
                 style = typography.titleMedium,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSecondary //change text color
+                color = textColor //change text color
             )
             Divider( //for dividing sunset today info from golden hour and blue hour times
                 modifier = Modifier.padding(
@@ -292,7 +291,7 @@ fun PlaceInfoCard(
             Text(
                 text = timeString, //"${sunEvent.time}",//sunset time //Use timeString instead??
                 style = typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = textColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -301,7 +300,7 @@ fun PlaceInfoCard(
             Text( //text changing based on weather conditions, in different textbox because of change of color
                 text = "Sunset conditions: ${sunEvent.conditions.weatherRating}",//" $weatherConditions",
                 style = typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = textColor,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -312,7 +311,7 @@ fun PlaceInfoCard(
             Text(
                 text = "Temperature at sunset: ${sunEvent.tempAtEvent}",//"$temp °C",
                 style = typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = textColor,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -343,7 +342,7 @@ fun PlaceInfoCard(
                         text = stringResource(R.string.golden_hour),
                         style = typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = textColor,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(bottom = 0.dp)
                     )//Golden hour icon and time
@@ -359,7 +358,7 @@ fun PlaceInfoCard(
                     Text(
                         text = "19:09 -20:31", //change this later to $goldenHourTime
                         style = typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = textColor,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(
                             start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -371,7 +370,7 @@ fun PlaceInfoCard(
                         text = stringResource(R.string.blue_hour),
                         style = typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = textColor,
                         textAlign = TextAlign.Center,
                     )//Blue hour icon and time
                     Icon(
@@ -385,7 +384,7 @@ fun PlaceInfoCard(
                     Text(
                         text = "20:31-21:05", //change this later to $blueHourTime
                         style = typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        color = textColor,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(
                             start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -402,7 +401,7 @@ fun PlaceInfoCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String) {
+fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String, textColor : Color, cardColor: Color) {
 
     var expandedState by remember { mutableStateOf(false) }
 
@@ -412,7 +411,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
     )
 
     Card(elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
+        colors = CardDefaults.cardColors(cardColor),
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize(
@@ -433,7 +432,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                     .fillMaxWidth()
                     .padding(top = 10.dp),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSecondary //change text color
+                color = textColor //change text color
             )
             Divider( //for dividing the date from the sunset info
                 modifier = Modifier.padding(
@@ -451,7 +450,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
             Text( //Time of sunset
                 text = timeString, //"${sunEvent.time}",
                 style = typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = textColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -460,7 +459,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
             Text( //text changes based on weather conditions
                 text = "Sunset conditions: ${sunEvent.conditions.weatherRating}",
                 style = typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = textColor,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -470,7 +469,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
             Text( //temperature at sunset
                 text = "Temperature at sunset: ${sunEvent.tempAtEvent}",//"$temp °C",
                 style = typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = textColor,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -529,7 +528,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                             text = stringResource(R.string.golden_hour),
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            color = textColor,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(bottom = 0.dp)
                         )//Golden hour icon and time
@@ -545,7 +544,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                         Text(
                             text = "19:09 -20:31", //change this later to $goldenHourTime
                             style = typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            color = textColor,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -557,7 +556,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                             text = stringResource(R.string.blue_hour),
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            color = textColor,
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
@@ -571,7 +570,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String)
                         Text(
                             text = "20:31-21:05", //change this later to $blueHourTime
                             style = typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            color = textColor,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -664,6 +663,10 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
 @Composable
 fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 
+    val textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
+    val cardColor: Color = MaterialTheme.colorScheme.secondaryContainer
+
+
     val placeInfo = placeInfoUiState.placeInfo
     val sunEvents = placeInfo.sunEvents
 
@@ -671,17 +674,17 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
     if (placeInfo.sunEvents.isNotEmpty()) {
         val sunEvent = sunEvents[0]
         val imageDetails = placeInfo.images.getOrElse(0) { ImageDetails("", "") }
-        val time = LocalDateTime.now()
-
+        val date = LocalDateTime.now()
 
         val dateString =
-            "${stringResource(R.string.today)} ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+            "${stringResource(R.string.today)} ${sunEvent.time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
 
-        val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+        val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-        PlaceInfoCard(sunEvent, placeInfo, imageDetails, dateString, timeString)
+        PlaceInfoCard(sunEvent, placeInfo, imageDetails, dateString, timeString, textColor,cardColor) //placeInfo,
     }
 }
+
 
 /**
  * Displays information about the sun events for tomorrow and the following days. Date, time and weather conditions
@@ -689,31 +692,35 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
 @Composable
 fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, dayOffset: Int) {
 
-    val sunEvents = placeInfoUiState.placeInfo.sunEvents
-    val index = dayOffset - 1
+    val textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
+    val cardColor: Color = MaterialTheme.colorScheme.secondaryContainer
 
-        if (index < sunEvents.size) {
+    val sunEvents = placeInfoUiState.placeInfo.sunEvents
+    var index = dayOffset
+
+    while(index < sunEvents.size) {
+
             val sunEvent = sunEvents[index]
 
-            val date = LocalDateTime.now().plusDays(dayOffset.toLong())
-            val dateString = if (dayOffset == 1) {
+            val date = LocalDateTime.now().plusDays(1)
+            val dateString = if (index == dayOffset) {
                 // The current date we are formatting is tomorrow
-                 "${(R.string.tomorrow)} ${
+                 "${(stringResource(R.string.tomorrow))}  ${
                     date.format(
                         DateTimeFormatter.ofPattern(
                             "d'.' MMMM':'", Locale.getDefault()
                         )
                     )
                 }"
-
             } else {
                 // The current date we are formatting is after tomorrow
                  date.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
             }
             val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-            SunEventInfoCard(sunEvent, dateString, timeString)
+            SunEventInfoCard(sunEvent, dateString, timeString, textColor, cardColor)
+        index ++
         }
-    }
+}
 
 
