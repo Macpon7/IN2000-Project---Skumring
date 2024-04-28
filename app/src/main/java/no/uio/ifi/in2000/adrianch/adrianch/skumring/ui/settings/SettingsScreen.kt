@@ -132,32 +132,44 @@ fun SettingsScreen(
 fun ContentSettings(settingsViewModel: SettingsViewModel) {
     Column(modifier = Modifier.padding(30.dp)) {
 
-        //Global variable for color of the text
+        // Global variable for color of the text
         val TextColor: Color = MaterialTheme.colorScheme.onSurface
+
+        // Colors for Textfield in dropdownmenu:
+        val FocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
+        val UnfocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
 
         // Content for choose mode:
         ChooseTheme(
             settingsViewModel = settingsViewModel,
-            textColor = TextColor
+            textColor = TextColor,
+            focusedContainerColor = FocusedContainerColor,
+            unfocusedContainerColor = UnfocusedContainerColor
         )
 
         // Content for choosing language:
         ChooseLanguage(
             settingsViewModel = settingsViewModel,
-            textColor = TextColor
-        )
+            textColor = TextColor,
+            focusedContainerColor = FocusedContainerColor,
+            unfocusedContainerColor = UnfocusedContainerColor
+            )
 
         // Content for choosing StartLocation:
         ChooseStartLocation(
             settingsViewModel = settingsViewModel,
-            textColor = TextColor
-        )
+            textColor = TextColor,
+            focusedContainerColor = FocusedContainerColor,
+            unfocusedContainerColor = UnfocusedContainerColor
+            )
 
         // Content for choosing LocationAs:
         ChooseLocationAs(
             settingsViewModel = settingsViewModel,
-            textColor = TextColor
-        )
+            textColor = TextColor,
+            focusedContainerColor = FocusedContainerColor,
+            unfocusedContainerColor = UnfocusedContainerColor
+            )
     }
 }
 
@@ -170,7 +182,9 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
 @Composable
 fun ChooseTheme(
     settingsViewModel: SettingsViewModel,
-    textColor: Color
+    textColor: Color,
+    focusedContainerColor: Color,
+    unfocusedContainerColor: Color
 ) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
@@ -291,7 +305,9 @@ fun PreviewChooseTheme(settingsViewModel: SettingsViewModel = viewModel()) {
 @Composable
 fun ChooseLanguage(
     settingsViewModel: SettingsViewModel,
-    textColor: Color
+    textColor: Color,
+    focusedContainerColor: Color,
+    unfocusedContainerColor: Color
 ) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
@@ -387,7 +403,9 @@ fun PreviewChooseLanguage(settingsViewModel: SettingsViewModel = viewModel()) {
 @Composable
 fun ChooseStartLocation(
     settingsViewModel: SettingsViewModel,
-    textColor: Color
+    textColor: Color,
+    focusedContainerColor: Color,
+    unfocusedContainerColor: Color
 ) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
@@ -470,8 +488,10 @@ fun PreviewStartLocation(settingsViewModel: SettingsViewModel = viewModel()) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChooseLocationAs(
-    settingsViewModel:
-    SettingsViewModel, textColor: Color
+    settingsViewModel: SettingsViewModel,
+    textColor: Color,
+    focusedContainerColor: Color,
+    unfocusedContainerColor: Color
 ) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
