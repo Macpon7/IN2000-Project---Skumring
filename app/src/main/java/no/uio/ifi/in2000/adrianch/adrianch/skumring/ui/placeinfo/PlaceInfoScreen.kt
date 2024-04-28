@@ -640,7 +640,8 @@ fun SunEventInfoContent(
         // Shows the sunset events for tomorrow and the following days
         placeInfoUiState.placeInfo.sunEvents.forEachIndexed { _, _ ->
             SunEventInfoTomorrow(placeInfoUiState)
-            Spacer(modifier = Modifier.height(10.dp))
+
+
         }
     }
 }
@@ -723,47 +724,11 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
 
         SunEventInfoCard(sunEvent, dateString, timeString, textColor, cardColor)
 
+        //Spacer between cards
+        Spacer(modifier = Modifier.height(10.dp))
+
     }
 }
-
-
-/*
-@Composable
-fun ContentInfoScreen(
-    placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel
-) {
-    Column(
-        // modifier = Modifier.padding(8.dp),
-        verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        //Add space between pictures and text
-        // Spacer(modifier = Modifier.height(20.dp))
-
-        /*
-                //Description of the place:
-                Column(
-                    modifier = Modifier
-                      //  .padding()
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.Start,
-
-                    ) {
-                    /*
-                    Text(
-                        text = placeInfoUiState.placeInfo.description,
-                        modifier = Modifier.padding(bottom = 4.dp),
-                        fontSize = 20.sp
-                    )
-                     */
-
-         */
-
-        SunEventInfoContent(placeInfoUiState, placeInfoViewModel)
-    }
-}
-//}
- */
 
 
 /*
