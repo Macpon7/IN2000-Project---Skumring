@@ -65,7 +65,9 @@ import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
+import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.annotation.AnnotationConfig
 import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
@@ -505,6 +507,7 @@ fun MapArea(mapListUiState: MapListUiState,
                     .withPoint(point)
                     .withIconImage(iconImageBitmap)
                     .withData(JsonPrimitive(pinInfo.id.toString()))
+                    .withIconAnchor(IconAnchor.BOTTOM)
             },
             annotationConfig = AnnotationConfig(
                 annotationSourceOptions = AnnotationSourceOptions(
@@ -521,5 +524,6 @@ fun MapArea(mapListUiState: MapListUiState,
                 true
             }
         )
+
     }
 }
