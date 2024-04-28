@@ -1,6 +1,7 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -99,9 +100,10 @@ object PlaceInfoScreenDestination : NavigationDestination {
 /*
 @Preview
 @Composable
-fun PreviewContentInfoScreen() {
+fun PreviewContentInfoScreen(placeRepository: PlaceRepository) {
+    val placeRepository: PlaceRepository = FakePlaceRepository()
     Surface {
-        ContentInfoScreen(
+        SunEventInfoContent(
             placeInfoUiState = PlaceInfoUiState(
                 placeInfo = PlaceInfo(
                     id = 0,
@@ -129,10 +131,14 @@ fun PreviewContentInfoScreen() {
                     )
                 )
             ),
+            placeInfoViewModel = PlaceInfoViewModel(context = context,
+                placeRepository = placeRepository
+            )
         )
     }
 }
 */
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -151,7 +157,6 @@ fun PlaceInfoScreen(
         Log.d(TAG, "LaunchedEffect called, loading place with id: $id")
         placeInfoViewModel.loadPlaceInfo(id = id)
     }
-
 
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
@@ -221,8 +226,7 @@ fun PlaceInfoCard(
 ) {
 
     var expanded by remember {mutableStateOf(false)}
-    val isFavourite = placeInfo.isFavourite
-   // var isFavourite by remember { mutableStateOf(false) }
+    var isFavourite by remember { mutableStateOf(placeInfo.isFavourite) }
 
     Card(
         modifier = Modifier
@@ -263,14 +267,20 @@ fun PlaceInfoCard(
                }
                 */
                 Row {
-                    IconButton(onClick = { placeInfoViewModel.addFavourite(placeInfo.id) }) {
-                        if (isFavourite) {
+                    IconButton(onClick = {
+                        if (!isFavourite) {
+                            placeInfoViewModel.addFavourite(placeInfo.id)
+                        } else {
+                            placeInfoViewModel.removeFavourite(placeInfo.id)
+                        }
+                        isFavourite = !isFavourite
+                    }){
+                        if(isFavourite) {
                             Icon(
                                 imageVector = Icons.Filled.Favorite,
                                 contentDescription = "",
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer
                             )
-
                         } else {
                             Icon(
                                 imageVector = Icons.Filled.FavoriteBorder,
@@ -697,7 +707,6 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
     val placeInfo = placeInfoUiState.placeInfo
 
     val sunEvents = placeInfo.sunEvents
-
 
         if (placeInfo.sunEvents.isNotEmpty()) {
         val sunEvent = sunEvents[0]
