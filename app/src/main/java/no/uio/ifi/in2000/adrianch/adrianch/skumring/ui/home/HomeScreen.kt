@@ -31,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -57,13 +59,10 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherDetails
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherPerHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
-import java.time.LocalDateTime
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
@@ -97,6 +96,32 @@ fun HomeScreen(
         homeViewModel.loadHomeScreen()
     }
 
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
+    // Check if there is an error, if so show a snackbar:
+    if (homeUiState.showSnackbar) {
+        LaunchedEffect(homeUiState.snackbarHostState) {
+            val result = homeUiState.snackbarHostState.showSnackbar(
+                message = homeUiState.errorMessage,
+                withDismissAction = true,
+                actionLabel = context.getString(R.string.refresh),
+            )
+            // If the snackbar is dismissed, reset the boolean of the showSnackbar-variable
+            // The snackbar will reappear is we get a new error
+            when (result) {
+                // If you press refresh
+                SnackbarResult.ActionPerformed -> {
+                    homeViewModel.refresh()
+                }
+                // If you click somewhere on the screen
+                SnackbarResult.Dismissed -> {
+                    homeViewModel.snackbarDismissed()
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             SkumringTopBar(
@@ -115,7 +140,12 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
-            SunsetInfoCard(homeUiState.sunsetTime, homeUiState.weatherConditions, homeUiState.temp, homeUiState.sunsetWeatherIcon)//add blueHourTime and goldenHourTime later
+            SunsetInfoCard(
+                // TODO add blueHourTime and goldenHourTime later
+                homeUiState.sunsetTime,
+                homeUiState.weatherConditions,
+                homeUiState.temp,
+                homeUiState.sunsetWeatherIcon)
             Text(
                 text = stringResource(R.string.home_favourite_places),
                 style = MaterialTheme.typography.headlineSmall,
@@ -190,8 +220,9 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                         color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Center,
                     )
-                    Text( //text changing based on weather conditions, in different textbox because of change of color
-                        text = " $weatherConditions",
+                    Text(
+                        //text changing based on weather conditions, in different textbox because of change of color
+                        text = stringResource(id = weatherConditions.stringResourceId), //TODO
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
@@ -216,12 +247,12 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                                // .align(Alignment.BottomCenter)
                                 .padding(bottom = 5.dp)
                         )
-                Divider( //for dividing sunset today info from golden hour and blue hour times
+                Divider( // For dividing sunset today info from golden hour and blue hour times
                     modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     thickness = 1.dp
                 )
-                    Row( //For displaying Golden hour and Blue hour times on a row
+                    Row( // For displaying Golden hour and Blue hour times on a row
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
@@ -262,7 +293,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
 
                             )
                             Text(
-                                text = "19:09 -20:31", //change this later to $goldenHourTime
+                                text = "19:09 -20:31", // TODO change this later to $goldenHourTime
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 textAlign = TextAlign.Center,
@@ -276,7 +307,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                                 tint = Color.Unspecified,
                             )
                             Text(
-                                text = "20:31-21:05", //change this later to $blueHourTime
+                                text = "20:31-21:05", // TODO change this later to $blueHourTime
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 textAlign = TextAlign.Center,
@@ -330,7 +361,7 @@ fun MoreDetailsButton() {
 @Composable
 fun HorizontalInfoCardRow (homeUiState: HomeUiState, navHostController: NavHostController) {
     if (homeUiState.favoritePlaces.isEmpty()) {
-        Text(text = "No favourites")
+        Text(text = stringResource(R.string.no_favourites))
     } else {
         LazyRow {
             items(homeUiState.favoritePlaces) {place ->

@@ -34,7 +34,7 @@ data class MyPageUiState(
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
-    var errorMessage: String = "No error",
+    var errorMessage: String = "",
     // Variable for snackbar:
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
     // If mypage has locations added they will be shown
