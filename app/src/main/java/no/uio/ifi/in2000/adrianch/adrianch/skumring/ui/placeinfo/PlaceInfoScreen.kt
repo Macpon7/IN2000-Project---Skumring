@@ -266,7 +266,9 @@ fun PlaceInfoCard(
                     }
                }
                 */
-                Row {
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     IconButton(onClick = {
                         if (!isFavourite) {
                             placeInfoViewModel.addFavourite(placeInfo.id)
@@ -274,16 +276,21 @@ fun PlaceInfoCard(
                             placeInfoViewModel.removeFavourite(placeInfo.id)
                         }
                         isFavourite = !isFavourite
-                    }){
+                    },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(top = 15.dp, end = 15.dp)){
                         if(isFavourite) {
                             Icon(
                                 imageVector = Icons.Filled.Favorite,
+                                modifier = Modifier.size(40.dp),
                                 contentDescription = "",
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                         } else {
                             Icon(
                                 imageVector = Icons.Filled.FavoriteBorder,
+                                modifier = Modifier.size(40.dp),
                                 contentDescription = "",
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer
 
