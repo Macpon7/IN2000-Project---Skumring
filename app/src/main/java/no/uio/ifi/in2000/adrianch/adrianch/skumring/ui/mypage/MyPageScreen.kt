@@ -196,11 +196,20 @@ fun ContentMyPage(
 ) {
 
     // Global variable for color of the text
-    val TextColor: Color = MaterialTheme.colorScheme.onSurface
+    val mainColor: Color = MaterialTheme.colorScheme.onSurface
 
     // Colors for Textfield in dropdownmenu:
-    val FocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
-    val UnfocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
+    val focusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
+    val unfocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
+
+    // TODO
+    // Colors for errors in Textfield:
+    val errorTextColor: Color
+    val errorContainerColor : Color
+    val errorCursorColor: Color
+    val errorLeadingIconColor: Color
+    val errorSupportingText: Color
+
 
     Column(Modifier.verticalScroll(rememberScrollState())) {
         //Slik leser vi inn fra assets/presetImages
@@ -233,9 +242,9 @@ fun ContentMyPage(
     if (myPageUiState.showNewPlaceDialog) {
         NewPlaceDialog(
             myPageViewModel = myPageViewModel,
-            textColor = TextColor,
-            focusedContainerColor = FocusedContainerColor,
-            unfocusedContainerColor = UnfocusedContainerColor
+            mainColor = mainColor,
+            focusedContainerColor = focusedContainerColor,
+            unfocusedContainerColor = unfocusedContainerColor
         )
     }
 }
@@ -248,7 +257,7 @@ fun ContentMyPage(
 @Composable
 fun NewPlaceDialog(
     myPageViewModel: MyPageViewModel,
-    textColor: Color,
+    mainColor: Color,
     focusedContainerColor: Color,
     unfocusedContainerColor: Color
 ) {
@@ -266,7 +275,7 @@ fun NewPlaceDialog(
                 }) {
                     Text(
                         text = stringResource(R.string.add_date),
-                        color = textColor,
+                        color = mainColor,
                     )
                 }
             },
@@ -276,7 +285,7 @@ fun NewPlaceDialog(
                 }) {
                     Text(
                         text = stringResource(R.string.cancel),
-                        color = textColor,
+                        color = mainColor,
                     )
                 }
             }
@@ -300,7 +309,10 @@ fun NewPlaceDialog(
             Column(
                 modifier = Modifier.padding(all = 8.dp)
             ) {
-                Text(text = "Fill in the fields to add a new place") // TODO XML
+                Text(
+                    text = "Fill in the fields to add a new place", // TODO XML
+                    color = mainColor,
+                )
 
                 // String with name
                 OutlinedTextField(
@@ -310,6 +322,7 @@ fun NewPlaceDialog(
                     label = {
                         Text(
                             text = stringResource(R.string.location_name),
+                            color = mainColor,
                         )
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -318,6 +331,7 @@ fun NewPlaceDialog(
                         Icon(
                             imageVector = Icons.Outlined.Info,
                             contentDescription = "name",
+                            tint = mainColor,
                         )
                     },
                     supportingText = {
@@ -329,8 +343,8 @@ fun NewPlaceDialog(
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         focusedContainerColor = focusedContainerColor,
-                        unfocusedContainerColor = unfocusedContainerColor
-                    ),
+                        unfocusedContainerColor = unfocusedContainerColor,
+                        ),
                     isError = (newPlaceUiState.locationNameIsMissing)
                 )
 
@@ -345,13 +359,14 @@ fun NewPlaceDialog(
                         Icon(
                             imageVector = Icons.Outlined.LocationOn,
                             contentDescription = "addresse",
-                        )
+                            tint = mainColor,
+                            )
                     },
                     supportingText = {
                         if (newPlaceUiState.addressIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_address),
-                            )
+                                )
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
@@ -392,7 +407,7 @@ fun NewPlaceDialog(
                     label = {
                         Text(
                             text = stringResource(R.string.time),
-                            color = textColor,
+                            color = mainColor,
                         )
                     },
                     leadingIcon = {
@@ -403,7 +418,9 @@ fun NewPlaceDialog(
                         )
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        disabledContainerColor = focusedContainerColor
+                        // Make it look not disabled
+                        disabledContainerColor = focusedContainerColor,
+                        disabledTextColor = mainColor
                     )
                 )
                 Spacer(modifier = Modifier.height(5.dp))
@@ -425,7 +442,7 @@ fun NewPlaceDialog(
                         if (newPlaceUiState.descriptionsIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_description),
-                            )
+                                )
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
