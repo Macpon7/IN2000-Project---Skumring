@@ -72,6 +72,7 @@ import com.mapbox.maps.plugin.annotation.AnnotationConfig
 import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
+import com.mapbox.maps.plugin.compass.generated.CompassSettings
 import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings
@@ -459,7 +460,9 @@ fun BottomSheetContent(
  */
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapListViewModel: MapListViewModel) {
+fun MapArea(mapListUiState: MapListUiState,
+            navController: NavController,
+            mapListViewModel: MapListViewModel) {
     // Can declare point to contain current location of user
     val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
     //var point: Point by remember { mutableStateOf(testPoint) }
@@ -477,17 +480,14 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 cameraOptions = CameraOptions.Builder()
                     .center(Point.fromLngLat(10.71839307051461, 59.943735106220444))
                     .zoom(10.0)
-                    .bearing(mapListUiState.userBearing.toDouble())
-                    .build()
+                    .build(),
             )
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
         },
-
-    ) {
-
+        ) {
         PointAnnotationGroup(
             annotations = mapListUiState.pins.map {pinInfo ->
                 val long = pinInfo.long.toDouble()
@@ -515,6 +515,10 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 //navController.navigate("infoscreen/${lat}/${long}/${id}")
                 true
             }
+        )
+        createDefault2DPuck(
+            withBearing = true,
+
         )
     }
 }
