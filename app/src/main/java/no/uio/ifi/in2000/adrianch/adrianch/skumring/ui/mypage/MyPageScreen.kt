@@ -259,7 +259,6 @@ fun NewPlaceDialog(
     // Show when the user pick a date:
     if (newPlaceUiState.showDatePicker) {
         DatePickerDialog(
-
             onDismissRequest = { myPageViewModel.dismissDatePicker() },
             confirmButton = {
                 TextButton(onClick = {
@@ -294,73 +293,77 @@ fun NewPlaceDialog(
     }) {
 
         Card(
-            modifier = Modifier.padding(all = 8.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             )
         ) {
-            // String with name
-            OutlinedTextField(
-                value = newPlaceUiState.locationName,
-                // Take variable from newPlaceUiState
-                onValueChange = { myPageViewModel.updateNewLocationName(it) },
-                label = { Text(stringResource(R.string.location_name)) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = "name",
-                        tint = textColor
-                    )
-                },
-                supportingText = {
-                    if (newPlaceUiState.locationNameIsMissing) {
+            Column(
+                modifier = Modifier.padding(all = 8.dp)
+            ) {
+                Text(text = "Fill in the fields to add a new place") // TODO XML
+
+                // String with name
+                OutlinedTextField(
+                    value = newPlaceUiState.locationName,
+                    // Take variable from newPlaceUiState
+                    onValueChange = { myPageViewModel.updateNewLocationName(it) },
+                    label = {
                         Text(
-                            text = stringResource(R.string.error_location_name),
-                            color = textColor,
+                            text = stringResource(R.string.location_name),
                         )
-                    }
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(
-                    focusedContainerColor = focusedContainerColor,
-                    unfocusedContainerColor = unfocusedContainerColor
-                ),
-                isError = (newPlaceUiState.locationNameIsMissing)
-            )
-
-            // Brukeren skal skrive inn addresse:
-            OutlinedTextField(
-                value = newPlaceUiState.address,
-                onValueChange = { myPageViewModel.updateNewLocationAddress(it) },
-                label = { Text(stringResource(R.string.address)) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.LocationOn,
-                        contentDescription = "addresse",
-                        tint = textColor
-                    )
-                },
-                supportingText = {
-                    if (newPlaceUiState.addressIsMissing) {
-                        Text(
-                            text = stringResource(R.string.error_address),
-                            color = textColor,
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "name",
                         )
-                    }
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(
-                    focusedContainerColor = focusedContainerColor,
-                    unfocusedContainerColor = unfocusedContainerColor
-                ),
-                isError = newPlaceUiState.addressIsMissing
-            )
-            // TODO logikken skjer i viewmodel, sender inn string med addresse
+                    },
+                    supportingText = {
+                        if (newPlaceUiState.locationNameIsMissing) {
+                            Text(
+                                text = stringResource(R.string.error_location_name),
+                            )
+                        }
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = focusedContainerColor,
+                        unfocusedContainerColor = unfocusedContainerColor
+                    ),
+                    isError = (newPlaceUiState.locationNameIsMissing)
+                )
+
+                // Brukeren skal skrive inn addresse:
+                OutlinedTextField(
+                    value = newPlaceUiState.address,
+                    onValueChange = { myPageViewModel.updateNewLocationAddress(it) },
+                    label = { Text(stringResource(R.string.address)) },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.LocationOn,
+                            contentDescription = "addresse",
+                        )
+                    },
+                    supportingText = {
+                        if (newPlaceUiState.addressIsMissing) {
+                            Text(
+                                text = stringResource(R.string.error_address),
+                            )
+                        }
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = focusedContainerColor,
+                        unfocusedContainerColor = unfocusedContainerColor
+                    ),
+                    isError = newPlaceUiState.addressIsMissing
+                )
+                // TODO logikken skjer i viewmodel, sender inn string med addresse
 
 
-            /*
+                /*
         // Alternative to OutlinedTextField for datepicker
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
@@ -371,94 +374,91 @@ fun NewPlaceDialog(
         }
          */
 
-            // Time skal lages made datepicker dialog
-            OutlinedTextField(
-                value = newPlaceUiState.pickedDate.format(
-                    DateTimeFormatter.ISO_LOCAL_DATE
-                ),
-                onValueChange = { },
-                modifier = Modifier.clickable(
-                    enabled = true,
-                    onClick = {
-                        myPageViewModel.showDatePicker()
-                    }
-                ),
-                enabled = false,
-                readOnly = true,
-                isError = newPlaceUiState.dateTextFieldError,
-                label = {
-                    Text(
-                        stringResource(R.string.time),
-                        color = textColor,
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.DateRange,
-                        contentDescription = "Date",
-                        tint = textColor
-                    )
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(
-                    focusedContainerColor = focusedContainerColor,
-                    unfocusedContainerColor = unfocusedContainerColor
-                )
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-
-            // String with description
-            OutlinedTextField(
-                value = newPlaceUiState.descriptions,
-                onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
-                label = { Text(stringResource(R.string.description)) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Create,
-                        contentDescription = "description"
-                    )
-                },
-                supportingText = {
-                    if (newPlaceUiState.descriptionsIsMissing) {
+                // Time skal lages made datepicker dialog
+                OutlinedTextField(
+                    value = newPlaceUiState.pickedDate.format(
+                        DateTimeFormatter.ISO_LOCAL_DATE
+                    ),
+                    onValueChange = { },
+                    modifier = Modifier.clickable(
+                        enabled = true,
+                        onClick = {
+                            myPageViewModel.showDatePicker()
+                        }
+                    ),
+                    enabled = false,
+                    readOnly = true,
+                    isError = newPlaceUiState.dateTextFieldError,
+                    label = {
                         Text(
-                            text = stringResource(R.string.error_description),
+                            text = stringResource(R.string.time),
                             color = textColor,
                         )
-                    }
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(
-                    focusedContainerColor = focusedContainerColor,
-                    unfocusedContainerColor = unfocusedContainerColor
-                ),
-                isError = newPlaceUiState.descriptionsIsMissing
-            )
-
-            // Button to add photo
-            PickImageFromGallery(myPageViewModel = myPageViewModel)
-
-            // Button that is pressed when the location is added:
-            Button(
-                onClick = { myPageViewModel.addLocation() },
-                modifier = Modifier.padding(vertical = 8.dp),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
-            ) {
-                Text(
-                    text = stringResource(R.string.add_location),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.DateRange,
+                            contentDescription = "Date",
+                            tint = MaterialTheme.colorScheme.onSecondary
+                        )
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        disabledContainerColor = focusedContainerColor
+                    )
                 )
-                Icon(
-                    imageVector = Icons.Outlined.Check,
-                    contentDescription = "add place",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
+                Spacer(modifier = Modifier.height(5.dp))
 
-            if (newPlaceUiState.missingInfo) {
-                Text(
-                    text = stringResource(R.string.missing_fields),
-                    color = textColor,
+                // String with description
+                OutlinedTextField(
+                    value = newPlaceUiState.descriptions,
+                    onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
+                    label = { Text(stringResource(R.string.description)) },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Create,
+                            contentDescription = "description"
+                        )
+                    },
+                    supportingText = {
+                        if (newPlaceUiState.descriptionsIsMissing) {
+                            Text(
+                                text = stringResource(R.string.error_description),
+                            )
+                        }
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = focusedContainerColor,
+                        unfocusedContainerColor = unfocusedContainerColor
+                    ),
+                    isError = newPlaceUiState.descriptionsIsMissing,
                 )
+
+                // Button to add photo
+                PickImageFromGallery(myPageViewModel = myPageViewModel)
+
+                // Button that is pressed when the location is added:
+                Button(
+                    onClick = { myPageViewModel.addLocation() },
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(
+                        text = stringResource(R.string.add_location),
+                    )
+                    Icon(
+                        imageVector = Icons.Outlined.Check,
+                        contentDescription = "add place",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+
+                if (newPlaceUiState.missingInfo) {
+                    Text(
+                        text = stringResource(R.string.missing_fields),
+                    )
+                }
             }
         }
     }
