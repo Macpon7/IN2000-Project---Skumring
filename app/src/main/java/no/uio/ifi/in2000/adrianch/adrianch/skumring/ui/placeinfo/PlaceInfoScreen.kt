@@ -180,10 +180,13 @@ fun TodayInfoCard(
     imageDetails: ImageDetails,
     dateString: String,
     timeString: String,
-    textColor: Color,
-    cardColor: Color,
     placeInfoViewModel: PlaceInfoViewModel
 ) {
+
+    val textColor: Color = MaterialTheme.colorScheme.inverseOnSurface
+    val cardColor: Color = MaterialTheme.colorScheme.inversePrimary
+    val heartIconColor: Color = MaterialTheme.colorScheme.onPrimary
+    val dividerColor: Color = MaterialTheme.colorScheme.surface
 
     //for the clickable text
     var expanded by remember { mutableStateOf(false) }
@@ -240,7 +243,7 @@ fun TodayInfoCard(
                             //if isFavourite = true, add favourite
                             if (!isFavourite) {
                                 placeInfoViewModel.addFavourite(placeInfo.id)
-                            //else remove favourite
+                                //else remove favourite
                             } else {
                                 placeInfoViewModel.removeFavourite(placeInfo.id)
                             }
@@ -256,7 +259,7 @@ fun TodayInfoCard(
                                 imageVector = Icons.Filled.Favorite,
                                 modifier = Modifier.size(40.dp),
                                 contentDescription = "",
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                tint = heartIconColor
                             )
                             //if not favourite, show heart with border
                         } else {
@@ -264,7 +267,7 @@ fun TodayInfoCard(
                                 imageVector = Icons.Filled.FavoriteBorder,
                                 modifier = Modifier.size(40.dp),
                                 contentDescription = "",
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                tint = heartIconColor
 
                             )
                         }
@@ -300,7 +303,7 @@ fun TodayInfoCard(
             Divider(
                 modifier = Modifier.padding(
                     start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
-                ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
+                ), color = dividerColor, thickness = 1.dp
             )
             //Sunset Icon
             Icon(
@@ -334,7 +337,7 @@ fun TodayInfoCard(
             )
             //Temperature at sunset
             Text(
-                text = stringResource(R.string.temp_at_sunset) +": ${sunEvent.tempAtEvent} °C",
+                text = stringResource(R.string.temp_at_sunset) + ": ${sunEvent.tempAtEvent} °C",
                 style = typography.bodyMedium,
                 color = textColor,
                 fontWeight = FontWeight.Bold,
@@ -428,8 +431,15 @@ fun TodayInfoCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SunEventInfoCard(
-    sunEvent: SunEvent, dateString: String, timeString: String, textColor: Color, cardColor: Color
+    sunEvent: SunEvent, dateString: String, timeString: String
 ) {
+
+    //Colors for the card
+    val textColor: Color = MaterialTheme.colorScheme.inverseOnSurface
+    val cardColor: Color = MaterialTheme.colorScheme.inversePrimary
+    val buttonColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
+    val buttonTextColor: Color = MaterialTheme.colorScheme.primaryContainer
+    val dividerColor: Color = MaterialTheme.colorScheme.surface
 
     //state for remembering if button is pushed or not
     var expandedState by remember { mutableStateOf(false) }
@@ -490,7 +500,7 @@ fun SunEventInfoCard(
             )
             //text changes based on weather conditions
             Text(
-                text = stringResource(R.string.weather_condition) +": ${sunEvent.conditions.weatherRating}",
+                text = stringResource(R.string.weather_condition) + ": ${sunEvent.conditions.weatherRating}",
                 style = typography.bodyMedium,
                 color = textColor,
                 fontWeight = FontWeight.Bold,
@@ -500,21 +510,21 @@ fun SunEventInfoCard(
                     .padding(bottom = 3.dp)
             )
             Text( //temperature at sunset
-                text = stringResource(R.string.temp_at_sunset)+ ": ${sunEvent.tempAtEvent}°C",
+                text = stringResource(R.string.temp_at_sunset) + ": ${sunEvent.tempAtEvent}°C",
                 style = typography.bodyMedium,
                 color = textColor,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 5.dp)
+                    .padding(bottom = 10.dp)
             )
             //Box for "show less"/"show more" button
             Box(
-                modifier = Modifier.background(MaterialTheme.colorScheme.tertiary)
+                modifier = Modifier.background(buttonColor)
             ) {
                 Divider(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer, thickness = 1.dp
+                    color = dividerColor, thickness = 1.dp
                 )
                 Button(
                     onClick = {
@@ -522,20 +532,20 @@ fun SunEventInfoCard(
                     },
                     shape = RectangleShape,
                     contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+                    colors = ButtonDefaults.buttonColors(buttonColor),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 0.dp, end = 0.dp)
                 ) {
                     Text(
-                        text = if (expandedState) stringResource(R.string.placeInfo_less_details_button)else stringResource(R.string.placeInfo_more_details_button),
-                        color = MaterialTheme.colorScheme.onTertiary,
-                        style = typography.titleMedium
+                        text = if (expandedState) stringResource(R.string.placeInfo_less_details_button) else stringResource(
+                            R.string.placeInfo_more_details_button
+                        ), color = buttonTextColor, style = typography.titleMedium
                     )
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Drop-down arrow",
-                        tint = MaterialTheme.colorScheme.onTertiary,
+                        tint = buttonTextColor,
                         modifier = Modifier
                             .rotate(rotationState)
                             .padding(start = 7.dp)
@@ -549,7 +559,7 @@ fun SunEventInfoCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
+                        .padding(start = 15.dp, end = 15.dp, bottom = 10.dp, top = 10.dp)
 
                 ) {
                     //Weatherconditions icon for how the weather is at the date
@@ -661,9 +671,6 @@ fun SunEventInfoContent(
 @Composable
 fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel) {
 
-    val textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
-    val cardColor: Color = MaterialTheme.colorScheme.secondaryContainer
-
     val placeInfo = placeInfoUiState.placeInfo
     val sunEvents = placeInfo.sunEvents
 
@@ -683,14 +690,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
         val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
         TodayInfoCard(
-            sunEvent,
-            placeInfo,
-            imageDetails,
-            dateString,
-            timeString,
-            textColor,
-            cardColor,
-            placeInfoViewModel
+            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel
         )
     }
 }
@@ -702,9 +702,6 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
  */
 @Composable
 fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
-
-    val textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
-    val cardColor: Color = MaterialTheme.colorScheme.secondaryContainer
 
     val sunEvents = placeInfoUiState.placeInfo.sunEvents
     var index = 1
@@ -731,11 +728,10 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
         //time of day for sunset
         val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-        SunEventInfoCard(sunEvent, dateString, timeString, textColor, cardColor)
+        SunEventInfoCard(sunEvent, dateString, timeString)
 
         //Spacer between cards
         Spacer(modifier = Modifier.height(10.dp))
-
     }
 }
 
@@ -752,9 +748,7 @@ fun PreviewSunEventInfoScreen() {
     val forecastDao = database.forecastDao()
     val placeInfoDao = database.placeInfoDao()
     val placeRepository = PlaceRepositoryImpl(
-        placeInfoDao = placeInfoDao,
-        forecastDao = forecastDao,
-        imageDao = imageDao
+        placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao
     )
     Surface {
         SunEventInfoContent(
@@ -784,9 +778,8 @@ fun PreviewSunEventInfoScreen() {
                         )
                     )
                 )
-            ),
-            placeInfoViewModel = PlaceInfoViewModel(context = context,
-                placeRepository = placeRepository
+            ), placeInfoViewModel = PlaceInfoViewModel(
+                context = context, placeRepository = placeRepository
             )
         )
     }
