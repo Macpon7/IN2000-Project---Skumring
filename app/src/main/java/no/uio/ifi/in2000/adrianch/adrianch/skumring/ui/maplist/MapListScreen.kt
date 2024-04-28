@@ -65,10 +65,16 @@ import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
+import com.mapbox.maps.plugin.LocationPuck
+import com.mapbox.maps.plugin.LocationPuck2D
+import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.annotation.AnnotationConfig
 import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
+import com.mapbox.maps.plugin.locationcomponent.LocationComponentPlugin
+import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
+import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
@@ -419,7 +425,6 @@ BoxWithConstraints {
             }
         }
     }
-
     }
 }
 
@@ -473,14 +478,17 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 cameraOptions = CameraOptions.Builder()
                     .center(Point.fromLngLat(10.71839307051461, 59.943735106220444))
                     .zoom(10.0)
+                    .bearing(mapListUiState.userBearing.toDouble())
                     .build()
             )
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
-        }
+        },
+
     ) {
+
         PointAnnotationGroup(
             annotations = mapListUiState.pins.map {pinInfo ->
                 val long = pinInfo.long.toDouble()
