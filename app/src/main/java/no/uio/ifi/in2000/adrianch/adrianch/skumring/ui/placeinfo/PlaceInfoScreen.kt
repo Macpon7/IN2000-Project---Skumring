@@ -26,12 +26,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -68,6 +71,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
@@ -92,7 +96,7 @@ object PlaceInfoScreenDestination : NavigationDestination {
     override val titleRes = null
 }
 
-
+/*
 @Preview
 @Composable
 fun PreviewContentInfoScreen() {
@@ -124,29 +128,30 @@ fun PreviewContentInfoScreen() {
                         )
                     )
                 )
-            )
+            ),
         )
     }
 }
+*/
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PlaceInfoScreen(
-    placeViewModel: PlaceInfoViewModel = viewModel(factory = PlaceInfoViewModel.Factory),
+    placeInfoViewModel: PlaceInfoViewModel = viewModel(factory = PlaceInfoViewModel.Factory),
     id: Int,
     navController: NavHostController
 ) {
 
-
-    val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
+    val placeUiState: PlaceInfoUiState by placeInfoViewModel.placeInfoUiState.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         Log.d(TAG, "LaunchedEffect called, loading place with id: $id")
-        placeViewModel.loadPlaceInfo(id = id)
+        placeInfoViewModel.loadPlaceInfo(id = id)
     }
+
 
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
@@ -161,11 +166,11 @@ fun PlaceInfoScreen(
             when (result) {
                 // If you press refresh
                 SnackbarResult.ActionPerformed -> {
-                    placeViewModel.refresh(id = id)
+                    placeInfoViewModel.refresh(id = id)
                 }
                 // If you click somewhere on the screen
                 SnackbarResult.Dismissed -> {
-                    placeViewModel.snackbarDismissed()
+                    placeInfoViewModel.snackbarDismissed()
                 }
             }
         }
@@ -192,8 +197,8 @@ fun PlaceInfoScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {*/
-            SunEventInfoContent(placeUiState)
-            //}
+            SunEventInfoContent(placeUiState, placeInfoViewModel)
+        //}
         }
     }
 }
@@ -211,9 +216,13 @@ fun PlaceInfoCard(
     dateString: String,
     timeString: String,
     textColor: Color,
-    cardColor: Color
+    cardColor: Color,
+    placeInfoViewModel: PlaceInfoViewModel
 ) {
+
     var expanded by remember {mutableStateOf(false)}
+    val isFavourite = placeInfo.isFavourite
+   // var isFavourite by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -253,6 +262,25 @@ fun PlaceInfoCard(
                     }
                }
                 */
+                Row {
+                    IconButton(onClick = { placeInfoViewModel.addFavourite(placeInfo.id) }) {
+                        if (isFavourite) {
+                            Icon(
+                                imageVector = Icons.Filled.Favorite,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+
+                        } else {
+                            Icon(
+                                imageVector = Icons.Filled.FavoriteBorder,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+
+                            )
+                        }
+                    }
+                }
             }
             ClickableText(
                 text = buildAnnotatedString {
@@ -594,7 +622,7 @@ fun SunEventInfoCard(sunEvent: SunEvent, dateString: String, timeString: String,
  */
 @Composable
 fun ContentInfoScreen(
-    placeInfoUiState: PlaceInfoUiState
+    placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel
 ) {
     Column(
        // modifier = Modifier.padding(8.dp),
@@ -624,13 +652,13 @@ fun ContentInfoScreen(
 
  */
 
-            SunEventInfoContent(placeInfoUiState)
+            SunEventInfoContent(placeInfoUiState, placeInfoViewModel)
         }
     }
 //}
 
 @Composable
-fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
+fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel) {
     var dayOffset = 1
 
     Column(
@@ -644,7 +672,7 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
         // Shows the sunset events for today
         val firstEvent = placeInfoUiState.placeInfo.sunEvents.firstOrNull()
         if (firstEvent != null) {
-            SunEventInfoToday(placeInfoUiState)
+            SunEventInfoToday(placeInfoUiState, placeInfoViewModel)
         }
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -661,28 +689,29 @@ fun SunEventInfoContent(placeInfoUiState: PlaceInfoUiState) {
  * Displays information about the sunset events for today, date, time and weather conditions
  */
 @Composable
-fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState) {
+fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel) {
 
     val textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
     val cardColor: Color = MaterialTheme.colorScheme.secondaryContainer
 
-
     val placeInfo = placeInfoUiState.placeInfo
+
     val sunEvents = placeInfo.sunEvents
 
 
-    if (placeInfo.sunEvents.isNotEmpty()) {
+        if (placeInfo.sunEvents.isNotEmpty()) {
         val sunEvent = sunEvents[0]
         val imageDetails = placeInfo.images.getOrElse(0) { ImageDetails("", "") }
-        val date = LocalDateTime.now()
+       // val date = LocalDateTime.now()
+
 
         val dateString =
             "${stringResource(R.string.today)} ${sunEvent.time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
 
         val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-        PlaceInfoCard(sunEvent, placeInfo, imageDetails, dateString, timeString, textColor,cardColor) //placeInfo,
-    }
+        PlaceInfoCard(sunEvent, placeInfo, imageDetails, dateString, timeString, textColor,cardColor,placeInfoViewModel) //placeInfo,placeInfoViewModel = PlaceInfoViewModel()
+        }
 }
 
 
