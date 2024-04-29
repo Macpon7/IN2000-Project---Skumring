@@ -43,7 +43,7 @@ class DirectionsDataSource {
                 duration = duration
             )
         } catch (e: Exception) {
-            //Log.e(logTag,"Failed to calculate route", e)
+            Log.e(logTag,"Failed to calculate route", e)
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
                 distance = "",
@@ -71,22 +71,19 @@ class DirectionsDataSource {
             val response: HttpResponse = client.get(path)
             return response.body()
         } catch (e: Exception) {
-            //Log.e(logTag, "Error fetching directions", e)
+            Log.e(logTag, "Error fetching directions", e)
             throw e
         }
     }
 
     private fun secondsToHoursMinutes (duration: Double): String {
         val hours: Int = duration.toInt() / 3600
-        val minutes: Int = (duration.toInt() % 3600) % 60
-        return if (hours == 0) {
-            "$minutes"
-        } else {
-            "$hours:$minutes"
-        }
+        val minutes: Int = (duration.toInt() % 3600) / 60
+        return "$hours:$minutes"
     }
 }
 // Leaving for now for testing purposes
+// Remember to comment out logtag if you need this
 //suspend fun main() {
 //    val blah = DirectionsDataSource()
 //    for (entry in MeansOfTransportation.entries) {
