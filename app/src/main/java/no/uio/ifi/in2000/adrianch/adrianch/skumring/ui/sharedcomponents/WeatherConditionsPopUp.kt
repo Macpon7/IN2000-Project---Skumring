@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -54,6 +55,9 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 fun WeatherIconPopUp(
     onClose: () -> Unit,
 ) {
+    val textColor = MaterialTheme.colorScheme.primary
+    val dividerColor = MaterialTheme.colorScheme.onSecondaryContainer
+
     Dialog(
         onDismissRequest = onClose
     ) {
@@ -70,30 +74,34 @@ fun WeatherIconPopUp(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.Top
                 ) {
-                    Icon(Icons.Default.Info, contentDescription = "Info", tint = Color.Red, modifier = Modifier.size(30.dp))
+                    Icon(Icons.Default.Info, contentDescription = "Info", tint = textColor, modifier = Modifier.size(30.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Weather conditions",
+                    Text(
+                        text = stringResource(id = R.string.weather_condition),
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary,)
+                        color = textColor,
+                    )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Row{
                     Column{
                         Text(
-                            text = "Excellent",
+                            text = stringResource(R.string.conditions_excellent),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = textColor,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
-                        Divider( // For dividing sunset today info from golden hour and blue hour times
+                        Divider(
                             modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 5.dp),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = dividerColor,
                             thickness = 1.dp
                         )
                         Text(
-                            "There should be some clouds in the middle to high levels, low moisture and excellent visibility!"
+                            stringResource(id = R.string.weather_conditions_excellent_explanation),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = textColor
                         )
                     }
                 }
@@ -101,40 +109,44 @@ fun WeatherIconPopUp(
                 Row{
                     Column{
                         Text(
-                            text = "Decent",
+                            text = stringResource(R.string.conditions_decent),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = textColor,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
-                        Divider( // For dividing sunset today info from golden hour and blue hour times
+                        Divider(
                             modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 5.dp),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = dividerColor,
                             thickness = 1.dp
                         )
                         Text(
-                            "A little cloudy, but hopefully still makes for a nice trip!"
+                            stringResource(id = R.string.weather_conditions_decent_explanation),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = textColor
                         )
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Row{//verticalAlignment = Alignment.CenterVertically) {
+                Row{
                     Column{
                         Text(
-                            text = "Poor",
+                            text = stringResource(R.string.conditions_poor),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = textColor,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
 
                         )
-                        Divider( // For dividing sunset today info from golden hour and blue hour times
+                        Divider(
                             modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 5.dp),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = dividerColor,
                             thickness = 1.dp
                         )
                         Text(
-                            "The clouds are hanging low, visibility is not good"
+                            stringResource(id = R.string.weather_conditions_poor_explanation),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = textColor
                         )
                     }
                 }
@@ -147,9 +159,10 @@ fun WeatherIconPopUp(
                                 TextButton(
                                     onClick = onClose
                                 ) {
-                                    Text("Dismiss",
+                                    Text(
+                                        stringResource(id = R.string.weather_conditions_popUp_dismiss),
                                         style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.primary,
+                                        color = textColor,
                                         fontWeight = FontWeight.Bold)
                                 }
                             }
