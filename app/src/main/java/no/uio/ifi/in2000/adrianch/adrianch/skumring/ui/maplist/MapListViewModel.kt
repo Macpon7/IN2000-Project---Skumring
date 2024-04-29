@@ -21,6 +21,8 @@ import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
@@ -36,6 +38,10 @@ data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     var mapListToggle: MapListToggleState = MapListToggleState.MAP,
     var sheetState: SheetState = SheetState(skipPartiallyExpanded = true),
     var showBottomSheet: Boolean = false,
+    var userLat: String = "0",
+    var userLong: String = "0",
+    var userBearing: Float = 0.0f,
+    var userLocUpdated: Boolean = false,
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -54,6 +60,8 @@ class MapListViewModel(
 
     private val _mapListUiState = MutableStateFlow(MapListUiState())
     val mapListUiState: StateFlow<MapListUiState> = _mapListUiState.asStateFlow()
+
+    private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
 
     // TODO make this work instead of having the user press a button
     init {
@@ -161,6 +169,27 @@ class MapListViewModel(
         }
         viewModelScope.launch (Dispatchers.IO) {
             loadPlaces()
+            updateUserLocation()
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun updateUserLocation() {
+        viewModelScope.launch (Dispatchers.IO) {
+            try {
+                _mapListUiState.update { currentMapUiState ->
+                    val userLoc = userLocationRepository.getUserLocation()
+                    Log.d(logTag, "Updating userlocation ${userLoc.long}, ${userLoc.lat}")
+                    currentMapUiState.copy(
+                        userLat = userLoc.lat,
+                        userLong = userLoc.long,
+                        userBearing = userLoc.bearing,
+                        userLocUpdated = true
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e(logTag, "Error updating user location", e)
+            }
         }
     }
 
