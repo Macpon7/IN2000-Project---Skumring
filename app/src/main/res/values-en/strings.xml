@@ -100,5 +100,6 @@
     <string name="home_more_details_button">More details</string>
     <string name="home_distance">"Distance: "</string>
     <string name="home_user_loc">Your position</string>
+    <string name="reverse_geocode_unknown_place">Unknown Place</string>
 
 </resources>

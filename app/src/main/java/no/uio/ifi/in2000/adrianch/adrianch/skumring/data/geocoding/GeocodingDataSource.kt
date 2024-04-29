@@ -1,12 +1,15 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding
 
 import android.util.Log
+import androidx.compose.ui.res.stringResource
+import com.google.android.gms.common.internal.StringResourceValueReader
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.ReverseGeocoding
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.ReverseGeocodeLocation
 
@@ -34,7 +37,8 @@ class GeocodingDataSource {
             apiResponse.features[0].properties.context.place.name
         } catch (e: Exception) {
             Log.d(logTag, "Error: Placename not found", e)
-            "Unknown Place"
+            // Returns empty string if user is in area without a place name
+            ""
         }
         return ReverseGeocodeLocation(lat = lat, long = long, placeName = placeName)
     }
