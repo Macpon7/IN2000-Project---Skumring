@@ -1,6 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions
 
-data class DirectionsResponseData(
+data class Directions(
     val code: String,
     val routes: List<Route>,
     val uuid: String,
