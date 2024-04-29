@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
+import android.graphics.Color
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.core.AnimationSpec
@@ -63,8 +64,12 @@ import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
+import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
+import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.annotation.AnnotationConfig
 import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
@@ -101,6 +106,7 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
     // Load all places every time the user navigates to this screen
     LaunchedEffect(Unit) {
         mapListViewModel.loadPlaces()
+        mapListViewModel.updateUserLocation()
     }
 
     // Check if there is an error, if so show a snackbar:
@@ -453,10 +459,11 @@ fun BottomSheetContent(
  */
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapListViewModel: MapListViewModel) {
-    // Can declare point to contain current location of user
-    val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
-    //var point: Point by remember { mutableStateOf(testPoint) }
+fun MapArea(mapListUiState: MapListUiState,
+            navController: NavController,
+            mapListViewModel: MapListViewModel) {
+
+    val userPoint = Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
     val context = LocalContext.current
 
     MapboxMap(
@@ -468,33 +475,46 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
             MapInitOptions(
                 context = context,
                 styleUri = Style.OUTDOORS,
-                cameraOptions = CameraOptions.Builder()
-                    .center(Point.fromLngLat(10.71839307051461, 59.943735106220444))
-                    .zoom(10.0)
-                    .build()
             )
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
+        },
+        ) {
+
+        if (mapListUiState.userLocUpdated) {
+            MapEffect { mapView ->
+                Log.d(logTag, "userloc updated")
+                mapView.camera.flyTo(
+                    cameraOptions = CameraOptions.Builder()
+                        .center(userPoint)
+                        .zoom(10.0)
+                        .build()
+                )
+            }
         }
-    ) {
+
         PointAnnotationGroup(
             annotations = mapListUiState.pins.map {pinInfo ->
                 val long = pinInfo.long.toDouble()
                 val lat = pinInfo.lat.toDouble()
                 val point = Point.fromLngLat(long, lat)
 
-                val iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.location_on)!!.toBitmap()
+                val iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.place_location_pin)!!.toBitmap()
 
                 PointAnnotationOptions()
                     .withPoint(point)
                     .withIconImage(iconImageBitmap)
                     .withData(JsonPrimitive(pinInfo.id.toString()))
+                    .withIconAnchor(IconAnchor.BOTTOM)
             },
             annotationConfig = AnnotationConfig(
                 annotationSourceOptions = AnnotationSourceOptions(
-                    clusterOptions = ClusterOptions()
+                    clusterOptions = ClusterOptions(
+                        colorLevels = listOf(Pair(0, Color.RED)),
+                        textSize = 16.0,
+                    )
                 )
             ),
             onClick = {
@@ -507,5 +527,11 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 true
             }
         )
+        // User location
+        PointAnnotation(
+            point = userPoint,
+            iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.user_location_puck)!!.toBitmap()
+        )
+
     }
 }
