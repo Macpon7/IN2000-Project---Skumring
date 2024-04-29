@@ -493,6 +493,7 @@ fun MapArea(mapListUiState: MapListUiState,
                 )
             }
         }
+
         PointAnnotationGroup(
             annotations = mapListUiState.pins.map {pinInfo ->
                 val long = pinInfo.long.toDouble()
