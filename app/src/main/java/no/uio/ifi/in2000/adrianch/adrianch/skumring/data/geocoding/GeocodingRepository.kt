@@ -5,9 +5,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.ReverseGeoco
 private const val logTag = "GeocodingRepository"
 
 interface GeocodingRepository {
-    /**
-     * Function that lets viewmodels fetch a places name based on cooridnates.
-     */
     suspend fun getPlaceNameFromCoordinates(
         lat: String, long: String
     ): ReverseGeocodeLocation
@@ -20,6 +17,11 @@ interface GeocodingRepository {
 class GeocodingRepositoryImpl(
     private val geocodingDataSource: GeocodingDataSource = GeocodingDataSource()
 ): GeocodingRepository {
+    /**
+     * Function that lets viewmodels fetch a places name based on cooridnates.
+     *
+     * [ReverseGeocodeLocation] contains lat, long and place name in form of strings.
+     */
     override suspend fun getPlaceNameFromCoordinates(
         lat: String,
         long: String
