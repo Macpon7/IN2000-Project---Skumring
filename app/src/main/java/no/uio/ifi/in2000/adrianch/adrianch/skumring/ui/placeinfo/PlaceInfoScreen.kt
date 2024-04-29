@@ -30,12 +30,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
@@ -64,11 +67,13 @@ fun PlaceInfoScreen(
 
     val placeUiState: PlaceInfoUiState by placeViewModel.placeInfoUiState.collectAsState()
 
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         Log.d(TAG, "LaunchedEffect called, loading place with id: $id")
         placeViewModel.loadPlaceInfo(id = id)
     }
-
 
     // Check if there is an error, if so show a snackbar:
     if (placeUiState.showSnackbar) {
@@ -76,7 +81,7 @@ fun PlaceInfoScreen(
             val result = placeUiState.snackbarHostState.showSnackbar(
                 message = placeUiState.errorMessage,
                 withDismissAction = true,
-                actionLabel = "Refresh",
+                actionLabel = context.getString(R.string.refresh),
             )
             // If the snackbar is dismissed, reset the boolean of the showSnackbar-variable
             // The snackbar will reappear is we get a new error
@@ -113,11 +118,12 @@ fun PlaceInfoScreen(
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
-            } else {*/
+            } else {}
+             */
             ContentInfoScreen(
-                description = placeUiState.placeInfo.description, placeInfoUiState = placeUiState
+                description = placeUiState.placeInfo.description,
+                placeInfoUiState = placeUiState
             )
-            //}
         }
     }
 }
@@ -134,7 +140,8 @@ fun PlacePicture() {
             .background(Color.LightGray, RoundedCornerShape((16.dp))),
     ) {
         Text(
-            text = "Place Display Placeholder", modifier = Modifier.align(Alignment.Center)
+            text = stringResource(R.string.place_display_placeholder),
+            modifier = Modifier.align(Alignment.Center)
         )
     }
 }
@@ -167,8 +174,9 @@ fun ContentInfoScreen(
             horizontalAlignment = Alignment.Start,
 
             ) {
-            Text(text = description, modifier = Modifier.padding(bottom = 4.dp), fontSize = 20.sp)
-
+            Text(
+                text = description,
+                modifier = Modifier.padding(bottom = 4.dp), fontSize = 20.sp)
             SunEventInfoContent(placeInfoUiState)
         }
     }
@@ -195,12 +203,14 @@ fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
     val dateString = when (time.dayOfYear) {
         LocalDateTime.now().dayOfYear -> {
             // The current date we are formatting is today
-            "I dag ${time.format(DateTimeFormatter.ofPattern("d'.' MMMM':'", Locale.getDefault()))}"
+            "${stringResource(R.string.today)} ${
+                time.format(
+                    DateTimeFormatter.ofPattern(
+                        "d'.' MMMM':'", Locale.getDefault()))}"
         }
-
         LocalDateTime.now().plusDays(1).dayOfYear -> {
             // The current date we are formatting is tomorrow
-            "I Morgen ${
+            "${stringResource(R.string.tomorrow)} ${
                 time.format(
                     DateTimeFormatter.ofPattern(
                         "d'.' MMMM':'", Locale.getDefault()
@@ -208,7 +218,6 @@ fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
                 )
             }"
         }
-
         else -> {
             // The current date we are formatting is after tomorrow
             time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
@@ -218,13 +227,15 @@ fun SunEventInfo(time: LocalDateTime, conditions: WeatherConditionsRating) {
     val timeString = time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
     val conditionsString = when (conditions) {
-        WeatherConditionsRating.POOR -> "Det blir dårlige forhold.."
-        WeatherConditionsRating.DECENT -> "Det blir OK forhold"
-        WeatherConditionsRating.EXCELLENT -> "Det blir fantastiske forhold!"
+        WeatherConditionsRating.POOR -> stringResource(R.string.bad_conditions)
+        WeatherConditionsRating.DECENT -> stringResource(R.string.ok_conditions)
+        WeatherConditionsRating.EXCELLENT -> stringResource(R.string.good_conditions)
     }
 
     SunEventInfoCard(
-        dateString = dateString, timeString = timeString, conditionsString = conditionsString
+        dateString = dateString,
+        timeString = timeString,
+        conditionsString = conditionsString
     )
 }
 
@@ -250,7 +261,7 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
 
             // Time for sundown:
             Text(
-                text = "Solnedgang: ${timeString}",
+                text = "${stringResource(R.string.sundown)}: ${timeString}",
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,
@@ -259,7 +270,9 @@ fun SunEventInfoCard(dateString: String, timeString: String, conditionsString: S
 
             // Good vs. bad weather:
             Text(
-                text = conditionsString, textAlign = TextAlign.Start, fontSize = 14.sp
+                text = conditionsString,
+                textAlign = TextAlign.Start,
+                fontSize = 14.sp
             )
         }
     }
