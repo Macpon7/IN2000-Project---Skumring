@@ -93,7 +93,6 @@ fun HomeScreen(
 
     //Load information for the HomeScreen every time the user navigates here
     LaunchedEffect(Unit) {
-        //homeViewModel.loadUserLocation()
         homeViewModel.loadHomeScreen()
     }
 

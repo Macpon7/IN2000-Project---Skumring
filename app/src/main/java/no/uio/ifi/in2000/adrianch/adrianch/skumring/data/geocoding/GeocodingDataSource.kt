@@ -19,13 +19,22 @@ class GeocodingDataSource {
             gson()
         }
     }
+
+    /**
+     * Main function that reverse geocodes and provides the name of a place given cooridnates.
+     * It does however hav a weakness in how Mapbox structures the response, in that
+     * it returns a sorted array of "features" they deem to be in declining order of interest.
+     * As such, we assume we can fetch the necessary data (which we in vast majority of cases are)
+     * from the first element of the list. If not, the place is of such low interest that
+     * it will be unnamed.
+     */
     suspend fun fetchReverseGeocodeLocation(lat: String, long: String): ReverseGeocodeLocation {
         val apiResponse: ReverseGeocoding = fetchReverseGeocode(lat = lat, long = long)
         val placeName: String = try {
             apiResponse.features[0].properties.context.place.name
         } catch (e: Exception) {
             Log.d(logTag, "Error: Placename not found", e)
-            "Placename not found"
+            "Unknown Place"
         }
         return ReverseGeocodeLocation(lat = lat, long = long, placeName = placeName)
     }
