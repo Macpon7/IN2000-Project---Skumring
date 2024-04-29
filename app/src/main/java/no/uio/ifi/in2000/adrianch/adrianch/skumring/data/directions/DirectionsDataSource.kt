@@ -35,12 +35,12 @@ class DirectionsDataSource {
                 meansOfTransportation = meansOfTransportation
             )
             val duration: String = secondsToHoursMinutes(apiResponse.routes[0].legs[0].duration)
-            val distance: String = (apiResponse.routes[0].legs[0].distance/1000).toString()
+            val distance: String = "%.2f".format((apiResponse.routes[0].legs[0].distance/1000).toFloat())
 
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
                 distance = distance,
-                duration = String.format("%.2f", duration)
+                duration = duration
             )
         } catch (e: Exception) {
             //Log.e(logTag,"Failed to calculate route", e)
@@ -68,7 +68,6 @@ class DirectionsDataSource {
                     "$fromLong,$fromLat;" +
                     "$toLong,$toLat?" +
                     "geometries=geojson&access_token=sk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0dTZmMjZ3MWF6NzJpcGNtajBqaWUxMSJ9.A7ntsS5LTvXYD5hnjYjEXQ"
-            println(path)
             val response: HttpResponse = client.get(path)
             return response.body()
         } catch (e: Exception) {
@@ -87,19 +86,18 @@ class DirectionsDataSource {
         }
     }
 }
-
-suspend fun main() {
-    val blah = DirectionsDataSource()
-    for (entry in MeansOfTransportation.entries) {
-        val boh = blah.fetchTravelDurationDistance(
-            fromLat = 59.9437354.toString(),
-            fromLong = 10.718393.toString(),
-            toLat = 59.9201.toString(),
-            toLong = 10.7374.toString(),
-            meansOfTransportation = entry
-        )
-        println(boh)
-
-    }
-
-}
+// Leaving for now for testing purposes
+//suspend fun main() {
+//    val blah = DirectionsDataSource()
+//    for (entry in MeansOfTransportation.entries) {
+//        val boh = blah.fetchTravelDurationDistance(
+//            fromLat = 59.9437354.toString(),
+//            fromLong = 10.718393.toString(),
+//            toLat = 59.9201.toString(),
+//            toLong = 10.7374.toString(),
+//            meansOfTransportation = entry
+//        )
+//        println(boh)
+//
+//    }
+//}
