@@ -93,6 +93,7 @@ fun HomeScreen(
 
     //Load information for the HomeScreen every time the user navigates here
     LaunchedEffect(Unit) {
+        //homeViewModel.loadUserLocation()
         homeViewModel.loadHomeScreen()
     }
 
@@ -125,7 +126,7 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             SkumringTopBar(
-                title = stringResource(id = HomeDestination.titleRes),
+                title = homeUiState.placeName,
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior
             )

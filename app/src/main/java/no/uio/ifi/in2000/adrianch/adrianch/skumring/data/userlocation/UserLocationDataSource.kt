@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
 
 /**
@@ -64,15 +65,7 @@ class UserLocationDataSource (private val context: Context) {
                 locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
         // If we don't have permissions, return null object
-        return if (!isGpsEnabled && !(isCourseEnabled || isFineEnabled)) {
-            null
-            } else {
-                // Else, return updated or last recorded location of user
-            fusedLocationClient.lastLocation.result
-        }
-
-
-        /*suspendCancellableCoroutine { cont ->
+        return suspendCancellableCoroutine { cont ->
             fusedLocationClient.lastLocation.apply {
                 if (isComplete) {
                     if (isSuccessful) {
@@ -92,6 +85,6 @@ class UserLocationDataSource (private val context: Context) {
                     cont.cancel() // Cancel the coroutine
                 }
             }
-        }*/
+        }
     }
 }

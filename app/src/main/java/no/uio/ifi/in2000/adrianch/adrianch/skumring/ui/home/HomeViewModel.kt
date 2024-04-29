@@ -109,12 +109,12 @@ class HomeViewModel(
                     val userLoc = userLocationRepository.getUserLocation()
                     val userLat = userLoc.lat
                     val userLong = userLoc.long
-                    val userLocPlaceName = geocodingRepository.getPlaceNameFromCoordinates(lat = userLat, long = userLong)
+                    val userPlaceName = geocodingRepository.getPlaceNameFromCoordinates(lat = userLat, long = userLong)
                     Log.d(logTag + "LoadUserLoc", "Lat: ${userLoc.lat}, Long: ${userLoc.long}")
                     currentHomeUiState.copy(
                         lat = userLat,
                         long = userLong,
-                        placeName = userLocPlaceName.placeName
+                        placeName = userPlaceName.placeName
                     )
                 }
             } catch (e: Exception) {
