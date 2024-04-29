@@ -56,6 +56,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -222,7 +223,7 @@ fun ContentMyPage(
 
     // Colors for errors in Textfield:
     val errorTextColor: Color = MaterialTheme.colorScheme.onPrimary
-    val errorContainerColor : Color = MaterialTheme.colorScheme.primaryContainer
+    val errorContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
     val errorCursorColor: Color = MaterialTheme.colorScheme.error
     val errorIndicatorColor: Color = MaterialTheme.colorScheme.error
     val errorLeadingIconColor: Color = MaterialTheme.colorScheme.error
@@ -308,7 +309,7 @@ fun NewPlaceDialog(
     unfocusedLeadingIconColor: Color,
 
     errorTextColor: Color,
-    errorContainerColor : Color,
+    errorContainerColor: Color,
     errorCursorColor: Color,
     errorIndicatorColor: Color,
     errorLeadingIconColor: Color,
@@ -360,21 +361,24 @@ fun NewPlaceDialog(
             )
         ) {
             Column(
-                modifier = Modifier.padding(all = 8.dp)
+                modifier = Modifier.padding(all = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = "Fill in the fields to add a new place", // TODO XML
                     color = mainColor,
+                    modifier = Modifier.padding(all = 2.dp)
                 )
 
                 // String with name
                 OutlinedTextField(
+                    modifier = Modifier.padding(all = 2.dp),
                     value = newPlaceUiState.locationName,
                     // Take variable from newPlaceUiState
                     onValueChange = { myPageViewModel.updateNewLocationName(it) },
                     label = {
                         Text(
-                            text = stringResource(R.string.location_name),
+                            text = "${stringResource(R.string.location_name)} *",
                         )
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -411,22 +415,23 @@ fun NewPlaceDialog(
                         errorCursorColor = errorCursorColor,
                         errorIndicatorColor = errorIndicatorColor,
                         errorLeadingIconColor = errorLeadingIconColor,
-                        ),
+                    ),
                     isError = (newPlaceUiState.locationNameIsMissing)
                 )
 
                 // Brukeren skal skrive inn addresse:
                 OutlinedTextField(
+                    modifier = Modifier.padding(all = 2.dp),
                     value = newPlaceUiState.address,
                     onValueChange = { myPageViewModel.updateNewLocationAddress(it) },
-                    label = { Text(stringResource(R.string.address)) },
+                    label = { Text(text = "${stringResource(R.string.address)} *") },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     singleLine = true,
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.LocationOn,
                             contentDescription = "addresse",
-                            )
+                        )
                     },
                     supportingText = {
                         if (newPlaceUiState.addressIsMissing) {
@@ -477,12 +482,14 @@ fun NewPlaceDialog(
                         DateTimeFormatter.ISO_LOCAL_DATE
                     ),
                     onValueChange = { },
-                    modifier = Modifier.clickable(
-                        enabled = true,
-                        onClick = {
-                            myPageViewModel.showDatePicker()
-                        }
-                    ),
+                    modifier = Modifier
+                        .clickable(
+                            enabled = true,
+                            onClick = {
+                                myPageViewModel.showDatePicker()
+                            }
+                        )
+                        .padding(all = 2.dp),
                     enabled = false,
                     readOnly = true,
                     isError = newPlaceUiState.dateTextFieldError,
@@ -510,9 +517,12 @@ fun NewPlaceDialog(
 
                 // String with description
                 OutlinedTextField(
+                    modifier = Modifier.padding(all = 2.dp),
                     value = newPlaceUiState.descriptions,
                     onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
-                    label = { Text(stringResource(R.string.description)) },
+                    label = {
+                        Text(text = "${stringResource(R.string.description)} *")
+                    },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     singleLine = true,
                     leadingIcon = {
@@ -526,7 +536,7 @@ fun NewPlaceDialog(
                             Text(
                                 text = stringResource(R.string.error_description),
                                 color = errorSupportingText
-                                )
+                            )
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
