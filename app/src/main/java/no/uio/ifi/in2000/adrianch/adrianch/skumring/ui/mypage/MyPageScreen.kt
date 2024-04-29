@@ -201,19 +201,20 @@ fun ContentMyPage(
     // Colors for the container when it is clicked on:
     val focusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
     val focusedTextColor: Color = MaterialTheme.colorScheme.primaryContainer
-    val focusedCursorColor: Color = MaterialTheme.colorScheme.onPrimary
+    val focusedIndicatorColor: Color = MaterialTheme.colorScheme.onPrimary
 
     // Colors for the container when it is not clicked on:
     val unfocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
 
     // Colors for the text inside when the textfield is not clicked on:
     val unfocusedTextColor: Color = MaterialTheme.colorScheme.onPrimary
-    val unfocusedCursorColor: Color = MaterialTheme.colorScheme.onPrimary
+    val unfocusedIndicatorColor: Color = MaterialTheme.colorScheme.onPrimary
 
     // Colors for errors in Textfield:
     val errorTextColor: Color = MaterialTheme.colorScheme.onPrimary
     val errorContainerColor : Color = MaterialTheme.colorScheme.primaryContainer
     val errorCursorColor: Color = MaterialTheme.colorScheme.error
+    val errorIndicatorColor: Color = MaterialTheme.colorScheme.error
     val errorLeadingIconColor: Color = MaterialTheme.colorScheme.error
     val errorSupportingText: Color = MaterialTheme.colorScheme.error
 
@@ -254,16 +255,17 @@ fun ContentMyPage(
 
             focusedContainerColor = focusedContainerColor,
             focusedTextColor = focusedTextColor,
-            focusedCursorColor = focusedCursorColor,
+            focusedIndicatorColor = focusedIndicatorColor,
 
             unfocusedContainerColor = unfocusedContainerColor,
             unfocusedTextColor = unfocusedTextColor,
-            unfocusedCursorColor = unfocusedCursorColor,
+            unfocusedIndicatorColor = unfocusedIndicatorColor,
 
             errorTextColor = errorTextColor,
             errorContainerColor = errorContainerColor,
             errorCursorColor = errorCursorColor,
             errorLeadingIconColor = errorLeadingIconColor,
+            errorIndicatorColor = errorIndicatorColor,
             errorSupportingText = errorSupportingText
         )
     }
@@ -281,15 +283,16 @@ fun NewPlaceDialog(
 
     focusedContainerColor: Color,
     focusedTextColor: Color,
-    focusedCursorColor: Color,
+    focusedIndicatorColor: Color,
 
     unfocusedContainerColor: Color,
     unfocusedTextColor: Color,
-    unfocusedCursorColor: Color,
+    unfocusedIndicatorColor: Color,
 
     errorTextColor: Color,
     errorContainerColor : Color,
     errorCursorColor: Color,
+    errorIndicatorColor: Color,
     errorLeadingIconColor: Color,
     errorSupportingText: Color
 
@@ -377,9 +380,12 @@ fun NewPlaceDialog(
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         focusedContainerColor = focusedContainerColor,
                         focusedTextColor = focusedTextColor,
+                        focusedIndicatorColor = focusedIndicatorColor,
+
 
                         unfocusedContainerColor = unfocusedContainerColor,
                         unfocusedTextColor = unfocusedTextColor,
+                        unfocusedIndicatorColor = unfocusedIndicatorColor,
 
                         errorTextColor = errorTextColor,
                         errorContainerColor = errorContainerColor,
@@ -413,9 +419,12 @@ fun NewPlaceDialog(
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         focusedContainerColor = focusedContainerColor,
                         focusedTextColor = focusedTextColor,
+                        focusedIndicatorColor = focusedIndicatorColor,
+
 
                         unfocusedContainerColor = unfocusedContainerColor,
                         unfocusedTextColor = unfocusedTextColor,
+                        unfocusedIndicatorColor = unfocusedIndicatorColor,
 
                         errorTextColor = errorTextColor,
                         errorContainerColor = errorContainerColor,
@@ -497,9 +506,12 @@ fun NewPlaceDialog(
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         focusedContainerColor = focusedContainerColor,
                         focusedTextColor = focusedTextColor,
+                        focusedIndicatorColor = focusedIndicatorColor,
+
 
                         unfocusedContainerColor = unfocusedContainerColor,
                         unfocusedTextColor = unfocusedTextColor,
+                        unfocusedIndicatorColor = unfocusedIndicatorColor,
 
                         errorTextColor = errorTextColor,
                         errorContainerColor = errorContainerColor,
