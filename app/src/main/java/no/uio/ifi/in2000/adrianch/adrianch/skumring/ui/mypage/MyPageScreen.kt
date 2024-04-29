@@ -206,6 +206,8 @@ fun ContentMyPage(
     val focusedIndicatorColor: Color = MaterialTheme.colorScheme.onPrimary
     // Color for the label on top when the field is focused
     val focusedLabelColor: Color = MaterialTheme.colorScheme.onPrimary
+    // Color for the icon when it is focused
+    val focusedLeadingIconColor: Color = MaterialTheme.colorScheme.onPrimary
 
     // Colors for the container when it is not clicked on:
     val unfocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
@@ -215,7 +217,8 @@ fun ContentMyPage(
     val unfocusedIndicatorColor: Color = MaterialTheme.colorScheme.onPrimary
     // Color for the label on top when the field is unfocused
     val unfocusedLabelColor: Color = MaterialTheme.colorScheme.onPrimary
-
+    // Color for the icon when it is unfocused
+    val unfocusedLeadingIconColor: Color = MaterialTheme.colorScheme.onPrimary
 
     // Colors for errors in Textfield:
     val errorTextColor: Color = MaterialTheme.colorScheme.onPrimary
@@ -264,11 +267,13 @@ fun ContentMyPage(
             focusedTextColor = focusedTextColor,
             focusedIndicatorColor = focusedIndicatorColor,
             focusedLabelColor = focusedLabelColor,
+            focusedLeadingIconColor = focusedLeadingIconColor,
 
             unfocusedContainerColor = unfocusedContainerColor,
             unfocusedTextColor = unfocusedTextColor,
             unfocusedIndicatorColor = unfocusedIndicatorColor,
             unfocusedLabelColor = unfocusedLabelColor,
+            unfocusedLeadingIconColor = unfocusedLeadingIconColor,
 
             errorTextColor = errorTextColor,
             errorContainerColor = errorContainerColor,
@@ -294,12 +299,13 @@ fun NewPlaceDialog(
     focusedTextColor: Color,
     focusedIndicatorColor: Color,
     focusedLabelColor: Color,
+    focusedLeadingIconColor: Color,
 
     unfocusedContainerColor: Color,
     unfocusedTextColor: Color,
     unfocusedIndicatorColor: Color,
     unfocusedLabelColor: Color,
-
+    unfocusedLeadingIconColor: Color,
 
     errorTextColor: Color,
     errorContainerColor : Color,
@@ -307,7 +313,6 @@ fun NewPlaceDialog(
     errorIndicatorColor: Color,
     errorLeadingIconColor: Color,
     errorSupportingText: Color
-
 ) {
     val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
@@ -370,7 +375,6 @@ fun NewPlaceDialog(
                     label = {
                         Text(
                             text = stringResource(R.string.location_name),
-                            color = mainColor,
                         )
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -379,13 +383,13 @@ fun NewPlaceDialog(
                         Icon(
                             imageVector = Icons.Outlined.Info,
                             contentDescription = "name",
-                            tint = mainColor,
                         )
                     },
                     supportingText = {
                         if (newPlaceUiState.locationNameIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_location_name),
+                                color = errorSupportingText
                             )
                         }
                     },
@@ -394,15 +398,18 @@ fun NewPlaceDialog(
                         focusedTextColor = focusedTextColor,
                         focusedIndicatorColor = focusedIndicatorColor,
                         focusedLabelColor = focusedLabelColor,
+                        focusedLeadingIconColor = focusedLeadingIconColor,
 
                         unfocusedContainerColor = unfocusedContainerColor,
                         unfocusedTextColor = unfocusedTextColor,
                         unfocusedIndicatorColor = unfocusedIndicatorColor,
                         unfocusedLabelColor = unfocusedLabelColor,
+                        unfocusedLeadingIconColor = unfocusedLeadingIconColor,
 
                         errorTextColor = errorTextColor,
                         errorContainerColor = errorContainerColor,
                         errorCursorColor = errorCursorColor,
+                        errorIndicatorColor = errorIndicatorColor,
                         errorLeadingIconColor = errorLeadingIconColor,
                         ),
                     isError = (newPlaceUiState.locationNameIsMissing)
@@ -419,14 +426,14 @@ fun NewPlaceDialog(
                         Icon(
                             imageVector = Icons.Outlined.LocationOn,
                             contentDescription = "addresse",
-                            tint = mainColor,
                             )
                     },
                     supportingText = {
                         if (newPlaceUiState.addressIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_address),
-                                )
+                                color = errorSupportingText
+                            )
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
@@ -434,15 +441,18 @@ fun NewPlaceDialog(
                         focusedTextColor = focusedTextColor,
                         focusedIndicatorColor = focusedIndicatorColor,
                         focusedLabelColor = focusedLabelColor,
+                        focusedLeadingIconColor = focusedLeadingIconColor,
 
                         unfocusedContainerColor = unfocusedContainerColor,
                         unfocusedTextColor = unfocusedTextColor,
                         unfocusedIndicatorColor = unfocusedIndicatorColor,
                         unfocusedLabelColor = unfocusedLabelColor,
+                        unfocusedLeadingIconColor = unfocusedLeadingIconColor,
 
                         errorTextColor = errorTextColor,
                         errorContainerColor = errorContainerColor,
                         errorCursorColor = errorCursorColor,
+                        errorIndicatorColor = errorIndicatorColor,
                         errorLeadingIconColor = errorLeadingIconColor,
                     ),
                     isError = newPlaceUiState.addressIsMissing
@@ -492,7 +502,8 @@ fun NewPlaceDialog(
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         // Make it look not disabled
                         disabledContainerColor = focusedContainerColor,
-                        disabledTextColor = mainColor
+                        disabledTextColor = focusedTextColor,
+                        disabledIndicatorColor = focusedIndicatorColor
                     )
                 )
                 Spacer(modifier = Modifier.height(5.dp))
@@ -514,6 +525,7 @@ fun NewPlaceDialog(
                         if (newPlaceUiState.descriptionsIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_description),
+                                color = errorSupportingText
                                 )
                         }
                     },
@@ -522,15 +534,18 @@ fun NewPlaceDialog(
                         focusedTextColor = focusedTextColor,
                         focusedIndicatorColor = focusedIndicatorColor,
                         focusedLabelColor = focusedLabelColor,
+                        focusedLeadingIconColor = focusedLeadingIconColor,
 
                         unfocusedContainerColor = unfocusedContainerColor,
                         unfocusedTextColor = unfocusedTextColor,
                         unfocusedIndicatorColor = unfocusedIndicatorColor,
                         unfocusedLabelColor = unfocusedLabelColor,
+                        unfocusedLeadingIconColor = unfocusedLeadingIconColor,
 
                         errorTextColor = errorTextColor,
                         errorContainerColor = errorContainerColor,
                         errorCursorColor = errorCursorColor,
+                        errorIndicatorColor = errorIndicatorColor,
                         errorLeadingIconColor = errorLeadingIconColor,
                     ),
                     isError = newPlaceUiState.descriptionsIsMissing,
