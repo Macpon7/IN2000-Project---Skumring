@@ -200,15 +200,22 @@ fun ContentMyPage(
 
     // Colors for the container when it is clicked on:
     val focusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
-    val focusedTextColor: Color = MaterialTheme.colorScheme.primaryContainer
+    // Color for the text inside the field when the field is focused
+    val focusedTextColor: Color = MaterialTheme.colorScheme.onPrimary
+    // Color for the area around the field when it is focused:
     val focusedIndicatorColor: Color = MaterialTheme.colorScheme.onPrimary
+    // Color for the label on top when the field is focused
+    val focusedLabelColor: Color = MaterialTheme.colorScheme.onPrimary
 
     // Colors for the container when it is not clicked on:
     val unfocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
-
     // Colors for the text inside when the textfield is not clicked on:
     val unfocusedTextColor: Color = MaterialTheme.colorScheme.onPrimary
+    // Color for the area around the field when it is unfocused:
     val unfocusedIndicatorColor: Color = MaterialTheme.colorScheme.onPrimary
+    // Color for the label on top when the field is unfocused
+    val unfocusedLabelColor: Color = MaterialTheme.colorScheme.onPrimary
+
 
     // Colors for errors in Textfield:
     val errorTextColor: Color = MaterialTheme.colorScheme.onPrimary
@@ -256,10 +263,12 @@ fun ContentMyPage(
             focusedContainerColor = focusedContainerColor,
             focusedTextColor = focusedTextColor,
             focusedIndicatorColor = focusedIndicatorColor,
+            focusedLabelColor = focusedLabelColor,
 
             unfocusedContainerColor = unfocusedContainerColor,
             unfocusedTextColor = unfocusedTextColor,
             unfocusedIndicatorColor = unfocusedIndicatorColor,
+            unfocusedLabelColor = unfocusedLabelColor,
 
             errorTextColor = errorTextColor,
             errorContainerColor = errorContainerColor,
@@ -284,10 +293,13 @@ fun NewPlaceDialog(
     focusedContainerColor: Color,
     focusedTextColor: Color,
     focusedIndicatorColor: Color,
+    focusedLabelColor: Color,
 
     unfocusedContainerColor: Color,
     unfocusedTextColor: Color,
     unfocusedIndicatorColor: Color,
+    unfocusedLabelColor: Color,
+
 
     errorTextColor: Color,
     errorContainerColor : Color,
@@ -381,11 +393,12 @@ fun NewPlaceDialog(
                         focusedContainerColor = focusedContainerColor,
                         focusedTextColor = focusedTextColor,
                         focusedIndicatorColor = focusedIndicatorColor,
-
+                        focusedLabelColor = focusedLabelColor,
 
                         unfocusedContainerColor = unfocusedContainerColor,
                         unfocusedTextColor = unfocusedTextColor,
                         unfocusedIndicatorColor = unfocusedIndicatorColor,
+                        unfocusedLabelColor = unfocusedLabelColor,
 
                         errorTextColor = errorTextColor,
                         errorContainerColor = errorContainerColor,
@@ -420,11 +433,12 @@ fun NewPlaceDialog(
                         focusedContainerColor = focusedContainerColor,
                         focusedTextColor = focusedTextColor,
                         focusedIndicatorColor = focusedIndicatorColor,
-
+                        focusedLabelColor = focusedLabelColor,
 
                         unfocusedContainerColor = unfocusedContainerColor,
                         unfocusedTextColor = unfocusedTextColor,
                         unfocusedIndicatorColor = unfocusedIndicatorColor,
+                        unfocusedLabelColor = unfocusedLabelColor,
 
                         errorTextColor = errorTextColor,
                         errorContainerColor = errorContainerColor,
@@ -507,11 +521,12 @@ fun NewPlaceDialog(
                         focusedContainerColor = focusedContainerColor,
                         focusedTextColor = focusedTextColor,
                         focusedIndicatorColor = focusedIndicatorColor,
-
+                        focusedLabelColor = focusedLabelColor,
 
                         unfocusedContainerColor = unfocusedContainerColor,
                         unfocusedTextColor = unfocusedTextColor,
                         unfocusedIndicatorColor = unfocusedIndicatorColor,
+                        unfocusedLabelColor = unfocusedLabelColor,
 
                         errorTextColor = errorTextColor,
                         errorContainerColor = errorContainerColor,
