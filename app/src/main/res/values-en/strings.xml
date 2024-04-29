@@ -101,5 +101,8 @@
     <string name="home_distance">"Distance: "</string>
     <string name="home_user_loc">Your position</string>
     <string name="reverse_geocode_unknown_place">Unknown Place</string>
+    <string name="means_of_transport_walking">Walking</string>
+    <string name="means_of_transportation_biking">Biking</string>
+    <string name="means_of_transportation_driving">Driving</string>
 
 </resources>
