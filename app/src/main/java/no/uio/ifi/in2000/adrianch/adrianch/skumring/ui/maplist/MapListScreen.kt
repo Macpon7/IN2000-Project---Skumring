@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
+import android.graphics.Color
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.core.AnimationSpec
@@ -500,7 +501,7 @@ fun MapArea(mapListUiState: MapListUiState,
                 val lat = pinInfo.lat.toDouble()
                 val point = Point.fromLngLat(long, lat)
 
-                val iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.location_on)!!.toBitmap()
+                val iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.place_location_pin)!!.toBitmap()
 
                 PointAnnotationOptions()
                     .withPoint(point)
@@ -510,7 +511,10 @@ fun MapArea(mapListUiState: MapListUiState,
             },
             annotationConfig = AnnotationConfig(
                 annotationSourceOptions = AnnotationSourceOptions(
-                    clusterOptions = ClusterOptions()
+                    clusterOptions = ClusterOptions(
+                        colorLevels = listOf(Pair(0, Color.RED)),
+                        textSize = 16.0,
+                    )
                 )
             ),
             onClick = {
@@ -526,7 +530,7 @@ fun MapArea(mapListUiState: MapListUiState,
         // User location
         PointAnnotation(
             point = userPoint,
-            iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.sunsetsymbol)!!.toBitmap()
+            iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.user_location_puck)!!.toBitmap()
         )
 
     }
