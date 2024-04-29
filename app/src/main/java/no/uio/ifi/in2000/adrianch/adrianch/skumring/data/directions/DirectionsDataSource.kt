@@ -10,7 +10,6 @@ import io.ktor.serialization.gson.gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.Directions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTransportation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance
-import kotlin.math.roundToInt
 
 private const val logTag = "DirectionsDataSource"
 
@@ -41,10 +40,10 @@ class DirectionsDataSource {
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
                 distance = distance,
-                duration = duration.format("%.2f")
+                duration = String.format("%.2f", duration)
             )
         } catch (e: Exception) {
-            Log.e(logTag,"Failed to calculate route", e)
+            //Log.e(logTag,"Failed to calculate route", e)
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
                 distance = "",
@@ -69,10 +68,11 @@ class DirectionsDataSource {
                     "$fromLong,$fromLat;" +
                     "$toLong,$toLat?" +
                     "geometries=geojson&access_token=sk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0dTZmMjZ3MWF6NzJpcGNtajBqaWUxMSJ9.A7ntsS5LTvXYD5hnjYjEXQ"
+            println(path)
             val response: HttpResponse = client.get(path)
             return response.body()
         } catch (e: Exception) {
-            Log.e(logTag, "Error fetching directions", e)
+            //Log.e(logTag, "Error fetching directions", e)
             throw e
         }
     }
@@ -86,4 +86,20 @@ class DirectionsDataSource {
             "$hours:$minutes"
         }
     }
+}
+
+suspend fun main() {
+    val blah = DirectionsDataSource()
+    for (entry in MeansOfTransportation.entries) {
+        val boh = blah.fetchTravelDurationDistance(
+            fromLat = 59.9437354.toString(),
+            fromLong = 10.718393.toString(),
+            toLat = 59.9201.toString(),
+            toLong = 10.7374.toString(),
+            meansOfTransportation = entry
+        )
+        println(boh)
+
+    }
+
 }
