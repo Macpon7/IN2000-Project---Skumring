@@ -202,13 +202,13 @@ fun ContentMyPage(
     // Colors for the container when it is clicked on:
     val focusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
     // Color for the text inside the field when the field is focused
-    val focusedTextColor: Color = MaterialTheme.colorScheme.onPrimary
+    val focusedTextColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
     // Color for the area around the field when it is focused:
-    val focusedIndicatorColor: Color = MaterialTheme.colorScheme.onPrimary
+    val focusedIndicatorColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
     // Color for the label on top when the field is focused
-    val focusedLabelColor: Color = MaterialTheme.colorScheme.onPrimary
+    val focusedLabelColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
     // Color for the icon when it is focused
-    val focusedLeadingIconColor: Color = MaterialTheme.colorScheme.onPrimary
+    val focusedLeadingIconColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
 
     // Colors for the container when it is not clicked on:
     val unfocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
