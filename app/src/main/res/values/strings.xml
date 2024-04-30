@@ -50,6 +50,8 @@
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
     <string name="place_display_placeholder" translatable="false">Place display placeholder</string>
+    <string name="placeInfo_less_details_button">Vis mindre</string>
+    <string name="placeInfo_more_details_button">Vis mer</string>
 
     <string name="bad_conditions">Det blir dårlige forhold</string>
     <string name="ok_conditions">Det blir OK forhold</string>
