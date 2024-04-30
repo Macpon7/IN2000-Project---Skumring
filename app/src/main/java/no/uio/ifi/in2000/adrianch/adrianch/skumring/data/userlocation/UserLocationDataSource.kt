@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
 
 /**
@@ -22,8 +23,9 @@ class UserLocationDataSource (private val context: Context) {
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     // Default loc is coordinates over OJD to be returned if we fail to access location
-    private var long = "10.718393"
-    private var lat = "59.943735"
+    private var long = "0"
+    private var lat = "0"
+    private var bearing = 0.0f
 
     // Available function that returns user location object we designed
     // If it fails to fetch location, the users location defaults to OJD
@@ -31,12 +33,13 @@ class UserLocationDataSource (private val context: Context) {
         val userLocation = getLastLocation()
         return if (userLocation == null) {
             Log.d(logTag, "Failed to get loc")
-            UserLocation(long = long, lat = lat)
+            UserLocation(long = long, lat = lat, bearing = bearing)
         } else {
             long = userLocation.longitude.toString()
             lat = userLocation.latitude.toString()
+            bearing = userLocation.bearing
             Log.d(logTag, "Lat = $lat, long = $long")
-            UserLocation(long = long, lat = lat)
+            UserLocation(long = long, lat = lat, bearing = bearing)
         }
     }
 
@@ -68,30 +71,29 @@ class UserLocationDataSource (private val context: Context) {
             null
             } else {
                 // Else, return updated or last recorded location of user
-            fusedLocationClient.lastLocation.result
+            suspendCancellableCoroutine { cont ->
+                fusedLocationClient.lastLocation.apply {
+                    if (isComplete) {
+                        if (isSuccessful) {
+                            cont.resume(result) {} // If successful, resume coroutine returning result
+                        } else {
+                            cont.resume(null) {} // If unsuccessful, resume coroutine returning null
+                        }
+                        return@suspendCancellableCoroutine
+                    }
+                    addOnSuccessListener {
+                        cont.resume(it) {}  // Resume coroutine with location result
+                    }
+                    addOnFailureListener {
+                        cont.resume(null) {} // Resume coroutine with null location result
+                    }
+                    addOnCanceledListener {
+                        cont.cancel() // Cancel the coroutine
+                    }
+                }
+            }
         }
 
 
-        /*suspendCancellableCoroutine { cont ->
-            fusedLocationClient.lastLocation.apply {
-                if (isComplete) {
-                    if (isSuccessful) {
-                        cont.resume(result) {} // If successful, resume coroutine returning result
-                    } else {
-                        cont.resume(null) {} // If unsuccessful, resume coroutine returning null
-                    }
-                    return@suspendCancellableCoroutine
-                }
-                addOnSuccessListener {
-                    cont.resume(it) {}  // Resume coroutine with location result
-                }
-                addOnFailureListener {
-                    cont.resume(null) {} // Resume coroutine with null location result
-                }
-                addOnCanceledListener {
-                    cont.cancel() // Cancel the coroutine
-                }
-            }
-        }*/
     }
 }

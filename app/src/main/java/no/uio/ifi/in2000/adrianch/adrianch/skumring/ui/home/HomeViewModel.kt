@@ -27,8 +27,8 @@ import java.time.format.DateTimeFormatter
 data class HomeUiState(
     // Setting up dummy info, default location to OJD
     val date: LocalDate = LocalDate.of(2000,1,1),
-    var long: String = "10.718393",
-    var lat: String = "59.943735",
+    var long: String = "0",
+    var lat: String = "0",
     val temp: String = "",
     val sunsetTime: String = "",
     val sunsetDate: String = "",
