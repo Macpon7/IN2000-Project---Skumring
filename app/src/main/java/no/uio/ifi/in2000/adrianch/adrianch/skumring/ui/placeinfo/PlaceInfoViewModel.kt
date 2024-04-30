@@ -65,8 +65,8 @@ class PlaceInfoViewModel(
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
 
-    val directionsRepository: DirectionsRepository = DirectionsRepositoryImpl()
-    val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
+    private val directionsRepository: DirectionsRepository = DirectionsRepositoryImpl()
+    private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
 
     fun loadPlaceInfo(id: Int){
         val job = viewModelScope.launch(Dispatchers.IO){
@@ -86,6 +86,7 @@ class PlaceInfoViewModel(
                 }
             }
         }
+        Log.d(logTag, "Loading time and place?)")
         loadTimeDistance()
         job.invokeOnCompletion {
             Log.d(logTag, "New place in UiState: ${placeInfoUiState.value.placeInfo}")
