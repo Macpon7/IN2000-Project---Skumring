@@ -66,6 +66,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -163,7 +164,7 @@ fun MyPageScreen(
                 modifier = Modifier.padding(end = 16.dp)
             ) {
                 Icon(
-                    Icons.Filled.Add,
+                    imageVector = Icons.Filled.Add,
                     contentDescription = "Add location"
                 )
             }
@@ -251,8 +252,7 @@ fun ContentMyPage(
                             route = "placeinfoscreen/${place.id}"
                         )
                     },
-                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) }
-                )
+                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) })
             }
         }
     }
@@ -321,8 +321,7 @@ fun NewPlaceDialog(
 
     // Show when the user pick a date:
     if (newPlaceUiState.showDatePicker) {
-        DatePickerDialog(
-            onDismissRequest = { myPageViewModel.dismissDatePicker() },
+        DatePickerDialog(onDismissRequest = { myPageViewModel.dismissDatePicker() },
             confirmButton = {
                 TextButton(onClick = {
                     myPageViewModel.saveSelectedDate()
@@ -367,7 +366,11 @@ fun NewPlaceDialog(
                 Text(
                     text = stringResource(R.string.mypage_fill_in_fields),
                     color = mainColor,
-                    modifier = Modifier.padding(all = 2.dp)
+                    modifier = Modifier.padding(
+                        bottom = 4.dp,
+                        top = 6.dp
+                    ),
+                    fontSize = 16.sp
                 )
 
                 // String with name
@@ -606,11 +609,7 @@ fun PickImageFromGallery(
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             newPlaceUiState.imageUri = uri
-            Log.d(
-                TAG,
-                "imageUri is $newPlaceUiState.imageUri"
-            )
-
+            Log.d(TAG, "imageUri is $newPlaceUiState.imageUri")
         }
 
     Box() {
