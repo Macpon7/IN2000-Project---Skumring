@@ -15,9 +15,19 @@ interface DirectionsRepository {
     ): TravelDurationDistance
 }
 
+/**
+ * Implementation of a [DirectionsRepository] that fetches a [TravelDurationDistance]
+ * object which contains an estimate of the travel time and distance given a certain
+ * [MeansOfTransportation].
+ */
 class DirectionsRepositoryImpl(
     private val directionsDataSource: DirectionsDataSource = DirectionsDataSource()
 ): DirectionsRepository {
+
+    /**
+     * Function that lets viewmodels fetch suggested travel time and distance
+     * between two sets of coordinates, given a means of transportation.
+     */
     override suspend fun getTravelDurationDistance(
         fromLat: String,
         fromLong: String,
