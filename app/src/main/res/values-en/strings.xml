@@ -91,6 +91,7 @@
     <string name="error_address">Write an address</string>
     <string name="error_description">Write a description</string>
     <string name="missing_fields">Please fill in the missing fields</string>
+    <string name="mypage_fill_in_fields">Fill in the fields to add a new place</string>
 
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">"Weather conditions: "</string>

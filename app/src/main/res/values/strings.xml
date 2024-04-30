@@ -96,6 +96,7 @@
     <string name="error_address">Skriv inn en addresse</string>
     <string name="error_description">Skriv en beskrivelse</string>
     <string name="missing_fields">Skriv inn de manglende feltene</string>
+    <string name="mypage_fill_in_fields">Fyll inn felt for å legge til et nytt sted</string>
 
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>

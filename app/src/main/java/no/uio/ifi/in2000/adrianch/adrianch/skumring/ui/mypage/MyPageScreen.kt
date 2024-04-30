@@ -365,7 +365,7 @@ fun NewPlaceDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Fill in the fields to add a new place", // TODO XML
+                    text = stringResource(R.string.mypage_fill_in_fields),
                     color = mainColor,
                     modifier = Modifier.padding(all = 2.dp)
                 )
