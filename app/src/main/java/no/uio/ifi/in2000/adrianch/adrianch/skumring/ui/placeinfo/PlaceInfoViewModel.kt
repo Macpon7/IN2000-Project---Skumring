@@ -59,6 +59,19 @@ class PlaceInfoViewModel(
 
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
 
+
+    fun addFavourite(placeId : Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            placeRepository.makeFavourite(placeId)
+        }
+    }
+
+    fun removeFavourite(placeId : Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            placeRepository.unmakeFavourite(placeId)
+        }
+    }
+
     fun loadPlaceInfo(id: Int){
         val job = viewModelScope.launch(Dispatchers.IO){
             Log.d(logTag, "loadPlaceInfo called")
