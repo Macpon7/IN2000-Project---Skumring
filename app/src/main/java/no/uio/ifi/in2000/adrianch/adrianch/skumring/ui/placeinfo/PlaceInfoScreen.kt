@@ -209,7 +209,8 @@ fun TodayInfoCard(
         elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(cardColor)
     ) {
-        Column(modifier = Modifier.fillMaxSize()
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
             //PlaceInfo image
             Box(
@@ -328,7 +329,7 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "150 meter", //TODO //change this later to $goldenHourTime
+                        text = "150 meter", //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -337,7 +338,7 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "40 min", //TODO //change this later to $blueHourTime
+                        text = "40 min", //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -358,11 +359,11 @@ fun TodayInfoCard(
                             fontWeight = FontWeight.Bold,
                             color = textColor,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding( start = 5.dp)
+                            modifier = Modifier.padding(start = 5.dp)
                         )//Blue hour icon and time
                     }
                     Text(
-                        text = "150 meter", //TODO //change this later to $blueHourTime
+                        text = "150 meter", //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -371,7 +372,7 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "20 min", //TODO //change this later to $blueHourTime
+                        text = "20 min", //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -398,7 +399,7 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "150 km", //TODO //change this later to $blueHourTime
+                        text = "150 km", //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -407,7 +408,7 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "10 min", //TODO //change this later to $blueHourTime
+                        text = "10 min", //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -425,7 +426,9 @@ fun TodayInfoCard(
                 text = dateString.uppercase(),
                 fontWeight = FontWeight.Bold,
                 style = typography.titleMedium,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 5.dp),
                 textAlign = TextAlign.Center,
                 color = textColor
             )
@@ -451,8 +454,7 @@ fun TodayInfoCard(
             Row(  //For displaying weather conditions and information popup
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
 
             ) {
                 //Conditions at sunset
@@ -464,23 +466,19 @@ fun TodayInfoCard(
                 )
                 Text(
                     //text changing based on weather conditions, in different textbox because of change of color
-                    text =  "${sunEvent.conditions.weatherRating}", //TODO
+                    text = "${sunEvent.conditions.weatherRating}", //TODO fix so this is also in Norwegian
                     style = typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
                 )
                 //Clickable icon for showing more info about the weather conditions
-                Icon(
-                    Icons.Default.Info,
+                Icon(Icons.Default.Info,
                     contentDescription = "Info",
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
                         .clickable { showPopUp = true }
                         .size(30.dp)
-                        .padding(start = 5.dp, bottom = 10.dp)
-
-                )
-
+                        .padding(start = 5.dp, bottom = 10.dp))
             }
             //Temperature at sunset
             Text(
@@ -498,7 +496,6 @@ fun TodayInfoCard(
                     start = 22.dp, end = 22.dp, top = 10.dp, bottom = 15.dp
                 ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
             )
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -571,12 +568,12 @@ fun TodayInfoCard(
 
             }
         }
-    //close pop up that shows more information about weather conditions
-    if(showPopUp) {
-        WeatherIconPopUp(onClose = {
-            showPopUp = false
-        })
-    }
+        //close pop up that shows more information about weather conditions
+        if (showPopUp) {
+            WeatherIconPopUp(onClose = {
+                showPopUp = false
+            })
+        }
     }
 }
 
