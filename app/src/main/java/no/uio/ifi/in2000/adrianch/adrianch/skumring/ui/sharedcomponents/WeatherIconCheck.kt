@@ -45,13 +45,34 @@ fun WeatherIconCheck (weatherCondition: String) {
             modifier = Modifier.size(140.dp)
         )
 
-    } else if (weatherCondition.contains("cloudy") || weatherCondition.contains("fair" ) || weatherCondition.contains("fog")) {
+    } else if (weatherCondition.contains("partly")) {
         Icon(
-            painterResource(id = R.drawable.cloudy_icon),
+            painterResource(id = R.drawable.partly_cloudy_icon),
             contentDescription = "Weather icon cloudy",
             tint = Color.Unspecified,
             modifier = Modifier.size(140.dp)
         )
+    } else if ( weatherCondition.contains("fair")) {
+        Icon(
+            painterResource(id = R.drawable.fair_icon),
+            contentDescription = "Weather icon cloudy",
+            tint = Color.Unspecified,
+            modifier = Modifier.size(140.dp)
+        )
+    }else if (weatherCondition.contains("cloudy")) {
+            Icon(
+                painterResource(id = R.drawable.cloudy_icon),
+                contentDescription = "Weather icon cloudy",
+                tint = Color.Unspecified,
+                modifier = Modifier.size(140.dp)
+            )
+        }else if ( weatherCondition.contains("fog")) {
+                Icon(
+                    painterResource(id = R.drawable.fog_icon),
+                    contentDescription = "Weather icon cloudy",
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(140.dp)
+                )
     } else {
         Icon ( //if none of the other checks work, show default image
             painterResource(id = R.drawable.image_not_found),
