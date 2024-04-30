@@ -17,9 +17,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.directions.DirectionsRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.directions.DirectionsRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
 private const val logTag = "PlaceInfoViewModel"
@@ -35,8 +40,10 @@ data class PlaceInfoUiState(
         isCustomPlace = false,
         hasNotification = false,
         images = emptyList(),
-        sunEvents = emptyList()
+        sunEvents = emptyList(),
         ),
+
+    var listTimesDistances: List<TravelDurationDistance> = emptyList(),
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -54,10 +61,11 @@ class PlaceInfoViewModel(
     private val context: Context,
     private val placeRepository: PlaceRepository,
 ): ViewModel() {
-    private val forecastRepository: ForecastRepository = ForecastRepositoryImpl()
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
-
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
+
+    val directionsRepository: DirectionsRepository = DirectionsRepositoryImpl()
+    val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
 
     fun loadPlaceInfo(id: Int){
         val job = viewModelScope.launch(Dispatchers.IO){
@@ -65,7 +73,10 @@ class PlaceInfoViewModel(
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
                     val placeInfoObject = placeRepository.getPlace(id)
-                    currentPlaceInfoUiState.copy(placeInfo = placeInfoObject, isLoading = false)
+                    currentPlaceInfoUiState.copy(
+                        placeInfo = placeInfoObject,
+                        isLoading = false,
+                        )
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)
                     currentPlaceInfoUiState.copy(
