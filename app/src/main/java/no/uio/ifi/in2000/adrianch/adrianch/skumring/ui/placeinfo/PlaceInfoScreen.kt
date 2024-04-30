@@ -1,12 +1,14 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
+import android.graphics.Paint.Align
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +30,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -84,6 +87,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconPopUp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -195,6 +199,9 @@ fun TodayInfoCard(
     //for remembering if placeinfo is favourite or not
     var isFavourite by remember { mutableStateOf(placeInfo.isFavourite) }
 
+    //popup for displaying more information about weather conditions
+    var showPopUp by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -202,7 +209,8 @@ fun TodayInfoCard(
         elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(cardColor)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()
+        ) {
             //PlaceInfo image
             Box(
                 modifier = Modifier
@@ -294,15 +302,13 @@ fun TodayInfoCard(
             )
 
 
-
-
             //Row for different ways to get to the place
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp)
+                    .padding(start = 20.dp, end = 20.dp)
             ) {
 
                 Column {
@@ -327,7 +333,7 @@ fun TodayInfoCard(
                         color = textColor,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(
-                            top = 10.dp,
+                            top = 5.dp,
                         )
                     )
                     Text(
@@ -352,7 +358,7 @@ fun TodayInfoCard(
                             fontWeight = FontWeight.Bold,
                             color = textColor,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(bottom = 0.dp, start = 5.dp)
+                            modifier = Modifier.padding( start = 5.dp)
                         )//Blue hour icon and time
                     }
                     Text(
@@ -361,7 +367,7 @@ fun TodayInfoCard(
                         color = textColor,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(
-                             top = 10.dp
+                            top = 5.dp
                         )
                     )
                     Text(
@@ -370,9 +376,8 @@ fun TodayInfoCard(
                         color = textColor,
                         textAlign = TextAlign.Center,
 
-                    )
+                        )
                 }
-
 
                 Column {
                     Row {
@@ -382,7 +387,7 @@ fun TodayInfoCard(
                             contentDescription = "drive icon",
                             tint = Color.Unspecified,
 
-                        )
+                            )
                         Text(
                             text = stringResource(R.string.drive),
                             style = typography.titleMedium,
@@ -398,7 +403,7 @@ fun TodayInfoCard(
                         color = textColor,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(
-                             top = 10.dp
+                            top = 5.dp
                         )
                     )
                     Text(
@@ -443,17 +448,40 @@ fun TodayInfoCard(
                     .fillMaxWidth()
                     .padding(bottom = 5.dp, top = 3.dp)
             )
-            //Conditions at sunset
-            Text(
-                text = stringResource(R.string.weather_condition) + ": ${sunEvent.conditions.weatherRating}",
-                style = typography.bodyMedium,
-                color = textColor,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
+            Row(  //For displaying weather conditions and information popup
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 3.dp)
-            )
+
+            ) {
+                //Conditions at sunset
+                Text(
+                    text = stringResource(R.string.weather_condition),
+                    style = typography.bodyMedium,
+                    color = textColor,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    //text changing based on weather conditions, in different textbox because of change of color
+                    text =  "${sunEvent.conditions.weatherRating}", //TODO
+                    style = typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontWeight = FontWeight.Bold,
+                )
+                //Clickable icon for showing more info about the weather conditions
+                Icon(
+                    Icons.Default.Info,
+                    contentDescription = "Info",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .clickable { showPopUp = true }
+                        .size(30.dp)
+                        .padding(start = 5.dp, bottom = 10.dp)
+
+                )
+
+            }
             //Temperature at sunset
             Text(
                 text = stringResource(R.string.temp_at_sunset) + ": ${sunEvent.tempAtEvent} °C",
@@ -463,7 +491,7 @@ fun TodayInfoCard(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 5.dp)
+                    .padding(bottom = 5.dp, top = 5.dp)
             )
             Divider(
                 modifier = Modifier.padding(
@@ -543,7 +571,12 @@ fun TodayInfoCard(
 
             }
         }
-
+    //close pop up that shows more information about weather conditions
+    if(showPopUp) {
+        WeatherIconPopUp(onClose = {
+            showPopUp = false
+        })
+    }
     }
 }
 
