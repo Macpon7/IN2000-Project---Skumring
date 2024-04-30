@@ -99,6 +99,12 @@
     <string name="error_description">Skriv en beskrivelse</string>
     <string name="missing_fields">Skriv inn de manglende feltene</string>
 
+    <!--WeatherConditionsPopUp-->
+    <string name="weather_conditions_excellent_explanation">Det bør være noen skyer i midten til høye nivåer, lav fuktighet og utmerket sikt!</string>
+    <string name="weather_conditions_decent_explanation">Litt overskyet, men det blir forhåpentligvis et fint bilde likevel!</string>
+    <string name="weather_conditions_poor_explanation">Skyene henger lavt, sikten er ikke god og gir ikke gode bildeforhold</string>
+    <string name="weather_conditions_popUp_dismiss">Lukk</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>

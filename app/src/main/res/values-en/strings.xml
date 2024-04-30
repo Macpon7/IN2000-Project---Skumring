@@ -100,8 +100,11 @@
     <string name="home_more_details_button">More details</string>
     <string name="home_distance">"Distance: "</string>
     <string name="home_user_loc">Your position</string>
+    <string name="weather_conditions_excellent_explanation">There should be some clouds in the middle to high levels, low moisture and excellent visibility!</string>
+    <string name="weather_conditions_decent_explanation">A little cloudy, but hopefully still makes for a nice photo!</string>
+    <string name="weather_conditions_poor_explanation">The clouds are hanging low, visibility is not good and does not make for good picture taking conditions</string>
+    <string name="weather_conditions_popUp_dismiss">Dismiss</string>
     <string name="reverse_geocode_unknown_place">Unknown Place</string>
     <string name="placeInfo_less_details_button">Show less</string>
     <string name="placeInfo_more_details_button">Show more</string>
-
 </resources>
