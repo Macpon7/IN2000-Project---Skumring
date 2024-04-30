@@ -26,6 +26,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocati
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
 
 private const val logTag = "PlaceInfoViewModel"
 
@@ -85,6 +86,7 @@ class PlaceInfoViewModel(
                 }
             }
         }
+        loadTimeDistance()
         job.invokeOnCompletion {
             Log.d(logTag, "New place in UiState: ${placeInfoUiState.value.placeInfo}")
         }
@@ -101,9 +103,17 @@ class PlaceInfoViewModel(
 
     fun loadTimeDistance() {
         viewModelScope.launch (Dispatchers.IO) {
+            val userLoc: UserLocation = userLocationRepository.getUserLocation()
+            val timePlaceList = directionsRepository.getAllTravelDurationDistance(
+                fromLat = userLoc.lat,
+                fromLong = userLoc.long,
+                toLat = _placeInfoUiState.value.placeInfo.lat,
+                toLong = _placeInfoUiState.value.placeInfo.long
+            )
+            Log.d(logTag,timePlaceList.toString())
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 currentPlaceInfoUiState.copy(
-
+                    listTimesDistances = timePlaceList
                 )
             }
         }

@@ -18,7 +18,6 @@ interface DirectionsRepository {
         fromLong: String,
         toLat: String,
         toLong: String,
-        meansOfTransportation: MeansOfTransportation
     ): List<TravelDurationDistance>
 }
 
@@ -56,7 +55,6 @@ class DirectionsRepositoryImpl(
         fromLong: String,
         toLat: String,
         toLong: String,
-        meansOfTransportation: MeansOfTransportation
     ): List<TravelDurationDistance> {
         val outList = mutableListOf<TravelDurationDistance>()
         MeansOfTransportation.entries.forEach { entry ->
