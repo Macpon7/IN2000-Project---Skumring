@@ -68,5 +68,6 @@
     <string name="home_more_details_button">More details</string>
     <string name="home_distance">"Distance: "</string>
     <string name="home_user_loc">Your position</string>
+    <string name="from">From</string>
 
 </resources>

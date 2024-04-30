@@ -115,7 +115,13 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
-            SunsetInfoCard(homeUiState.sunsetTime, homeUiState.weatherConditions, homeUiState.temp, homeUiState.sunsetWeatherIcon)//add blueHourTime and goldenHourTime later
+            SunsetInfoCard(homeUiState.sunsetTime,
+                homeUiState.weatherConditions,
+                homeUiState.temp,
+                homeUiState.sunsetWeatherIcon,
+                homeUiState.goldenHour,
+                homeUiState.blueHour
+            )
             Text(
                 text = stringResource(R.string.home_favourite_places),
                 style = MaterialTheme.typography.headlineSmall,
@@ -134,7 +140,14 @@ fun HomeScreen(
  * An infocard in HomeScreen that shows time for sunset, sunset weather conditions, golden hour and blue hour at the users location
  */
 @Composable
-fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRating, temp: String, icon: String?) { //, add goldenHourTime: String, blueHourTime: String later
+fun SunsetInfoCard(
+    sunsetTime: String,
+    weatherConditions: WeatherConditionsRating,
+    temp: String,
+    icon: String?,
+    goldenHourTime: String,
+    blueHourTime: String
+) {
     Card(
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier
@@ -262,7 +275,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
 
                             )
                             Text(
-                                text = "19:09 -20:31", //change this later to $goldenHourTime
+                                text = goldenHourTime,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 textAlign = TextAlign.Center,
@@ -276,7 +289,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                                 tint = Color.Unspecified,
                             )
                             Text(
-                                text = "20:31-21:05", //change this later to $blueHourTime
+                                text = blueHourTime,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 textAlign = TextAlign.Center,

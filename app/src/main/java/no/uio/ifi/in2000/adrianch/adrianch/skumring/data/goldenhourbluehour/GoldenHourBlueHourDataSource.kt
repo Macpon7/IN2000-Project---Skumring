@@ -78,6 +78,7 @@ class GoldenHourBlueHourDataSource {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
         val dateTimeString = date + " " + fixTimeFormat(time)
         // Hacky fix, please forgive me
+        // TODO fix this shit
         return try {
             LocalDateTime.parse(dateTimeString, formatter)
         } catch (e: Exception) {
