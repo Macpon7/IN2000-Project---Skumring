@@ -58,7 +58,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -196,41 +195,6 @@ fun ContentMyPage(
     myPageViewModel: MyPageViewModel,
     myPageUiState: MyPageUiState
 ) {
-
-    // Global variable for color of the text
-    val mainColor: Color = MaterialTheme.colorScheme.onPrimary
-
-    // Colors for the container when it is clicked on:
-    val focusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
-    // Color for the text inside the field when the field is focused
-    val focusedTextColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
-    // Color for the area around the field when it is focused:
-    val focusedIndicatorColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
-    // Color for the label on top when the field is focused
-    val focusedLabelColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
-    // Color for the icon when it is focused
-    val focusedLeadingIconColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
-
-    // Colors for the container when it is not clicked on:
-    val unfocusedContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
-    // Colors for the text inside when the textfield is not clicked on:
-    val unfocusedTextColor: Color = MaterialTheme.colorScheme.onPrimary
-    // Color for the area around the field when it is unfocused:
-    val unfocusedIndicatorColor: Color = MaterialTheme.colorScheme.onPrimary
-    // Color for the label on top when the field is unfocused
-    val unfocusedLabelColor: Color = MaterialTheme.colorScheme.onPrimary
-    // Color for the icon when it is unfocused
-    val unfocusedLeadingIconColor: Color = MaterialTheme.colorScheme.onPrimary
-
-    // Colors for errors in Textfield:
-    val errorTextColor: Color = MaterialTheme.colorScheme.onPrimary
-    val errorContainerColor: Color = MaterialTheme.colorScheme.primaryContainer
-    val errorCursorColor: Color = MaterialTheme.colorScheme.error
-    val errorIndicatorColor: Color = MaterialTheme.colorScheme.error
-    val errorLeadingIconColor: Color = MaterialTheme.colorScheme.error
-    val errorSupportingText: Color = MaterialTheme.colorScheme.error
-
-
     Column(Modifier.verticalScroll(rememberScrollState())) {
         //Slik leser vi inn fra assets/presetImages
         //Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/holmenkollen.jpg")).asImageBitmap(), contentDescription = null)
@@ -259,30 +223,7 @@ fun ContentMyPage(
 
     //When the user click AddLocationButton this is shown
     if (myPageUiState.showNewPlaceDialog) {
-        NewPlaceDialog(
-            myPageViewModel = myPageViewModel,
-
-            mainColor = mainColor,
-
-            focusedContainerColor = focusedContainerColor,
-            focusedTextColor = focusedTextColor,
-            focusedIndicatorColor = focusedIndicatorColor,
-            focusedLabelColor = focusedLabelColor,
-            focusedLeadingIconColor = focusedLeadingIconColor,
-
-            unfocusedContainerColor = unfocusedContainerColor,
-            unfocusedTextColor = unfocusedTextColor,
-            unfocusedIndicatorColor = unfocusedIndicatorColor,
-            unfocusedLabelColor = unfocusedLabelColor,
-            unfocusedLeadingIconColor = unfocusedLeadingIconColor,
-
-            errorTextColor = errorTextColor,
-            errorContainerColor = errorContainerColor,
-            errorCursorColor = errorCursorColor,
-            errorLeadingIconColor = errorLeadingIconColor,
-            errorIndicatorColor = errorIndicatorColor,
-            errorSupportingText = errorSupportingText
-        )
+        NewPlaceDialog(myPageViewModel = myPageViewModel)
     }
 }
 
@@ -292,29 +233,7 @@ fun ContentMyPage(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewPlaceDialog(
-    myPageViewModel: MyPageViewModel,
-    mainColor: Color,
-
-    focusedContainerColor: Color,
-    focusedTextColor: Color,
-    focusedIndicatorColor: Color,
-    focusedLabelColor: Color,
-    focusedLeadingIconColor: Color,
-
-    unfocusedContainerColor: Color,
-    unfocusedTextColor: Color,
-    unfocusedIndicatorColor: Color,
-    unfocusedLabelColor: Color,
-    unfocusedLeadingIconColor: Color,
-
-    errorTextColor: Color,
-    errorContainerColor: Color,
-    errorCursorColor: Color,
-    errorIndicatorColor: Color,
-    errorLeadingIconColor: Color,
-    errorSupportingText: Color
-) {
+fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
     val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
     // TODO keep the change when the phone change from standing to lying
@@ -328,7 +247,7 @@ fun NewPlaceDialog(
                 }) {
                     Text(
                         text = stringResource(R.string.add_date),
-                        color = mainColor,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                 }
             },
@@ -338,7 +257,7 @@ fun NewPlaceDialog(
                 }) {
                     Text(
                         text = stringResource(R.string.cancel),
-                        color = mainColor,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                 }
             }
@@ -365,7 +284,7 @@ fun NewPlaceDialog(
             ) {
                 Text(
                     text = stringResource(R.string.mypage_fill_in_fields),
-                    color = mainColor,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.padding(
                         bottom = 4.dp,
                         top = 6.dp
@@ -396,28 +315,28 @@ fun NewPlaceDialog(
                         if (newPlaceUiState.locationNameIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_location_name),
-                                color = errorSupportingText
+                                color = MaterialTheme.colorScheme.error
                             )
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = focusedContainerColor,
-                        focusedTextColor = focusedTextColor,
-                        focusedIndicatorColor = focusedIndicatorColor,
-                        focusedLabelColor = focusedLabelColor,
-                        focusedLeadingIconColor = focusedLeadingIconColor,
+                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        unfocusedContainerColor = unfocusedContainerColor,
-                        unfocusedTextColor = unfocusedTextColor,
-                        unfocusedIndicatorColor = unfocusedIndicatorColor,
-                        unfocusedLabelColor = unfocusedLabelColor,
-                        unfocusedLeadingIconColor = unfocusedLeadingIconColor,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        errorTextColor = errorTextColor,
-                        errorContainerColor = errorContainerColor,
-                        errorCursorColor = errorCursorColor,
-                        errorIndicatorColor = errorIndicatorColor,
-                        errorLeadingIconColor = errorLeadingIconColor,
+                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
+                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        errorCursorColor = MaterialTheme.colorScheme.error,
+                        errorIndicatorColor = MaterialTheme.colorScheme.error,
+                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
                     ),
                     isError = (newPlaceUiState.locationNameIsMissing)
                 )
@@ -440,28 +359,28 @@ fun NewPlaceDialog(
                         if (newPlaceUiState.addressIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_address),
-                                color = errorSupportingText
+                                color = MaterialTheme.colorScheme.error
                             )
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = focusedContainerColor,
-                        focusedTextColor = focusedTextColor,
-                        focusedIndicatorColor = focusedIndicatorColor,
-                        focusedLabelColor = focusedLabelColor,
-                        focusedLeadingIconColor = focusedLeadingIconColor,
+                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        unfocusedContainerColor = unfocusedContainerColor,
-                        unfocusedTextColor = unfocusedTextColor,
-                        unfocusedIndicatorColor = unfocusedIndicatorColor,
-                        unfocusedLabelColor = unfocusedLabelColor,
-                        unfocusedLeadingIconColor = unfocusedLeadingIconColor,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        errorTextColor = errorTextColor,
-                        errorContainerColor = errorContainerColor,
-                        errorCursorColor = errorCursorColor,
-                        errorIndicatorColor = errorIndicatorColor,
-                        errorLeadingIconColor = errorLeadingIconColor,
+                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
+                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        errorCursorColor = MaterialTheme.colorScheme.error,
+                        errorIndicatorColor = MaterialTheme.colorScheme.error,
+                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
                     ),
                     isError = newPlaceUiState.addressIsMissing
                 )
@@ -499,24 +418,23 @@ fun NewPlaceDialog(
                     label = {
                         Text(
                             text = stringResource(R.string.time),
-                            color = mainColor,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.DateRange,
                             contentDescription = "Date",
-                            tint = MaterialTheme.colorScheme.onSecondary
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         // Make it look not disabled
-                        disabledContainerColor = focusedContainerColor,
-                        disabledTextColor = focusedTextColor,
-                        disabledIndicatorColor = focusedIndicatorColor
+                        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        disabledTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        disabledIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 )
-                Spacer(modifier = Modifier.height(5.dp))
 
                 // String with description
                 OutlinedTextField(
@@ -538,28 +456,28 @@ fun NewPlaceDialog(
                         if (newPlaceUiState.descriptionsIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_description),
-                                color = errorSupportingText
+                                color = MaterialTheme.colorScheme.error
                             )
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = focusedContainerColor,
-                        focusedTextColor = focusedTextColor,
-                        focusedIndicatorColor = focusedIndicatorColor,
-                        focusedLabelColor = focusedLabelColor,
-                        focusedLeadingIconColor = focusedLeadingIconColor,
+                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        unfocusedContainerColor = unfocusedContainerColor,
-                        unfocusedTextColor = unfocusedTextColor,
-                        unfocusedIndicatorColor = unfocusedIndicatorColor,
-                        unfocusedLabelColor = unfocusedLabelColor,
-                        unfocusedLeadingIconColor = unfocusedLeadingIconColor,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        errorTextColor = errorTextColor,
-                        errorContainerColor = errorContainerColor,
-                        errorCursorColor = errorCursorColor,
-                        errorIndicatorColor = errorIndicatorColor,
-                        errorLeadingIconColor = errorLeadingIconColor,
+                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
+                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        errorCursorColor = MaterialTheme.colorScheme.error,
+                        errorIndicatorColor = MaterialTheme.colorScheme.error,
+                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
                     ),
                     isError = newPlaceUiState.descriptionsIsMissing,
                 )
