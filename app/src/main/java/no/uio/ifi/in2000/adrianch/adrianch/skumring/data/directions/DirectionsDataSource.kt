@@ -45,8 +45,18 @@ class DirectionsDataSource {
                 toLong = toLong,
                 meansOfTransportation = meansOfTransportation
             )
-            val duration: String = secondsToHoursMinutes(apiResponse.routes[0].legs[0].duration)
-            val distance: String = "%.2f".format((apiResponse.routes[0].legs[0].distance/1000).toFloat())
+            val duration: String = try {
+                secondsToHoursMinutes(apiResponse.routes[0].legs[0].duration)
+            } catch (e: IndexOutOfBoundsException) {
+                Log.e(logTag, "Failed to load duration")
+                ""
+            }
+            val distance: String =  try {
+                "%.2f".format((apiResponse.routes[0].legs[0].distance/1000).toFloat())
+            } catch (e: IndexOutOfBoundsException) {
+                Log.e(logTag, "Failed to load distance")
+                ""
+            }
 
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
