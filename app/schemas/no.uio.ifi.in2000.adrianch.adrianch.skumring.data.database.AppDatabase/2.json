@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "94389b1f2ec3660bb9cf486cbc1b64a8",
+    "version": 2,
+    "identityHash": "7912b35e6d09ff945856c8757ef3209b",
     "entities": [
       {
         "tableName": "placeInfo",
@@ -95,7 +95,17 @@
             "id"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_images_place_id",
+            "unique": false,
+            "columnNames": [
+              "place_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_images_place_id` ON `${TABLE_NAME}` (`place_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "placeInfo",
@@ -228,7 +238,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '94389b1f2ec3660bb9cf486cbc1b64a8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7912b35e6d09ff945856c8757ef3209b')"
     ]
   }
 }

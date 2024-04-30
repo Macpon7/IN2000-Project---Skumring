@@ -81,8 +81,8 @@ class ForecastRepositoryImpl(
                         //if icon is null for any reason, use the string "no_icon" instead
                         weatherIcon = sunsetWeather.icon ?: "no_icon",
                         conditions = getWeatherConditions(sunsetWeather),
-                        //goldenHourTime = goldenHourBlueHour.goldenHour,
-                        //blueHourTime = goldenHourBlueHour.blueHour
+                        goldenHourTime = goldenHourBlueHour.goldenHour,
+                        blueHourTime = goldenHourBlueHour.blueHour
                     )
                 )
             } catch (e: Exception) {
