@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -197,7 +198,7 @@ fun TodayInfoCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(560.dp),
+            .fillMaxHeight(),
         elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(cardColor)
     ) {
@@ -289,8 +290,131 @@ fun TodayInfoCard(
                 maxLines = if (expanded) Int.MAX_VALUE else 2,
                 overflow = TextOverflow.Ellipsis,
                 onClick = { expanded = !expanded },
-                modifier = Modifier.padding(start = 10.dp, bottom = 20.dp, end = 10.dp, top = 5.dp)
+                modifier = Modifier.padding(start = 10.dp, bottom = 25.dp, end = 10.dp, top = 5.dp)
             )
+
+
+
+
+            //Row for different ways to get to the place
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 15.dp, end = 15.dp)
+            ) {
+
+                Column {
+                    Row {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.walk),
+                            contentDescription = "walk icon",
+                            tint = Color.Unspecified,
+                        )
+                        Text(
+                            text = stringResource(R.string.walk),
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(start = 5.dp)
+                        )
+                    }
+                    Text(
+                        text = "150 meter", //TODO //change this later to $goldenHourTime
+                        style = typography.bodyMedium,
+                        color = textColor,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(
+                            top = 10.dp,
+                        )
+                    )
+                    Text(
+                        text = "40 min", //TODO //change this later to $blueHourTime
+                        style = typography.bodyMedium,
+                        color = textColor,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+
+                Column {
+                    Row {
+
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.bike),
+                            contentDescription = "bike icon",
+                            tint = Color.Unspecified,
+                        )
+                        Text(
+                            text = stringResource(R.string.bike),
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(bottom = 0.dp, start = 5.dp)
+                        )//Blue hour icon and time
+                    }
+                    Text(
+                        text = "150 meter", //TODO //change this later to $blueHourTime
+                        style = typography.bodyMedium,
+                        color = textColor,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(
+                             top = 10.dp
+                        )
+                    )
+                    Text(
+                        text = "20 min", //TODO //change this later to $blueHourTime
+                        style = typography.bodyMedium,
+                        color = textColor,
+                        textAlign = TextAlign.Center,
+
+                    )
+                }
+
+
+                Column {
+                    Row {
+
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.drive),
+                            contentDescription = "drive icon",
+                            tint = Color.Unspecified,
+
+                        )
+                        Text(
+                            text = stringResource(R.string.drive),
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(start = 5.dp)
+                        )
+                    }
+                    Text(
+                        text = "150 km", //TODO //change this later to $blueHourTime
+                        style = typography.bodyMedium,
+                        color = textColor,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(
+                             top = 10.dp
+                        )
+                    )
+                    Text(
+                        text = "10 min", //TODO //change this later to $blueHourTime
+                        style = typography.bodyMedium,
+                        color = textColor,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+            Divider(
+                modifier = Modifier.padding(
+                    start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
+                ), color = dividerColor, thickness = 1.dp
+            )
+
             //For showing todays date
             Text(
                 text = dateString.uppercase(),
@@ -299,11 +423,6 @@ fun TodayInfoCard(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = textColor
-            )
-            Divider(
-                modifier = Modifier.padding(
-                    start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
-                ), color = dividerColor, thickness = 1.dp
             )
             //Sunset Icon
             Icon(
@@ -348,7 +467,7 @@ fun TodayInfoCard(
             )
             Divider(
                 modifier = Modifier.padding(
-                    start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
+                    start = 22.dp, end = 22.dp, top = 10.dp, bottom = 15.dp
                 ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
             )
 
@@ -784,4 +903,3 @@ fun PreviewSunEventInfoScreen() {
         )
     }
 }
-
