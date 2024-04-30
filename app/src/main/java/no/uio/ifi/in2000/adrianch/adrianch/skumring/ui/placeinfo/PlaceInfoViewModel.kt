@@ -99,6 +99,16 @@ class PlaceInfoViewModel(
         }
     }
 
+    fun loadTimeDistance() {
+        viewModelScope.launch (Dispatchers.IO) {
+            _placeInfoUiState.update { currentPlaceInfoUiState ->
+                currentPlaceInfoUiState.copy(
+
+                )
+            }
+        }
+    }
+
     /**
      *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
      */
