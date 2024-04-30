@@ -21,6 +21,15 @@ class DirectionsDataSource {
         }
     }
 
+    /**
+     * Calls Mabpox' Directions API which provides a travel route between two sets of coordinates
+     * and suggests time and distance given a means of transportation. The response returns meters
+     * and seconds which are converted to kilometers and hours:minutes, which for now is all we're
+     * interested in. This API as well returns an array of items, but they're indexed and structured
+     * in a way that the first element will contain the information we're interested in, known as
+     * "legs". If it can't find a route it will create [TravelDurationDistance] object with empty
+     * strings to be interpreted by a string template to inform the user.
+     */
     suspend fun fetchTravelDurationDistance(
         fromLat: String,
         fromLong: String,
@@ -30,8 +39,10 @@ class DirectionsDataSource {
     ): TravelDurationDistance {
         try {
             val apiResponse = fetchDirectionsResponse(
-                fromLat = fromLat, fromLong = fromLong,
-                toLat = toLat, toLong = toLong,
+                fromLat = fromLat,
+                fromLong = fromLong,
+                toLat = toLat,
+                toLong = toLong,
                 meansOfTransportation = meansOfTransportation
             )
             val duration: String = secondsToHoursMinutes(apiResponse.routes[0].legs[0].duration)
@@ -52,9 +63,9 @@ class DirectionsDataSource {
         }
     }
 
-            /*
-            Private function that returns api response body
-             */
+    /*
+    Function that returns the response body from the API call
+     */
     private suspend fun fetchDirectionsResponse(
         fromLat: String,
         fromLong: String,
@@ -76,6 +87,10 @@ class DirectionsDataSource {
         }
     }
 
+    /*
+    Small help function since the directions api returns duration in seconds, we
+    convert it to a neatly formatted string instead.
+     */
     private fun secondsToHoursMinutes (duration: Double): String {
         val hours: Int = duration.toInt() / 3600
         val minutes: Int = (duration.toInt() % 3600) / 60
