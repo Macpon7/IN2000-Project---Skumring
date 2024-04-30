@@ -24,18 +24,25 @@ import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -43,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -57,13 +65,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherDetails
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherPerHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
-import java.time.LocalDateTime
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconPopUp
 
 object HomeDestination : NavigationDestination {//This one is used in the SkumringButtonBar to choose destination
     override val icon = Icons.Outlined.Home //Show home-icon
@@ -79,6 +85,9 @@ fun HomeScreen(
     navController: NavHostController
 ) {
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
+    val topBarTitle = homeUiState.placeName.ifEmpty {
+        stringResource(R.string.reverse_geocode_unknown_place)
+    }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val locationPermissions = rememberMultiplePermissionsState(
@@ -97,10 +106,36 @@ fun HomeScreen(
         homeViewModel.loadHomeScreen()
     }
 
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
+    // Check if there is an error, if so show a snackbar:
+    if (homeUiState.showSnackbar) {
+        LaunchedEffect(homeUiState.snackbarHostState) {
+            val result = homeUiState.snackbarHostState.showSnackbar(
+                message = homeUiState.errorMessage,
+                withDismissAction = true,
+                actionLabel = context.getString(R.string.refresh),
+            )
+            // If the snackbar is dismissed, reset the boolean of the showSnackbar-variable
+            // The snackbar will reappear is we get a new error
+            when (result) {
+                // If you press refresh
+                SnackbarResult.ActionPerformed -> {
+                    homeViewModel.refresh()
+                }
+                // If you click somewhere on the screen
+                SnackbarResult.Dismissed -> {
+                    homeViewModel.snackbarDismissed()
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             SkumringTopBar(
-                title = stringResource(id = HomeDestination.titleRes),
+                title = topBarTitle,
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior
             )
@@ -148,6 +183,8 @@ fun SunsetInfoCard(
     goldenHourTime: String,
     blueHourTime: String
 ) {
+    var showPopUp by remember { mutableStateOf(false) }
+
     Card(
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier
@@ -203,12 +240,23 @@ fun SunsetInfoCard(
                         color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Center,
                     )
-                    Text( //text changing based on weather conditions, in different textbox because of change of color
-                        text = " $weatherConditions",
+                    Text(
+                        //text changing based on weather conditions, in different textbox because of change of color
+                        text = stringResource(id = weatherConditions.stringResourceId), //TODO
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
+                    )
+                    //Clickable icon for showing more info about the weather conditions
+                    Icon(
+                        Icons.Default.Info,
+                        contentDescription = "Info",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
+                            .clickable {showPopUp = true}
+                            .size(30.dp)
+                            .padding(start = 5.dp, bottom = 10.dp)
                     )
                 }
                 if (icon != null) {
@@ -229,12 +277,12 @@ fun SunsetInfoCard(
                                // .align(Alignment.BottomCenter)
                                 .padding(bottom = 5.dp)
                         )
-                Divider( //for dividing sunset today info from golden hour and blue hour times
+                Divider( // For dividing sunset today info from golden hour and blue hour times
                     modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     thickness = 1.dp
                 )
-                    Row( //For displaying Golden hour and Blue hour times on a row
+                    Row( // For displaying Golden hour and Blue hour times on a row
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
@@ -300,6 +348,12 @@ fun SunsetInfoCard(
                     MoreDetailsButton()
             }
         }
+        //close pop up that shows more information about weather conditions
+        if(showPopUp) {
+            WeatherIconPopUp (onClose = {
+                showPopUp = false
+            })
+        }
     }
 }
 
@@ -343,7 +397,7 @@ fun MoreDetailsButton() {
 @Composable
 fun HorizontalInfoCardRow (homeUiState: HomeUiState, navHostController: NavHostController) {
     if (homeUiState.favoritePlaces.isEmpty()) {
-        Text(text = "No favourites")
+        Text(text = stringResource(R.string.no_favourites))
     } else {
         LazyRow {
             items(homeUiState.favoritePlaces) {place ->

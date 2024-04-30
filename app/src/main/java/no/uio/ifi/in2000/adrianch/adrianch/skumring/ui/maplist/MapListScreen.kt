@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist
 
+import android.graphics.Color
 import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.core.AnimationSpec
@@ -63,8 +64,12 @@ import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapInitOptions
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
+import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
+import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.annotation.AnnotationConfig
 import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
@@ -95,9 +100,13 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
 
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
+    //Variable for using strings in not-composable
+    val context = LocalContext.current
+
     // Load all places every time the user navigates to this screen
     LaunchedEffect(Unit) {
         mapListViewModel.loadPlaces()
+        mapListViewModel.updateUserLocation()
     }
 
     // Check if there is an error, if so show a snackbar:
@@ -106,7 +115,7 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
             val result = mapListUiState.snackbarHostState.showSnackbar(
                 message = mapListUiState.errorMessage,
                 withDismissAction = true,
-                actionLabel = "Refresh",
+                actionLabel = context.getString(R.string.refresh),
             )
 
             // If the snackbar is dismissed, reset the boolean of the error-variable
@@ -213,7 +222,6 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
 }
 
-
 /**
  * Preview function for ToggleButtonThemeSwitcher
  */
@@ -226,8 +234,6 @@ fun ToggleButtonThemeSwitcherPreview() {
         onClick = { isMapTheme = !isMapTheme }
     )
 }
-
-
 
 /**
  * Togglebutton that switches between Map view and List view
@@ -309,7 +315,7 @@ BoxWithConstraints {
                     )
                     Text(
                         modifier = Modifier.padding(start = 5.dp),
-                        text = "List",
+                        text = stringResource(R.string.toggle_list),
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
@@ -331,7 +337,7 @@ BoxWithConstraints {
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "Map",
+                        text = stringResource(R.string.toggle_map),
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
@@ -343,7 +349,7 @@ BoxWithConstraints {
         Box(
             modifier = Modifier
                 .width(buttonWidth)
-                .height(buttonHeight/2)
+                .height(buttonHeight / 2)
                 .clip(shape = parentShape)
                 .clickable { onClick() }
                 .background(MaterialTheme.colorScheme.onSecondary)
@@ -352,11 +358,10 @@ BoxWithConstraints {
             Box(
                 modifier = Modifier
                     .width(buttonWidth / 2) // size of the toggle button
-                    .height(buttonHeight/2)
+                    .height(buttonHeight / 2)
                     .offset(x = offsetLargeScreen)
                     .clip(shape = parentShape)
                     .background(MaterialTheme.colorScheme.secondary)
-
             )
             // the icons and text representing list and map views
             Row(
@@ -388,7 +393,7 @@ BoxWithConstraints {
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "List",
+                        text = "List", // TODO xml
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
@@ -410,7 +415,7 @@ BoxWithConstraints {
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "Map",
+                        text = "Map", // TODO xml
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
@@ -419,7 +424,6 @@ BoxWithConstraints {
             }
         }
     }
-
     }
 }
 
@@ -455,10 +459,11 @@ fun BottomSheetContent(
  */
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapListViewModel: MapListViewModel) {
-    // Can declare point to contain current location of user
-    val testPoint = Point.fromLngLat(10.71839307051461, 59.943735106220444)
-    //var point: Point by remember { mutableStateOf(testPoint) }
+fun MapArea(mapListUiState: MapListUiState,
+            navController: NavController,
+            mapListViewModel: MapListViewModel) {
+
+    val userPoint = Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
     val context = LocalContext.current
 
     MapboxMap(
@@ -470,33 +475,46 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
             MapInitOptions(
                 context = context,
                 styleUri = Style.OUTDOORS,
-                cameraOptions = CameraOptions.Builder()
-                    .center(Point.fromLngLat(10.71839307051461, 59.943735106220444))
-                    .zoom(10.0)
-                    .build()
             )
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
+        },
+        ) {
+
+        if (mapListUiState.userLocUpdated) {
+            MapEffect { mapView ->
+                Log.d(logTag, "userloc updated")
+                mapView.camera.flyTo(
+                    cameraOptions = CameraOptions.Builder()
+                        .center(userPoint)
+                        .zoom(10.0)
+                        .build()
+                )
+            }
         }
-    ) {
+
         PointAnnotationGroup(
             annotations = mapListUiState.pins.map {pinInfo ->
                 val long = pinInfo.long.toDouble()
                 val lat = pinInfo.lat.toDouble()
                 val point = Point.fromLngLat(long, lat)
 
-                val iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.location_on)!!.toBitmap()
+                val iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.place_location_pin)!!.toBitmap()
 
                 PointAnnotationOptions()
                     .withPoint(point)
                     .withIconImage(iconImageBitmap)
                     .withData(JsonPrimitive(pinInfo.id.toString()))
+                    .withIconAnchor(IconAnchor.BOTTOM)
             },
             annotationConfig = AnnotationConfig(
                 annotationSourceOptions = AnnotationSourceOptions(
-                    clusterOptions = ClusterOptions()
+                    clusterOptions = ClusterOptions(
+                        colorLevels = listOf(Pair(0, Color.RED)),
+                        textSize = 16.0,
+                    )
                 )
             ),
             onClick = {
@@ -509,5 +527,11 @@ fun MapArea(mapListUiState: MapListUiState, navController: NavController, mapLis
                 true
             }
         )
+        // User location
+        PointAnnotation(
+            point = userPoint,
+            iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.user_location_puck)!!.toBitmap()
+        )
+
     }
 }

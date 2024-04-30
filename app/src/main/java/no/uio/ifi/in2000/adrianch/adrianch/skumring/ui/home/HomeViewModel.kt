@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
@@ -14,6 +15,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
@@ -25,8 +29,8 @@ import java.time.format.DateTimeFormatter
 data class HomeUiState(
     // Setting up dummy info, default location to OJD
     val date: LocalDate = LocalDate.of(2000,1,1),
-    var long: String = "10.718393",
-    var lat: String = "59.943735",
+    var long: String = "0",
+    var lat: String = "0",
     val temp: String = "",
     val sunsetTime: String = "",
     val sunsetDate: String = "",
@@ -34,13 +38,14 @@ data class HomeUiState(
     val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
     val blueHour: String = "",
     val goldenHour: String = "",
+    val placeName: String = "",
 
     var favoritePlaces: List<PlaceInfo> = emptyList(),
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
-    var errorMessage: String = "No error",
+    var errorMessage: String = "",
     // Variable for snackbar:
     val snackbarHostState: SnackbarHostState = SnackbarHostState()
 )
@@ -50,7 +55,10 @@ private const val logTag = "HomeViewModel" //for logging
 /**
  * ViewModel for HomeScreen
  */
-class HomeViewModel(private val placeRepository: PlaceRepository, context: Context) : ViewModel() {
+@SuppressLint("StaticFieldLeak")
+class HomeViewModel(
+    private val placeRepository: PlaceRepository,
+    private val context: Context) : ViewModel() {
 
     private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
     private var userPlace: PlaceInfo = PlaceInfo(
@@ -65,6 +73,7 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
         images = emptyList(),
         sunEvents = emptyList()
     )
+    private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl()
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -90,23 +99,35 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
         }
     }
 
-    // Should we just throw this into updateWeather?
-    // Updates coordinates used to ask for weather to devices' current coords
+    // TODO Should we just throw this into updateWeather?
+    /**
+     *    Updates coordinates used to ask for weather to devices' current coords
+     */
+    @SuppressLint("StringFormatInvalid")
     private fun loadUserLocation() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _homeUiState.update { currentHomeUiState ->
                     val userLoc = userLocationRepository.getUserLocation()
+                    val userLat = userLoc.lat
+                    val userLong = userLoc.long
+                    val userPlaceName = geocodingRepository.getPlaceNameFromCoordinates(lat = userLat, long = userLong)
                     Log.d(logTag + "LoadUserLoc", "Lat: ${userLoc.lat}, Long: ${userLoc.long}")
                     currentHomeUiState.copy(
-                        lat = userLoc.lat,
-                        long = userLoc.long
+                        lat = userLat,
+                        long = userLong,
+                        placeName = userPlaceName.placeName
                     )
                 }
             } catch (e: Exception) {
                 // Practically no way this should happen
                 Log.e(logTag, "Error updating user location", e)
-
+                _homeUiState.update { currentHomeUiState ->
+                    currentHomeUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.getString(R.string.error_message_loadUserLocation)
+                    )
+                }
             }
         }
     }
@@ -162,7 +183,7 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
                  _homeUiState.update { currenthomeUiState ->
                      currenthomeUiState.copy(
                          showSnackbar = true,
-                         errorMessage = "Error getting sunset, failed updating state"
+                         errorMessage = context.getString(R.string.error_message_getting_sunset)
                      )
                  }
              }
@@ -174,7 +195,9 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
      */
     fun snackbarDismissed() {
         _homeUiState.update { currentMapUiState ->
-            currentMapUiState.copy(showSnackbar = false)
+            currentMapUiState.copy(
+                showSnackbar = false,
+            )
         }
     }
     /**
@@ -185,8 +208,8 @@ class HomeViewModel(private val placeRepository: PlaceRepository, context: Conte
             currentMapUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch (Dispatchers.IO) {
-            //loadHomeScreen()
-            //updateWeather(lat = lat, long = long)
+            loadFavourites()
+            updateWeather()
         }
     }
 
