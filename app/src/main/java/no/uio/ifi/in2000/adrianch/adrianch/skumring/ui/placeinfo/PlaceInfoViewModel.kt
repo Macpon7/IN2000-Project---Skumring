@@ -21,6 +21,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import java.time.format.DateTimeFormatter
 
 private const val logTag = "PlaceInfoViewModel"
 
@@ -37,6 +38,9 @@ data class PlaceInfoUiState(
         images = emptyList(),
         sunEvents = emptyList()
         ),
+
+    val blueHour: String = "",
+    val goldenHour: String = "",
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -78,7 +82,14 @@ class PlaceInfoViewModel(
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
                     val placeInfoObject = placeRepository.getPlace(id)
-                    currentPlaceInfoUiState.copy(placeInfo = placeInfoObject, isLoading = false)
+                    currentPlaceInfoUiState.copy(
+                        placeInfo = placeInfoObject,
+                        isLoading = false,
+                        blueHour = placeInfoObject.sunEvents[0].blueHourTime.toLocalTime().format(
+                            DateTimeFormatter.ofPattern("HH':'mm")),
+                        goldenHour = placeInfoObject.sunEvents[0].goldenHourTime.toLocalTime().format(
+                        DateTimeFormatter.ofPattern("HH':'mm")),
+                    )
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)
                     currentPlaceInfoUiState.copy(
