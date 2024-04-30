@@ -100,5 +100,7 @@
     <string name="home_more_details_button">More details</string>
     <string name="home_distance">"Distance: "</string>
     <string name="home_user_loc">Your position</string>
+    <string name="placeInfo_less_details_button">Show less</string>
+    <string name="placeInfo_more_details_button">Show more</string>
 
 </resources>
