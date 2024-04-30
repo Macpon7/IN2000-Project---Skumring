@@ -77,13 +77,22 @@ class GoldenHourBlueHourDataSource {
     private fun formatTime(time: String, date: String): LocalDateTime {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
         val dateTimeString = date + " " + fixTimeFormat(time)
-        return LocalDateTime.parse(dateTimeString, formatter)
+        // Hacky fix, please forgive me
+        return try {
+            LocalDateTime.parse(dateTimeString, formatter)
+        } catch (e: Exception) {
+            LocalDateTime.parse("2000-01-01 00:0:00 PM", formatter)
+        }
     }
     private fun fixTimeFormat(time: String): String {
-        return if (time[1] == ':') {
-            "0$time"
-        } else {
-            time
+        return try {
+            if (time[1] == ':') {
+                "0$time"
+            } else {
+                time
+            }
+        } catch (e: Exception) {
+            "00:00"
         }
     }
 }
