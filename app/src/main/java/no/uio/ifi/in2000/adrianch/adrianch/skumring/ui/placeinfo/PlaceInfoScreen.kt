@@ -7,12 +7,14 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +29,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -83,6 +86,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconPopUp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -183,25 +187,25 @@ fun TodayInfoCard(
     placeInfoViewModel: PlaceInfoViewModel
 ) {
 
-    val textColor: Color = MaterialTheme.colorScheme.inverseOnSurface
-    val cardColor: Color = MaterialTheme.colorScheme.inversePrimary
-    val heartIconColor: Color = MaterialTheme.colorScheme.onPrimary
-    val dividerColor: Color = MaterialTheme.colorScheme.surface
-
     //for the clickable text
     var expanded by remember { mutableStateOf(false) }
 
     //for remembering if placeinfo is favourite or not
     var isFavourite by remember { mutableStateOf(placeInfo.isFavourite) }
 
+    //popup for displaying more information about weather conditions
+    var showPopUp by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(560.dp),
+            .fillMaxHeight(),
         elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(cardColor)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inversePrimary)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
             //PlaceInfo image
             Box(
                 modifier = Modifier
@@ -259,7 +263,7 @@ fun TodayInfoCard(
                                 imageVector = Icons.Filled.Favorite,
                                 modifier = Modifier.size(40.dp),
                                 contentDescription = "",
-                                tint = heartIconColor
+                                tint = MaterialTheme.colorScheme.onPrimary
                             )
                             //if not favourite, show heart with border
                         } else {
@@ -267,7 +271,7 @@ fun TodayInfoCard(
                                 imageVector = Icons.Filled.FavoriteBorder,
                                 modifier = Modifier.size(40.dp),
                                 contentDescription = "",
-                                tint = heartIconColor
+                                tint = MaterialTheme.colorScheme.onPrimary
 
                             )
                         }
@@ -278,7 +282,7 @@ fun TodayInfoCard(
             //shows the rest of the text
             ClickableText(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(textColor)) {
+                    withStyle(style = SpanStyle(MaterialTheme.colorScheme.inverseOnSurface)) {
                         append(
                             imageDetails.description,
                             "Placeholder text before the actual text works and we get a place that displays the actual thing we want to display blalbaasdfgldfjs"
@@ -289,21 +293,151 @@ fun TodayInfoCard(
                 maxLines = if (expanded) Int.MAX_VALUE else 2,
                 overflow = TextOverflow.Ellipsis,
                 onClick = { expanded = !expanded },
-                modifier = Modifier.padding(start = 10.dp, bottom = 20.dp, end = 10.dp, top = 5.dp)
+                modifier = Modifier.padding(start = 10.dp, bottom = 25.dp, end = 10.dp, top = 5.dp)
             )
+            Text(
+                stringResource(R.string.distance_from_location),
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 5.dp, bottom = 15.dp)
+                    .align(Alignment.CenterHorizontally),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
+                style = typography.titleMedium
+            )
+            //for showing distance to the place by walking, biking and driving
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 30.dp, end = 30.dp)
+            ) {
+
+
+                Column {
+                    Row {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.walk),
+                            contentDescription = "walk icon",
+                            tint = Color.Unspecified,
+                        )
+                        Text(
+                            text = stringResource(R.string.walk),
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(start = 5.dp)
+                        )
+                    }
+                    Text(
+                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        style = typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(
+                            top = 5.dp,
+                        )
+                    )
+                    Text(
+                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
+                            id = R.string.distance_minutes
+                        ), //TODO //change this later to stringformat
+                        style = typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Column {
+                    Row {
+
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.bike),
+                            contentDescription = "bike icon",
+                            tint = Color.Unspecified,
+                        )
+                        Text(
+                            text = stringResource(R.string.bike),
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(start = 5.dp)
+                        )
+                    }
+                    Text(
+                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        style = typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(
+                            top = 5.dp
+                        )
+                    )
+                    Text(
+                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
+                            id = R.string.distance_minutes
+                        ), //TODO //change this later to stringformat
+                        style = typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
+                        textAlign = TextAlign.Center,
+
+                        )
+                }
+
+                Column {
+                    Row {
+
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.drive),
+                            contentDescription = "drive icon",
+                            tint = Color.Unspecified,
+
+                            )
+                        Text(
+                            text = stringResource(R.string.drive),
+                            style = typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(start = 5.dp)
+                        )
+                    }
+                    Text(
+                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        style = typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(
+                            top = 5.dp
+                        )
+                    )
+                    Text(
+                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
+                            id = R.string.distance_minutes
+                        ), //TODO //change this later to stringformat
+                        style = typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+            Divider(
+                modifier = Modifier.padding(
+                    start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
+                ), color = MaterialTheme.colorScheme.surface, thickness = 1.dp
+            )
+
             //For showing todays date
             Text(
                 text = dateString.uppercase(),
                 fontWeight = FontWeight.Bold,
                 style = typography.titleMedium,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 5.dp),
                 textAlign = TextAlign.Center,
-                color = textColor
-            )
-            Divider(
-                modifier = Modifier.padding(
-                    start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
-                ), color = dividerColor, thickness = 1.dp
+                color = MaterialTheme.colorScheme.inverseOnSurface
             )
             //Sunset Icon
             Icon(
@@ -318,40 +452,57 @@ fun TodayInfoCard(
             Text(
                 text = timeString,
                 style = typography.headlineSmall,
-                color = textColor,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 5.dp, top = 3.dp)
             )
-            //Conditions at sunset
-            Text(
-                text = stringResource(R.string.weather_condition) + ": ${sunEvent.conditions.weatherRating}",
-                style = typography.bodyMedium,
-                color = textColor,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 3.dp)
-            )
+            Row(  //For displaying weather conditions and information popup
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+
+            ) {
+                //Conditions at sunset
+                Text(
+                    text = stringResource(R.string.weather_condition),
+                    style = typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    //text changing based on weather conditions, in different textbox because of change of color
+                    text = "${sunEvent.conditions.weatherRating}", //TODO fix so this is also in Norwegian
+                    style = typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontWeight = FontWeight.Bold,
+                )
+                //Clickable icon for showing more info about the weather conditions
+                Icon(Icons.Default.Info,
+                    contentDescription = "Info",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .clickable { showPopUp = true }
+                        .size(30.dp)
+                        .padding(start = 5.dp, bottom = 10.dp))
+            }
             //Temperature at sunset
             Text(
                 text = stringResource(R.string.temp_at_sunset) + ": ${sunEvent.tempAtEvent} °C",
                 style = typography.bodyMedium,
-                color = textColor,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 5.dp)
+                    .padding(bottom = 5.dp, top = 5.dp)
             )
             Divider(
                 modifier = Modifier.padding(
-                    start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
+                    start = 22.dp, end = 22.dp, top = 10.dp, bottom = 15.dp
                 ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
             )
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -371,7 +522,7 @@ fun TodayInfoCard(
                         text = stringResource(R.string.golden_hour),
                         style = typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = textColor,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(bottom = 0.dp)
                     )
@@ -387,7 +538,7 @@ fun TodayInfoCard(
                     Text(
                         text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
                         style = typography.bodyMedium,
-                        color = textColor,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(
                             start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -400,7 +551,7 @@ fun TodayInfoCard(
                         text = stringResource(R.string.blue_hour),
                         style = typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = textColor,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
                     )//Blue hour icon and time
                     Icon(
@@ -414,7 +565,7 @@ fun TodayInfoCard(
                     Text(
                         text = "20:31-21:05", //TODO //change this later to $blueHourTime
                         style = typography.bodyMedium,
-                        color = textColor,
+                        color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(
                             start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -424,7 +575,12 @@ fun TodayInfoCard(
 
             }
         }
-
+        //close pop up that shows more information about weather conditions
+        if (showPopUp) {
+            WeatherIconPopUp(onClose = {
+                showPopUp = false
+            })
+        }
     }
 }
 
@@ -433,13 +589,6 @@ fun TodayInfoCard(
 fun SunEventInfoCard(
     sunEvent: SunEvent, dateString: String, timeString: String
 ) {
-
-    //Colors for the card
-    val textColor: Color = MaterialTheme.colorScheme.inverseOnSurface
-    val cardColor: Color = MaterialTheme.colorScheme.inversePrimary
-    val buttonColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
-    val buttonTextColor: Color = MaterialTheme.colorScheme.primaryContainer
-    val dividerColor: Color = MaterialTheme.colorScheme.surface
 
     //state for remembering if button is pushed or not
     var expandedState by remember { mutableStateOf(false) }
@@ -450,7 +599,7 @@ fun SunEventInfoCard(
     )
 
     Card(elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(cardColor),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inversePrimary),
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize(
@@ -472,7 +621,7 @@ fun SunEventInfoCard(
                     .fillMaxWidth()
                     .padding(top = 10.dp),
                 textAlign = TextAlign.Center,
-                color = textColor
+                color = MaterialTheme.colorScheme.inverseOnSurface
             )
             Divider( //for dividing the date from the sunset info
                 modifier = Modifier.padding(
@@ -492,7 +641,7 @@ fun SunEventInfoCard(
             Text(
                 text = timeString,
                 style = typography.headlineSmall,
-                color = textColor,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -502,7 +651,7 @@ fun SunEventInfoCard(
             Text(
                 text = stringResource(R.string.weather_condition) + ": ${sunEvent.conditions.weatherRating}",
                 style = typography.bodyMedium,
-                color = textColor,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -512,7 +661,7 @@ fun SunEventInfoCard(
             Text( //temperature at sunset
                 text = stringResource(R.string.temp_at_sunset) + ": ${sunEvent.tempAtEvent}°C",
                 style = typography.bodyMedium,
-                color = textColor,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -521,10 +670,10 @@ fun SunEventInfoCard(
             )
             //Box for "show less"/"show more" button
             Box(
-                modifier = Modifier.background(buttonColor)
+                modifier = Modifier.background(MaterialTheme.colorScheme.onPrimaryContainer)
             ) {
                 Divider(
-                    color = dividerColor, thickness = 1.dp
+                    color = MaterialTheme.colorScheme.surface, thickness = 1.dp
                 )
                 Button(
                     onClick = {
@@ -532,7 +681,7 @@ fun SunEventInfoCard(
                     },
                     shape = RectangleShape,
                     contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(buttonColor),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onPrimaryContainer),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 0.dp, end = 0.dp)
@@ -540,12 +689,14 @@ fun SunEventInfoCard(
                     Text(
                         text = if (expandedState) stringResource(R.string.placeInfo_less_details_button) else stringResource(
                             R.string.placeInfo_more_details_button
-                        ), color = buttonTextColor, style = typography.titleMedium
+                        ),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        style = typography.titleMedium
                     )
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Drop-down arrow",
-                        tint = buttonTextColor,
+                        tint = MaterialTheme.colorScheme.primaryContainer,
                         modifier = Modifier
                             .rotate(rotationState)
                             .padding(start = 7.dp)
@@ -574,7 +725,7 @@ fun SunEventInfoCard(
                             text = stringResource(R.string.golden_hour),
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(bottom = 0.dp)
                         )
@@ -589,7 +740,7 @@ fun SunEventInfoCard(
                         Text(
                             text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
                             style = typography.bodyMedium,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -602,7 +753,7 @@ fun SunEventInfoCard(
                             text = stringResource(R.string.blue_hour),
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
@@ -616,7 +767,7 @@ fun SunEventInfoCard(
                         Text(
                             text = "20:31-21:05", //TODO //change this later to $blueHourTime
                             style = typography.bodyMedium,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -784,4 +935,3 @@ fun PreviewSunEventInfoScreen() {
         )
     }
 }
-

@@ -119,4 +119,8 @@
     <string name="weather_icon_fair">weather icon fair</string>
     <string name="weather_icon_fog">weather icon fog</string>
     <string name="weather_icon_not_found">weather icon not found</string>
+    <string name="distance_hour">h</string>
+    <string name="distance_minutes">m</string>
+    <string name="distance_kilometers">km</string>
+    <string name="distance_from_location">Distance from your location</string>
 </resources>

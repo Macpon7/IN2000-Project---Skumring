@@ -128,5 +128,8 @@
     <string name="app_version" translatable="false">0.3</string>
     <string name="home_user_loc">Din posisjon</string>
     <string name="reverse_geocode_unknown_place">Ukjent sted</string>
-
+    <string name="distance_hour">t</string>
+    <string name="distance_minutes">m</string>
+    <string name="distance_kilometers">km</string>
+    <string name="distance_from_location">Avstand fra din posisjon</string>
 </resources>
