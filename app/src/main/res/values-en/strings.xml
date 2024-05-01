@@ -37,7 +37,11 @@
 
     <!-- MapListScreen -->
     <string name="toggle_list">List</string>
+    <string name="toggle_list_icon">List icon</string>
+
     <string name="toggle_map">Map</string>
+    <string name="toggle_map_icon">Map icon</string>
+
     <string name="places_nearby">Nearby places</string>
     <string name="search_hint">Search</string>
 

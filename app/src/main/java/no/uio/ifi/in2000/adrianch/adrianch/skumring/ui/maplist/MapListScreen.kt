@@ -309,7 +309,7 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp),
                         imageVector = Icons.Default.Menu,
-                        contentDescription = "Theme Icon", // TODO
+                        contentDescription = stringResource(id = R.string.toggle_list_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
                     )
@@ -331,7 +331,7 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
-                        contentDescription = "place icon", // TODO
+                        contentDescription = stringResource(id = R.string.toggle_map_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
                     )
@@ -387,13 +387,13 @@ BoxWithConstraints {
                             .offset((-30).dp)
                             .padding(start = 10.dp),
                         imageVector = Icons.Default.Menu,
-                        contentDescription = "Theme Icon", // TODO
+                        contentDescription = stringResource(id = R.string.toggle_list_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "List", // TODO xml
+                        text = stringResource(id = R.string.toggle_list),
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
@@ -409,13 +409,13 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
-                        contentDescription = "place icon", // TODO
+                        contentDescription = stringResource(id = R.string.toggle_map_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "Map", // TODO xml
+                        text = stringResource(id = R.string.toggle_map),
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
