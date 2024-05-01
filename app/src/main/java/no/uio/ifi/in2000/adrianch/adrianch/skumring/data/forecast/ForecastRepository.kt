@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 import java.util.SortedMap
 import kotlin.math.abs
 
-private const val TAG = "PlaceInfoRepository" //log for error-handling
+private const val TAG = "ForecastRepository" //log for error-handling
 
 interface ForecastRepository {
     suspend fun makeSunEvents(
@@ -67,6 +67,7 @@ class ForecastRepositoryImpl(
                 val sunsetTime: LocalDateTime = sunriseDataSource.fetchSunsetTime(
                     lat = lat, long = long, date = it.key
                 )
+                Log.d(TAG,sunsetTime.toString())
                 val goldenHourBlueHour: GoldenHourBlueHour = goldenHourBlueHourDataSource.fetchGoldenHourBlueHourTime(
                     lat = lat, long = long, date = it.key)
                 Log.d(TAG,goldenHourBlueHour.toString() )
