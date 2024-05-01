@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -290,68 +291,71 @@ fun SunsetInfoCard(
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     thickness = 1.dp
                 )
-                Row( // For displaying Golden hour and Blue hour times on a row
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp, end = 60.dp)
-
+                        //.fillMaxWidth()
+                        .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
                 ) {
-                    Text(
-                        text = stringResource(R.string.golden_hour),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )
-                    Text(
-                        text = stringResource(R.string.blue_hour),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )
-
-                }
-                Row( //for displaying time and icon for Golden hour and Blue Hour
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp, end = 40.dp, bottom = 10.dp)
-
-                ) {
-                    Box { //Golden hour icon and time
+                    //Box for golden hour icon and time
+                    Box {
+                        Text(
+                            text = stringResource(R.string.golden_hour),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(bottom = 0.dp)
+                        )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
-                            contentDescription = stringResource(id = R.string.homescreen_icon_yellow_sun),
+                            contentDescription = "yellow sun icon",
                             tint = Color.Unspecified,
-                            modifier = Modifier.padding(end = 10.dp)
+                            modifier = Modifier.padding(
+                                start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                            )
 
                         )
                         Text(
-                            text = goldenHourTime, // TODO change this later to $goldenHourTime
+                            text = goldenHourTime,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(start = 20.dp)
+                            modifier = Modifier.padding(
+                                start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                            )
                         )
                     }
-                    Box {  //Blue hour icon and time
+                    Spacer(modifier = Modifier.padding(50.dp))
+                    //box for blue hour icon and time
+                    Box {
+                        Text(
+                            text = stringResource(R.string.blue_hour),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            textAlign = TextAlign.Center,
+                        )//Blue hour icon and time
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
-                            contentDescription = stringResource(id = R.string.homescreen_icon_blue_sun),
+                            contentDescription = "blue sun icon",
                             tint = Color.Unspecified,
+                            modifier = Modifier.padding(
+                                start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                            )
                         )
                         Text(
-                            text = blueHourTime, // TODO change this later to $blueHourTime
+                            text = blueHourTime,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(start = 20.dp)
+                            modifier = Modifier.padding(
+                                start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
+                            )
                         )
                     }
+
                 }
             }
         }
