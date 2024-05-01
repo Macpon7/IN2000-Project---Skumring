@@ -69,6 +69,4 @@ class DirectionsRepositoryImpl(
         }
         return outMap.toMap()
     }
-
-
 }

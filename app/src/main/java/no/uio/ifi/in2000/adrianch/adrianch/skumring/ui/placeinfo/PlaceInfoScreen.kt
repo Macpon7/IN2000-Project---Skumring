@@ -314,8 +314,7 @@ fun TodayInfoCard(
                     .fillMaxWidth()
                     .padding(start = 30.dp, end = 30.dp)
             ) {
-
-
+                // WALKING
                 Column {
                     Row {
                         Icon(
@@ -334,7 +333,7 @@ fun TodayInfoCard(
                     }
                     Text(
                         text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.distance +
-                                stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                                " " + stringResource(R.string.distance_kilometers),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -344,17 +343,17 @@ fun TodayInfoCard(
                     )
                     Text(
                         text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.durationHours +
-                                stringResource(id = R.string.distance_hour) +
+                                stringResource(id = R.string.distance_hour) + " " +
                                 placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.durationMinutes +
-                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
+                                stringResource(id = R.string.distance_minutes),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
                     )
                 }
+                //BIKING
                 Column {
                     Row {
-
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.bike),
                             contentDescription = "bike icon",
@@ -371,7 +370,7 @@ fun TodayInfoCard(
                     }
                     Text(
                         text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.distance +
-                                stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                                " " + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -390,7 +389,7 @@ fun TodayInfoCard(
 
                         )
                 }
-
+                // DRIVING
                 Column {
                     Row {
 
@@ -411,7 +410,7 @@ fun TodayInfoCard(
                     }
                     Text(
                         text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.distance +
-                                stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                                " " + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,

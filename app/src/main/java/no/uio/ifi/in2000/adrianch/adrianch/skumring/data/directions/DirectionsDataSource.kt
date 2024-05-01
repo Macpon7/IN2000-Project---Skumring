@@ -7,6 +7,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.Directions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTransportation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance
@@ -30,7 +31,8 @@ class DirectionsDataSource {
      * "legs". If it can't find a route it will create [TravelDurationDistance] object with empty
      * strings to be interpreted by a string template to inform the user.
      *
-     * If the route does not exist, the object will have empty strings we handle later.
+     * If the route does not exist, the object will return string values "xx" to imply route couldn't
+     * be calculated.
      */
     suspend fun fetchTravelDurationDistance(
         fromLat: String,
@@ -61,9 +63,9 @@ class DirectionsDataSource {
             Log.e(logTag,"Failed to calculate route - None available", e)
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
-                distance = "",
-                durationMinutes = "",
-                durationHours = "",
+                distance = "xx",
+                durationMinutes = "xx",
+                durationHours = "xx",
             )
         }
     }
