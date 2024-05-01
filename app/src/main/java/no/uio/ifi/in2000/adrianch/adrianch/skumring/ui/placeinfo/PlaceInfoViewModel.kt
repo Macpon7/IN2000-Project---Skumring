@@ -20,10 +20,9 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.directions.DirectionsRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.directions.DirectionsRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTransportation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
@@ -44,7 +43,7 @@ data class PlaceInfoUiState(
         sunEvents = emptyList(),
         ),
 
-    var listTimesDistances: List<TravelDurationDistance> = emptyList(),
+    var mapTimeDistance: Map<MeansOfTransportation,TravelDurationDistance> = emptyMap(),
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -126,7 +125,7 @@ class PlaceInfoViewModel(
             Log.d(logTag,timePlaceList.toString())
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 currentPlaceInfoUiState.copy(
-                    listTimesDistances = timePlaceList
+                    mapTimeDistance = timePlaceList
                 )
             }
         }

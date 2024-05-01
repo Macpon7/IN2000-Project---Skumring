@@ -184,6 +184,7 @@ fun TodayInfoCard(
     imageDetails: ImageDetails,
     dateString: String,
     timeString: String,
+    placeInfoUiState: PlaceInfoUiState,
     placeInfoViewModel: PlaceInfoViewModel
 ) {
 
@@ -841,7 +842,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
         val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
         TodayInfoCard(
-            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel
+            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoUiState, placeInfoViewModel,
         )
     }
 }

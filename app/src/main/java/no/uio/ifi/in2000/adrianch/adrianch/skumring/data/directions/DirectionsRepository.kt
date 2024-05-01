@@ -18,7 +18,7 @@ interface DirectionsRepository {
         fromLong: String,
         toLat: String,
         toLong: String,
-    ): List<TravelDurationDistance>
+    ): Map<MeansOfTransportation,TravelDurationDistance>
 }
 
 /**
@@ -55,10 +55,10 @@ class DirectionsRepositoryImpl(
         fromLong: String,
         toLat: String,
         toLong: String,
-    ): List<TravelDurationDistance> {
-        val outList = mutableListOf<TravelDurationDistance>()
+    ): Map<MeansOfTransportation,TravelDurationDistance> {
+        val outMap = mutableMapOf<MeansOfTransportation,TravelDurationDistance>()
         MeansOfTransportation.entries.forEach { entry ->
-            outList.add(getTravelDurationDistance(
+            outMap[entry] = (getTravelDurationDistance(
                 fromLat = fromLat,
                 fromLong = fromLong,
                 toLat = toLat,
@@ -67,7 +67,7 @@ class DirectionsRepositoryImpl(
             )
             )
         }
-        return outList.toList()
+        return outMap.toMap()
     }
 
 
