@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,17 +22,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -49,12 +58,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -211,10 +225,10 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                 ) {
                 BottomSheetContent(
                     place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
-                    sunEvent = mapListUiState.placeInfo.sunEvents[0],
+                    sunEvent = mapListUiState.placeInfo.sunEvents.firstOrNull() ?: SunEvent.default(),
                     navController = navController,
-                    mapListViewModel = mapListViewModel,
-                    )
+                    mapListViewModel = mapListViewModel, onItemClick = {}, onFavouriteClick = {}
+                    ) //TODO fix on item click and on favourite click
             }
         }
 
@@ -455,13 +469,13 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
     val placeInfoDao = database.placeInfoDao()
     val placeRepository = PlaceRepositoryImpl(placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao)
 
-    BottomSheetContent(place = PlaceInfo(id = 123, name = "hei", description = "godt sted å ta bilde", lat = "", long = "", isFavourite = false, isCustomPlace = false, hasNotification = false, images = emptyList(), sunEvents = emptyList()),
-        sunEvent = SunEvent(time = LocalDateTime.now(), tempAtEvent = "", weatherIcon = "", conditions = WeatherConditions(
+    BottomSheetContent(place = PlaceInfo(id = 123, name = "Monrads gate 33", description = "godt sted å ta bilde på en solrik dag", lat = "", long = "", isFavourite = false, isCustomPlace = false, hasNotification = false, images = emptyList(), sunEvents = emptyList()),
+        sunEvent = SunEvent(time = LocalDateTime.now(), tempAtEvent = "20", weatherIcon = ":)", conditions = WeatherConditions(
         weatherRating = WeatherConditionsRating.EXCELLENT,
         cloudConditionLow = CloudConditions.CLEAR,
         cloudConditionHigh = CloudConditions.CLEAR,
         cloudConditionMedium = CloudConditions.CLEAR,
-        airCondition = AirConditions.LOW)),  navController = navController, mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository))
+        airCondition = AirConditions.LOW)),  navController = navController, mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository), onItemClick = {}, onFavouriteClick = {})
 }
 
 
@@ -470,67 +484,145 @@ fun BottomSheetContent(
     place: PlaceInfo,
     sunEvent: SunEvent,
     navController: NavController,
-    mapListViewModel: MapListViewModel
+    mapListViewModel: MapListViewModel,
+    onItemClick: () -> Unit,
+    onFavouriteClick: () -> Unit
 ) {
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-    )
-    {
-        Card(
-            shape = RoundedCornerShape(15.dp),
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth()
-        ) {
-            Column {
-                Text(
-                    text = place.name,
-                )
-                Text(
-                    text = sunEvent.weatherIcon,
-                )
-               /*
-                Text(
-                    text = sunEvent.time,
-                )
-
-                */
-                Text(
-                    text = place.description,
-                )
-                Text (
-                text = sunEvent.tempAtEvent,
-                )
-                /*
-                Text(
-                    text = sunEvent.conditions,
-                )
-
-                 */
-            }
-
-        }
-
-        }
-        /*
-        ListCard(
-            name = place.name,
-            description = place.description,
-            isFavourite = place.isFavourite,
-            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+    //for remembering if placeinfo is favourite or not
+    var isFavourite by remember { mutableStateOf(place.isFavourite) }
+    /*
+    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                 mapListViewModel.hideBottomSheet()
                 navController.navigate("placeinfoscreen/${place.id}")
-            },
-            onFavouriteClick = {
-                mapListViewModel.toggleFavourite(place = place)
             }
-        )
-        Spacer(modifier = Modifier.height(40.dp))
-    }
+     */
 
-         */
-}
+        Card(
+           // shape = RoundedCornerShape(15.dp),
+            modifier = Modifier
+                .padding(15.dp)
+                .clickable(onClick = onItemClick),
+            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 12.dp, end = 12.dp)
+            )
+            {
+                Text(
+                    text = place.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .padding(end = 20.dp)
+                )
+                IconButton(onClick = { mapListViewModel.toggleFavourite(place = place)
+                    isFavourite = !isFavourite
+                }) {
+                    if (isFavourite) {
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = "",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Filled.FavoriteBorder,
+                            contentDescription = "",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+
+                    }
+                }
+                }
+                Row {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) { //Sunset icon and time of sunset, in box because it needs to overlap
+                        Icon(
+                            painter = painterResource(id = R.drawable.sunsetsymbol),
+                            contentDescription = "Sunset Icon",
+                            tint = androidx.compose.ui.graphics.Color.Unspecified,
+                            modifier = Modifier
+                                .size(60.dp)
+                        )
+                        Text(
+                            text = "20:20", //"${sunEvent.time}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+
+            Column (
+                modifier = Modifier.fillMaxWidth()
+                    .padding(start = 15.dp)
+            )
+            {
+                Text(
+                    text = "Temperature at sunset:  ${sunEvent.tempAtEvent} °C",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .padding(top= 15.dp)
+                )
+                //Conditions at sunset
+                Text(
+                    text = stringResource(R.string.weather_condition) + " ${sunEvent.conditions.weatherRating}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
+                Text(
+                    text = "Beskrivelse: " + place.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
+
+                Spacer(modifier = Modifier.padding(10.dp))
+
+            }
+
+                }
+            Row {
+                Box(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.tertiary)
+                ) {
+                    Divider( //marks the division between the image and the informationpart of the button
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        thickness = 1.dp
+                    )
+                    Button(
+                        onClick = {
+                            mapListViewModel.hideBottomSheet()
+                            navController.navigate("placeinfoscreen/${place.id}")
+                        },
+                        shape = RectangleShape,
+                        contentPadding = PaddingValues(0.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 0.dp, end = 0.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.home_more_details_button),
+                            color = MaterialTheme.colorScheme.onTertiary,
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+                }
+            }
+
+        }
+
+        }
+
+
 
 /**
  * Placeholder for the map display area
