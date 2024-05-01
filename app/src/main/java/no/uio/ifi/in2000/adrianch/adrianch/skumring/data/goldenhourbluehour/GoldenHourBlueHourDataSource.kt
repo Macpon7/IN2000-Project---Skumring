@@ -56,9 +56,7 @@ class GoldenHourBlueHourDataSource {
         try {
             val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
             // Fetches info for Central European TZ
-            Log.d(logTag, dateString)
             val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&date=$dateString"
-            Log.d(logTag, path)
             val response = fetchSunriseSunset(path)
             Log.d(logTag, response.results.golden_hour ?: "")
             val goldenHourDateTime: LocalDateTime = formatTime(
