@@ -29,6 +29,8 @@ class DirectionsDataSource {
      * in a way that the first element will contain the information we're interested in, known as
      * "legs". If it can't find a route it will create [TravelDurationDistance] object with empty
      * strings to be interpreted by a string template to inform the user.
+     *
+     * If the route does not exist, the object will have empty strings we handle later.
      */
     suspend fun fetchTravelDurationDistance(
         fromLat: String,
@@ -91,8 +93,8 @@ class DirectionsDataSource {
     }
 
     /*
-    Small help function since the directions api returns duration in seconds, we
-    convert it to a neatly formatted string instead.
+    Small help functions since the directions api returns duration in seconds, we
+    convert it to neatly formatted strings instead
      */
     private fun secondsToHours (duration: Double): String {
         val hours: Int = duration.toInt() / 3600
