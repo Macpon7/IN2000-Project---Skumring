@@ -40,6 +40,10 @@ class GoldenHourBlueHourDataSource {
      * Calls SunriseSunset.io with given latitude, longitude and date and returns
      * golden hour and blue hour for said parameters.
      *
+     *
+     * If the area checked doesn't have blue/golden hour, it returns an empty string
+     * fun formatTime transforms into a dummy LocalDateTime set to 2000-01-01 00:00
+     *
      * Inputs:
      *
      * lat: String - Latitude coordinate
@@ -55,10 +59,10 @@ class GoldenHourBlueHourDataSource {
             val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&$dateString"
             val response = fetchSunriseSunset(path)
             val goldenHourDateTime: LocalDateTime = formatTime(
-                time = response.results.golden_hour,
+                time = response.results.golden_hour ?: "",
                 date = dateString)
             val blueHourDateTime: LocalDateTime = formatTime(
-                time = response.results.dusk,
+                time = response.results.dusk ?: "",
                 date = dateString)
             Log.d(logTag, "Golden hour: $goldenHourDateTime, Blue hour: $blueHourDateTime")
 
@@ -72,19 +76,24 @@ class GoldenHourBlueHourDataSource {
 
     /**
      * Auxiliary functions that lets us convert from the format provided by the API
-     * to a LocalDateTime object
+     * to a LocalDateTime object. If it fails to parse the datetime because the time string
+     * is empty, it defaults to a dummy DateTime which we will check for later.
      */
     private fun formatTime(time: String, date: String): LocalDateTime {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
         val dateTimeString = date + " " + fixTimeFormat(time)
-        // Hacky fix, please forgive me
-        // TODO fix this shit
         return try {
             LocalDateTime.parse(dateTimeString, formatter)
         } catch (e: Exception) {
-            LocalDateTime.parse("2000-01-01 00:0:00 PM", formatter)
+            LocalDateTime.parse("2000-01-01 00:00:00 PM", formatter)
         }
     }
+
+    /**
+     * Because the API doesn't format its output time properly we have to do it.
+     * Adds a zero in front of single digit hours. If it gets an empty or correctly
+     * formatted time string, it will be returned as is.
+     */
     private fun fixTimeFormat(time: String): String {
         return try {
             if (time[1] == ':') {
@@ -93,7 +102,8 @@ class GoldenHourBlueHourDataSource {
                 time
             }
         } catch (e: Exception) {
-            "00:00"
+            Log.e(logTag, "Error handling time", e)
+            throw e
         }
     }
 }

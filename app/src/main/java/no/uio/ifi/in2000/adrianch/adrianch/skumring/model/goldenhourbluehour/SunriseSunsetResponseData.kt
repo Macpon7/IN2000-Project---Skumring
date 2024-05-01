@@ -15,15 +15,15 @@ data class SunriseSunset(
 
 data class Results(
     val date: String,
-    val dawn: String,
+    val dawn: String?,
     val day_length: String,
-    val dusk: String,
-    val first_light: String,
-    val golden_hour: String,
-    val last_light: String,
+    val dusk: String?,
+    val first_light: String?,
+    val golden_hour: String?,
+    val last_light: String?,
     val solar_noon: String,
-    val sunrise: String,
-    val sunset: String,
+    val sunrise: String?,
+    val sunset: String?,
     val timezone: String,
     val utc_offset: Int
 )
