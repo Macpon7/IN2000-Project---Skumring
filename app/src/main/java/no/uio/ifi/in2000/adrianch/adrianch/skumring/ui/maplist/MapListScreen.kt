@@ -309,7 +309,7 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp),
                         imageVector = Icons.Default.Menu,
-                        contentDescription = "Theme Icon",
+                        contentDescription = "Theme Icon", // TODO
                         tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
                     )
@@ -331,7 +331,7 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
-                        contentDescription = "place icon",
+                        contentDescription = "place icon", // TODO
                         tint = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
                     )
@@ -387,7 +387,7 @@ BoxWithConstraints {
                             .offset((-30).dp)
                             .padding(start = 10.dp),
                         imageVector = Icons.Default.Menu,
-                        contentDescription = "Theme Icon",
+                        contentDescription = "Theme Icon", // TODO
                         tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
                     )
@@ -409,7 +409,7 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
-                        contentDescription = "place icon",
+                        contentDescription = "place icon", // TODO
                         tint = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
                     )
