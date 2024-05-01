@@ -101,7 +101,10 @@ class GoldenHourBlueHourDataSource {
             } else {
                 time
             }
-        } catch (e: Exception) {
+        } catch (e: IndexOutOfBoundsException) {
+            time
+        }
+        catch (e: Exception) {
             Log.e(logTag, "Error handling time", e)
             throw e
         }
