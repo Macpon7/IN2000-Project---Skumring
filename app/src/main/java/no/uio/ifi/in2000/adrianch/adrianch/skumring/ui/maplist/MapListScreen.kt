@@ -28,6 +28,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -39,6 +40,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +49,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -500,25 +503,27 @@ fun BottomSheetContent(
         Card(
            // shape = RoundedCornerShape(15.dp),
             modifier = Modifier
-                .padding(15.dp)
-                .clickable(onClick = onItemClick),
+                //.padding(15.dp)
+                .clickable(onClick = onItemClick)
+                .fillMaxWidth(),
             colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary)
         ) {
             Row(
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp)
+                    .padding(bottom = 0.dp, top = 10.dp,)// end = 20.dp, start = 20.dp)
             )
             {
                 Text(
                     text = place.name,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
-                        .padding(end = 20.dp)
+                        .padding(bottom = 5.dp)
                 )
+                Spacer(modifier = Modifier.padding(start = 80.dp))
                 IconButton(onClick = { mapListViewModel.toggleFavourite(place = place)
                     isFavourite = !isFavourite
                 }) {
@@ -527,19 +532,24 @@ fun BottomSheetContent(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = "",
                             tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(30.dp)
 
                         )
                     } else {
                         Icon(
                             imageVector = Icons.Filled.FavoriteBorder,
                             contentDescription = "",
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(30.dp)
                         )
 
                     }
                 }
                 }
-                Row {
+            /*
+                Row (
+                    modifier = Modifier.padding(start = 15.dp)
+                ){
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
@@ -559,68 +569,132 @@ fun BottomSheetContent(
                         )
                     }
 
+             */
+
             Column (
-                modifier = Modifier.fillMaxWidth()
-                    .padding(start = 15.dp)
+                horizontalAlignment = Alignment.CenterHorizontally,
+               // modifier = Modifier.fillMaxWidth()
+                   // .padding(start = 15.dp, end = 15.dp, top = 20.dp)
             )
             {
+                /*
+                Icon(
+                    painter = painterResource(id = R.drawable.sunsetsymbol),
+                    contentDescription = "Sunset Icon",
+                    tint = androidx.compose.ui.graphics.Color.Unspecified,
+                    modifier = Modifier
+                        .size(60.dp)
+                )
+
+                 */
                 Text(
-                    text = "Temperature at sunset:  ${sunEvent.tempAtEvent} °C",
+                    text = "Sunset events ",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Divider( //marks the division between the image and the informationpart of the button
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    thickness = 1.dp, modifier = Modifier.padding(start = 80.dp, end = 80.dp,  bottom = 10.dp)
+                )
+
+                Text(
+                    text = "Time: 20:20", //"${sunEvent.time}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
+
+                Text(
+                    text = "Temperature:  ${sunEvent.tempAtEvent} °C",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
-                        .padding(top= 15.dp)
+                        .padding(top= 10.dp)
                 )
+                //Spacer(modifier = Modifier.padding(10.dp))
                 //Conditions at sunset
                 Text(
                     text = stringResource(R.string.weather_condition) + " ${sunEvent.conditions.weatherRating}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
-                )
-                Text(
-                    text = "Beskrivelse: " + place.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .padding(top= 10.dp)
                 )
 
                 Spacer(modifier = Modifier.padding(10.dp))
 
-            }
-
                 }
-            Row {
-                Box(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.tertiary)
-                ) {
-                    Divider( //marks the division between the image and the informationpart of the button
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        thickness = 1.dp
-                    )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                  //  .padding(15.dp)
+                    .fillMaxWidth()) {
+
+                Text(
+                    text = "Description of place ",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Divider( //marks the division between the image and the informationpart of the button
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    thickness = 1.dp, modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
+                )
+                Text(
+                    text = place.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                )
+            }
+            Spacer(modifier = Modifier.padding(6.dp))
+
+            Row (horizontalArrangement = Arrangement.End,
+                //verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(bottom = 15.dp, end = 15.dp)
+                    .fillMaxWidth()
+            ){
+                    TextButton(
+                        onClick = {
+                            mapListViewModel.hideBottomSheet()
+                            navController.navigate("placeinfoscreen/${place.id}")
+                        },
+                        contentPadding = PaddingValues(12.dp),
+                       // colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+
+                    ) {
+                        Text(
+                            text = "CLOSE",
+                            color = MaterialTheme.colorScheme.onTertiary,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.padding(start = 10.dp))
+
                     Button(
                         onClick = {
                             mapListViewModel.hideBottomSheet()
                             navController.navigate("placeinfoscreen/${place.id}")
                         },
-                        shape = RectangleShape,
-                        contentPadding = PaddingValues(0.dp),
+                        contentPadding = PaddingValues(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 0.dp, end = 0.dp)
+
                     ) {
                         Text(
                             text = stringResource(R.string.home_more_details_button),
                             color = MaterialTheme.colorScheme.onTertiary,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.bodyMedium,
+
                         )
                     }
+               //  Spacer(modifier = Modifier.padding(15.dp))
                 }
             }
 
         }
 
-        }
+
 
 
 
