@@ -35,6 +35,14 @@
     <string name="conditions_decent">Grei nok</string>
     <string name="conditions_excellent">Fantastisk</string>
 
+    <string name="homescreen_sunset_image">Solnedgang bilde</string>
+
+    <string name="homescreen_icon_cloudy">Vær ikon skyete</string>
+    <string name="homescreen_icon_sunset">Solnedgang ikon</string>
+    <string name="homescreen_icon_yellow_sun">Gult sol ikon</string>
+    <string name="homescreen_icon_blue_sun">Blått sol ikon</string>
+
+
     <!-- MapListScreen -->
     <string name="toggle_list">Liste</string>
     <string name="toggle_map">Kart</string>
@@ -106,6 +114,19 @@
     <string name="weather_conditions_poor_explanation">Skyene henger lavt, sikten er ikke god og gir ikke gode bildeforhold</string>
     <string name="weather_conditions_popUp_dismiss">Lukk</string>
 
+    <!--WeatherIconCheck-->
+    <string name="weather_icon_thunder">Værikon torden</string>
+    <string name="weather_icon_rain">Værikon regn</string>
+    <string name="weather_icon_snow">Værikon snø</string>
+    <string name="weather_icon_clear">Værikon klart vær</string>
+    <string name="weather_icon_partly_sun">Værikon delvis skyet med sol</string>
+    <string name="weather_icon_partly_cloudy">Værikon delvis skyet</string>
+    <string name="weather_icon_cloudy_sun">Værikon skyet og sol</string>
+    <string name="weather_icon_cloudy">Værikon skyet</string>
+    <string name="weather_icon_fair">Værikon lett skydekke</string>
+    <string name="weather_icon_fog">Værikon tåke</string>
+    <string name="weather_icon_not_found">Værikon ikke funnet</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
@@ -116,4 +137,8 @@
     <string name="home_user_loc">Din posisjon</string>
     <string name="from">Fra</string>
     <string name="reverse_geocode_unknown_place">Ukjent sted</string>
+    <string name="distance_hour">t</string>
+    <string name="distance_minutes">m</string>
+    <string name="distance_kilometers">km</string>
+    <string name="distance_from_location">Avstand fra din posisjon</string>
 </resources>
