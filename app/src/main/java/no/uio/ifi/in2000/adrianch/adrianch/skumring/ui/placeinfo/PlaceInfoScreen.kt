@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
-import android.graphics.Paint.Align
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -301,16 +300,15 @@ fun TodayInfoCard(
                 onClick = { expanded = !expanded },
                 modifier = Modifier.padding(start = 10.dp, bottom = 25.dp, end = 10.dp, top = 5.dp)
             )
-
-
-            //Row for different ways to get to the place
+            //for showing distance to the place by walking, biking and driving
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)
+                    .padding(start = 30.dp, end = 30.dp)
             ) {
+
 
                 Column {
                     Row {
@@ -329,7 +327,7 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "150 meter", //TODO //change this later to stringformat
+                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -338,13 +336,14 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "40 min", //TODO //change this later to stringformat
+                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
+                            id = R.string.distance_minutes
+                        ), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
                     )
                 }
-
                 Column {
                     Row {
 
@@ -360,10 +359,10 @@ fun TodayInfoCard(
                             color = textColor,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(start = 5.dp)
-                        )//Blue hour icon and time
+                        )
                     }
                     Text(
-                        text = "150 meter", //TODO //change this later to stringformat
+                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -372,7 +371,9 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "20 min", //TODO //change this later to stringformat
+                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
+                            id = R.string.distance_minutes
+                        ), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -399,7 +400,7 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "150 km", //TODO //change this later to stringformat
+                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
@@ -408,7 +409,9 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "10 min", //TODO //change this later to stringformat
+                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
+                            id = R.string.distance_minutes
+                        ), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = textColor,
                         textAlign = TextAlign.Center,
