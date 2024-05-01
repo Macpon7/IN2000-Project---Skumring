@@ -35,6 +35,14 @@
     <string name="conditions_decent">Grei nok</string>
     <string name="conditions_excellent">Fantastisk</string>
 
+    <string name="homescreen_sunset_image">Solnedgang bilde</string>
+
+    <string name="homescreen_icon_cloudy">Vær ikon skyete</string>
+    <string name="homescreen_icon_sunset">Solnedgang ikon</string>
+    <string name="homescreen_icon_yellow_sun">Gult sol ikon</string>
+    <string name="homescreen_icon_blue_sun">Blått sol ikon</string>
+
+
     <!-- MapListScreen -->
     <string name="toggle_list">Liste</string>
     <string name="toggle_map">Kart</string>
