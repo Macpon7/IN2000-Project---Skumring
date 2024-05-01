@@ -185,7 +185,9 @@ fun TodayInfoCard(
     imageDetails: ImageDetails,
     dateString: String,
     timeString: String,
-    placeInfoViewModel: PlaceInfoViewModel
+    placeInfoViewModel: PlaceInfoViewModel,
+    goldenHourTime: String,
+    blueHourTime: String
 ) {
 
     //for the clickable text
@@ -842,7 +844,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
         val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
         TodayInfoCard(
-            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel
+            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel, placeInfoUiState.goldenHour,  placeInfoUiState.blueHour
         )
     }
 }
