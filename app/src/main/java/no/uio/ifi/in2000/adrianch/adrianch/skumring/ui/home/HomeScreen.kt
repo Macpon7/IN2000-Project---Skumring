@@ -24,14 +24,12 @@ import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarResult
@@ -253,7 +251,7 @@ fun SunsetInfoCard(sunsetTime: String, weatherConditions: WeatherConditionsRatin
                     )
                 }
                 if (icon != null) {
-                    WeatherIconCheck(weatherCondition = icon) //shows the icon that fits the weather forecast
+                    WeatherIconCheck(weatherCondition = icon, weatherConditions) //shows the icon that fits the weather forecast
                 } else {
                     Icon ( //if icon is null, "show image not found"
                         painterResource(id = R.drawable.image_not_found),
