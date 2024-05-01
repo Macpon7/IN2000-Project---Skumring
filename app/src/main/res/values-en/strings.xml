@@ -108,4 +108,15 @@
     <string name="reverse_geocode_unknown_place">Unknown Place</string>
     <string name="placeInfo_less_details_button">Show less</string>
     <string name="placeInfo_more_details_button">Show more</string>
+    <string name="weather_icon_thunder">weather icon thunder</string>
+    <string name="weather_icon_rain">weather icon rain</string>
+    <string name="weather_icon_snow">weather icon snow</string>
+    <string name="weather_icon_clear">weather icon clear</string>
+    <string name="weather_icon_partly_sun">weather icon partly cloudy with sun</string>
+    <string name="weather_icon_partly_cloudy">weather icon partly cloudy</string>
+    <string name="weather_icon_cloudy_sun">weather icon cloudy with sun</string>
+    <string name="weather_icon_cloudy">weather icon cloudy</string>
+    <string name="weather_icon_fair">weather icon fair</string>
+    <string name="weather_icon_fog">weather icon fog</string>
+    <string name="weather_icon_not_found">weather icon not found</string>
 </resources>
