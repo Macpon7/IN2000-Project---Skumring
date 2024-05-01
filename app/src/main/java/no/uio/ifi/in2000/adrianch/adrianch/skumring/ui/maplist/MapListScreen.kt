@@ -29,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -80,11 +81,20 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoUiState
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoViewModel
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.SunEventInfoContent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
+import java.time.LocalDateTime
 
 private const val logTag = "MapListScreen"
 
@@ -171,6 +181,7 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
 @Composable
 fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
+
     /*
     SearchBar(query = text,
         onQueryChange = {text = it} ,
@@ -200,8 +211,9 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                 ) {
                 BottomSheetContent(
                     place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
+                    sunEvent = mapListUiState.placeInfo.sunEvents[0],
                     navController = navController,
-                    mapListViewModel = mapListViewModel
+                    mapListViewModel = mapListViewModel,
                     )
             }
         }
@@ -432,6 +444,7 @@ BoxWithConstraints {
     }
 }
 
+
 @Preview
 @Composable
 fun BottomSheetPreview(navController: NavHostController = rememberNavController()) {
@@ -442,12 +455,20 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
     val placeInfoDao = database.placeInfoDao()
     val placeRepository = PlaceRepositoryImpl(placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao)
 
-    BottomSheetContent(place = PlaceInfo(id = 123, name = "hei", description = "godt sted å ta bilde", lat = "", long = "", isFavourite = false, isCustomPlace = false, hasNotification = false, images = emptyList(), sunEvents = emptyList()), navController = navController, mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository))
+    BottomSheetContent(place = PlaceInfo(id = 123, name = "hei", description = "godt sted å ta bilde", lat = "", long = "", isFavourite = false, isCustomPlace = false, hasNotification = false, images = emptyList(), sunEvents = emptyList()),
+        sunEvent = SunEvent(time = LocalDateTime.now(), tempAtEvent = "", weatherIcon = "", conditions = WeatherConditions(
+        weatherRating = WeatherConditionsRating.EXCELLENT,
+        cloudConditionLow = CloudConditions.CLEAR,
+        cloudConditionHigh = CloudConditions.CLEAR,
+        cloudConditionMedium = CloudConditions.CLEAR,
+        airCondition = AirConditions.LOW)),  navController = navController, mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository))
 }
+
 
 @Composable
 fun BottomSheetContent(
     place: PlaceInfo,
+    sunEvent: SunEvent,
     navController: NavController,
     mapListViewModel: MapListViewModel
 ) {
@@ -456,6 +477,43 @@ fun BottomSheetContent(
         modifier = Modifier.fillMaxWidth()
     )
     {
+        Card(
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth()
+        ) {
+            Column {
+                Text(
+                    text = place.name,
+                )
+                Text(
+                    text = sunEvent.weatherIcon,
+                )
+               /*
+                Text(
+                    text = sunEvent.time,
+                )
+
+                */
+                Text(
+                    text = place.description,
+                )
+                Text (
+                text = sunEvent.tempAtEvent,
+                )
+                /*
+                Text(
+                    text = sunEvent.conditions,
+                )
+
+                 */
+            }
+
+        }
+
+        }
+        /*
         ListCard(
             name = place.name,
             description = place.description,
@@ -470,6 +528,8 @@ fun BottomSheetContent(
         )
         Spacer(modifier = Modifier.height(40.dp))
     }
+
+         */
 }
 
 /**
