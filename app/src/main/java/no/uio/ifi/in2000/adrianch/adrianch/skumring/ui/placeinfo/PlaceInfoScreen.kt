@@ -300,6 +300,14 @@ fun TodayInfoCard(
                 onClick = { expanded = !expanded },
                 modifier = Modifier.padding(start = 10.dp, bottom = 25.dp, end = 10.dp, top = 5.dp)
             )
+            Text(stringResource(R.string.distance_from_location),
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 5.dp, bottom = 15.dp)
+                    .align(Alignment.CenterHorizontally),
+                fontWeight = FontWeight.Bold,
+                color = textColor,
+                style = typography.titleMedium
+            )
             //for showing distance to the place by walking, biking and driving
             Row(
                 verticalAlignment = Alignment.CenterVertically,
