@@ -106,6 +106,19 @@
     <string name="weather_conditions_poor_explanation">Skyene henger lavt, sikten er ikke god og gir ikke gode bildeforhold</string>
     <string name="weather_conditions_popUp_dismiss">Lukk</string>
 
+    <!--WeatherIconCheck-->
+    <string name="weather_icon_thunder">Værikon torden</string>
+    <string name="weather_icon_rain">Værikon regn</string>
+    <string name="weather_icon_snow">Værikon snø</string>
+    <string name="weather_icon_clear">Værikon klart vær</string>
+    <string name="weather_icon_partly_sun">Værikon delvis skyet med sol</string>
+    <string name="weather_icon_partly_cloudy">Værikon delvis skyet</string>
+    <string name="weather_icon_cloudy_sun">Værikon skyet og sol</string>
+    <string name="weather_icon_cloudy">Værikon skyet</string>
+    <string name="weather_icon_fair">Værikon lett skydekke</string>
+    <string name="weather_icon_fog">Værikon tåke</string>
+    <string name="weather_icon_not_found">Værikon ikke funnet</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>

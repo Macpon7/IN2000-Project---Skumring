@@ -514,7 +514,7 @@ fun TodayInfoCard(
                 Box(
                     modifier = Modifier.size(80.dp)
                 ) {
-                    WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
+                    WeatherIconCheck(weatherCondition = sunEvent.weatherIcon, weather = sunEvent.conditions.weatherRating)
                 }
                 //Box for golden hour icon and time
                 Box {
@@ -717,7 +717,7 @@ fun SunEventInfoCard(
                     Box(
                         modifier = Modifier.size(60.dp)
                     ) {
-                        WeatherIconCheck(weatherCondition = sunEvent.weatherIcon)
+                        WeatherIconCheck(weatherCondition = sunEvent.weatherIcon, weather = sunEvent.conditions.weatherRating)
                     }
                     //golden hour text, icon and time
                     Box {
