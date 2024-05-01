@@ -295,7 +295,8 @@ fun TodayInfoCard(
                 onClick = { expanded = !expanded },
                 modifier = Modifier.padding(start = 10.dp, bottom = 25.dp, end = 10.dp, top = 5.dp)
             )
-            Text(stringResource(R.string.distance_from_location),
+            Text(
+                stringResource(R.string.distance_from_location),
                 modifier = Modifier
                     .padding(start = 15.dp, top = 5.dp, bottom = 15.dp)
                     .align(Alignment.CenterHorizontally),
@@ -589,13 +590,6 @@ fun SunEventInfoCard(
     sunEvent: SunEvent, dateString: String, timeString: String
 ) {
 
-    //Colors for the card
-    val textColor: Color = MaterialTheme.colorScheme.inverseOnSurface
-    val cardColor: Color = MaterialTheme.colorScheme.inversePrimary
-    val buttonColor: Color = MaterialTheme.colorScheme.onPrimaryContainer
-    val buttonTextColor: Color = MaterialTheme.colorScheme.primaryContainer
-    val dividerColor: Color = MaterialTheme.colorScheme.surface
-
     //state for remembering if button is pushed or not
     var expandedState by remember { mutableStateOf(false) }
 
@@ -605,7 +599,7 @@ fun SunEventInfoCard(
     )
 
     Card(elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(cardColor),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inversePrimary),
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize(
@@ -627,7 +621,7 @@ fun SunEventInfoCard(
                     .fillMaxWidth()
                     .padding(top = 10.dp),
                 textAlign = TextAlign.Center,
-                color = textColor
+                color = MaterialTheme.colorScheme.inverseOnSurface
             )
             Divider( //for dividing the date from the sunset info
                 modifier = Modifier.padding(
@@ -647,7 +641,7 @@ fun SunEventInfoCard(
             Text(
                 text = timeString,
                 style = typography.headlineSmall,
-                color = textColor,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -657,7 +651,7 @@ fun SunEventInfoCard(
             Text(
                 text = stringResource(R.string.weather_condition) + ": ${sunEvent.conditions.weatherRating}",
                 style = typography.bodyMedium,
-                color = textColor,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -667,7 +661,7 @@ fun SunEventInfoCard(
             Text( //temperature at sunset
                 text = stringResource(R.string.temp_at_sunset) + ": ${sunEvent.tempAtEvent}°C",
                 style = typography.bodyMedium,
-                color = textColor,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -676,10 +670,10 @@ fun SunEventInfoCard(
             )
             //Box for "show less"/"show more" button
             Box(
-                modifier = Modifier.background(buttonColor)
+                modifier = Modifier.background(MaterialTheme.colorScheme.onPrimaryContainer)
             ) {
                 Divider(
-                    color = dividerColor, thickness = 1.dp
+                    color = MaterialTheme.colorScheme.surface, thickness = 1.dp
                 )
                 Button(
                     onClick = {
@@ -687,7 +681,7 @@ fun SunEventInfoCard(
                     },
                     shape = RectangleShape,
                     contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(buttonColor),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onPrimaryContainer),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 0.dp, end = 0.dp)
@@ -695,12 +689,14 @@ fun SunEventInfoCard(
                     Text(
                         text = if (expandedState) stringResource(R.string.placeInfo_less_details_button) else stringResource(
                             R.string.placeInfo_more_details_button
-                        ), color = buttonTextColor, style = typography.titleMedium
+                        ),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        style = typography.titleMedium
                     )
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Drop-down arrow",
-                        tint = buttonTextColor,
+                        tint = MaterialTheme.colorScheme.primaryContainer,
                         modifier = Modifier
                             .rotate(rotationState)
                             .padding(start = 7.dp)
@@ -729,7 +725,7 @@ fun SunEventInfoCard(
                             text = stringResource(R.string.golden_hour),
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(bottom = 0.dp)
                         )
@@ -744,7 +740,7 @@ fun SunEventInfoCard(
                         Text(
                             text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
                             style = typography.bodyMedium,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -757,7 +753,7 @@ fun SunEventInfoCard(
                             text = stringResource(R.string.blue_hour),
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
@@ -771,7 +767,7 @@ fun SunEventInfoCard(
                         Text(
                             text = "20:31-21:05", //TODO //change this later to $blueHourTime
                             style = typography.bodyMedium,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
