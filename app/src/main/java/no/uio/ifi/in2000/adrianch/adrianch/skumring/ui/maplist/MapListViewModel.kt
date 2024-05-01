@@ -48,8 +48,22 @@ data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     // Variable that change according to the error message we get:
     var errorMessage: String = "",
     // Variable for snackbar:
-    val snackbarHostState: SnackbarHostState = SnackbarHostState()
-)
+    val snackbarHostState: SnackbarHostState = SnackbarHostState(),
+
+    var placeInfo: PlaceInfo = PlaceInfo(
+        id = 0,
+        name = "",
+        description = "",
+        lat = "",
+        long = "",
+        isFavourite = false,
+        isCustomPlace = false,
+        hasNotification = false,
+        images = emptyList(),
+        sunEvents = emptyList()
+    ),
+
+    )
 
 private const val logTag = "MapListViewModel"
 

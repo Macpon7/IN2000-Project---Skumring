@@ -28,7 +28,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -40,7 +39,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -61,17 +59,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -95,8 +88,6 @@ import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoDao
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
@@ -105,9 +96,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherCondit
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoUiState
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoViewModel
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.SunEventInfoContent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
@@ -228,13 +216,12 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                 ) {
                 BottomSheetContent(
                     place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
-                    sunEvent = mapListUiState.placeInfo.sunEvents.firstOrNull() ?: SunEvent.default(),
+                    sunEvent = mapListUiState.placeInfo.sunEvents[0],
                     navController = navController,
-                    mapListViewModel = mapListViewModel, onItemClick = {}, onFavouriteClick = {}
+                    mapListViewModel = mapListViewModel, onItemClick = {},
                     ) //TODO fix on item click and on favourite click
             }
         }
-
         if (mapListUiState.mapListToggle == MapListToggleState.LIST) {
             Surface (color = MaterialTheme.colorScheme.background ){
                 // Column for list view
@@ -284,17 +271,16 @@ fun ToggleButtonThemeSwitcher(
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val buttonHeightFactor = 0.15f //Height of the button
     val buttonHeight = screenWidth * buttonHeightFactor //how high the button is based on the screenwidth
-    val buttonWidth =  screenWidth //Width of the button
 
     //how much the togglebutton should offset to the side based on size of the screen
     val offsetSmallScreen by animateDpAsState(
-        targetValue = if (mapTheme) 0.dp else (buttonWidth/2 - buttonWidth/24),
+        targetValue = if (mapTheme) 0.dp else (screenWidth / 2 - screenWidth / 24),
         animationSpec = animationSpec, label = ""
     )
 
     //how much the togglebutton should offset to the side based on size of the screen
     val offsetLargeScreen by animateDpAsState(
-        targetValue = if (mapTheme) 0.dp else (buttonWidth/2 - buttonWidth/50),
+        targetValue = if (mapTheme) 0.dp else (screenWidth / 2 - screenWidth / 50),
         animationSpec = animationSpec, label = ""
     )
 
@@ -303,7 +289,7 @@ BoxWithConstraints {
         // button container
         Box(
             modifier = Modifier
-                .width(buttonWidth)
+                .width(screenWidth)
                 .height(buttonHeight)
                 .clip(shape = parentShape)
                 .clickable { onClick() }
@@ -312,7 +298,7 @@ BoxWithConstraints {
             // toggle animation
             Box(
                 modifier = Modifier
-                    .width(buttonWidth / 2) // size of the toggle button
+                    .width(screenWidth / 2) // size of the toggle button
                     .height(buttonHeight)
                     .offset(x = offsetSmallScreen)
                     .clip(shape = parentShape)
@@ -335,7 +321,7 @@ BoxWithConstraints {
                     //List and list icon
                     contentAlignment = Alignment.CenterStart,
                     modifier = Modifier
-                        .width(buttonWidth / 2)
+                        .width(screenWidth / 2)
                         .height(buttonHeight)
                         .padding(start = 80.dp),
                 ) {
@@ -358,7 +344,7 @@ BoxWithConstraints {
                 Box( //map and map icon
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .width(buttonWidth / 2)
+                        .width(screenWidth / 2)
                         .height(buttonHeight)
                 ) {
                     Icon(
@@ -382,7 +368,7 @@ BoxWithConstraints {
     } else { //if screen is bigger
         Box(
             modifier = Modifier
-                .width(buttonWidth)
+                .width(screenWidth)
                 .height(buttonHeight / 2)
                 .clip(shape = parentShape)
                 .clickable { onClick() }
@@ -391,7 +377,7 @@ BoxWithConstraints {
             // toggle animation
             Box(
                 modifier = Modifier
-                    .width(buttonWidth / 2) // size of the toggle button
+                    .width(screenWidth / 2) // size of the toggle button
                     .height(buttonHeight / 2)
                     .offset(x = offsetLargeScreen)
                     .clip(shape = parentShape)
@@ -413,7 +399,7 @@ BoxWithConstraints {
                     //List and list icon
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .width(buttonWidth / 2)
+                        .width(screenWidth / 2)
                         .height(buttonHeight)
                 ) {
                     Icon(
@@ -436,7 +422,7 @@ BoxWithConstraints {
                 Box( //map and map icon
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .width(buttonWidth / 2)
+                        .width(screenWidth / 2)
                         .height(buttonHeight)
                 ) {
                     Icon(
@@ -478,7 +464,7 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
         cloudConditionLow = CloudConditions.CLEAR,
         cloudConditionHigh = CloudConditions.CLEAR,
         cloudConditionMedium = CloudConditions.CLEAR,
-        airCondition = AirConditions.LOW)),  navController = navController, mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository), onItemClick = {}, onFavouriteClick = {})
+        airCondition = AirConditions.LOW)),  navController = navController, mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository), onItemClick = {})
 }
 
 
@@ -489,21 +475,12 @@ fun BottomSheetContent(
     navController: NavController,
     mapListViewModel: MapListViewModel,
     onItemClick: () -> Unit,
-    onFavouriteClick: () -> Unit
 ) {
     //for remembering if placeinfo is favourite or not
     var isFavourite by remember { mutableStateOf(place.isFavourite) }
-    /*
-    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                mapListViewModel.hideBottomSheet()
-                navController.navigate("placeinfoscreen/${place.id}")
-            }
-     */
 
         Card(
-           // shape = RoundedCornerShape(15.dp),
             modifier = Modifier
-                //.padding(15.dp)
                 .clickable(onClick = onItemClick)
                 .fillMaxWidth(),
             colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary)
@@ -513,7 +490,7 @@ fun BottomSheetContent(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 0.dp, top = 10.dp,)// end = 20.dp, start = 20.dp)
+                    .padding(bottom = 0.dp, top = 10.dp)
             )
             {
                 Text(
@@ -545,61 +522,24 @@ fun BottomSheetContent(
 
                     }
                 }
-                }
-            /*
-                Row (
-                    modifier = Modifier.padding(start = 15.dp)
-                ){
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) { //Sunset icon and time of sunset, in box because it needs to overlap
-                        Icon(
-                            painter = painterResource(id = R.drawable.sunsetsymbol),
-                            contentDescription = "Sunset Icon",
-                            tint = androidx.compose.ui.graphics.Color.Unspecified,
-                            modifier = Modifier
-                                .size(60.dp)
-                        )
-                        Text(
-                            text = "20:20", //"${sunEvent.time}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-
-             */
-
+            }
             Column (
                 horizontalAlignment = Alignment.CenterHorizontally,
-               // modifier = Modifier.fillMaxWidth()
-                   // .padding(start = 15.dp, end = 15.dp, top = 20.dp)
             )
             {
-                /*
-                Icon(
-                    painter = painterResource(id = R.drawable.sunsetsymbol),
-                    contentDescription = "Sunset Icon",
-                    tint = androidx.compose.ui.graphics.Color.Unspecified,
-                    modifier = Modifier
-                        .size(60.dp)
-                )
-
-                 */
                 Text(
                     text = "Sunset events ",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                Divider( //marks the division between the image and the informationpart of the button
+                Divider(
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     thickness = 1.dp, modifier = Modifier.padding(start = 80.dp, end = 80.dp,  bottom = 10.dp)
                 )
 
                 Text(
-                    text = "Time: 20:20", //"${sunEvent.time}",
+                    text = "Time: + ${sunEvent.time}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                 )
@@ -611,7 +551,6 @@ fun BottomSheetContent(
                     modifier = Modifier
                         .padding(top= 10.dp)
                 )
-                //Spacer(modifier = Modifier.padding(10.dp))
                 //Conditions at sunset
                 Text(
                     text = stringResource(R.string.weather_condition) + " ${sunEvent.conditions.weatherRating}",
@@ -622,21 +561,18 @@ fun BottomSheetContent(
                 )
 
                 Spacer(modifier = Modifier.padding(10.dp))
-
                 }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                  //  .padding(15.dp)
                     .fillMaxWidth()) {
-
                 Text(
                     text = "Description of place ",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                Divider( //marks the division between the image and the informationpart of the button
+                Divider(
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     thickness = 1.dp, modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
                 )
@@ -649,7 +585,6 @@ fun BottomSheetContent(
             Spacer(modifier = Modifier.padding(6.dp))
 
             Row (horizontalArrangement = Arrangement.End,
-                //verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .padding(bottom = 15.dp, end = 15.dp)
                     .fillMaxWidth()
@@ -660,8 +595,6 @@ fun BottomSheetContent(
                             navController.navigate("placeinfoscreen/${place.id}")
                         },
                         contentPadding = PaddingValues(12.dp),
-                       // colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-
                     ) {
                         Text(
                             text = "CLOSE",
@@ -675,7 +608,6 @@ fun BottomSheetContent(
                     Button(
                         onClick = {
                             mapListViewModel.hideBottomSheet()
-                            navController.navigate("placeinfoscreen/${place.id}")
                         },
                         contentPadding = PaddingValues(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
@@ -688,7 +620,6 @@ fun BottomSheetContent(
 
                         )
                     }
-               //  Spacer(modifier = Modifier.padding(15.dp))
                 }
             }
 
