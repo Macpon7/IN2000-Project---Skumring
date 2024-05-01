@@ -213,7 +213,7 @@ fun SunsetInfoCard(
                 Box { //Sunset icon and time of sunset, in box because it needs to overlap
                     Icon(
                         painter = painterResource(id = R.drawable.sunsetsymbol),
-                        contentDescription = "Sunset Icon",
+                        contentDescription = stringResource(id = R.string.homescreen_icon_sunset),
                         tint = Color.Unspecified,
                         modifier = Modifier
                             .size(140.dp)
@@ -265,7 +265,7 @@ fun SunsetInfoCard(
                 } else {
                     Icon( //if icon is null, "show image not found"
                         painterResource(id = R.drawable.image_not_found),
-                        contentDescription = "Weather icon cloudy", // TODO
+                        contentDescription = stringResource(id = R.string.homescreen_icon_cloudy),
                         tint = Color.Unspecified,
                         modifier = Modifier.size(140.dp)
                     )
@@ -323,7 +323,7 @@ fun SunsetInfoCard(
                     Box { //Golden hour icon and time
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
-                            contentDescription = "yellow sun icon", // TODO
+                            contentDescription = stringResource(id = R.string.homescreen_icon_yellow_sun),
                             tint = Color.Unspecified,
                             modifier = Modifier.padding(end = 10.dp)
 
@@ -339,7 +339,7 @@ fun SunsetInfoCard(
                     Box {  //Blue hour icon and time
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
-                            contentDescription = "blue sun icon", // TODO
+                            contentDescription = stringResource(id = R.string.homescreen_icon_blue_sun),
                             tint = Color.Unspecified,
                         )
                         Text(
@@ -402,7 +402,7 @@ fun HorizontalInfoCardContent(name: String, onItemClick: () -> Unit, modifier: M
         ) {
             Image(
                 painter = painterResource(id = R.drawable.sunset_picture), //Change to dynamic image later
-                contentDescription = "sunset image placeholder", // TODO
+                contentDescription = stringResource(id = R.string.homescreen_sunset_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
