@@ -75,6 +75,7 @@ import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTransportation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
@@ -332,7 +333,8 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.distance +
+                                stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -341,9 +343,10 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
-                            id = R.string.distance_minutes
-                        ), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.durationHours +
+                                stringResource(id = R.string.distance_hour) +
+                                placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.durationMinutes +
+                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -367,7 +370,8 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.distance +
+                                stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -376,9 +380,10 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
-                            id = R.string.distance_minutes
-                        ), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.durationHours +
+                                stringResource(id = R.string.distance_hour) +
+                                placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.durationMinutes +
+                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -405,7 +410,8 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.distance +
+                                stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -414,9 +420,10 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
-                            id = R.string.distance_minutes
-                        ), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.durationHours +
+                                stringResource(id = R.string.distance_hour) +
+                                placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.durationMinutes +
+                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
