@@ -33,13 +33,17 @@ import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -52,6 +56,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -60,6 +65,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -86,7 +92,8 @@ object MyPageDestination : NavigationDestination {
 @Composable
 fun MyPageScreen(
     navController: NavHostController,
-    myPageViewModel: MyPageViewModel = viewModel(factory = MyPageViewModel.Factory)) {
+    myPageViewModel: MyPageViewModel = viewModel(factory = MyPageViewModel.Factory)
+) {
 
     val myPageUiState: MyPageUiState by myPageViewModel.myPageUiState.collectAsState()
 
@@ -131,16 +138,18 @@ fun MyPageScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            navController.navigate(route = "settings")                            },
+                            navController.navigate(route = "settings")
+                        },
                         modifier = Modifier.padding(end = 16.dp)
                     ) {
                         Icon(
                             Icons.Default.Settings,
-                            contentDescription = "Settings")
+                            contentDescription = "Settings"
+                        )
                     }
                 }
             )
-        },bottomBar = {
+        }, bottomBar = {
             SkumringBottomBar(navController = navController)
         },
         snackbarHost = { SnackbarHost(hostState = myPageUiState.snackbarHostState) },
@@ -150,28 +159,29 @@ fun MyPageScreen(
                 onClick = {
                     // Show the form:
                     myPageViewModel.showNewForm()
-                          },
+                },
                 modifier = Modifier.padding(end = 16.dp)
             ) {
                 Icon(
-                    Icons.Filled.Add,
-                    contentDescription = "Add location")
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Add location"
+                )
             }
         }
-        )
+    )
     { innerPadding -> //Here is what will be shown inside the scaffold of the screen
-        Column (
+        Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
 
         ) {
-          ContentMyPage(
-              navController = navController,
-              myPageViewModel = myPageViewModel,
-              myPageUiState = myPageUiState
-          )
+            ContentMyPage(
+                navController = navController,
+                myPageViewModel = myPageViewModel,
+                myPageUiState = myPageUiState
+            )
         }
     }
 }
@@ -180,12 +190,12 @@ fun MyPageScreen(
  * Content of my page:
  */
 @Composable
-fun ContentMyPage(navController : NavController,
-                  myPageViewModel: MyPageViewModel,
-                  myPageUiState: MyPageUiState
-                  ) {
-
-    Column (Modifier.verticalScroll(rememberScrollState())) {
+fun ContentMyPage(
+    navController: NavController,
+    myPageViewModel: MyPageViewModel,
+    myPageUiState: MyPageUiState
+) {
+    Column(Modifier.verticalScroll(rememberScrollState())) {
         //Slik leser vi inn fra assets/presetImages
         //Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/holmenkollen.jpg")).asImageBitmap(), contentDescription = null)
 
@@ -196,7 +206,7 @@ fun ContentMyPage(navController : NavController,
                 modifier = Modifier.fillMaxWidth()
             )
         } else {
-            myPageUiState.places.forEach {place ->
+            myPageUiState.places.forEach { place ->
                 ListCard(
                     name = place.name,
                     description = place.description,
@@ -206,8 +216,7 @@ fun ContentMyPage(navController : NavController,
                             route = "placeinfoscreen/${place.id}"
                         )
                     },
-                    onFavouriteClick = {myPageViewModel.toggleFavourite(place = place)}
-                )
+                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) })
             }
         }
     }
@@ -225,27 +234,31 @@ fun ContentMyPage(navController : NavController,
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
-    val newPlaceUiState : NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
+    val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
     // TODO keep the change when the phone change from standing to lying
 
     // Show when the user pick a date:
     if (newPlaceUiState.showDatePicker) {
-        DatePickerDialog(
-
-            onDismissRequest = { myPageViewModel.dismissDatePicker() },
+        DatePickerDialog(onDismissRequest = { myPageViewModel.dismissDatePicker() },
             confirmButton = {
                 TextButton(onClick = {
                     myPageViewModel.saveSelectedDate()
                 }) {
-                    Text(text = stringResource(R.string.add_date))
+                    Text(
+                        text = stringResource(R.string.add_date),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
                 }
             },
             dismissButton = {
                 TextButton(onClick = {
                     myPageViewModel.dismissDatePicker()
                 }) {
-                    Text(text = stringResource(R.string.cancel))
+                    Text(
+                        text = stringResource(R.string.cancel),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
                 }
             }
 
@@ -260,53 +273,121 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
         myPageViewModel.resetNewPlaceUiState()
     }) {
 
-        Card (modifier = Modifier.padding(all = 8.dp)) {
-            // String with name
-            OutlinedTextField(
-                value = newPlaceUiState.locationName,
-                // Take variable from newPlaceUiState
-                onValueChange = { myPageViewModel.updateNewLocationName(it) },
-                label = { Text(stringResource(R.string.location_name)) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = "addresse"
-                    )
-                },
-                supportingText = {
-                    if (newPlaceUiState.locationNameIsMissing) {
-                        Text(text = stringResource(R.string.error_location_name))
-                    }
-                },
-                isError = (newPlaceUiState.locationNameIsMissing)
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
             )
+        ) {
+            Column(
+                modifier = Modifier.padding(all = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.mypage_fill_in_fields),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.padding(
+                        bottom = 4.dp,
+                        top = 6.dp
+                    ),
+                    fontSize = 16.sp
+                )
 
-            // Brukeren skal skrive inn addresse:
-            OutlinedTextField(
-                value = newPlaceUiState.address,
-                onValueChange = { myPageViewModel.updateNewLocationAddress(it) },
-                label = { Text(stringResource(R.string.address)) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.LocationOn,
-                        contentDescription = "addresse"
-                    )
-                },
-                supportingText = {
-                    if (newPlaceUiState.addressIsMissing) {
-                        Text(text = stringResource(R.string.error_address))
-                    }
-                },
-                isError = newPlaceUiState.addressIsMissing
-            )
-            // TODO logikken skjer i viewmodel, sender inn string med addresse
+                // String with name
+                OutlinedTextField(
+                    modifier = Modifier.padding(all = 2.dp),
+                    value = newPlaceUiState.locationName,
+                    // Take variable from newPlaceUiState
+                    onValueChange = { myPageViewModel.updateNewLocationName(it) },
+                    label = {
+                        Text(
+                            text = "${stringResource(R.string.location_name)} *",
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "name",
+                        )
+                    },
+                    supportingText = {
+                        if (newPlaceUiState.locationNameIsMissing) {
+                            Text(
+                                text = stringResource(R.string.error_location_name),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
+                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        errorCursorColor = MaterialTheme.colorScheme.error,
+                        errorIndicatorColor = MaterialTheme.colorScheme.error,
+                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
+                    ),
+                    isError = (newPlaceUiState.locationNameIsMissing)
+                )
+
+                // Brukeren skal skrive inn addresse:
+                OutlinedTextField(
+                    modifier = Modifier.padding(all = 2.dp),
+                    value = newPlaceUiState.address,
+                    onValueChange = { myPageViewModel.updateNewLocationAddress(it) },
+                    label = { Text(text = "${stringResource(R.string.address)} *") },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.LocationOn,
+                            contentDescription = "addresse",
+                        )
+                    },
+                    supportingText = {
+                        if (newPlaceUiState.addressIsMissing) {
+                            Text(
+                                text = stringResource(R.string.error_address),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
+                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        errorCursorColor = MaterialTheme.colorScheme.error,
+                        errorIndicatorColor = MaterialTheme.colorScheme.error,
+                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
+                    ),
+                    isError = newPlaceUiState.addressIsMissing
+                )
+                // TODO logikken skjer i viewmodel, sender inn string med addresse
 
 
-            /*
+                /*
         // Alternative to OutlinedTextField for datepicker
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
@@ -317,68 +398,115 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
         }
          */
 
-            // Time skal lages made datepicker dialog
-            OutlinedTextField(
-                value = newPlaceUiState.pickedDate.format(
-                    DateTimeFormatter.ISO_LOCAL_DATE
-                ),
-                onValueChange = { },
-                modifier = Modifier.clickable(
-                    enabled = true,
-                    onClick = {
-                        myPageViewModel.showDatePicker()
-                    }
-                ),
-                enabled = false,
-                readOnly = true,
-                isError = newPlaceUiState.dateTextFieldError,
-                label = { Text(stringResource(R.string.time)) },
-                leadingIcon = {
+                // Time skal lages made datepicker dialog
+                OutlinedTextField(
+                    value = newPlaceUiState.pickedDate.format(
+                        DateTimeFormatter.ISO_LOCAL_DATE
+                    ),
+                    onValueChange = { },
+                    modifier = Modifier
+                        .clickable(
+                            enabled = true,
+                            onClick = {
+                                myPageViewModel.showDatePicker()
+                            }
+                        )
+                        .padding(all = 2.dp),
+                    enabled = false,
+                    readOnly = true,
+                    isError = newPlaceUiState.dateTextFieldError,
+                    label = {
+                        Text(
+                            text = stringResource(R.string.time),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.DateRange,
+                            contentDescription = "Date",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        // Make it look not disabled
+                        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        disabledTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        disabledIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                )
+
+                // String with description
+                OutlinedTextField(
+                    modifier = Modifier.padding(all = 2.dp),
+                    value = newPlaceUiState.descriptions,
+                    onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
+                    label = {
+                        Text(text = "${stringResource(R.string.description)} *")
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Create,
+                            contentDescription = "description"
+                        )
+                    },
+                    supportingText = {
+                        if (newPlaceUiState.descriptionsIsMissing) {
+                            Text(
+                                text = stringResource(R.string.error_description),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
+                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        errorCursorColor = MaterialTheme.colorScheme.error,
+                        errorIndicatorColor = MaterialTheme.colorScheme.error,
+                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
+                    ),
+                    isError = newPlaceUiState.descriptionsIsMissing,
+                )
+
+                // Button to add photo
+                PickImageFromGallery(myPageViewModel = myPageViewModel)
+
+                // Button that is pressed when the location is added:
+                Button(
+                    onClick = { myPageViewModel.addLocation() },
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(
+                        text = stringResource(R.string.add_location),
+                    )
                     Icon(
-                        imageVector = Icons.Outlined.DateRange,
-                        contentDescription = "Date"
+                        imageVector = Icons.Outlined.Check,
+                        contentDescription = "add place",
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-            )
-            Spacer(modifier = Modifier.height(5.dp))
 
-            // String with description
-            OutlinedTextField(
-                value = newPlaceUiState.descriptions,
-                onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
-                label = { Text(stringResource(R.string.description)) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Create,
-                        contentDescription = "description"
+                if (newPlaceUiState.missingInfo) {
+                    Text(
+                        text = stringResource(R.string.missing_fields),
                     )
-                },
-                supportingText = {
-                    if (newPlaceUiState.descriptionsIsMissing) {
-                        Text(text = stringResource(R.string.error_description))
-                    }
-                },
-                isError = newPlaceUiState.descriptionsIsMissing
-            )
-
-            // Button to add photo
-            PickImageFromGallery(myPageViewModel = myPageViewModel)
-
-            // Button that is pressed when the location is added:
-            Button(
-                onClick = { myPageViewModel.addLocation() },
-                modifier = Modifier.padding(vertical = 8.dp),
-            ) {
-                Text(text = stringResource(R.string.add_location))
-                Icons.Outlined.Check
+                }
             }
-
-            if (newPlaceUiState.missingInfo) {
-                Text(text = stringResource(R.string.missing_fields))
-            }
-
         }
     }
 }
@@ -387,8 +515,10 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
  * In this function all the logic for adding picture happens
  */
 @Composable
-fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
-    val newPlaceUiState : NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
+fun PickImageFromGallery(
+    myPageViewModel: MyPageViewModel,
+) {
+    val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
     val context = LocalContext.current
     // TODO usikker på hvordan bitmap skal lagres i viewmodel
@@ -397,11 +527,7 @@ fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             newPlaceUiState.imageUri = uri
-            Log.d(
-                TAG,
-                "imageUri is $newPlaceUiState.imageUri"
-            )
-
+            Log.d(TAG, "imageUri is $newPlaceUiState.imageUri")
         }
 
     Box() {
@@ -427,14 +553,22 @@ fun PickImageFromGallery(myPageViewModel: MyPageViewModel) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        }
-    Button(onClick = { launcher.launch("image/*") }) {
-        Text(text = stringResource(R.string.add_photo))
-        Icons.Outlined.Add
     }
-
-
-
+    Button(
+        onClick = { launcher.launch("image/*") },
+        modifier = Modifier.padding(vertical = 8.dp),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+    ) {
+        Text(
+            text = stringResource(R.string.add_photo),
+            color = MaterialTheme.colorScheme.onPrimary,
+        )
+        Icon(
+            imageVector = Icons.Outlined.Add,
+            contentDescription = "add photo",
+            tint = MaterialTheme.colorScheme.onPrimary
+        )
+    }
 }
 
 @Composable
@@ -443,11 +577,11 @@ fun TestList(navController: NavHostController = rememberNavController()) {
     MyPageScreen(
         navController = navController,
         myPageViewModel = viewModel(factory = MyPageViewModel.Factory)
-        )
+    )
 }
 
 @Composable
 @Preview
 fun PreviewNewPlaceDialog(navController: NavHostController = rememberNavController()) {
-    NewPlaceDialog(myPageViewModel = viewModel(factory = MyPageViewModel.Factory))
+    //NewPlaceDialog(myPageViewModel = viewModel(factory = MyPageViewModel.Factory))
 }

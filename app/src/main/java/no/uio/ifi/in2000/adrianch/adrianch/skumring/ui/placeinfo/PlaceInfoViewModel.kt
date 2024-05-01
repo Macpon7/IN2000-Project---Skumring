@@ -68,6 +68,18 @@ class PlaceInfoViewModel(
     private val directionsRepository: DirectionsRepository = DirectionsRepositoryImpl()
     private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
 
+    fun addFavourite(placeId : Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            placeRepository.makeFavourite(placeId)
+        }
+    }
+
+    fun removeFavourite(placeId : Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            placeRepository.unmakeFavourite(placeId)
+        }
+    }
+
     fun loadPlaceInfo(id: Int){
         val job = viewModelScope.launch(Dispatchers.IO){
             Log.d(logTag, "loadPlaceInfo called")
