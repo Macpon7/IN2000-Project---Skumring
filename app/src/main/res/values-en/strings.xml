@@ -108,4 +108,7 @@
     <string name="reverse_geocode_unknown_place">Unknown Place</string>
     <string name="placeInfo_less_details_button">Show less</string>
     <string name="placeInfo_more_details_button">Show more</string>
+    <string name="distance_hour">h</string>
+    <string name="distance_minutes">m</string>
+    <string name="distance_kilometers">km</string>
 </resources>
