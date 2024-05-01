@@ -45,30 +45,23 @@ class DirectionsDataSource {
                 toLong = toLong,
                 meansOfTransportation = meansOfTransportation
             )
-            val duration: String = try {
-                secondsToHoursMinutes(apiResponse.routes[0].legs[0].duration)
-            } catch (e: IndexOutOfBoundsException) {
-                Log.e(logTag, "Failed to load duration")
-                ""
-            }
-            val distance: String =  try {
-                "%.2f".format((apiResponse.routes[0].legs[0].distance/1000).toFloat())
-            } catch (e: IndexOutOfBoundsException) {
-                Log.e(logTag, "Failed to load distance")
-                ""
-            }
+            val durationMinutes: String = secondsToMinutes(apiResponse.routes[0].legs[0].duration)
+            val durationHours: String = secondsToHours(apiResponse.routes[0].legs[0].duration)
+            val distance: String = "%.1f".format((apiResponse.routes[0].legs[0].distance/1000).toFloat())
 
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
                 distance = distance,
-                duration = duration
+                durationHours = durationHours,
+                durationMinutes = durationMinutes,
             )
         } catch (e: Exception) {
-            Log.e(logTag,"Failed to calculate route", e)
+            Log.e(logTag,"Failed to calculate route - None available", e)
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
                 distance = "",
-                duration = ""
+                durationMinutes = "",
+                durationHours = "",
             )
         }
     }
@@ -101,10 +94,13 @@ class DirectionsDataSource {
     Small help function since the directions api returns duration in seconds, we
     convert it to a neatly formatted string instead.
      */
-    private fun secondsToHoursMinutes (duration: Double): String {
+    private fun secondsToHours (duration: Double): String {
         val hours: Int = duration.toInt() / 3600
+        return hours.toString()
+    }
+    private fun secondsToMinutes (duration: Double): String {
         val minutes: Int = (duration.toInt() % 3600) / 60
-        return "$hours:$minutes"
+        return minutes.toString()
     }
 }
 // Leaving for now for testing purposes

@@ -5,5 +5,6 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions
 data class TravelDurationDistance(
     val meansOfTransportation: MeansOfTransportation,
     val distance: String,
-    val duration: String
+    val durationHours: String,
+    val durationMinutes: String,
 )
