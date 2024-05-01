@@ -58,6 +58,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.google.gson.JsonPrimitive
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -75,6 +76,10 @@ import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoDao
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
@@ -425,6 +430,19 @@ BoxWithConstraints {
         }
     }
     }
+}
+
+@Preview
+@Composable
+fun BottomSheetPreview(navController: NavHostController = rememberNavController()) {
+    val context = LocalContext.current
+    val database = AppDatabase.getDatabase(context = context)
+    val imageDao = database.imageDao()
+    val forecastDao = database.forecastDao()
+    val placeInfoDao = database.placeInfoDao()
+    val placeRepository = PlaceRepositoryImpl(placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao)
+
+    BottomSheetContent(place = PlaceInfo(id = 123, name = "hei", description = "godt sted å ta bilde", lat = "", long = "", isFavourite = false, isCustomPlace = false, hasNotification = false, images = emptyList(), sunEvents = emptyList()), navController = navController, mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository))
 }
 
 @Composable
