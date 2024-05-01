@@ -38,9 +38,9 @@ data class PlaceInfoUiState(
         images = emptyList(),
         sunEvents = emptyList()
         ),
-
-    val blueHour: String = "",
-    val goldenHour: String = "",
+//
+//    val blueHour: String = "",
+//    val goldenHour: String = "",
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -85,10 +85,10 @@ class PlaceInfoViewModel(
                     currentPlaceInfoUiState.copy(
                         placeInfo = placeInfoObject,
                         isLoading = false,
-                        blueHour = placeInfoObject.sunEvents[0].blueHourTime.toLocalTime().format(
-                            DateTimeFormatter.ofPattern("HH':'mm")),
-                        goldenHour = placeInfoObject.sunEvents[0].goldenHourTime.toLocalTime().format(
-                        DateTimeFormatter.ofPattern("HH':'mm")),
+//                        blueHour = placeInfoObject.sunEvents[0].blueHourTime.toLocalTime().format(
+//                            DateTimeFormatter.ofPattern("HH':'mm")),
+//                        goldenHour = placeInfoObject.sunEvents[0].goldenHourTime.toLocalTime().format(
+//                        DateTimeFormatter.ofPattern("HH':'mm")),
                     )
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)

@@ -67,9 +67,9 @@ class ForecastRepositoryImpl(
                 val sunsetTime: LocalDateTime = sunriseDataSource.fetchSunsetTime(
                     lat = lat, long = long, date = it.key
                 )
-
                 val goldenHourBlueHour: GoldenHourBlueHour = goldenHourBlueHourDataSource.fetchGoldenHourBlueHourTime(
                     lat = lat, long = long, date = it.key)
+                Log.d(TAG,goldenHourBlueHour.toString() )
 
                 // it.value is the list of WeatherPerHour objects for this date
                 val sunsetWeather = findClosestWeather(sunsetTime, it.value)

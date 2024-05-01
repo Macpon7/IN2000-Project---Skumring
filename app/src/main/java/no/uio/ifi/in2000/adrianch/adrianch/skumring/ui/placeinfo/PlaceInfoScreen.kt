@@ -539,7 +539,7 @@ fun TodayInfoCard(
 
                     )
                     Text(
-                        text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
+                        text = goldenHourTime, //TODO //change this later to $goldenHourTime
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -566,7 +566,7 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "20:31-21:05", //TODO //change this later to $blueHourTime
+                        text = blueHourTime, //TODO //change this later to $blueHourTime
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -590,7 +590,11 @@ fun TodayInfoCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SunEventInfoCard(
-    sunEvent: SunEvent, dateString: String, timeString: String
+    sunEvent: SunEvent,
+    dateString: String,
+    timeString: String,
+    goldenHourTime: String,
+    blueHourTime: String
 ) {
 
     //state for remembering if button is pushed or not
@@ -741,7 +745,7 @@ fun SunEventInfoCard(
                             )
                         )
                         Text(
-                            text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
+                            text = goldenHourTime, //TODO //change this later to $goldenHourTime
                             style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
@@ -768,7 +772,7 @@ fun SunEventInfoCard(
                             )
                         )
                         Text(
-                            text = "20:31-21:05", //TODO //change this later to $blueHourTime
+                            text = blueHourTime, //TODO //change this later to $blueHourTime
                             style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
@@ -842,9 +846,10 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
         }"
 
         val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
-
+        val goldenHourTime = sunEvent.goldenHourTime.format(DateTimeFormatter.ofPattern("HH':'mm"))
+        val blueHourTime = sunEvent.blueHourTime.format(DateTimeFormatter.ofPattern("HH':'mm"))
         TodayInfoCard(
-            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel, placeInfoUiState.goldenHour,  placeInfoUiState.blueHour
+            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel, goldenHourTime,  blueHourTime
         )
     }
 }
@@ -882,7 +887,10 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
         //time of day for sunset
         val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
 
-        SunEventInfoCard(sunEvent, dateString, timeString)
+        val goldenHourTime = sunEvent.goldenHourTime.format(DateTimeFormatter.ofPattern("HH':'mm"))
+        val blueHourTime = sunEvent.blueHourTime.format(DateTimeFormatter.ofPattern("HH':'mm"))
+
+        SunEventInfoCard(sunEvent, dateString, timeString, goldenHourTime, blueHourTime)
 
         //Spacer between cards
         Spacer(modifier = Modifier.height(10.dp))
