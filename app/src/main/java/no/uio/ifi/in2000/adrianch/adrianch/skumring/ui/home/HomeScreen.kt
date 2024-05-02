@@ -334,7 +334,7 @@ fun SunsetInfoCard(
                             text = stringResource(R.string.blue_hour),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
