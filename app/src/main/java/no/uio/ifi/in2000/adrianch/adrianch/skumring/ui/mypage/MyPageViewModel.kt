@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import java.time.LocalDate
@@ -92,7 +94,12 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 // TODO: Use this is the functions in viewmodel where errors can happen:
 private const val logTag = "MyPageViewModel"
 
-class MyPageViewModel(private val placeRepository: PlaceRepository, private val context: Context) : ViewModel(){
+class MyPageViewModel(
+    private val placeRepository: PlaceRepository,
+    private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl(),
+    private val context: Context
+) : ViewModel()
+{
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
 
@@ -173,8 +180,11 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
                     )
                 } else {
                     //TODO get coordinates of address
+                    val addresses = geocodingRepository.getCoordinatesFromAddress(address = currentNewPlaceUiState.address)
 
-                    //TODO if we get more than one result back, let user pick?
+                    //TODO if addresses list is empty, give error to user
+                    //TODO if list has more than one, give error
+
 
 
                     val newId = placeRepository.insertCustomPlace(PlaceInfo(
