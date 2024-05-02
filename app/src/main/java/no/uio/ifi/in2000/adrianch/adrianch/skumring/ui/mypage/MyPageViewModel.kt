@@ -41,18 +41,6 @@ data class MyPageUiState(
     val showLocations : Boolean = false
 )
 
-/* TODO , lag en dataklasse som innholder alt data som brukeren legger inn
-Dette skal sendes inn til placerepository
- */
-data class NewPlace(
-    val locationName: String,
-    val address: String,
-    val pickedDate: LocalDate,
-    val descriptions: String,
-    var imageUri: Uri?,
-    )
-
-
 data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     var locationName: String = "",
@@ -60,6 +48,9 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     var address: String = "",
     var addressIsMissing: Boolean = false,
+
+    var lat: String = "",
+    var long: String = "",
 
     // TODO add location
     // TODO get date from user
@@ -75,8 +66,8 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     // This will not make an error since if it is not picked it will be the current date:
     var pickedDate: LocalDate = LocalDate.now(),
 
-    var descriptions: String = "",
-    var descriptionsIsMissing: Boolean = false,
+    var description: String = "",
+    var descriptionIsMissing: Boolean = false,
 
     // Variables for picture:
     var imageUri: Uri? = null,
@@ -165,7 +156,7 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
                     isNameMissing = true
                     isReady = false
                 }
-                if (currentNewPlaceUiState.descriptions == "") {
+                if (currentNewPlaceUiState.description == "") {
                     isDescriptionMissing = true
                     isReady = false
                 }
@@ -178,11 +169,27 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
                     currentNewPlaceUiState.copy(
                         locationNameIsMissing = isNameMissing,
                         addressIsMissing = isAddressMissing,
-                        descriptionsIsMissing = isDescriptionMissing
+                        descriptionIsMissing = isDescriptionMissing
                     )
                 } else {
-                    //TODO save as new place
-                    //If image is not
+                    //TODO get coordinates of address
+
+                    //TODO if we get more than one result back, let user pick?
+
+
+                    val newId = placeRepository.insertCustomPlace(PlaceInfo(
+                        id = 0,
+                        name = currentNewPlaceUiState.locationName,
+                        description = currentNewPlaceUiState.description,
+                        lat = currentNewPlaceUiState.lat,
+                        long = currentNewPlaceUiState.long,
+                        isFavourite = false,
+                        isCustomPlace = true,
+                        hasNotification = false,
+                        images = emptyList(),
+                        sunEvents = emptyList()
+                    )
+                    )
 
                     Log.d(TAG, "In MyPageViewModel Uri is ${newPlaceUiState.value.imageUri}")
                     newPlaceUiState.value.imageUri?.let { addImage(contentUri = it, placeId = 0, timestamp = newPlaceUiState.value.pickedDate) //TODO make this the placeId that is generated for the new place
@@ -210,8 +217,8 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
                     locationNameIsMissing = false,
                     address = "",
                     addressIsMissing = false,
-                    descriptions = "",
-                    descriptionsIsMissing = false,
+                    description = "",
+                    descriptionIsMissing = false,
                     imageUri = null,
                     // TODO add bitmap ?
                     pickedDate = LocalDate.now(),
@@ -310,7 +317,7 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
     fun updateNewLocationDescription(descriptions: String) {
         viewModelScope.launch (Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(descriptions = descriptions)
+                currentNewPlaceUiState.copy(description = descriptions)
             }
         }
     }
