@@ -637,14 +637,9 @@ fun SunEventInfoCard(
                 style = typography.titleMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp),
+                    .padding(top = 10.dp, bottom = 15.dp),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.outlineVariant
-            )
-            Divider( //for dividing the date from the sunset info
-                modifier = Modifier.padding(
-                    start = 18.dp, end = 18.dp, top = 5.dp, bottom = 15.dp
-                ), color = MaterialTheme.colorScheme.surfaceVariant, thickness = 1.dp
             )
             //Sunset icon
             Icon(
@@ -690,9 +685,6 @@ fun SunEventInfoCard(
             Box(
                 modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
             ) {
-                Divider(
-                    color = MaterialTheme.colorScheme.primaryContainer, thickness = 1.dp
-                )
                 Button(
                     onClick = {
                         expandedState = !expandedState
