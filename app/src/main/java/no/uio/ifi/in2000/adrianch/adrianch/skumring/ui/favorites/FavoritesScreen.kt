@@ -151,14 +151,14 @@ fun FavoriteListContent(navController : NavController,
                     },
 
                     //TODO gjor dynamisk slik at den henter ID
-                    imageToDisplay = if (place.isCustomPlace) {
+                    imageToDisplay = if (place.isCustomPlace and place.isFavourite) {
                         //TODO hente bilde fra bildedatabasen
                         "" //endres, kun satt for at det ikke krasjer
-
+                    } else if (place.isFavourite) {
+                        "${place.id}.jpg"
                     } else {
-                        // If isFavourite is false it should not be displayed
-                        //TODO make this dynamic based on name or id
-                        "holmenkollen_favourite.jpg"
+                        //TODO // If isFavourite is false it should not be displayed
+                       ""
                     }
                 )
             }
