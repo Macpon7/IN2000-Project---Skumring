@@ -252,7 +252,7 @@ fun SunsetInfoCard(
                     //Clickable icon for showing more info about the weather conditions
                     Icon(
                         Icons.Default.Info,
-                        contentDescription = "Info",
+                        contentDescription = stringResource(id = R.string.information),
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .clickable { showPopUp = true }

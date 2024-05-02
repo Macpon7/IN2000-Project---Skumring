@@ -23,6 +23,7 @@
     <string name="error_message_getting_placeinfo">Error getting info about the place</string>
 
     <!-- HomeScreen -->
+    <string name="information">Information</string>
     <string name="conditions_are_good">The conditions will be good tonight!</string>
     <string name="conditions_are_bad">The conditions will be bad tonight.</string>
     <string name="home_sunset">Sunset today</string>
@@ -35,13 +36,11 @@
     <string name="conditions_decent">Decent</string>
     <string name="conditions_excellent">Excellent</string>
 
-    <string name="homescreen_sunset_image">Sunset image</string>
-
+    <string name="homescreen_sunset_image">Sunset picture</string>
     <string name="homescreen_icon_cloudy">Weather icon cloudy</string>
     <string name="homescreen_icon_sunset">Sunset icon</string>
     <string name="homescreen_icon_yellow_sun">Yellow sun icon</string>
     <string name="homescreen_icon_blue_sun">Blue sun icon</string>
-
 
     <!-- MapListScreen -->
     <string name="toggle_list">List</string>
