@@ -82,7 +82,7 @@
     <string name="mypage_add_photo">Add photo</string>
     <string name="location_name">Location name</string>
     <string name="address">Location address</string>
-    <string name="time">Choose date</string>
+    <string name="choose_date">Choose date</string>
     <string name="description">Description</string>
     <string name="add_photo">Add photo</string>
     <string name="add_location">Add location</string>
@@ -123,4 +123,9 @@
     <string name="distance_minutes">m</string>
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Distance from your location</string>
+    <string name="favourite_icon">Favourite icon</string>
+    <string name="time">Time</string>
+    <string name="close">CLOSE</string>
+    <string name="place_icon">"place icon "</string>
+    <string name="theme_icon">"Theme icon "</string>
 </resources>
