@@ -12,11 +12,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.Sunset
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.When
 import org.junit.Test
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class SunriseDataSourceTest {
     val expected = SunriseInfo(
         copyright = "MET Norway",
@@ -36,7 +31,6 @@ class SunriseDataSourceTest {
                 visible = true,
                 time = "2024-03-07T11:30+00:00",
                 discCentreElevation = 0.0
-                //discCentreElevation = 25.01
             ),
             sunrise = Sunrise(
                 azimuth = 98.73,
@@ -50,7 +44,6 @@ class SunriseDataSourceTest {
                 visible = false,
                 time = "2024-03-06T23:31+00:00",
                 discCentreElevation = 0.0
-                //discCentreElevation = -35.18
             )
         )
     )
@@ -77,20 +70,5 @@ class SunriseDataSourceTest {
         Result class: $result"""
         }
     }
-
-    /* Not finished
-    @Test
-    fun checkSameDateSunActivityAsInput() = runBlocking() {
-        val source = SunriseDataSource()
-        val localDate = LocalDate.of(2023,9,8)
-
-        val sunActivity: SunActivity = source.fetchSunActivity("10","60", localDate)
-
-        assert(expected == result) { """
-        Expected return class: $expected
-        Result class: $result"""
-        }
-    }
-     */
 
 }

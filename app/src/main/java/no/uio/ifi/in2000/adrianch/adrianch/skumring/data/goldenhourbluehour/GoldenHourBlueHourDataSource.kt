@@ -9,6 +9,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.GoldenHourBlueHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.SunriseSunset
+import org.jetbrains.annotations.VisibleForTesting
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -90,6 +91,7 @@ class GoldenHourBlueHourDataSource {
         }
     }
 
+    @androidx.annotation.VisibleForTesting()
     /**
      * Because the API doesn't format its output time properly we have to do it.
      * Adds a zero in front of single digit hours. If it gets an empty or correctly
