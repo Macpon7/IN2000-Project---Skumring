@@ -452,6 +452,7 @@ fun BottomSheetContent(
             onFavouriteClick = {
                 mapListViewModel.toggleFavourite(place = place)
             },
+            //TODO make this dynamic based on name or id
             imageToDisplay = "holmenkollen.jpg"
         )
         Spacer(modifier = Modifier.height(40.dp))
