@@ -147,8 +147,8 @@ fun ChooseTheme(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
+                focusedContainerColor = MaterialTheme.colorScheme.onSecondary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary
             ),
             /*
             leadingIcon = {
@@ -253,8 +253,8 @@ fun ChooseLanguage(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
+                focusedContainerColor = MaterialTheme.colorScheme.onSecondary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary
             ),
         )
         ExposedDropdownMenu(expanded = settingsUiState.dropdownExpandedLanguage,
@@ -336,8 +336,8 @@ fun ChooseStartLocation(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
+                focusedContainerColor = MaterialTheme.colorScheme.onSecondary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary
             )
         )
         ExposedDropdownMenu(expanded = settingsUiState.dropdownExpandedStartLocation,
