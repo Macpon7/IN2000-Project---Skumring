@@ -38,7 +38,7 @@ interface PlaceRepository {
     suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo
     suspend fun getFavourites(): List<PlaceInfo>
     suspend fun getCustomPlaces(): List<PlaceInfo>
-    suspend fun insertCustomPlace(place: PlaceInfo)
+    suspend fun insertCustomPlace(place: PlaceInfo): Int
     suspend fun removeCustomPlace(id: Int)
     suspend fun makeFavourite(id: Int)
     suspend fun unmakeFavourite(id: Int)
@@ -354,16 +354,55 @@ class PlaceRepositoryImpl(
     }
 
     override suspend fun getCustomPlaces(): List<PlaceInfo> {
-        TODO()
-        //placeInfoDao.getFavourites()
+        val entities = placeInfoDao.getFavourites()
+        return if (entities.isEmpty()) {
+            emptyList()
+        } else {
+            entities.map {
+                PlaceInfo(
+                    id = it.id,
+                    name = it.name,
+                    description = it.description,
+                    lat = it.latitude,
+                    long = it.longitude,
+                    isFavourite = it.isFavourite,
+                    isCustomPlace = it.isCustomPlace,
+                    hasNotification = it.hasNotification,
+                    images = emptyList(),
+                    sunEvents = getForecastData(
+                        placeId = it.id,
+                        lat = it.latitude,
+                        long = it.longitude
+                    )
+                )
+            }
+        }
     }
 
 
 //works but should take another input
-    override suspend fun insertCustomPlace(place: PlaceInfo){
+    /**
+     * Inserts a new place in the database, and returns the placeId value assigned to this place
+     */
+    override suspend fun insertCustomPlace(place: PlaceInfo): Int{
         //input is PlaceInfo object
-        //API is called so user can access weather forecast immidieately
-        //placeInfoDao.insertCustomPlace(place)
+        val placeInfoEntity = PlaceInfoEntity(
+            name = place.name,
+            description = place.description,
+            latitude = place.lat,
+            longitude = place.long,
+            isCustomPlace = true,
+            isFavourite = false,
+            hasNotification = false
+        )
+
+        placeInfoDao.insertCustomPlace(placeInfoEntity)
+
+        // Calling this will fetch weather data for the newly added custom place, and let us get its ID
+        val allCustomPlaces = getCustomPlaces()
+
+        //The newest custom place will always be the last in the list, here we fetch its ID and returns to the caller
+        return allCustomPlaces.last().id
     }
 
     /**
