@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -86,72 +87,71 @@ fun ListCard(
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp, end = 8.dp)
-                    )
-                    {
-                        Text(
-                            text = name,
+                    Column {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .padding(vertical = 2.dp),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                                .fillMaxWidth()
+                                .padding(start = 8.dp, end = 8.dp)
                         )
-                        Row {
-                            IconButton(onClick = { onFavouriteClick() }) {
-                                if (isFavourite) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Favorite,
-                                        contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                } else {
-                                    Icon(
-                                        imageVector = Icons.Filled.FavoriteBorder,
-                                        contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
+                        {
+                            Text(
+                                text = name,
+                                modifier = Modifier
+                                    .padding(vertical = 2.dp),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                            Row {
+                                IconButton(onClick = { onFavouriteClick() }) {
+                                    if (isFavourite) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Favorite,
+                                            contentDescription = "",
+                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        )
+                                    } else {
+                                        Icon(
+                                            imageVector = Icons.Filled.FavoriteBorder,
+                                            contentDescription = "",
+                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        )
 
+                                    }
                                 }
                             }
                         }
-                    }
-                    Box {
-                        Row(  //For displaying weather conditions and information popup
+                        Row(
+                            //For displaying weather conditions and information popup
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier.fillMaxWidth()
-
                         ) {//Conditions at sunset
                             Text(
                                 text = stringResource(R.string.weather_condition),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onPrimary,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 fontWeight = FontWeight.Bold,
                             )
                             Text(
                                 //text changing based on weather conditions, in different textbox because of change of color
                                 text = stringResource(id = weatherConditionsRating.stringResourceId),
                                 style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onPrimary,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 fontWeight = FontWeight.Bold,
                             )
                         }
+                        //Text for description
+                        Text(
+                            text = description,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier
+                                .padding(vertical = 2.dp, horizontal = 8.dp)
+                                .padding(bottom = 6.dp),
+                        )
                     }
-                    //Text for description
-                    Text(
-                        text = description,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp, horizontal = 8.dp)
-                            .padding(bottom = 6.dp)
-                            .align(Alignment.BottomStart)
-                    )
                 }
             }
         } else {
@@ -179,50 +179,71 @@ fun ListCard(
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp, end = 8.dp),
-                    )
-                    {
-                        Text(
-                            text = name,
+                    Column {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .padding(vertical = 2.dp),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                                .fillMaxWidth()
+                                .padding(start = 8.dp, end = 8.dp),
                         )
-                        Spacer(modifier = Modifier.width(20.dp))
-                        Row {
-                            IconButton(onClick = { onFavouriteClick() }) {
-                                if (isFavourite) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Favorite,
-                                        contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                } else {
-                                    Icon(
-                                        imageVector = Icons.Filled.FavoriteBorder,
-                                        contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
+                        {
+                            Text(
+                                text = name,
+                                modifier = Modifier
+                                    .padding(vertical = 2.dp),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Row {
+                                IconButton(onClick = { onFavouriteClick() }) {
+                                    if (isFavourite) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Favorite,
+                                            contentDescription = "",
+                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        )
+                                    } else {
+                                        Icon(
+                                            imageVector = Icons.Filled.FavoriteBorder,
+                                            contentDescription = "",
+                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        )
+                                    }
                                 }
                             }
                         }
+                        Row(
+                            //For displaying weather conditions and information popup
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {//Conditions at sunset
+                            Text(
+                                text = stringResource(R.string.weather_condition),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                //text changing based on weather conditions, in different textbox because of change of color
+                                text = stringResource(id = weatherConditionsRating.stringResourceId),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                        //Text for description
+                        Text(
+                            text = description,
+                            modifier = Modifier
+                                .padding(vertical = 2.dp, horizontal = 10.dp)
+                                .padding(bottom = 8.dp),
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
                     }
-                    //Text for description. Do we want weather condition in the future?
-                    Text(
-                        text = description,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp, horizontal = 10.dp)
-                            .padding(bottom = 8.dp)
-                            .align(Alignment.BottomCenter),
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
                 }
             }
         }
