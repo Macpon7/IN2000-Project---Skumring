@@ -4,18 +4,18 @@ import androidx.compose.ui.graphics.Color
 
 
 //accent color roles used to emphasize or de-emphasize foreground elements
-val primaryDark = Color(0xFFAEC6FF) //Sunset today text
+val primaryDark = Color(0xFFAEC6FF) //WCAG OK Sunset today text
 
 
 val onPrimaryDark = Color(0xFF122F60) //on- color for text or icons on top of its paired parent color
 
 
-//kortfarge og tekst
+//kortfarge og tekst //WCAG OK
 val primaryContainerDark = Color(0xFF2C4678) //used as a fill color for foreground elements like buttons
 val onPrimaryContainerDark = Color(0xFFD8E2FF) //SunsetInfoCard color and favourite color
 
 
-val secondaryDark = Color(0xFFCDBDFF)
+val secondaryDark = Color(0xFFBFADFF) //WCAG OK
 val onSecondaryDark = Color(0xFF34275E)
 val secondaryContainerDark = Color(0xFF4B3E76)
 val onSecondaryContainerDark = Color(0xFFE7DEFF)
@@ -39,10 +39,15 @@ val surfaceDark = Color(0xFF121318)
 val onSurfaceDark = Color(0xFFE2E2E9)
 
 //variant- lower emphasis alternative to its non-variant pair
-val surfaceVariantDark = Color(0xFF44474F)
-val onSurfaceVariantDark = Color(0xFFC5C6D0)
+
+//PlaceInfoScreen
+val surfaceVariantDark = Color(0xFF1E1E1E) // WCAG OK val surfaceVariantDark = Color(0xFF44474F)
+//description placeInfoScreen
+val onSurfaceVariantDark = Color(0xFFC5C6D0) //WCAG OK
+
+
 val outlineDark = Color(0xFF8E9099)
-val outlineVariantDark = Color(0xFF44474F)
+val outlineVariantDark = Color(0xFF858FBC) //val outlineVariantDark = Color(0xFF44474F)
 
 
 val scrimDark = Color(0xFF1E1F25) //surfaceContainer topbar and bottombar
@@ -54,9 +59,9 @@ val inverseSurfaceDark = Color(0xFFE2E2E9)
 val inverseOnSurfaceDark = Color(0xFF2F3036)
 val inversePrimaryDark = Color(0xFF455E91)
  */
-val inverseSurfaceDark = Color(0xFF151F38)
-val inverseOnSurfaceDark = Color(0xFF1F4A6C)
-val inversePrimaryDark = Color(0xFF52526F)
+val inverseSurfaceDark = Color(0xFF151F38) //WCAG OK
+val inverseOnSurfaceDark = Color(0xFF1F4A6C) //WCAG OK
+val inversePrimaryDark = Color(0xFF45455E) //WCAG OK
 
 
 val surfaceDimDark = Color(0xFF121318)
