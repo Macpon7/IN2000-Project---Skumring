@@ -215,7 +215,7 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                                 navController.navigate("placeinfoscreen/${place.id}")
                             },
                             onFavouriteClick = {mapListViewModel.toggleFavourite(place)},
-                            imageToDisplay = "holmenkollen.jpg"
+                            imageToDisplay = "${place.id}.jpg"
                         )
                     }
                 }
@@ -453,7 +453,7 @@ fun BottomSheetContent(
                 mapListViewModel.toggleFavourite(place = place)
             },
             //TODO make this dynamic based on name or id
-            imageToDisplay = "holmenkollen.jpg"
+            imageToDisplay = "${place.id}.jpg"
         )
         Spacer(modifier = Modifier.height(40.dp))
     }
