@@ -35,6 +35,14 @@
     <string name="conditions_decent">Decent</string>
     <string name="conditions_excellent">Excellent</string>
 
+    <string name="homescreen_sunset_image">Sunset image</string>
+
+    <string name="homescreen_icon_cloudy">Weather icon cloudy</string>
+    <string name="homescreen_icon_sunset">Sunset icon</string>
+    <string name="homescreen_icon_yellow_sun">Yellow sun icon</string>
+    <string name="homescreen_icon_blue_sun">Blue sun icon</string>
+
+
     <!-- MapListScreen -->
     <string name="toggle_list">List</string>
     <string name="toggle_map">Map</string>
