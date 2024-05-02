@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -87,70 +88,72 @@ fun ListCard(
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
-                    Column {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp)
-                        )
-                        {
-                            Text(
-                                text = name,
+                    LazyColumn {
+                        item {
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
-                                    .padding(vertical = 2.dp),
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    .fillMaxWidth()
+                                    .padding(start = 8.dp, end = 8.dp)
                             )
-                            Row {
-                                IconButton(onClick = { onFavouriteClick() }) {
-                                    if (isFavourite) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Favorite,
-                                            contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-                                    } else {
-                                        Icon(
-                                            imageVector = Icons.Filled.FavoriteBorder,
-                                            contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
+                            {
+                                Text(
+                                    text = name,
+                                    modifier = Modifier
+                                        .padding(vertical = 2.dp),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                                Row {
+                                    IconButton(onClick = { onFavouriteClick() }) {
+                                        if (isFavourite) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Favorite,
+                                                contentDescription = "",
+                                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        } else {
+                                            Icon(
+                                                imageVector = Icons.Filled.FavoriteBorder,
+                                                contentDescription = "",
+                                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
 
+                                        }
                                     }
                                 }
                             }
-                        }
-                        Row(
-                            //For displaying weather conditions and information popup
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {//Conditions at sunset
+                            Row(
+                                //For displaying weather conditions and information popup
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.padding(start = 8.dp)
+                            ) {//Conditions at sunset
+                                Text(
+                                    text = stringResource(R.string.weather_condition),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                                Text(
+                                    //text changing based on weather conditions, in different textbox because of change of color
+                                    text = stringResource(id = weatherConditionsRating.stringResourceId),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                            //Text for description
                             Text(
-                                text = stringResource(R.string.weather_condition),
-                                style = MaterialTheme.typography.bodyMedium,
+                                text = description,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                                //text changing based on weather conditions, in different textbox because of change of color
-                                text = stringResource(id = weatherConditionsRating.stringResourceId),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .padding(vertical = 2.dp, horizontal = 8.dp)
+                                    .padding(bottom = 6.dp),
                             )
                         }
-                        //Text for description
-                        Text(
-                            text = description,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier
-                                .padding(vertical = 2.dp, horizontal = 8.dp)
-                                .padding(bottom = 6.dp),
-                        )
                     }
                 }
             }
@@ -179,70 +182,72 @@ fun ListCard(
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
-                    Column {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp),
-                        )
-                        {
-                            Text(
-                                text = name,
+                    LazyColumn {
+                        item {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
-                                    .padding(vertical = 2.dp),
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    .fillMaxWidth()
+                                    .padding(start = 8.dp, end = 8.dp),
                             )
-                            Spacer(modifier = Modifier.width(20.dp))
-                            Row {
-                                IconButton(onClick = { onFavouriteClick() }) {
-                                    if (isFavourite) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Favorite,
-                                            contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-                                    } else {
-                                        Icon(
-                                            imageVector = Icons.Filled.FavoriteBorder,
-                                            contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
+                            {
+                                Text(
+                                    text = name,
+                                    modifier = Modifier
+                                        .padding(vertical = 2.dp),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                                Spacer(modifier = Modifier.width(20.dp))
+                                Row {
+                                    IconButton(onClick = { onFavouriteClick() }) {
+                                        if (isFavourite) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Favorite,
+                                                contentDescription = "",
+                                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        } else {
+                                            Icon(
+                                                imageVector = Icons.Filled.FavoriteBorder,
+                                                contentDescription = "",
+                                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        }
-                        Row(
-                            //For displaying weather conditions and information popup
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {//Conditions at sunset
+                            Row(
+                                //For displaying weather conditions and information popup
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.padding(start = 8.dp)
+                            ) {//Conditions at sunset
+                                Text(
+                                    text = stringResource(R.string.weather_condition),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                                Text(
+                                    //text changing based on weather conditions, in different textbox because of change of color
+                                    text = stringResource(id = weatherConditionsRating.stringResourceId),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                            //Text for description
                             Text(
-                                text = stringResource(R.string.weather_condition),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                                //text changing based on weather conditions, in different textbox because of change of color
-                                text = stringResource(id = weatherConditionsRating.stringResourceId),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                fontWeight = FontWeight.Bold,
+                                text = description,
+                                modifier = Modifier
+                                    .padding(vertical = 2.dp, horizontal = 10.dp)
+                                    .padding(bottom = 8.dp),
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                         }
-                        //Text for description
-                        Text(
-                            text = description,
-                            modifier = Modifier
-                                .padding(vertical = 2.dp, horizontal = 10.dp)
-                                .padding(bottom = 8.dp),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
                     }
                 }
             }
