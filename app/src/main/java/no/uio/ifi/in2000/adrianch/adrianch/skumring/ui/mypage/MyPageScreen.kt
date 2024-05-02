@@ -43,6 +43,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -155,7 +156,7 @@ fun MyPageScreen(
         snackbarHost = { SnackbarHost(hostState = myPageUiState.snackbarHostState) },
         // Button to add custom locations:
         floatingActionButton = {
-            FloatingActionButton(
+            LargeFloatingActionButton(
                 onClick = {
                     // Show the form:
                     myPageViewModel.showNewForm()
@@ -275,7 +276,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
 
         Card(
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
             )
         ) {
             Column(
@@ -320,20 +321,20 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
-                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        errorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        errorContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         errorCursorColor = MaterialTheme.colorScheme.error,
                         errorIndicatorColor = MaterialTheme.colorScheme.error,
                         errorLeadingIconColor = MaterialTheme.colorScheme.error,
@@ -364,20 +365,20 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
-                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        errorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        errorContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         errorCursorColor = MaterialTheme.colorScheme.error,
                         errorIndicatorColor = MaterialTheme.colorScheme.error,
                         errorLeadingIconColor = MaterialTheme.colorScheme.error,
@@ -430,7 +431,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         // Make it look not disabled
-                        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         disabledTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         disabledIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -461,20 +462,20 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                         }
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
-                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        errorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        errorContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         errorCursorColor = MaterialTheme.colorScheme.error,
                         errorIndicatorColor = MaterialTheme.colorScheme.error,
                         errorLeadingIconColor = MaterialTheme.colorScheme.error,
