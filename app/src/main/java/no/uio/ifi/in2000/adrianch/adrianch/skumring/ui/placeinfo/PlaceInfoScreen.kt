@@ -424,9 +424,10 @@ fun TodayInfoCard(
                 }
             }
             Divider(
-                modifier = Modifier.padding(
-                    start = 18.dp, end = 18.dp, top = 25.dp, bottom = 17.dp
-                ), color = MaterialTheme.colorScheme.surface, thickness = 1.dp
+                modifier = Modifier
+                    .padding(top = 20.dp, bottom = 17.dp) //start = 18.dp, end = 18.dp
+                        ,
+                 color = MaterialTheme.colorScheme.onSurfaceVariant, thickness = 1.dp
             )
 
             //For showing todays date
@@ -438,7 +439,7 @@ fun TodayInfoCard(
                     .fillMaxWidth()
                     .padding(bottom = 20.dp),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
             //Sunset Icon
             Icon(
@@ -501,8 +502,8 @@ fun TodayInfoCard(
             )
             Divider(
                 modifier = Modifier.padding(
-                    start = 22.dp, end = 22.dp, top = 10.dp, bottom = 15.dp
-                ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
+                    start = 27.dp, end = 27.dp, top = 10.dp, bottom = 15.dp
+                ), color = MaterialTheme.colorScheme.onSurfaceVariant, thickness = 1.dp
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -600,7 +601,7 @@ fun SunEventInfoCard(
     )
 
     Card(elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inversePrimary),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize(
@@ -622,12 +623,12 @@ fun SunEventInfoCard(
                     .fillMaxWidth()
                     .padding(top = 10.dp),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.inverseOnSurface
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
             Divider( //for dividing the date from the sunset info
                 modifier = Modifier.padding(
                     start = 18.dp, end = 18.dp, top = 5.dp, bottom = 15.dp
-                ), color = MaterialTheme.colorScheme.onSecondary, thickness = 1.dp
+                ), color = MaterialTheme.colorScheme.onSurfaceVariant, thickness = 1.dp
             )
             //Sunset icon
             Icon(
@@ -642,7 +643,7 @@ fun SunEventInfoCard(
             Text(
                 text = timeString,
                 style = typography.headlineSmall,
-                color = MaterialTheme.colorScheme.inverseOnSurface,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -652,7 +653,7 @@ fun SunEventInfoCard(
             Text(
                 text = stringResource(R.string.weather_condition) + ": ${sunEvent.conditions.weatherRating}",
                 style = typography.bodyMedium,
-                color = MaterialTheme.colorScheme.inverseOnSurface,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -662,7 +663,7 @@ fun SunEventInfoCard(
             Text( //temperature at sunset
                 text = stringResource(R.string.temp_at_sunset) + ": ${sunEvent.tempAtEvent}°C",
                 style = typography.bodyMedium,
-                color = MaterialTheme.colorScheme.inverseOnSurface,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -671,10 +672,10 @@ fun SunEventInfoCard(
             )
             //Box for "show less"/"show more" button
             Box(
-                modifier = Modifier.background(MaterialTheme.colorScheme.onPrimaryContainer)
+                modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
             ) {
                 Divider(
-                    color = MaterialTheme.colorScheme.surface, thickness = 1.dp
+                    color = MaterialTheme.colorScheme.primaryContainer, thickness = 1.dp
                 )
                 Button(
                     onClick = {
@@ -682,7 +683,7 @@ fun SunEventInfoCard(
                     },
                     shape = RectangleShape,
                     contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onPrimaryContainer),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondaryContainer),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 0.dp, end = 0.dp)
@@ -691,13 +692,13 @@ fun SunEventInfoCard(
                         text = if (expandedState) stringResource(R.string.placeInfo_less_details_button) else stringResource(
                             R.string.placeInfo_more_details_button
                         ),
-                        color = MaterialTheme.colorScheme.primaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         style = typography.titleMedium
                     )
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Drop-down arrow",
-                        tint = MaterialTheme.colorScheme.primaryContainer,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
                             .rotate(rotationState)
                             .padding(start = 7.dp)
@@ -726,7 +727,7 @@ fun SunEventInfoCard(
                             text = stringResource(R.string.golden_hour),
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(bottom = 0.dp)
                         )
@@ -741,7 +742,7 @@ fun SunEventInfoCard(
                         Text(
                             text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
                             style = typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -754,7 +755,7 @@ fun SunEventInfoCard(
                             text = stringResource(R.string.blue_hour),
                             style = typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
@@ -768,7 +769,7 @@ fun SunEventInfoCard(
                         Text(
                             text = "20:31-21:05", //TODO //change this later to $blueHourTime
                             style = typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
