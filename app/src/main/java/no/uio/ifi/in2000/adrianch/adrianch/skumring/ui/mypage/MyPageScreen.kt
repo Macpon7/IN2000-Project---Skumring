@@ -145,7 +145,8 @@ fun MyPageScreen(
                     ) {
                         Icon(
                             Icons.Default.Settings,
-                            contentDescription = stringResource(id = R.string.settings)
+                            contentDescription = stringResource(id = R.string.settings),
+                            modifier = Modifier.size(40.dp)
                         )
                     }
                 }
@@ -161,11 +162,16 @@ fun MyPageScreen(
                     // Show the form:
                     myPageViewModel.showNewForm()
                 },
-                modifier = Modifier.padding(end = 16.dp)
+                modifier = Modifier
+                    .padding(end = 16.dp),
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(id = R.string.add_location)
+                    contentDescription = stringResource(id = R.string.add_location),
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.size(40.dp)
                 )
             }
         }
@@ -490,21 +496,23 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 Button(
                     onClick = { myPageViewModel.addLocation() },
                     modifier = Modifier.padding(vertical = 8.dp),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
                     Text(
                         text = stringResource(R.string.add_location),
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Icon(
                         imageVector = Icons.Outlined.Check,
                         contentDescription = stringResource(id = R.string.add_location),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
 
                 if (newPlaceUiState.missingInfo) {
                     Text(
                         text = stringResource(R.string.missing_fields),
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
             }
@@ -558,16 +566,16 @@ fun PickImageFromGallery(
     Button(
         onClick = { launcher.launch("image/*") },
         modifier = Modifier.padding(vertical = 8.dp),
-        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Text(
             text = stringResource(R.string.add_photo),
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
         )
         Icon(
             imageVector = Icons.Outlined.Add,
             contentDescription = stringResource(id = R.string.add_photo),
-            tint = MaterialTheme.colorScheme.onPrimary
+            tint = MaterialTheme.colorScheme.onSecondaryContainer
         )
     }
 }
