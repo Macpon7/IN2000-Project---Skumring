@@ -211,12 +211,14 @@ fun ContentMyPage(
                     name = place.name,
                     description = place.description,
                     isFavourite = place.isFavourite,
+                    isCustom = place.isCustomPlace,
                     onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                         navController.navigate(
                             route = "placeinfoscreen/${place.id}"
                         )
                     },
-                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) })
+                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) },
+                    imageToDisplay = "holmenkollen.jpg")
             }
         }
     }
