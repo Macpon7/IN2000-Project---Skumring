@@ -328,7 +328,7 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp),
                         imageVector = Icons.Default.Menu,
-                        contentDescription = "Theme Icon",
+                        contentDescription = stringResource(R.string.theme_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
                     )
@@ -350,7 +350,7 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
-                        contentDescription = "place icon",
+                        contentDescription = stringResource(R.string.place_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
                     )
@@ -412,7 +412,7 @@ BoxWithConstraints {
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "List", // TODO xml
+                        text = stringResource(R.string.toggle_list),
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
@@ -428,13 +428,13 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
-                        contentDescription = "place icon",
+                        contentDescription = stringResource(R.string.place_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "Map", // TODO xml
+                        text = stringResource(R.string.toggle_map),
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
@@ -518,7 +518,7 @@ fun BottomSheetContent(
                 if (place.isFavourite) {
                     Icon(
                         imageVector = Icons.Filled.Favorite,
-                        contentDescription = "",
+                        contentDescription = stringResource(id = R.string.favourite_icon),
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(30.dp)
 
@@ -526,7 +526,7 @@ fun BottomSheetContent(
                 } else {
                     Icon(
                         imageVector = Icons.Filled.FavoriteBorder,
-                        contentDescription = "",
+                        contentDescription = stringResource(R.string.favourite_icon),
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(30.dp)
                     )
@@ -540,7 +540,7 @@ fun BottomSheetContent(
         )
         {
             Text(
-                text = "Sunset events ",
+                text = stringResource(id = R.string.home_sunset),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -551,13 +551,13 @@ fun BottomSheetContent(
             )
 
             Text(
-                text = "Time: + ${place.sunEvents[0].time.format(DateTimeFormatter.ofPattern("HH':'mm"))}",
+                text = stringResource(R.string.time) + ": ${place.sunEvents[0].time.format(DateTimeFormatter.ofPattern("HH':'mm"))}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
             )
 
             Text(
-                text = "Temperature:  ${place.sunEvents[0].tempAtEvent} °C",
+                text = stringResource(R.string.temp_at_sunset) + ": ${place.sunEvents[0].tempAtEvent} °C",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier
@@ -574,14 +574,13 @@ fun BottomSheetContent(
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            //verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp),
         )
         {
             Text(
-                text = "Description of place ",
+                text = stringResource(R.string.description),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -612,13 +611,13 @@ fun BottomSheetContent(
                 contentPadding = PaddingValues(12.dp),
             ) {
                 Text(
-                    text = "CLOSE",
+                    text = stringResource(R.string.close) ,
                     color = MaterialTheme.colorScheme.onTertiary,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
 
-            Spacer(modifier = Modifier.padding(start = 10.dp))
+           // Spacer(modifier = Modifier.padding(start = 10.dp))
 
             Button(
                 onClick = {
