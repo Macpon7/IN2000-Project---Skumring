@@ -25,11 +25,8 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocati
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTransportation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
-<<<<<<< HEAD
 import java.time.format.DateTimeFormatter
-=======
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
->>>>>>> main
 
 private const val logTag = "PlaceInfoViewModel"
 
@@ -95,15 +92,11 @@ class PlaceInfoViewModel(
                     currentPlaceInfoUiState.copy(
                         placeInfo = placeInfoObject,
                         isLoading = false,
-<<<<<<< HEAD
 //                        blueHour = placeInfoObject.sunEvents[0].blueHourTime.toLocalTime().format(
 //                            DateTimeFormatter.ofPattern("HH':'mm")),
 //                        goldenHour = placeInfoObject.sunEvents[0].goldenHourTime.toLocalTime().format(
 //                        DateTimeFormatter.ofPattern("HH':'mm")),
-                    )
-=======
                         )
->>>>>>> main
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)
                     currentPlaceInfoUiState.copy(
