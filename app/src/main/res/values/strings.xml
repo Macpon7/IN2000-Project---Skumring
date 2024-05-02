@@ -16,7 +16,7 @@
     <string name="error_message_no_error">Ingen feil</string>
 
     <string name="error_message_loadUserLocation">Feil med å oppdatere bruker lokasjon</string>
-    <string name="error_message_getting_sunset">Feil med å laste ned data om solnedgang</string>
+    <string name="error_message_getting_sunset" translatable="false">Feil med å laste ned data om solnedgang</string>
     <string name="error_message_loading_list">Feil med å laste inn liste</string>
     <string name="error_message_getting_places_from_database">Feil med å laste inn steder fra databasen</string>
     <string name="error_message_getting_placeinfo">Feil med å laste inn info om stedet</string>
@@ -136,8 +136,12 @@
     <string name="app_version" translatable="false">0.3</string>
     <string name="home_user_loc">Din posisjon</string>
     <string name="reverse_geocode_unknown_place">Ukjent sted</string>
+    <string name="means_of_transport_walking">Gange</string>
+    <string name="means_of_transportation_biking">Sykkel</string>
+    <string name="means_of_transportation_driving">Bil</string>
     <string name="distance_hour">t</string>
     <string name="distance_minutes">m</string>
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Avstand fra din posisjon</string>
+    <string name="no_route_available">Fant ikke vei</string>
 </resources>
