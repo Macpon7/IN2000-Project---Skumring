@@ -6,10 +6,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
@@ -27,6 +27,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 private const val TAG = "PlaceRepository"
@@ -41,7 +42,7 @@ interface PlaceRepository {
     suspend fun removeCustomPlace(id: Int)
     suspend fun makeFavourite(id: Int)
     suspend fun unmakeFavourite(id: Int)
-    suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int): Boolean
+    suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int, timestamp: LocalDate): Boolean
 
 }
 class PlaceRepositoryImpl(
@@ -58,15 +59,15 @@ class PlaceRepositoryImpl(
     }
 
     //Image database implementation
-    fun insertImagePath(path: String){
+    fun insertImagePath(path: String, timestamp: LocalDate){
         //TODO endre argumentet til ImageEntity slik at placeId ikke er 1, men id til det nyopprettete stedet
-        val imageEntity: ImageEntity = ImageEntity(placeId = 1, imgPath = path)
+        val imageEntity: ImageEntity = ImageEntity(placeId = 1, imgPath = path, timestamp = timestamp)
         imageDao.insertSingleImage(imageEntity)
     }
 
 
 
-     override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int): Boolean {
+     override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int, timestamp: LocalDate): Boolean {
         return withContext(Dispatchers.IO) {
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
@@ -85,7 +86,7 @@ class PlaceRepositoryImpl(
 
                 outputStream = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                insertImagePath("/placeImages/$fileName")
+                insertImagePath(path = "/placeImages/$fileName", timestamp = timestamp)
                 Log.d("MyPage", "added to database")
                 Log.d("MyPage", "the new path is /placeImages/$fileName")
 
@@ -179,7 +180,9 @@ class PlaceRepositoryImpl(
                         cloudConditionMedium = it.cloudConditionMedium,
                         cloudConditionHigh = it.cloudConditionHigh,
                         airCondition = it.airCondition
-                    )
+                    ),
+                    goldenHourTime = it.goldenHourDateTime,
+                    blueHourTime = it.blueHourDateTime
                 )
             }
         }
@@ -232,6 +235,8 @@ class PlaceRepositoryImpl(
                 airCondition = it.conditions.airCondition,
                 sunsetTemp = it.tempAtEvent,
                 weatherIcon = it.weatherIcon,
+                goldenHourDateTime = it.goldenHourTime,
+                blueHourDateTime = it.blueHourTime,
                 timestamp = currentTimeStamp
             )
         }
