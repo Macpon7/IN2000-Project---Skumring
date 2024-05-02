@@ -75,6 +75,7 @@ import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTransportation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
@@ -187,7 +188,8 @@ fun TodayInfoCard(
     timeString: String,
     placeInfoViewModel: PlaceInfoViewModel,
     goldenHourTime: String,
-    blueHourTime: String
+    blueHourTime: String,
+    placeInfoUiState: PlaceInfoUiState,
 ) {
 
     //for the clickable text
@@ -315,8 +317,7 @@ fun TodayInfoCard(
                     .fillMaxWidth()
                     .padding(start = 30.dp, end = 30.dp)
             ) {
-
-
+                // WALKING
                 Column {
                     Row {
                         Icon(
@@ -334,7 +335,8 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.distance +
+                                " " + stringResource(R.string.distance_kilometers),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -343,17 +345,18 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
-                            id = R.string.distance_minutes
-                        ), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.durationHours +
+                                stringResource(id = R.string.distance_hour) + " " +
+                                placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.durationMinutes +
+                                stringResource(id = R.string.distance_minutes),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
                     )
                 }
+                //BIKING
                 Column {
                     Row {
-
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.bike),
                             contentDescription = "bike icon",
@@ -369,7 +372,8 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.distance +
+                                " " + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -378,16 +382,17 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
-                            id = R.string.distance_minutes
-                        ), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.durationHours +
+                                stringResource(id = R.string.distance_hour) +
+                                placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.durationMinutes +
+                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
 
                         )
                 }
-
+                // DRIVING
                 Column {
                     Row {
 
@@ -407,7 +412,8 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.distance +
+                                " " + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -416,9 +422,10 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
-                            id = R.string.distance_minutes
-                        ), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.durationHours +
+                                stringResource(id = R.string.distance_hour) +
+                                placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.durationMinutes +
+                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -849,7 +856,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
         val goldenHourTime = sunEvent.goldenHourTime.format(DateTimeFormatter.ofPattern("HH':'mm"))
         val blueHourTime = sunEvent.blueHourTime.format(DateTimeFormatter.ofPattern("HH':'mm"))
         TodayInfoCard(
-            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel, goldenHourTime,  blueHourTime
+            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel, goldenHourTime, blueHourTime, placeInfoUiState
         )
     }
 }
