@@ -373,7 +373,7 @@ fun TodayInfoCard(
                     }
                     Text(
                         text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.distance +
-                                " " + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                                " " + stringResource(R.string.distance_kilometers),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -386,7 +386,7 @@ fun TodayInfoCard(
                                 stringResource(id = R.string.distance_hour) +
                                 " " +
                                 placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.durationMinutes +
-                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
+                                stringResource(id = R.string.distance_minutes),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -414,7 +414,7 @@ fun TodayInfoCard(
                     }
                     Text(
                         text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.distance +
-                                " " + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                                " " + stringResource(R.string.distance_kilometers),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -427,7 +427,7 @@ fun TodayInfoCard(
                                 stringResource(id = R.string.distance_hour) +
                                 " " +
                                 placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.durationMinutes +
-                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
+                                stringResource(id = R.string.distance_minutes),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,

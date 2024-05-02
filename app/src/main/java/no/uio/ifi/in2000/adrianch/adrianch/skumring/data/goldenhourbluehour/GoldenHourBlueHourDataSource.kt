@@ -59,21 +59,27 @@ class GoldenHourBlueHourDataSource {
             // Fetches info for Central European TZ
             val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&date=$dateString"
             val response = fetchSunriseSunset(path)
-            Log.d(logTag, response.results.golden_hour ?: "")
-            val goldenHourDateTime: LocalDateTime = formatTime(
-                time = response.results.golden_hour ?: "",
-                date = dateString)
-            val blueHourDateTime: LocalDateTime = formatTime(
-                time = response.results.dusk ?: "",
-                date = dateString)
-            Log.d(logTag, "Golden hour: $goldenHourDateTime, Blue hour: $blueHourDateTime")
 
-            return GoldenHourBlueHour(goldenHour = goldenHourDateTime, blueHour = blueHourDateTime)
+            return convertResponseToGoldenHourBlueHour(response, dateString)
+
         } catch (e: Exception) {
             Log.e(logTag, "Failed fetching Golden/Blue Hour", e)
             throw e
         }
 
+    }
+    fun convertResponseToGoldenHourBlueHour(
+        response: SunriseSunset,
+        dateString: String
+    ): GoldenHourBlueHour {
+        val goldenHourDateTime: LocalDateTime = formatTime(
+            time = response.results.golden_hour ?: "",
+            date = dateString)
+        val blueHourDateTime: LocalDateTime = formatTime(
+            time = response.results.dusk ?: "",
+            date = dateString)
+        Log.d(logTag, "Golden hour: $goldenHourDateTime, Blue hour: $blueHourDateTime")
+        return GoldenHourBlueHour(goldenHour = goldenHourDateTime, blueHour = blueHourDateTime)
     }
 
     /**
@@ -91,7 +97,6 @@ class GoldenHourBlueHourDataSource {
         }
     }
 
-    @androidx.annotation.VisibleForTesting()
     /**
      * Because the API doesn't format its output time properly we have to do it.
      * Adds a zero in front of single digit hours. If it gets an empty or correctly

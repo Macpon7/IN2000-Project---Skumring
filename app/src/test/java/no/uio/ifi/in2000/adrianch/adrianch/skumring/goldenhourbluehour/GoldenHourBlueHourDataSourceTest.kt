@@ -1,16 +1,36 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.goldenhourbluehour
 
-import kotlinx.coroutines.runBlocking
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.goldenhourbluehour.GoldenHourBlueHourDataSource
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.SunriseSunset
 import org.junit.Test
+import java.time.format.DateTimeFormatter
 
 class GoldenHourBlueHourDataSourceTest {
 
-    val goldenHourBlueHourDataSource = GoldenHourBlueHourDataSource()
+    val gson = Gson()
+
+    val source: GoldenHourBlueHourDataSource = GoldenHourBlueHourDataSource()
+    val dummyDate: String = "2000-01-01"
+
+    val osloTestData: SunriseSunset = gson.fromJson(
+        osloTestCall,
+        SunriseSunset::class.java
+    )
+    val northPoleTestData: SunriseSunset  = gson.fromJson(
+        northPoleTestCall,
+        SunriseSunset::class.java
+    )
+
 
     @Test
-    fun checkCorrectTimeFormatFixTimeFormat() {
-        val expected = "11:20 PM"
+    fun checkFixTimeFormat() {
+        val formatter = DateTimeFormatter.ofPattern("HH':'mm")
 
+        val expected = "13:26"
+        val responseDateTime = source.convertResponseToGoldenHourBlueHour(osloTestData, dummyDate).goldenHour
+        val result = responseDateTime.format(formatter)
+        assert(expected == result)
     }
 }

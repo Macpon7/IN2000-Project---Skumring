@@ -2,22 +2,21 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.goldenhourbluehour
 
 val osloTestCall = """ {
     "results": {
-        "date": "2024-05-02",
-        "sunrise": "6:09:48 AM",
-        "sunset": "8:02:47 PM",
-        "first_light": "4:28:05 AM",
-        "last_light": "9:44:30 PM",
-        "dawn": "5:40:54 AM",
-        "dusk": "8:31:41 PM",
-        "solar_noon": "1:06:18 PM",
-        "golden_hour": "7:25:50 PM",
-        "day_length": "13:52:58",
-        "timezone": "America/New_York",
-        "utc_offset": -240
+        "date":"2000-01-01",
+        "sunrise":"9:23:45 AM",
+        "sunset":"3:25:11 PM",
+        "first_light":"6:39:21 AM",
+        "last_light":"6:09:35 PM",
+        "dawn":"8:26:57 AM",
+        "dusk":"4:22:00 PM",
+        "solar_noon":"12:24:28 PM",
+        "golden_hour":"1:26:27 PM",
+        "day_length":"6:01:25",
+        "timezone":"CET",
+        "utc_offset":60
     },
-    "status": "OK"
-    }
-"""
+    "status":"OK"
+}"""
 
 val northPoleTestCall = """{
     "results": {
@@ -35,5 +34,4 @@ val northPoleTestCall = """{
         "utc_offset": 60
     },
     "status": "OK"
-}
-"""
+}"""
