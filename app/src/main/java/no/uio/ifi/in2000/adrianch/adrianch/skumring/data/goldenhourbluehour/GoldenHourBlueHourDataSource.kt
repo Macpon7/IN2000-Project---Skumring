@@ -68,6 +68,9 @@ class GoldenHourBlueHourDataSource {
         }
 
     }
+    /*
+    Function that does the conversion, separated and made public for tesitng pusposes
+     */
     fun convertResponseToGoldenHourBlueHour(
         response: SunriseSunset,
         dateString: String

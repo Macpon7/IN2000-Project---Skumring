@@ -15,6 +15,7 @@ android {
         schemaDirectory("$projectDir/schemas")
     }
 
+    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
