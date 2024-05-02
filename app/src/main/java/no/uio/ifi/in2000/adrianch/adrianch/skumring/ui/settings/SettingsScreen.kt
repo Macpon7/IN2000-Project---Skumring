@@ -94,48 +94,19 @@ fun SettingsScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
-            ContentSettings(settingsViewModel)
+            ChooseTheme(
+                settingsViewModel = settingsViewModel
+            )
+            ChooseLanguage(
+                settingsViewModel = settingsViewModel
+            )
+            ChooseStartLocation(
+                settingsViewModel = settingsViewModel
+            )
         }
     }
 }
 
-/**
- * Functions for the content of settingscreen:
- * All shown in dropdownmenu:
- * ChooseTheme
- * ChooseLanguage
- * ChooseStartLocation
- * ChooseLocationAs
- */
-@Composable
-fun ContentSettings(settingsViewModel: SettingsViewModel) {
-    Column(modifier = Modifier.padding(30.dp)) {
-
-        // Content for choose mode:
-        ChooseTheme(
-            settingsViewModel = settingsViewModel,
-            textColor = MaterialTheme.colorScheme.onSurface,
-            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
-        )
-
-        // Content for choosing language:
-        ChooseLanguage(
-            settingsViewModel = settingsViewModel,
-            textColor = MaterialTheme.colorScheme.onSurface,
-            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
-        )
-
-        // Content for choosing StartLocation:
-        ChooseStartLocation(
-            settingsViewModel = settingsViewModel,
-            textColor = MaterialTheme.colorScheme.onSurface,
-            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
-        )
-    }
-}
 
 /**
  * Function to decide if the user want dark or lightmode
@@ -146,9 +117,6 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
 @Composable
 fun ChooseTheme(
     settingsViewModel: SettingsViewModel,
-    textColor: Color,
-    focusedContainerColor: Color,
-    unfocusedContainerColor: Color
 ) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
@@ -168,7 +136,7 @@ fun ChooseTheme(
             label = {
                 Text(
                     text = stringResource(R.string.choose_theme),
-                    color = textColor,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold
                 )
@@ -179,8 +147,8 @@ fun ChooseTheme(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = focusedContainerColor,
-                unfocusedContainerColor = unfocusedContainerColor
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
             ),
             /*
             leadingIcon = {
@@ -198,7 +166,8 @@ fun ChooseTheme(
                 modifier = Modifier,
                 text = {
                     Text(
-                        text = stringResource(R.string.follow_system), color = textColor
+                        text = stringResource(R.string.follow_system),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 },
                 onClick = {
@@ -217,7 +186,8 @@ fun ChooseTheme(
             )
             DropdownMenuItem(modifier = Modifier, text = {
                 Text(
-                    text = stringResource(R.string.light_mode), color = textColor
+                    text = stringResource(R.string.light_mode),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }, onClick = {
                 settingsViewModel.updateTheme(
@@ -226,7 +196,8 @@ fun ChooseTheme(
             })
             DropdownMenuItem(modifier = Modifier, text = {
                 Text(
-                    text = stringResource(R.string.dark_mode), color = textColor
+                    text = stringResource(R.string.dark_mode),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }, onClick = {
                 settingsViewModel.updateTheme(
@@ -254,9 +225,6 @@ fun PreviewChooseTheme(settingsViewModel: SettingsViewModel = viewModel()) {
 @Composable
 fun ChooseLanguage(
     settingsViewModel: SettingsViewModel,
-    textColor: Color,
-    focusedContainerColor: Color,
-    unfocusedContainerColor: Color
 ) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
@@ -276,7 +244,7 @@ fun ChooseLanguage(
                     text = stringResource(R.string.choose_language),
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold,
-                    color = textColor
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             },
             trailingIcon = {
@@ -285,15 +253,16 @@ fun ChooseLanguage(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = focusedContainerColor,
-                unfocusedContainerColor = unfocusedContainerColor
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
             ),
         )
         ExposedDropdownMenu(expanded = settingsUiState.dropdownExpandedLanguage,
             onDismissRequest = { settingsViewModel.expandDropdownLanguage() }) {
             DropdownMenuItem(modifier = Modifier, text = {
                 Text(
-                    text = stringResource(R.string.follow_system), color = textColor
+                    text = stringResource(R.string.follow_system),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }, onClick = {
                 settingsViewModel.updateLanguage(
@@ -302,7 +271,8 @@ fun ChooseLanguage(
             })
             DropdownMenuItem(modifier = Modifier, text = {
                 Text(
-                    text = stringResource(R.string.english), color = textColor
+                    text = stringResource(R.string.english),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }, onClick = {
                 settingsViewModel.updateLanguage(
@@ -311,7 +281,8 @@ fun ChooseLanguage(
             })
             DropdownMenuItem(modifier = Modifier, text = {
                 Text(
-                    text = stringResource(R.string.norwegian), color = textColor
+                    text = stringResource(R.string.norwegian),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }, onClick = {
                 settingsViewModel.updateLanguage(
@@ -337,9 +308,6 @@ fun PreviewChooseLanguage(settingsViewModel: SettingsViewModel = viewModel()) {
 @Composable
 fun ChooseStartLocation(
     settingsViewModel: SettingsViewModel,
-    textColor: Color,
-    focusedContainerColor: Color,
-    unfocusedContainerColor: Color
 ) {
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
@@ -359,7 +327,7 @@ fun ChooseStartLocation(
                     text = stringResource(R.string.choose_default_location),
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold,
-                    color = textColor
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             },
             trailingIcon = {
@@ -368,15 +336,16 @@ fun ChooseStartLocation(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = focusedContainerColor,
-                unfocusedContainerColor = unfocusedContainerColor
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
             )
         )
         ExposedDropdownMenu(expanded = settingsUiState.dropdownExpandedStartLocation,
             onDismissRequest = { settingsViewModel.expandDropdownStartLocation() }) {
             DropdownMenuItem(modifier = Modifier, text = {
                 Text(
-                    text = stringResource(R.string.costum_location), color = textColor
+                    text = stringResource(R.string.costum_location),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }, onClick = {
                 settingsViewModel.updateSelectedDefaultLocation(
@@ -387,7 +356,8 @@ fun ChooseStartLocation(
             })
             DropdownMenuItem(modifier = Modifier, text = {
                 Text(
-                    text = stringResource(R.string.phones_location), color = textColor
+                    text = stringResource(R.string.phones_location),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }, onClick = {
                 settingsViewModel.updateSelectedDefaultLocation(
