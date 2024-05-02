@@ -197,7 +197,7 @@ fun ContentMyPage(
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
         //Slik leser vi inn fra assets/presetImages
-        //Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/holmenkollen.jpg")).asImageBitmap(), contentDescription = null)
+        //Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/stedsnavn.jpg")).asImageBitmap(), contentDescription = null)
 
         if (myPageUiState.places.isEmpty()) {
             Text(
