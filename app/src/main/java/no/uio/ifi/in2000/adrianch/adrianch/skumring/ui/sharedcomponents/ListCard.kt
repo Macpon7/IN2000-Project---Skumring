@@ -72,7 +72,7 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                     modifier = Modifier
                         .height(100.dp)
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -88,7 +88,7 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                                 .padding(vertical = 2.dp),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Row {
                             IconButton(onClick = { onFavouriteClick() }) {
@@ -96,13 +96,13 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                                     Icon(
                                         imageVector = Icons.Filled.Favorite,
                                         contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        tint = MaterialTheme.colorScheme.secondary
                                     )
                                 } else {
                                     Icon(
                                         imageVector = Icons.Filled.FavoriteBorder,
                                         contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        tint = MaterialTheme.colorScheme.secondary
                                     )
 
                                 }
@@ -112,7 +112,7 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                     //Text for description. Do we want weather condition in the future?
                     Text(
                         text = description,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
                             .padding(vertical = 2.dp, horizontal = 8.dp)
                             .padding(bottom = 6.dp)
@@ -143,7 +143,7 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                     modifier = Modifier
                         .height(100.dp)
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.Center,
@@ -159,7 +159,7 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                                 .padding(vertical = 2.dp),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         Row {
@@ -168,13 +168,13 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                                     Icon(
                                         imageVector = Icons.Filled.Favorite,
                                         contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                 } else {
                                     Icon(
                                         imageVector = Icons.Filled.FavoriteBorder,
                                         contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                 }
                             }
@@ -187,7 +187,7 @@ fun ListCard(name: String, description: String, isFavourite: Boolean,
                             .padding(vertical = 2.dp, horizontal = 10.dp)
                             .padding(bottom = 8.dp)
                             .align(Alignment.BottomCenter),
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
