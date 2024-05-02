@@ -30,23 +30,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 
 /**
  * Cards with information about places
  */
 @Preview
 @Composable
-fun ListCardPreview () {
-    ListCard(name = "Holmenkollen stadion", description = "Holmenkollen er et fantastisk fint sted å ta bilde av dine nære og kjære under en utrolig fin solnedgang", isFavourite = false, onItemClick = {}, onFavouriteClick = {})
+fun ListCardPreview() {
+    /*
+    ListCard(
+        name = "Holmenkollen stadion",
+        description = "Holmenkollen er et fantastisk fint sted å ta bilde av dine nære og kjære under en utrolig fin solnedgang",
+        isFavourite = false,
+        onItemClick = {},
+        onFavouriteClick = {})
+     */
 }
 
 /**
  * Cards with information about places
  */
 @Composable
-fun ListCard(name: String, description: String, isFavourite: Boolean,
-             onItemClick: () -> Unit,
-             onFavouriteClick: () -> Unit) {
+fun ListCard(
+    sunEvent: SunEvent,
+    name: String,
+    description: String, isFavourite: Boolean,
+    onItemClick: () -> Unit,
+    onFavouriteClick: () -> Unit
+) {
     BoxWithConstraints {
         if (maxWidth < 400.dp) {
             Card(

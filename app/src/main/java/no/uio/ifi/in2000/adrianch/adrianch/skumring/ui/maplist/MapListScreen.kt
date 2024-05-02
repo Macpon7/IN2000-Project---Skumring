@@ -75,11 +75,15 @@ import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.ImageDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.TodayInfoCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 private const val logTag = "MapListScreen"
 
@@ -191,15 +195,22 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                 // Column for list view
                 Column (Modifier.verticalScroll(rememberScrollState())) {
                     mapListUiState.places.forEach {place ->
-                        ListCard(
-                            name = place.name,
-                            description = place.description,
-                            isFavourite = place.isFavourite,
-                            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                                navController.navigate("placeinfoscreen/${place.id}")
-                            },
-                            onFavouriteClick = {mapListViewModel.toggleFavourite(place)}
-                        )
+                        val sunEvents = place.sunEvents
+
+                        if (place.sunEvents.isNotEmpty()) {
+                            val sunEvent = sunEvents[0]
+
+                            ListCard(
+                                name = place.name,
+                                description = place.description,
+                                isFavourite = place.isFavourite,
+                                onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                                    navController.navigate("placeinfoscreen/${place.id}")
+                                },
+                                onFavouriteClick = {mapListViewModel.toggleFavourite(place)},
+                                sunEvent = sunEvent
+                            )
+                        }
                     }
                 }
             }
@@ -423,6 +434,7 @@ fun BottomSheetContent(
         modifier = Modifier.fillMaxWidth()
     )
     {
+        /*
         ListCard(
             name = place.name,
             description = place.description,
@@ -433,8 +445,11 @@ fun BottomSheetContent(
             },
             onFavouriteClick = {
                 mapListViewModel.toggleFavourite(place = place)
-            }
+            },
+
         )
+
+         */
         Spacer(modifier = Modifier.height(40.dp))
     }
 }
