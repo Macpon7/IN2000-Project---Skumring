@@ -273,7 +273,7 @@ BoxWithConstraints {
                 .height(buttonHeight)
                 .clip(shape = parentShape)
                 .clickable { onClick() }
-                .background(MaterialTheme.colorScheme.onSecondary)
+                .background(MaterialTheme.colorScheme.tertiary)
         ) {
             // toggle animation
             Box(
@@ -282,7 +282,7 @@ BoxWithConstraints {
                     .height(buttonHeight)
                     .offset(x = offsetSmallScreen)
                     .clip(shape = parentShape)
-                    .background(MaterialTheme.colorScheme.secondary)
+                    .background(MaterialTheme.colorScheme.onTertiary)
 
             )
             // the icons and text representing list and map views
@@ -291,7 +291,7 @@ BoxWithConstraints {
                     .border(
                         border = BorderStroke(
                             width = borderWidth,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.onTertiary
                         ),
                         shape = parentShape
                     ),
@@ -310,15 +310,15 @@ BoxWithConstraints {
                             .offset((-30).dp),
                         imageVector = Icons.Default.Menu,
                         contentDescription = "Theme Icon",
-                        tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
+                        tint = if (mapTheme) MaterialTheme.colorScheme.tertiary
+                        else MaterialTheme.colorScheme.onTertiary
                     )
                     Text(
                         modifier = Modifier.padding(start = 5.dp),
                         text = stringResource(R.string.toggle_list),
                         style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
+                        color = if (mapTheme) MaterialTheme.colorScheme.tertiary
+                        else MaterialTheme.colorScheme.onTertiary
                     )
                 }
                 Box( //map and map icon
@@ -332,15 +332,15 @@ BoxWithConstraints {
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
                         contentDescription = "place icon",
-                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
+                        tint = if (mapTheme) MaterialTheme.colorScheme.onTertiary
+                        else MaterialTheme.colorScheme.tertiary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
                         text = stringResource(R.string.toggle_map),
                         style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
+                        color = if (mapTheme) MaterialTheme.colorScheme.onTertiary
+                        else MaterialTheme.colorScheme.tertiary
                     )
                 }
             }
@@ -352,7 +352,7 @@ BoxWithConstraints {
                 .height(buttonHeight / 2)
                 .clip(shape = parentShape)
                 .clickable { onClick() }
-                .background(MaterialTheme.colorScheme.onSecondary)
+                .background(MaterialTheme.colorScheme.tertiary)
         ) {
             // toggle animation
             Box(
@@ -361,7 +361,7 @@ BoxWithConstraints {
                     .height(buttonHeight / 2)
                     .offset(x = offsetLargeScreen)
                     .clip(shape = parentShape)
-                    .background(MaterialTheme.colorScheme.secondary)
+                    .background(MaterialTheme.colorScheme.onTertiary)
             )
             // the icons and text representing list and map views
             Row(
@@ -369,7 +369,7 @@ BoxWithConstraints {
                     .border(
                         border = BorderStroke(
                             width = borderWidth,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = MaterialTheme.colorScheme.onTertiary
                         ),
                         shape = parentShape
                     ),
@@ -388,15 +388,15 @@ BoxWithConstraints {
                             .padding(start = 10.dp),
                         imageVector = Icons.Default.Menu,
                         contentDescription = "Theme Icon",
-                        tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
+                        tint = if (mapTheme) MaterialTheme.colorScheme.tertiary
+                        else MaterialTheme.colorScheme.onTertiary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
                         text = "List", // TODO xml
                         style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
+                        color = if (mapTheme) MaterialTheme.colorScheme.tertiary
+                        else MaterialTheme.colorScheme.onTertiary
                     )
                 }
                 Box( //map and map icon
@@ -410,15 +410,15 @@ BoxWithConstraints {
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
                         contentDescription = "place icon",
-                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
+                        tint = if (mapTheme) MaterialTheme.colorScheme.onTertiary
+                        else MaterialTheme.colorScheme.tertiary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
                         text = "Map", // TODO xml
                         style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
+                        color = if (mapTheme) MaterialTheme.colorScheme.onTertiary
+                        else MaterialTheme.colorScheme.tertiary
                     )
                 }
             }
