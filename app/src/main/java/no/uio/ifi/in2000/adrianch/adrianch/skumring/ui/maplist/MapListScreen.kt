@@ -210,10 +210,12 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                             name = place.name,
                             description = place.description,
                             isFavourite = place.isFavourite,
+                            isCustom = place.isCustomPlace,
                             onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                                 navController.navigate("placeinfoscreen/${place.id}")
                             },
-                            onFavouriteClick = {mapListViewModel.toggleFavourite(place)}
+                            onFavouriteClick = {mapListViewModel.toggleFavourite(place)},
+                            imageToDisplay = "holmenkollen.jpg"
                         )
                     }
                 }
@@ -442,13 +444,15 @@ fun BottomSheetContent(
             name = place.name,
             description = place.description,
             isFavourite = place.isFavourite,
+            isCustom = false,
             onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                 mapListViewModel.hideBottomSheet()
                 navController.navigate("placeinfoscreen/${place.id}")
             },
             onFavouriteClick = {
                 mapListViewModel.toggleFavourite(place = place)
-            }
+            },
+            imageToDisplay = "holmenkollen.jpg"
         )
         Spacer(modifier = Modifier.height(40.dp))
     }
