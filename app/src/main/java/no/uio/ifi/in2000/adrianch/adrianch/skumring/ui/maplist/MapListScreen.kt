@@ -36,8 +36,6 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -99,7 +97,9 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 private const val logTag = "MapListScreen"
 
@@ -212,13 +212,12 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
             ModalBottomSheet(
                 onDismissRequest = { mapListViewModel.hideBottomSheet() },
                 sheetState = mapListUiState.sheetState,
-                dragHandle = {}
+                containerColor = MaterialTheme.colorScheme.primaryContainer
                 ) {
                 BottomSheetContent(
                     place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
-                    sunEvent = mapListUiState.placeInfo.sunEvents[0],
                     navController = navController,
-                    mapListViewModel = mapListViewModel, onItemClick = {},
+                    mapListViewModel = mapListViewModel
                     ) //TODO fix on item click and on favourite click
             }
         }
@@ -457,173 +456,188 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
     val forecastDao = database.forecastDao()
     val placeInfoDao = database.placeInfoDao()
     val placeRepository = PlaceRepositoryImpl(placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao)
-
-    BottomSheetContent(place = PlaceInfo(id = 123, name = "Monrads gate 33", description = "godt sted å ta bilde på en solrik dag", lat = "", long = "", isFavourite = false, isCustomPlace = false, hasNotification = false, images = emptyList(), sunEvents = emptyList()),
-        sunEvent = SunEvent(time = LocalDateTime.now(), tempAtEvent = "20", weatherIcon = ":)", conditions = WeatherConditions(
-        weatherRating = WeatherConditionsRating.EXCELLENT,
-        cloudConditionLow = CloudConditions.CLEAR,
-        cloudConditionHigh = CloudConditions.CLEAR,
-        cloudConditionMedium = CloudConditions.CLEAR,
-        airCondition = AirConditions.LOW)),  navController = navController, mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository), onItemClick = {})
+    SkumringTheme {
+        Surface {
+            BottomSheetContent(
+                place = PlaceInfo(
+                    id = 123,
+                    name = "Monrads gate 33",
+                    description = "godt sted å ta bilde på en solrik dag",
+                    lat = "",
+                    long = "",
+                    isFavourite = false,
+                    isCustomPlace = false,
+                    hasNotification = false,
+                    images = emptyList(),
+                    sunEvents = listOf(
+                        SunEvent(
+                            time = LocalDateTime.now(),
+                            tempAtEvent = "20",
+                            weatherIcon = ":)",
+                            conditions = WeatherConditions(
+                                weatherRating = WeatherConditionsRating.EXCELLENT,
+                                cloudConditionLow = CloudConditions.CLEAR,
+                                cloudConditionHigh = CloudConditions.CLEAR,
+                                cloudConditionMedium = CloudConditions.CLEAR,
+                                airCondition = AirConditions.LOW)
+                        )
+                    )
+                ),
+                navController = navController,
+                mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository)
+            )
+        }
+    }
 }
 
 
 @Composable
 fun BottomSheetContent(
     place: PlaceInfo,
-    sunEvent: SunEvent,
     navController: NavController,
     mapListViewModel: MapListViewModel,
-    onItemClick: () -> Unit,
 ) {
-    //for remembering if placeinfo is favourite or not
-    var isFavourite by remember { mutableStateOf(place.isFavourite) }
-
-        Card(
+    Column (
+        modifier = Modifier.padding(16.dp)
+    ){
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .clickable(onClick = onItemClick)
-                .fillMaxWidth(),
-            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary)
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 0.dp, top = 10.dp)
+                .fillMaxWidth()
+                .padding(bottom = 10.dp)
+        )
+        {
+            Text(
+                text = place.name,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimary
             )
-            {
-                Text(
-                    text = place.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .padding(bottom = 5.dp)
-                )
-                Spacer(modifier = Modifier.padding(start = 80.dp))
-                IconButton(onClick = { mapListViewModel.toggleFavourite(place = place)
-                    isFavourite = !isFavourite
-                }) {
-                    if (isFavourite) {
-                        Icon(
-                            imageVector = Icons.Filled.Favorite,
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(30.dp)
+            IconButton(onClick = { mapListViewModel.toggleFavourite(place = place)
+            }) {
+                if (place.isFavourite) {
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(30.dp)
 
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Filled.FavoriteBorder,
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(30.dp)
-                        )
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Filled.FavoriteBorder,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(30.dp)
+                    )
 
-                    }
                 }
             }
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-            )
-            {
-                Text(
-                    text = "Sunset events ",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Divider(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    thickness = 1.dp, modifier = Modifier.padding(start = 80.dp, end = 80.dp,  bottom = 10.dp)
-                )
-
-                Text(
-                    text = "Time: + ${sunEvent.time}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
-
-                Text(
-                    text = "Temperature:  ${sunEvent.tempAtEvent} °C",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .padding(top= 10.dp)
-                )
-                //Conditions at sunset
-                Text(
-                    text = stringResource(R.string.weather_condition) + " ${sunEvent.conditions.weatherRating}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .padding(top= 10.dp)
-                )
-
-                Spacer(modifier = Modifier.padding(10.dp))
-                }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()) {
-                Text(
-                    text = "Description of place ",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Divider(
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    thickness = 1.dp, modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
-                )
-                Text(
-                    text = place.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
-            }
-            Spacer(modifier = Modifier.padding(6.dp))
-
-            Row (horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .padding(bottom = 15.dp, end = 15.dp)
-                    .fillMaxWidth()
-            ){
-                    TextButton(
-                        onClick = {
-                            mapListViewModel.hideBottomSheet()
-                            navController.navigate("placeinfoscreen/${place.id}")
-                        },
-                        contentPadding = PaddingValues(12.dp),
-                    ) {
-                        Text(
-                            text = "CLOSE",
-                            color = MaterialTheme.colorScheme.onTertiary,
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.padding(start = 10.dp))
-
-                    Button(
-                        onClick = {
-                            mapListViewModel.hideBottomSheet()
-                        },
-                        contentPadding = PaddingValues(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-
-                    ) {
-                        Text(
-                            text = stringResource(R.string.home_more_details_button),
-                            color = MaterialTheme.colorScheme.onTertiary,
-                            style = MaterialTheme.typography.bodyMedium,
-
-                        )
-                    }
-                }
-            }
-
         }
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        )
+        {
+            Text(
+                text = "Sunset events ",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Divider(
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                thickness = 1.dp, modifier = Modifier.padding(start = 80.dp, end = 80.dp,  bottom = 10.dp)
+            )
+
+            Text(
+                text = "Time: + ${place.sunEvents[0].time.format(DateTimeFormatter.ofPattern("HH':'mm"))}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
+
+            Text(
+                text = "Temperature:  ${place.sunEvents[0].tempAtEvent} °C",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .padding(top= 10.dp)
+            )
+            //Conditions at sunset
+            Text(
+                text = stringResource(R.string.weather_condition) + stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .padding(top= 10.dp)
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            //verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp),
+        )
+        {
+            Text(
+                text = "Description of place ",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Divider(
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                thickness = 1.dp, modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
+            )
+            Text(
+                text = place.description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row (horizontalArrangement = Arrangement.End,
+            modifier = Modifier
+                .padding(bottom = 15.dp, end = 15.dp)
+                .fillMaxWidth()
+        )
+        {
+            TextButton(
+                onClick = {
+                    mapListViewModel.hideBottomSheet()
+                    navController.navigate("placeinfoscreen/${place.id}")
+                },
+                contentPadding = PaddingValues(12.dp),
+            ) {
+                Text(
+                    text = "CLOSE",
+                    color = MaterialTheme.colorScheme.onTertiary,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+
+            Spacer(modifier = Modifier.padding(start = 10.dp))
+
+            Button(
+                onClick = {
+                    mapListViewModel.hideBottomSheet()
+                },
+                contentPadding = PaddingValues(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+
+                ) {
+                Text(
+                    text = stringResource(R.string.home_more_details_button),
+                    color = MaterialTheme.colorScheme.onTertiary,
+                    style = MaterialTheme.typography.bodyMedium,
+
+                    )
+            }
+        }
+    }
+}
 
 
 
