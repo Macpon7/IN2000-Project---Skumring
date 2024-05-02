@@ -60,12 +60,12 @@ class DirectionsDataSource {
                 durationMinutes = durationMinutes,
             )
         } catch (e: Exception) {
-            Log.e(logTag,"Failed to calculate route - None available", e)
+            Log.d(logTag,"Failed to calculate route - None available", e)
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
-                distance = "xx",
-                durationMinutes = "xx",
-                durationHours = "xx",
+                distance = "N/A",
+                durationMinutes = "0",
+                durationHours = "0",
             )
         }
     }
