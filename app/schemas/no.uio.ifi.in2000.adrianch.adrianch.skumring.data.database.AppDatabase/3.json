@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "94389b1f2ec3660bb9cf486cbc1b64a8",
+    "version": 3,
+    "identityHash": "99163a22a9b3b2f6ab582723f624244c",
     "entities": [
       {
         "tableName": "placeInfo",
@@ -68,7 +68,7 @@
       },
       {
         "tableName": "images",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `place_id` INTEGER NOT NULL, `img_path` TEXT NOT NULL, FOREIGN KEY(`place_id`) REFERENCES `placeInfo`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `place_id` INTEGER NOT NULL, `img_path` TEXT NOT NULL, `timestamp` TEXT NOT NULL DEFAULT '2024-04-20', FOREIGN KEY(`place_id`) REFERENCES `placeInfo`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -87,6 +87,13 @@
             "columnName": "img_path",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'2024-04-20'"
           }
         ],
         "primaryKey": {
@@ -228,7 +235,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '94389b1f2ec3660bb9cf486cbc1b64a8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '99163a22a9b3b2f6ab582723f624244c')"
     ]
   }
 }

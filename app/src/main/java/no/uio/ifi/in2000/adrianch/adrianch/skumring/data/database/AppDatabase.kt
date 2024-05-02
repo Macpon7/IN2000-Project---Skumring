@@ -2,6 +2,7 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 
 import android.content.Context
 import android.util.Log
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -10,7 +11,9 @@ import androidx.room.TypeConverters
 private const val TAG = "AppDatabase"
 
 @Database(
-    entities = [PlaceInfoEntity::class, ImageEntity::class, ForecastEntity::class], version = 1
+    entities = [PlaceInfoEntity::class, ImageEntity::class, ForecastEntity::class],
+    version = 3,
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3)]
 )
 @TypeConverters(RoomConverters::class)
 abstract class AppDatabase : RoomDatabase() {

@@ -67,7 +67,7 @@ class UserLocationDataSource (private val context: Context) {
                 locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
         // If we don't have permissions, return null object
-        return if (!isGpsEnabled && !(isCourseEnabled || isFineEnabled)) {
+return if (!isGpsEnabled && !(isCourseEnabled || isFineEnabled)) {
             null
             } else {
                 // Else, return updated or last recorded location of user
@@ -89,11 +89,10 @@ class UserLocationDataSource (private val context: Context) {
                     }
                     addOnCanceledListener {
                         cont.cancel() // Cancel the coroutine
+
                     }
                 }
             }
         }
-
-
     }
 }

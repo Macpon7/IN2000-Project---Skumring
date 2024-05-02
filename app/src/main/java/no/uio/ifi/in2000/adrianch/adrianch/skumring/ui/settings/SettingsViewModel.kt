@@ -40,11 +40,6 @@ data class SettingsUiState(
     var selectedDropDownOptionLocation : String = "",
     var dropdownExpandedStartLocation: Boolean = false,
 
-    // variables for choosing show location as
-    var locationAs : LocationAs = LocationAs.WALK,
-    var selectedLocationAs : String = "",
-    var dropdownExpandedLocationAs: Boolean = false,
-
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
@@ -80,7 +75,6 @@ class SettingsViewModel (private val context: Context) : ViewModel() {
                     selectedDropDownOptionTheme = context.resources.getString(R.string.follow_system),
                     selectedDropDownOptionLanguage = context.resources.getString(R.string.follow_system),
                     selectedDropDownOptionLocation = context.resources.getString(R.string.phones_location),
-                    selectedLocationAs = context.resources.getString(R.string.walk)
                 )
             }
         }
@@ -204,47 +198,6 @@ class SettingsViewModel (private val context: Context) : ViewModel() {
             _settingsUiState.update {currentSettingsUiState ->
                 currentSettingsUiState.copy(
                     dropdownExpandedStartLocation = !currentSettingsUiState.dropdownExpandedStartLocation)
-            }
-        }
-    }
-
-    // Functions for LocationAs:
-
-    /**
-     * Update variables depending on which dropdownmenu-item the user click:
-     * The string-variable of LocationAs
-     * The enum-LocationAs-variable
-     * Also update the dropdownExpandedLocationAs to false, which will make the dropdownmenu not visible anymore
-     */
-    fun updateSelectedLocationAs(locationAs: LocationAs) {
-        viewModelScope.launch (Dispatchers.IO) {
-            _settingsUiState.update {currentSettingsUiState ->
-                val displayString = when (locationAs) {
-                    LocationAs.WALK -> context.resources.getString(R.string.walk)
-                    LocationAs.BIKE -> context.resources.getString(R.string.bike)
-                    LocationAs.DRIVE -> context.resources.getString(R.string.drive)
-                }
-                currentSettingsUiState.copy(
-                    locationAs = locationAs,
-                    selectedLocationAs = displayString,
-                    dropdownExpandedLocationAs = false
-                )
-            }
-        }
-    }
-
-    /**
-     * Update the dropdownExpandedLocationAs boolean variable
-     * if the variable is false it will be true
-     * if it is true it will be false
-     * When the variable is false the dropdownmenu won't be visible
-     * When the variable is true the dropdownmenu will be visible
-     */
-    fun expandDropdownLocationAs() {
-        viewModelScope.launch (Dispatchers.IO) {
-            _settingsUiState.update {currentSettingsUiState ->
-                currentSettingsUiState.copy(
-                    dropdownExpandedLocationAs = !currentSettingsUiState.dropdownExpandedLocationAs)
             }
         }
     }

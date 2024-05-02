@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
@@ -34,6 +36,9 @@ data class HomeUiState(
     val sunsetDate: String = "",
     val sunsetWeatherIcon: String? = "",
     val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
+    val blueHour: String = "",
+    val goldenHour: String = "",
+    val placeName: String = "",
 
     var favoritePlaces: List<PlaceInfo> = emptyList(),
 
@@ -68,6 +73,7 @@ class HomeViewModel(
         images = emptyList(),
         sunEvents = emptyList()
     )
+    private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl()
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -103,10 +109,14 @@ class HomeViewModel(
             try {
                 _homeUiState.update { currentHomeUiState ->
                     val userLoc = userLocationRepository.getUserLocation()
+                    val userLat = userLoc.lat
+                    val userLong = userLoc.long
+                    val userPlaceName = geocodingRepository.getPlaceNameFromCoordinates(lat = userLat, long = userLong)
                     Log.d(logTag + "LoadUserLoc", "Lat: ${userLoc.lat}, Long: ${userLoc.long}")
                     currentHomeUiState.copy(
-                        lat = userLoc.lat,
-                        long = userLoc.long
+                        lat = userLat,
+                        long = userLong,
+                        placeName = userPlaceName.placeName
                     )
                 }
             } catch (e: Exception) {
@@ -136,6 +146,10 @@ class HomeViewModel(
                             DateTimeFormatter.ISO_LOCAL_DATE),
                         sunsetWeatherIcon = userPlace.sunEvents[0].weatherIcon,
                         weatherConditions = userPlace.sunEvents[0].conditions.weatherRating,
+                        blueHour = userPlace.sunEvents[0].blueHourTime.toLocalTime().format(
+                            DateTimeFormatter.ofPattern("HH':'mm")),
+                        goldenHour = userPlace.sunEvents[0].goldenHourTime.toLocalTime().format(
+                            DateTimeFormatter.ofPattern("HH':'mm")),
                     )
 
                     /*Log.d(logTag, "fetching sunsetweather")
