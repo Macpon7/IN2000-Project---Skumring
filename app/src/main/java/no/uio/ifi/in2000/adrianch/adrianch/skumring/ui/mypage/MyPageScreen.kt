@@ -207,16 +207,24 @@ fun ContentMyPage(
             )
         } else {
             myPageUiState.places.forEach { place ->
-                ListCard(
-                    name = place.name,
-                    description = place.description,
-                    isFavourite = place.isFavourite,
-                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                        navController.navigate(
-                            route = "placeinfoscreen/${place.id}"
-                        )
-                    },
-                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) })
+                val sunEvents = place.sunEvents
+
+                if (place.sunEvents.isNotEmpty()) {
+                    val weatherConditionsRating = sunEvents[0].conditions.weatherRating
+
+                    ListCard(
+                        name = place.name,
+                        description = place.description,
+                        isFavourite = place.isFavourite,
+                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                            navController.navigate(
+                                route = "placeinfoscreen/${place.id}"
+                            )
+                        },
+                        onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) },
+                        weatherConditionsRating = weatherConditionsRating
+                    )
+                }
             }
         }
     }
