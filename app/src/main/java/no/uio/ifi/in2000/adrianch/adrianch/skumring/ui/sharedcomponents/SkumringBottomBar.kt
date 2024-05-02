@@ -72,7 +72,7 @@ fun SkumringBottomBar(
                     }
                 },
                colors = NavigationBarItemDefaults.colors(
-                 unselectedTextColor = MaterialTheme.colorScheme.inverseOnSurface, selectedTextColor = MaterialTheme.colorScheme.inverseOnSurface,
+                 unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant, selectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),
             )
         }
