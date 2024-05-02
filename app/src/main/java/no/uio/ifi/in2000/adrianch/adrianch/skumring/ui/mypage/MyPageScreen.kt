@@ -144,7 +144,7 @@ fun MyPageScreen(
                     ) {
                         Icon(
                             Icons.Default.Settings,
-                            contentDescription = "Settings"
+                            contentDescription = stringResource(id = R.string.settings)
                         )
                     }
                 }
@@ -164,7 +164,7 @@ fun MyPageScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "Add location"
+                    contentDescription = stringResource(id = R.string.add_location)
                 )
             }
         }
@@ -308,7 +308,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Info,
-                            contentDescription = "name",
+                            contentDescription = stringResource(id = R.string.location_name),
                         )
                     },
                     supportingText = {
@@ -352,7 +352,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.LocationOn,
-                            contentDescription = "addresse",
+                            contentDescription = stringResource(id = R.string.address),
                         )
                     },
                     supportingText = {
@@ -424,7 +424,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.DateRange,
-                            contentDescription = "Date",
+                            contentDescription = stringResource(id = R.string.time),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     },
@@ -449,7 +449,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Create,
-                            contentDescription = "description"
+                            contentDescription = stringResource(id = R.string.description)
                         )
                     },
                     supportingText = {
@@ -496,7 +496,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     )
                     Icon(
                         imageVector = Icons.Outlined.Check,
-                        contentDescription = "add place",
+                        contentDescription = stringResource(id = R.string.add_location),
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
@@ -565,7 +565,7 @@ fun PickImageFromGallery(
         )
         Icon(
             imageVector = Icons.Outlined.Add,
-            contentDescription = "add photo",
+            contentDescription = stringResource(id = R.string.add_photo),
             tint = MaterialTheme.colorScheme.onPrimary
         )
     }

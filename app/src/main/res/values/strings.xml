@@ -22,6 +22,7 @@
     <string name="error_message_getting_placeinfo">Feil med å laste inn info om stedet</string>
 
     <!-- HomeScreen -->
+    <string name="information">Info</string>
     <string name="conditions_are_good">Det blir gode forhold i kveld!</string>
     <string name="conditions_are_bad">Det blir dårlige forhold i kveld.</string>
     <string name="home_sunset">Solnedgang i dag</string>
@@ -45,7 +46,11 @@
 
     <!-- MapListScreen -->
     <string name="toggle_list">Liste</string>
+    <string name="toggle_list_icon">Liste ikon</string>
+
     <string name="toggle_map">Kart</string>
+    <string name="toggle_map_icon">Kart ikon</string>
+
     <string name="places_nearby">Steder i nærheten</string>
     <string name="search_hint">Søk</string>
 
@@ -135,9 +140,14 @@
     <string name="home_distance">Avstand:</string>
     <string name="app_version" translatable="false">0.3</string>
     <string name="home_user_loc">Din posisjon</string>
+    <string name="from">Fra</string>
     <string name="reverse_geocode_unknown_place">Ukjent sted</string>
+    <string name="means_of_transport_walking">Gange</string>
+    <string name="means_of_transportation_biking">Sykkel</string>
+    <string name="means_of_transportation_driving">Bil</string>
     <string name="distance_hour">t</string>
     <string name="distance_minutes">m</string>
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Avstand fra din posisjon</string>
+    <string name="no_route_available">Fant ikke vei</string>
 </resources>

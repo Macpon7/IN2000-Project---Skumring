@@ -75,6 +75,7 @@ import androidx.navigation.NavHostController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTransportation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
@@ -86,6 +87,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
+import java.time.LocalDate
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconPopUp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -184,7 +186,10 @@ fun TodayInfoCard(
     imageDetails: ImageDetails,
     dateString: String,
     timeString: String,
-    placeInfoViewModel: PlaceInfoViewModel
+    placeInfoViewModel: PlaceInfoViewModel,
+    goldenHourTime: String,
+    blueHourTime: String,
+    placeInfoUiState: PlaceInfoUiState,
 ) {
 
     //for the clickable text
@@ -284,7 +289,7 @@ fun TodayInfoCard(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(MaterialTheme.colorScheme.onSurfaceVariant)) {
                         append(
-                            imageDetails.description,
+                            imageDetails.timeStamp.toString(),
                             "Placeholder text before the actual text works and we get a place that displays the actual thing we want to display blalbaasdfgldfjs"
                         )
                     }
@@ -313,8 +318,7 @@ fun TodayInfoCard(
                     .fillMaxWidth()
                     .padding(start = 30.dp, end = 30.dp)
             ) {
-
-
+                // WALKING
                 Column {
                     Row {
                         Icon(
@@ -332,7 +336,8 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.distance +
+                                " " + stringResource(R.string.distance_kilometers),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
@@ -341,17 +346,18 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
-                            id = R.string.distance_minutes
-                        ), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.durationHours +
+                                stringResource(id = R.string.distance_hour) + " " +
+                                placeInfoUiState.mapTimeDistance[MeansOfTransportation.WALKING]?.durationMinutes +
+                                stringResource(id = R.string.distance_minutes),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
                     )
                 }
+                //BIKING
                 Column {
                     Row {
-
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.bike),
                             contentDescription = "bike icon",
@@ -367,7 +373,8 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.distance +
+                                " " + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
@@ -376,16 +383,18 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
-                            id = R.string.distance_minutes
-                        ), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.durationHours +
+                                stringResource(id = R.string.distance_hour) +
+                                " " +
+                                placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.durationMinutes +
+                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
 
                         )
                 }
-
+                // DRIVING
                 Column {
                     Row {
 
@@ -405,7 +414,8 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = "1" + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.distance +
+                                " " + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
@@ -414,9 +424,11 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "1" + stringResource(id = R.string.distance_hour) + "20" + stringResource(
-                            id = R.string.distance_minutes
-                        ), //TODO //change this later to stringformat
+                        text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.durationHours +
+                                stringResource(id = R.string.distance_hour) +
+                                " " +
+                                placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.durationMinutes +
+                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
@@ -538,7 +550,7 @@ fun TodayInfoCard(
 
                     )
                     Text(
-                        text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
+                        text = goldenHourTime, //TODO //change this later to $goldenHourTime
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
@@ -565,7 +577,7 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = "20:31-21:05", //TODO //change this later to $blueHourTime
+                        text = blueHourTime, //TODO //change this later to $blueHourTime
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
@@ -589,7 +601,11 @@ fun TodayInfoCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SunEventInfoCard(
-    sunEvent: SunEvent, dateString: String, timeString: String
+    sunEvent: SunEvent,
+    dateString: String,
+    timeString: String,
+    goldenHourTime: String,
+    blueHourTime: String
 ) {
 
     //state for remembering if button is pushed or not
@@ -740,7 +756,7 @@ fun SunEventInfoCard(
                             )
                         )
                         Text(
-                            text = "19:09 -20:31", //TODO //change this later to $goldenHourTime
+                            text = goldenHourTime, //TODO //change this later to $goldenHourTime
                             style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             textAlign = TextAlign.Center,
@@ -767,7 +783,7 @@ fun SunEventInfoCard(
                             )
                         )
                         Text(
-                            text = "20:31-21:05", //TODO //change this later to $blueHourTime
+                            text = blueHourTime, //TODO //change this later to $blueHourTime
                             style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             textAlign = TextAlign.Center,
@@ -829,7 +845,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
 
     if (placeInfo.sunEvents.isNotEmpty()) {
         val sunEvent = sunEvents[0]
-        val imageDetails = placeInfo.images.getOrElse(0) { ImageDetails("", "") }
+        val imageDetails = placeInfo.images.getOrElse(0) { ImageDetails("", LocalDate.now()) }
 
         //the current date we are formatting to is today
         val dateString = "${stringResource(R.string.today)} ${
@@ -839,11 +855,23 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
                 )
             )
         }"
-
-        val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
+        val nullTime = LocalDateTime.parse("2000-01-01 00:00:00 AM",
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH))
+        val formatter = DateTimeFormatter.ofPattern("HH':'mm")
+        val timeString = sunEvent.time.format(formatter)
+        val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
+            "--N/A--"
+        } else {
+            sunEvent.goldenHourTime.format(formatter)
+        }
+        val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
+            "--N/A--"
+        } else {
+            sunEvent.blueHourTime.format(formatter)
+        }
 
         TodayInfoCard(
-            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel
+            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel, goldenHourTime, blueHourTime, placeInfoUiState
         )
     }
 }
@@ -879,9 +907,21 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
         index++
 
         //time of day for sunset
-        val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
-
-        SunEventInfoCard(sunEvent, dateString, timeString)
+        val nullTime = LocalDateTime.parse("2000-01-01 00:00:00 AM",
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH))
+        val formatter = DateTimeFormatter.ofPattern("HH':'mm")
+        val timeString = sunEvent.time.format(formatter)
+        val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
+            "--N/A--"
+        } else {
+            sunEvent.goldenHourTime.format(formatter)
+        }
+        val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
+            "--N/A--"
+        } else {
+            sunEvent.blueHourTime.format(formatter)
+        }
+        SunEventInfoCard(sunEvent, dateString, timeString, goldenHourTime, blueHourTime)
 
         //Spacer between cards
         Spacer(modifier = Modifier.height(10.dp))
@@ -926,8 +966,10 @@ fun PreviewSunEventInfoScreen() {
                                 cloudConditionLow = CloudConditions.CLEAR,
                                 cloudConditionHigh = CloudConditions.CLEAR,
                                 cloudConditionMedium = CloudConditions.CLEAR,
-                                airCondition = AirConditions.LOW
-                            )
+                                airCondition = AirConditions.LOW,
+                            ),
+                            blueHourTime = LocalDateTime.now(),
+                            goldenHourTime = LocalDateTime.now()
                         )
                     )
                 )
