@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +27,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults.IconSize
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -80,7 +78,6 @@ import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
-import com.mapbox.maps.extension.style.layers.generated.fillLayer
 import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.annotation.AnnotationConfig
@@ -117,9 +114,12 @@ object MapListDestination : NavigationDestination {
 /**
  * Main composable function for displaying the map screen
  */
-        @OptIn(ExperimentalMaterial3Api::class)
-        @Composable
-fun MapListScreen(navController : NavHostController, mapListViewModel: MapListViewModel = viewModel(factory = MapListViewModel.Factory)) {
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MapListScreen(
+    navController: NavHostController,
+    mapListViewModel: MapListViewModel = viewModel(factory = MapListViewModel.Factory)
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
@@ -163,7 +163,7 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
      */
     //var text by remember { mutableStateOf("") }
     //var active by remember { mutableStateOf(false) }
-    Scaffold (
+    Scaffold(
         topBar = {
             SkumringTopBar(
                 title = stringResource(id = MapListDestination.titleRes),
@@ -174,11 +174,12 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
         bottomBar = {
             SkumringBottomBar(navController = navController)
         }
-    ) {innerPadding ->
-        Column (modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()
-            .padding(8.dp),
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(8.dp),
             verticalArrangement = Arrangement.Top
         ) {
             MapListContent(navController = navController, mapListViewModel = mapListViewModel)
@@ -188,7 +189,7 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
+fun MapListContent(navController: NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
     /*
@@ -202,13 +203,12 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
      */
 
-    ToggleButtonThemeSwitcher (
+    ToggleButtonThemeSwitcher(
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
         onClick = { mapListViewModel.toggleMapListState() }
     )
     Surface {
         MapArea(
-            navController = navController,
             mapListUiState = mapListUiState,
             mapListViewModel = mapListViewModel
         )
@@ -217,19 +217,19 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                 onDismissRequest = { mapListViewModel.hideBottomSheet() },
                 sheetState = mapListUiState.sheetState,
                 containerColor = MaterialTheme.colorScheme.primaryContainer
-                ) {
+            ) {
                 BottomSheetContent(
                     place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
                     navController = navController,
                     mapListViewModel = mapListViewModel
-                    )
+                )
             }
         }
         if (mapListUiState.mapListToggle == MapListToggleState.LIST) {
-            Surface (color = MaterialTheme.colorScheme.background ){
+            Surface(color = MaterialTheme.colorScheme.background) {
                 // Column for list view
-                Column (Modifier.verticalScroll(rememberScrollState())) {
-                    mapListUiState.places.forEach {place ->
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    mapListUiState.places.forEach { place ->
                         ListCard(
                             name = place.name,
                             description = place.description,
@@ -237,7 +237,7 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                             onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                                 navController.navigate("placeinfoscreen/${place.id}")
                             },
-                            onFavouriteClick = {mapListViewModel.toggleFavourite(place)}
+                            onFavouriteClick = { mapListViewModel.toggleFavourite(place) }
                         )
                     }
                 }
@@ -261,7 +261,8 @@ fun ToggleButtonThemeSwitcher(
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val buttonHeightFactor = 0.15f //Height of the button
-    val buttonHeight = screenWidth * buttonHeightFactor //how high the button is based on the screenwidth
+    val buttonHeight =
+        screenWidth * buttonHeightFactor //how high the button is based on the screenwidth
 
     //how much the togglebutton should offset to the side based on size of the screen
     val offsetSmallScreen by animateDpAsState(
@@ -275,188 +276,191 @@ fun ToggleButtonThemeSwitcher(
         animationSpec = animationSpec, label = ""
     )
 
-BoxWithConstraints {
-    if (maxWidth < 400.dp) {
-        // button container
-        Box(
-            modifier = Modifier
-                .width(screenWidth)
-                .height(buttonHeight)
-                .clip(shape = parentShape)
-                .clickable { onClick() }
-                .background(MaterialTheme.colorScheme.onSecondary)
-        ) {
-            // toggle animation
+    BoxWithConstraints {
+        if (maxWidth < 400.dp) {
+            // button container
             Box(
                 modifier = Modifier
-                    .width(screenWidth / 2) // size of the toggle button
+                    .width(screenWidth)
                     .height(buttonHeight)
-                    .offset(x = offsetSmallScreen)
                     .clip(shape = parentShape)
-                    .background(MaterialTheme.colorScheme.secondary)
-
-            )
-            // the icons and text representing list and map views
-            Row(
-                modifier = Modifier
-                    .border(
-                        border = BorderStroke(
-                            width = borderWidth,
-                            color = MaterialTheme.colorScheme.secondary
-                        ),
-                        shape = parentShape
-                    ),
-                verticalAlignment = Alignment.CenterVertically
+                    .clickable { onClick() }
+                    .background(MaterialTheme.colorScheme.onSecondary)
             ) {
+                // toggle animation
                 Box(
-                    //List and list icon
-                    contentAlignment = Alignment.CenterStart,
                     modifier = Modifier
-                        .width(screenWidth / 2)
+                        .width(screenWidth / 2) // size of the toggle button
                         .height(buttonHeight)
-                        .padding(start = 80.dp),
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .offset((-30).dp),
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = stringResource(R.string.theme_icon),
-                        tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 5.dp),
-                        text = stringResource(R.string.toggle_list),
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
-                    )
-                }
-                Box( //map and map icon
-                    contentAlignment = Alignment.Center,
+                        .offset(x = offsetSmallScreen)
+                        .clip(shape = parentShape)
+                        .background(MaterialTheme.colorScheme.secondary)
+
+                )
+                // the icons and text representing list and map views
+                Row(
                     modifier = Modifier
-                        .width(screenWidth / 2)
-                        .height(buttonHeight)
+                        .border(
+                            border = BorderStroke(
+                                width = borderWidth,
+                                color = MaterialTheme.colorScheme.secondary
+                            ),
+                            shape = parentShape
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
+                    Box(
+                        //List and list icon
+                        contentAlignment = Alignment.CenterStart,
                         modifier = Modifier
-                            .offset((-30).dp, 0.dp),
-                        imageVector = Icons.Default.Place,
-                        contentDescription = stringResource(R.string.place_icon),
-                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 15.dp),
-                        text = stringResource(R.string.toggle_map),
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
-                    )
+                            .width(screenWidth / 2)
+                            .height(buttonHeight)
+                            .padding(start = 80.dp),
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .offset((-30).dp),
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = stringResource(R.string.theme_icon),
+                            tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                            else MaterialTheme.colorScheme.secondary
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 5.dp),
+                            text = stringResource(R.string.toggle_list),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                            else MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    Box( //map and map icon
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .width(screenWidth / 2)
+                            .height(buttonHeight)
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .offset((-30).dp, 0.dp),
+                            imageVector = Icons.Default.Place,
+                            contentDescription = stringResource(R.string.place_icon),
+                            tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                            else MaterialTheme.colorScheme.onSecondary
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 15.dp),
+                            text = stringResource(R.string.toggle_map),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = if (mapTheme) MaterialTheme.colorScheme.secondary
+                            else MaterialTheme.colorScheme.onSecondary
+                        )
+                    }
                 }
             }
-        }
-    } else { //if screen is bigger
-        Box(
-            modifier = Modifier
-                .width(screenWidth)
-                .height(buttonHeight / 2)
-                .clip(shape = parentShape)
-                .clickable { onClick() }
-                .background(MaterialTheme.colorScheme.onSecondary)
-        ) {
-            // toggle animation
+        } else { //if screen is bigger
             Box(
                 modifier = Modifier
-                    .width(screenWidth / 2) // size of the toggle button
+                    .width(screenWidth)
                     .height(buttonHeight / 2)
-                    .offset(x = offsetLargeScreen)
                     .clip(shape = parentShape)
-                    .background(MaterialTheme.colorScheme.secondary)
-            )
-            // the icons and text representing list and map views
-            Row(
-                modifier = Modifier
-                    .border(
-                        border = BorderStroke(
-                            width = borderWidth,
-                            color = MaterialTheme.colorScheme.secondary
-                        ),
-                        shape = parentShape
-                    ),
-                verticalAlignment = Alignment.CenterVertically
+                    .clickable { onClick() }
+                    .background(MaterialTheme.colorScheme.onSecondary)
             ) {
+                // toggle animation
                 Box(
-                    //List and list icon
-                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .width(screenWidth / 2)
-                        .height(buttonHeight)
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .offset((-30).dp)
-                            .padding(start = 10.dp, bottom = 10.dp),
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = "Theme Icon",
-                        tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 15.dp),
-                        text = stringResource(R.string.toggle_list),
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
-                    )
-                }
-                Box( //map and map icon
-                    contentAlignment = Alignment.Center,
+                        .width(screenWidth / 2) // size of the toggle button
+                        .height(buttonHeight / 2)
+                        .offset(x = offsetLargeScreen)
+                        .clip(shape = parentShape)
+                        .background(MaterialTheme.colorScheme.secondary)
+                )
+                // the icons and text representing list and map views
+                Row(
                     modifier = Modifier
-                        .width(screenWidth / 2)
-                        .height(buttonHeight)
+                        .border(
+                            border = BorderStroke(
+                                width = borderWidth,
+                                color = MaterialTheme.colorScheme.secondary
+                            ),
+                            shape = parentShape
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
+                    Box(
+                        //List and list icon
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .offset((-30).dp, 0.dp),
-                        imageVector = Icons.Default.Place,
-                        contentDescription = stringResource(R.string.place_icon),
-                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 15.dp),
-                        text = stringResource(R.string.toggle_map),
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
-                    )
+                            .width(screenWidth / 2)
+                            .height(buttonHeight)
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .offset((-30).dp)
+                                .padding(start = 10.dp, bottom = 10.dp),
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Theme Icon",
+                            tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                            else MaterialTheme.colorScheme.secondary
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 15.dp),
+                            text = stringResource(R.string.toggle_list),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                            else MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    Box( //map and map icon
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .width(screenWidth / 2)
+                            .height(buttonHeight)
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .offset((-30).dp, 0.dp),
+                            imageVector = Icons.Default.Place,
+                            contentDescription = stringResource(R.string.place_icon),
+                            tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                            else MaterialTheme.colorScheme.onSecondary
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 15.dp),
+                            text = stringResource(R.string.toggle_map),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = if (mapTheme) MaterialTheme.colorScheme.secondary
+                            else MaterialTheme.colorScheme.onSecondary
+                        )
+                    }
                 }
             }
         }
-    }
     }
 }
 
 
-
-
-
+/**
+ * Bottomsheet pop up that displays information about the pin you click.
+ * can add as favourite and decide to go to PlaceInfoScreen for more information about the place by clicking
+ * "more information" button
+ */
 @Composable
 fun BottomSheetContent(
     place: PlaceInfo,
     navController: NavController,
     mapListViewModel: MapListViewModel,
 ) {
-    Column (
+    Column(
         modifier = Modifier.padding(top = 0.dp, bottom = 20.dp, start = 12.dp, end = 12.dp)
     ) {
+        //name of place and favourite button
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-               .padding(bottom = 15.dp)
+                .padding(bottom = 15.dp)
         )
         {
             Text(
@@ -492,6 +496,7 @@ fun BottomSheetContent(
             modifier = Modifier.fillMaxWidth()
         )
         {
+            //sunset today string
             Text(
                 text = stringResource(id = R.string.home_sunset),
                 style = MaterialTheme.typography.titleLarge,
@@ -504,7 +509,7 @@ fun BottomSheetContent(
                 thickness = 1.dp,
                 modifier = Modifier.padding(start = 80.dp, end = 80.dp)
             )
-
+            //time for sunset
             Text(
                 text = stringResource(R.string.time) + ": ${
                     place.sunEvents[0].time.format(
@@ -515,13 +520,13 @@ fun BottomSheetContent(
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.padding(top = 10.dp)
             )
-
+            //temerature at sunset
             Text(
                 text = stringResource(R.string.temp_at_sunset) + ": ${place.sunEvents[0].tempAtEvent} °C",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier
-                   .padding(bottom = 10.dp)
+                    .padding(bottom = 10.dp)
             )
             //Conditions at sunset
             Text(
@@ -531,6 +536,7 @@ fun BottomSheetContent(
                 modifier = Modifier
                     .padding(bottom = 10.dp)
             )
+            //Weather icon
             Box(
                 modifier = Modifier
                     .size(70.dp)
@@ -541,6 +547,7 @@ fun BottomSheetContent(
                     weather = place.sunEvents[0].conditions.weatherRating
                 )
             }
+            //description string
             Text(
                 text = stringResource(R.string.description),
                 style = MaterialTheme.typography.titleLarge,
@@ -553,6 +560,7 @@ fun BottomSheetContent(
                 thickness = 1.dp,
                 modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
             )
+            //description about the place
             Text(
                 text = place.description,
                 style = MaterialTheme.typography.bodyLarge,
@@ -562,6 +570,7 @@ fun BottomSheetContent(
 
             Spacer(modifier = Modifier.height(30.dp))
 
+            //close button and more information button
             Row(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
@@ -598,7 +607,6 @@ fun BottomSheetContent(
                         style = MaterialTheme.typography.bodyLarge,
 
                         )
-
                 }
 
             }
@@ -607,19 +615,18 @@ fun BottomSheetContent(
 }
 
 
-
-
-
 /**
  * Placeholder for the map display area
  */
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapArea(mapListUiState: MapListUiState,
-            navController: NavController,
-            mapListViewModel: MapListViewModel) {
+fun MapArea(
+    mapListUiState: MapListUiState,
+    mapListViewModel: MapListViewModel
+) {
 
-    val userPoint = Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
+    val userPoint =
+        Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
     val context = LocalContext.current
 
     MapboxMap(
@@ -637,7 +644,7 @@ fun MapArea(mapListUiState: MapListUiState,
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
         },
-        ) {
+    ) {
 
         if (mapListUiState.userLocUpdated) {
             MapEffect { mapView ->
@@ -652,12 +659,14 @@ fun MapArea(mapListUiState: MapListUiState,
         }
 
         PointAnnotationGroup(
-            annotations = mapListUiState.pins.map {pinInfo ->
+            annotations = mapListUiState.pins.map { pinInfo ->
                 val long = pinInfo.long.toDouble()
                 val lat = pinInfo.lat.toDouble()
                 val point = Point.fromLngLat(long, lat)
 
-                val iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.place_location_pin)!!.toBitmap()
+                val iconImageBitmap =
+                    AppCompatResources.getDrawable(context, R.drawable.place_location_pin)!!
+                        .toBitmap()
 
                 PointAnnotationOptions()
                     .withPoint(point)
@@ -686,7 +695,10 @@ fun MapArea(mapListUiState: MapListUiState,
         // User location
         PointAnnotation(
             point = userPoint,
-            iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.user_location_puck)!!.toBitmap()
+            iconImageBitmap = AppCompatResources.getDrawable(
+                context,
+                R.drawable.user_location_puck
+            )!!.toBitmap()
         )
 
     }
@@ -716,7 +728,11 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
     val imageDao = database.imageDao()
     val forecastDao = database.forecastDao()
     val placeInfoDao = database.placeInfoDao()
-    val placeRepository = PlaceRepositoryImpl(placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao)
+    val placeRepository = PlaceRepositoryImpl(
+        placeInfoDao = placeInfoDao,
+        forecastDao = forecastDao,
+        imageDao = imageDao
+    )
     SkumringTheme {
         Surface {
             BottomSheetContent(
@@ -740,12 +756,16 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
                                 cloudConditionLow = CloudConditions.CLEAR,
                                 cloudConditionHigh = CloudConditions.CLEAR,
                                 cloudConditionMedium = CloudConditions.CLEAR,
-                                airCondition = AirConditions.LOW)
+                                airCondition = AirConditions.LOW
+                            )
                         )
                     )
                 ),
                 navController = navController,
-                mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository)
+                mapListViewModel = MapListViewModel(
+                    context = context,
+                    placeRepository = placeRepository
+                )
             )
         }
     }
