@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,17 +26,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.currentComposer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import java.io.File
 
 /**
  * Cards with information about places
@@ -80,9 +84,16 @@ fun ListCard(name: String,
                         .background(Color.LightGray, RoundedCornerShape((0.dp)))
                         .fillMaxWidth()
                 ) {
-                    Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/${imageToDisplay}")).asImageBitmap(),
+                    //TODO: needs to handle uploaded custom image/uploaded
+
+                    val bitmap = BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/${imageToDisplay}")).asImageBitmap()
+                    Image(
+                        bitmap,
                         contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight())
+                        modifier = Modifier
+                            .fillMaxSize() // Fill the entire available space in the Box and maintain aspect ratio of the image
+                            .aspectRatio(bitmap.width.toFloat() / bitmap.height)
+                    )
                     //Text(
                     //    text = stringResource(R.string.place_display_placeholder),
                     //    modifier = Modifier.align(Alignment.Center)
@@ -154,16 +165,30 @@ fun ListCard(name: String,
                         .background(Color.LightGray, RoundedCornerShape((0.dp)))
                         .fillMaxWidth()
                 ) {
+                    //This is how PlaceInfoScreen solves getting images
+                    //But then a imageDetail has to be imported in the card??
+
                     if (isCustom){
-                        //TODO get image from internal storage with ID from database
-
-                    } else {
-                        Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/${imageToDisplay}")).asImageBitmap(),
+                        /*
+                        val context = LocalContext.current
+                        val imagePath = File(context.filesDir, imageDetails.path)
+                        val imagePainter = imagePath.path.toInt()
+                        Image(
+                            painter = painterResource(imagePainter),
                             contentDescription = null,
-                            modifier = Modifier.fillMaxWidth().fillMaxHeight())
-
-                    }
-
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) */
+                } else {
+                val bitmap = BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/${imageToDisplay}")).asImageBitmap()
+                Image(
+                    bitmap,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize() //Fill the entire available space in the Box and maintain aspect ratio of the image
+                        .aspectRatio(bitmap.width.toFloat() / bitmap.height)
+                )
+            }
                     //Text(
                      //   text = stringResource(R.string.place_display_placeholder),
                     //    modifier = Modifier.align(Alignment.Center)
