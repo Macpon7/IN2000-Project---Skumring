@@ -384,6 +384,7 @@ fun TodayInfoCard(
                     Text(
                         text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.durationHours +
                                 stringResource(id = R.string.distance_hour) +
+                                " " +
                                 placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.durationMinutes +
                                 stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
@@ -424,6 +425,7 @@ fun TodayInfoCard(
                     Text(
                         text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.durationHours +
                                 stringResource(id = R.string.distance_hour) +
+                                " " +
                                 placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.durationMinutes +
                                 stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
                         style = typography.bodyMedium,
@@ -851,10 +853,21 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
                 )
             )
         }"
+        val nullTime = LocalDateTime.parse("2000-01-01 00:00:00 AM",
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH))
+        val formatter = DateTimeFormatter.ofPattern("HH':'mm")
+        val timeString = sunEvent.time.format(formatter)
+        val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
+            "--N/A--"
+        } else {
+            sunEvent.goldenHourTime.format(formatter)
+        }
+        val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
+            "--N/A--"
+        } else {
+            sunEvent.blueHourTime.format(formatter)
+        }
 
-        val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
-        val goldenHourTime = sunEvent.goldenHourTime.format(DateTimeFormatter.ofPattern("HH':'mm"))
-        val blueHourTime = sunEvent.blueHourTime.format(DateTimeFormatter.ofPattern("HH':'mm"))
         TodayInfoCard(
             sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel, goldenHourTime, blueHourTime, placeInfoUiState
         )
@@ -892,11 +905,20 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
         index++
 
         //time of day for sunset
-        val timeString = sunEvent.time.format(DateTimeFormatter.ofPattern("HH':'mm"))
-
-        val goldenHourTime = sunEvent.goldenHourTime.format(DateTimeFormatter.ofPattern("HH':'mm"))
-        val blueHourTime = sunEvent.blueHourTime.format(DateTimeFormatter.ofPattern("HH':'mm"))
-
+        val nullTime = LocalDateTime.parse("2000-01-01 00:00:00 AM",
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH))
+        val formatter = DateTimeFormatter.ofPattern("HH':'mm")
+        val timeString = sunEvent.time.format(formatter)
+        val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
+            "--N/A--"
+        } else {
+            sunEvent.goldenHourTime.format(formatter)
+        }
+        val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
+            "--N/A--"
+        } else {
+            sunEvent.blueHourTime.format(formatter)
+        }
         SunEventInfoCard(sunEvent, dateString, timeString, goldenHourTime, blueHourTime)
 
         //Spacer between cards

@@ -107,19 +107,3 @@ class DirectionsDataSource {
         return minutes.toString()
     }
 }
-// Leaving for now for testing purposes
-// Remember to comment out logtag if you need this
-//suspend fun main() {
-//    val blah = DirectionsDataSource()
-//    for (entry in MeansOfTransportation.entries) {
-//        val boh = blah.fetchTravelDurationDistance(
-//            fromLat = 59.9437354.toString(),
-//            fromLong = 10.718393.toString(),
-//            toLat = 59.9201.toString(),
-//            toLong = 10.7374.toString(),
-//            meansOfTransportation = entry
-//        )
-//        println(boh)
-//
-//    }
-//}

@@ -86,7 +86,7 @@ class GoldenHourBlueHourDataSource {
         return try {
             LocalDateTime.parse(dateTimeString, formatter)
         } catch (e: Exception) {
-            LocalDateTime.parse("2000-01-01 00:00:00 PM", formatter)
+            LocalDateTime.parse("2000-01-01 00:00:00 AM", formatter)
         }
     }
 
