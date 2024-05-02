@@ -238,6 +238,26 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
 
     // TODO keep the change when the phone change from standing to lying
 
+    val outlinedTextFieldColors = ExposedDropdownMenuDefaults.textFieldColors(
+        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+        errorTextColor = MaterialTheme.colorScheme.onPrimary,
+        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        errorCursorColor = MaterialTheme.colorScheme.error,
+        errorIndicatorColor = MaterialTheme.colorScheme.error,
+        errorLeadingIconColor = MaterialTheme.colorScheme.error,
+    )
+
     // Show when the user pick a date:
     if (newPlaceUiState.showDatePicker) {
         DatePickerDialog(onDismissRequest = { myPageViewModel.dismissDatePicker() },
@@ -319,25 +339,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                             )
                         }
                     },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
-                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        errorCursorColor = MaterialTheme.colorScheme.error,
-                        errorIndicatorColor = MaterialTheme.colorScheme.error,
-                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
-                    ),
+                    colors = outlinedTextFieldColors,
                     isError = (newPlaceUiState.locationNameIsMissing)
                 )
 
@@ -363,25 +365,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                             )
                         }
                     },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
-                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        errorCursorColor = MaterialTheme.colorScheme.error,
-                        errorIndicatorColor = MaterialTheme.colorScheme.error,
-                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
-                    ),
+                    colors = outlinedTextFieldColors,
                     isError = newPlaceUiState.addressIsMissing
                 )
                 // TODO logikken skjer i viewmodel, sender inn string med addresse
@@ -439,7 +423,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 // String with description
                 OutlinedTextField(
                     modifier = Modifier.padding(all = 2.dp),
-                    value = newPlaceUiState.descriptions,
+                    value = newPlaceUiState.description,
                     onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
                     label = {
                         Text(text = "${stringResource(R.string.description)} *")
@@ -453,33 +437,15 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                         )
                     },
                     supportingText = {
-                        if (newPlaceUiState.descriptionsIsMissing) {
+                        if (newPlaceUiState.descriptionIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_description),
                                 color = MaterialTheme.colorScheme.error
                             )
                         }
                     },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        errorTextColor = MaterialTheme.colorScheme.onPrimary,
-                        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        errorCursorColor = MaterialTheme.colorScheme.error,
-                        errorIndicatorColor = MaterialTheme.colorScheme.error,
-                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
-                    ),
-                    isError = newPlaceUiState.descriptionsIsMissing,
+                    colors = outlinedTextFieldColors,
+                    isError = newPlaceUiState.descriptionIsMissing,
                 )
 
                 // Button to add photo
