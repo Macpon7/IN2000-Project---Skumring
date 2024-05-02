@@ -134,11 +134,6 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
         }
     }
 
-    /*
-    TODO: These belong to searchbar
-     */
-    //var text by remember { mutableStateOf("") }
-    //var active by remember { mutableStateOf(false) }
     Scaffold (
         topBar = {
             SkumringTopBar(
@@ -166,16 +161,6 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
 @Composable
 fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
-    /*
-    SearchBar(query = text,
-        onQueryChange = {text = it} ,
-        onSearch = {active = false },
-        active = active,
-        onActiveChange =  {active = it}
-    ) {
-     //TODO legge til søkefelt
-    }
-     */
 
     ToggleButtonThemeSwitcher (
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
