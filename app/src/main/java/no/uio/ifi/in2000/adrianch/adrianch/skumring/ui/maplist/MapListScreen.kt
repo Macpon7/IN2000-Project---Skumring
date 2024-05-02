@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ButtonDefaults.IconSize
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -78,6 +80,7 @@ import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
+import com.mapbox.maps.extension.style.layers.generated.fillLayer
 import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.annotation.AnnotationConfig
@@ -97,6 +100,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -218,7 +222,7 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                     place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
                     navController = navController,
                     mapListViewModel = mapListViewModel
-                    ) //TODO fix on item click and on favourite click
+                    )
             }
         }
         if (mapListUiState.mapListToggle == MapListToggleState.LIST) {
@@ -242,18 +246,6 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
 }
 
-/**
- * Preview function for ToggleButtonThemeSwitcher
- */
-@Preview
-@Composable
-fun ToggleButtonThemeSwitcherPreview() {
-    var isMapTheme by remember { mutableStateOf(false) }
-    ToggleButtonThemeSwitcher(
-        mapTheme = isMapTheme,
-        onClick = { isMapTheme = !isMapTheme }
-    )
-}
 
 /**
  * Togglebutton that switches between Map view and List view
@@ -404,7 +396,7 @@ BoxWithConstraints {
                     Icon(
                         modifier = Modifier
                             .offset((-30).dp)
-                            .padding(start = 10.dp),
+                            .padding(start = 10.dp, bottom = 10.dp),
                         imageVector = Icons.Default.Menu,
                         contentDescription = "Theme Icon",
                         tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
@@ -447,48 +439,7 @@ BoxWithConstraints {
 }
 
 
-@Preview
-@Composable
-fun BottomSheetPreview(navController: NavHostController = rememberNavController()) {
-    val context = LocalContext.current
-    val database = AppDatabase.getDatabase(context = context)
-    val imageDao = database.imageDao()
-    val forecastDao = database.forecastDao()
-    val placeInfoDao = database.placeInfoDao()
-    val placeRepository = PlaceRepositoryImpl(placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao)
-    SkumringTheme {
-        Surface {
-            BottomSheetContent(
-                place = PlaceInfo(
-                    id = 123,
-                    name = "Monrads gate 33",
-                    description = "godt sted å ta bilde på en solrik dag",
-                    lat = "",
-                    long = "",
-                    isFavourite = false,
-                    isCustomPlace = false,
-                    hasNotification = false,
-                    images = emptyList(),
-                    sunEvents = listOf(
-                        SunEvent(
-                            time = LocalDateTime.now(),
-                            tempAtEvent = "20",
-                            weatherIcon = ":)",
-                            conditions = WeatherConditions(
-                                weatherRating = WeatherConditionsRating.EXCELLENT,
-                                cloudConditionLow = CloudConditions.CLEAR,
-                                cloudConditionHigh = CloudConditions.CLEAR,
-                                cloudConditionMedium = CloudConditions.CLEAR,
-                                airCondition = AirConditions.LOW)
-                        )
-                    )
-                ),
-                navController = navController,
-                mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository)
-            )
-        }
-    }
-}
+
 
 
 @Composable
@@ -498,29 +449,31 @@ fun BottomSheetContent(
     mapListViewModel: MapListViewModel,
 ) {
     Column (
-        modifier = Modifier.padding(16.dp)
-    ){
+        modifier = Modifier.padding(top = 0.dp, bottom = 20.dp, start = 12.dp, end = 12.dp)
+    ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 10.dp)
+               .padding(bottom = 15.dp)
         )
         {
             Text(
                 text = place.name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onPrimary
             )
-            IconButton(onClick = { mapListViewModel.toggleFavourite(place = place)
-            }) {
+            IconButton(onClick = {
+                mapListViewModel.toggleFavourite(place = place)
+            }
+            ) {
                 if (place.isFavourite) {
                     Icon(
                         imageVector = Icons.Filled.Favorite,
                         contentDescription = stringResource(id = R.string.favourite_icon),
                         tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(60.dp)
 
                     )
                 } else {
@@ -528,111 +481,126 @@ fun BottomSheetContent(
                         imageVector = Icons.Filled.FavoriteBorder,
                         contentDescription = stringResource(R.string.favourite_icon),
                         tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(60.dp)
                     )
 
                 }
             }
         }
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         )
         {
             Text(
                 text = stringResource(id = R.string.home_sunset),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
             )
             Divider(
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                thickness = 1.dp, modifier = Modifier.padding(start = 80.dp, end = 80.dp,  bottom = 10.dp)
+                thickness = 1.dp,
+                modifier = Modifier.padding(start = 80.dp, end = 80.dp)
             )
 
             Text(
-                text = stringResource(R.string.time) + ": ${place.sunEvents[0].time.format(DateTimeFormatter.ofPattern("HH':'mm"))}",
-                style = MaterialTheme.typography.bodyMedium,
+                text = stringResource(R.string.time) + ": ${
+                    place.sunEvents[0].time.format(
+                        DateTimeFormatter.ofPattern("HH':'mm")
+                    )
+                }",
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.padding(top = 10.dp)
             )
 
             Text(
                 text = stringResource(R.string.temp_at_sunset) + ": ${place.sunEvents[0].tempAtEvent} °C",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier
-                    .padding(top= 10.dp)
+                   .padding(bottom = 10.dp)
             )
             //Conditions at sunset
             Text(
                 text = stringResource(R.string.weather_condition) + stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier
-                    .padding(top= 10.dp)
+                    .padding(bottom = 10.dp)
             )
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp),
-        )
-        {
+            Box(
+                modifier = Modifier
+                    .size(70.dp)
+                    .padding(bottom = 10.dp)
+            ) {
+                WeatherIconCheck(
+                    weatherCondition = place.sunEvents[0].weatherIcon,
+                    weather = place.sunEvents[0].conditions.weatherRating
+                )
+            }
             Text(
                 text = stringResource(R.string.description),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
             )
             Divider(
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                thickness = 1.dp, modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
+                thickness = 1.dp,
+                modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
             )
             Text(
                 text = place.description,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
 
-        Row (horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .padding(bottom = 15.dp, end = 15.dp)
-                .fillMaxWidth()
-        )
-        {
-            TextButton(
-                onClick = {
-                    mapListViewModel.hideBottomSheet()
-                    navController.navigate("placeinfoscreen/${place.id}")
-                },
-                contentPadding = PaddingValues(12.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.close) ,
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
+            Spacer(modifier = Modifier.height(30.dp))
 
-           // Spacer(modifier = Modifier.padding(start = 10.dp))
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 10.dp)
+            )
+            {
+                TextButton(
+                    onClick = {
+                        mapListViewModel.hideBottomSheet()
 
-            Button(
-                onClick = {
-                    mapListViewModel.hideBottomSheet()
-                },
-                contentPadding = PaddingValues(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-
+                    },
+                    contentPadding = PaddingValues(12.dp),
                 ) {
-                Text(
-                    text = stringResource(R.string.home_more_details_button),
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    style = MaterialTheme.typography.bodyMedium,
-
+                    Text(
+                        text = stringResource(R.string.close),
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        style = MaterialTheme.typography.bodyLarge,
                     )
+                }
+                Button(
+                    onClick = {
+                        mapListViewModel.hideBottomSheet()
+                        navController.navigate("placeinfoscreen/${place.id}")
+                    },
+                    contentPadding = PaddingValues(12.dp),
+                    modifier = Modifier.padding(start = 15.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+
+                    ) {
+                    Text(
+                        text = stringResource(R.string.home_more_details_button),
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        style = MaterialTheme.typography.bodyLarge,
+
+                        )
+
+                }
+
             }
         }
     }
@@ -721,5 +689,64 @@ fun MapArea(mapListUiState: MapListUiState,
             iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.user_location_puck)!!.toBitmap()
         )
 
+    }
+}
+
+/**
+ * Preview function for ToggleButtonThemeSwitcher
+ */
+@Preview
+@Composable
+fun ToggleButtonThemeSwitcherPreview() {
+    var isMapTheme by remember { mutableStateOf(false) }
+    ToggleButtonThemeSwitcher(
+        mapTheme = isMapTheme,
+        onClick = { isMapTheme = !isMapTheme }
+    )
+}
+
+/**
+ * Preview for the BottomSheet content
+ */
+@Preview
+@Composable
+fun BottomSheetPreview(navController: NavHostController = rememberNavController()) {
+    val context = LocalContext.current
+    val database = AppDatabase.getDatabase(context = context)
+    val imageDao = database.imageDao()
+    val forecastDao = database.forecastDao()
+    val placeInfoDao = database.placeInfoDao()
+    val placeRepository = PlaceRepositoryImpl(placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao)
+    SkumringTheme {
+        Surface {
+            BottomSheetContent(
+                place = PlaceInfo(
+                    id = 123,
+                    name = "Monrads gate 33",
+                    description = "godt sted å ta bilde på en solrik dag",
+                    lat = "",
+                    long = "",
+                    isFavourite = false,
+                    isCustomPlace = false,
+                    hasNotification = false,
+                    images = emptyList(),
+                    sunEvents = listOf(
+                        SunEvent(
+                            time = LocalDateTime.now(),
+                            tempAtEvent = "20",
+                            weatherIcon = ":)",
+                            conditions = WeatherConditions(
+                                weatherRating = WeatherConditionsRating.EXCELLENT,
+                                cloudConditionLow = CloudConditions.CLEAR,
+                                cloudConditionHigh = CloudConditions.CLEAR,
+                                cloudConditionMedium = CloudConditions.CLEAR,
+                                airCondition = AirConditions.LOW)
+                        )
+                    )
+                ),
+                navController = navController,
+                mapListViewModel = MapListViewModel(context = context, placeRepository = placeRepository)
+            )
+        }
     }
 }
