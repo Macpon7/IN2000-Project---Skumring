@@ -84,12 +84,6 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             }
         }
     }
-
-    /*
-    TODO: These belong to searchbar
-     */
-    //var text by remember { mutableStateOf("") }
-    //var active by remember { mutableStateOf(false) }
     Scaffold (
         topBar = {
             SkumringTopBar(
@@ -123,17 +117,6 @@ fun FavoriteListContent(navController : NavController,
                         favoriteViewModel: FavoritesViewModel,
                         favoritesUiState: FavoritesUiState
                         ) {
-    /*
-    SearchBar(query = text,
-        onQueryChange = {text = it} ,
-        onSearch = {active = false },
-        active = active,
-        onActiveChange =  {active = it}
-    ) {
-     //TODO legge til søkefelt
-    }
-     */
-
     Column (Modifier.verticalScroll(rememberScrollState())) {
         if (favoritesUiState.places.isEmpty()){
             Text(text = stringResource(R.string.no_places))
