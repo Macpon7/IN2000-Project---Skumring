@@ -8,6 +8,7 @@ interface GeocodingRepository {
     suspend fun getPlaceNameFromCoordinates(
         lat: String, long: String
     ): GeocodeLocation
+    suspend fun getCoordinatesFromAddress(address: String): List<GeocodeLocation>
 }
 
 /**
@@ -27,5 +28,9 @@ class GeocodingRepositoryImpl(
         long: String
     ): GeocodeLocation {
         return geocodingDataSource.fetchReverseGeocodeLocation(lat = lat, long = long)
+    }
+
+    override suspend fun getCoordinatesFromAddress(address: String): List<GeocodeLocation> {
+        return geocodingDataSource.fetchForwardGeocodeLocation(address = address)
     }
 }
