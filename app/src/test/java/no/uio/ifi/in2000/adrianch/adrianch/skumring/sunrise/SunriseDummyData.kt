@@ -1,4 +1,4 @@
-package no.uio.ifi.in2000.adrianch.adrianch.skumring
+package no.uio.ifi.in2000.adrianch.adrianch.skumring.sunrise
 
 val sunriseTestData = """{
   "copyright": "MET Norway",
