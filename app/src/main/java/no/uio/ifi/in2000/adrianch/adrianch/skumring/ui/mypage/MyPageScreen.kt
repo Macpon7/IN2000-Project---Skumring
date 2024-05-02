@@ -218,6 +218,7 @@ fun ContentMyPage(
                         )
                     },
                     onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) },
+                    //TODO make this dynamic based on name or id
                     imageToDisplay = "holmenkollen.jpg")
             }
         }
