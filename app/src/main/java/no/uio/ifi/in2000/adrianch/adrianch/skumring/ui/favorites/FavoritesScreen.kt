@@ -157,6 +157,7 @@ fun FavoriteListContent(navController : NavController,
 
                     } else {
                         // If isFavourite is false it should not be displayed
+                        //TODO make this dynamic based on name or id
                         "holmenkollen_favourite.jpg"
                     }
                 )
