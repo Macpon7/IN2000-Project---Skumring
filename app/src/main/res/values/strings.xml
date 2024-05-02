@@ -140,6 +140,7 @@
     <string name="home_distance">Avstand:</string>
     <string name="app_version" translatable="false">0.3</string>
     <string name="home_user_loc">Din posisjon</string>
+    <string name="from">Fra</string>
     <string name="reverse_geocode_unknown_place">Ukjent sted</string>
     <string name="means_of_transport_walking">Gange</string>
     <string name="means_of_transportation_biking">Sykkel</string>
