@@ -17,10 +17,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.directions.DirectionsRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.directions.DirectionsRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTransportation
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
 
 private const val logTag = "PlaceInfoViewModel"
 
@@ -35,8 +40,10 @@ data class PlaceInfoUiState(
         isCustomPlace = false,
         hasNotification = false,
         images = emptyList(),
-        sunEvents = emptyList()
+        sunEvents = emptyList(),
         ),
+
+    var mapTimeDistance: Map<MeansOfTransportation,TravelDurationDistance> = emptyMap(),
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -54,11 +61,11 @@ class PlaceInfoViewModel(
     private val context: Context,
     private val placeRepository: PlaceRepository,
 ): ViewModel() {
-    private val forecastRepository: ForecastRepository = ForecastRepositoryImpl()
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
-
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
 
+    private val directionsRepository: DirectionsRepository = DirectionsRepositoryImpl()
+    private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
 
     fun addFavourite(placeId : Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -78,7 +85,10 @@ class PlaceInfoViewModel(
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
                     val placeInfoObject = placeRepository.getPlace(id)
-                    currentPlaceInfoUiState.copy(placeInfo = placeInfoObject, isLoading = false)
+                    currentPlaceInfoUiState.copy(
+                        placeInfo = placeInfoObject,
+                        isLoading = false,
+                        )
                 } catch(e: Exception) {
                     Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)
                     currentPlaceInfoUiState.copy(
@@ -87,6 +97,8 @@ class PlaceInfoViewModel(
                 }
             }
         }
+        Log.d(logTag, "Loading time and place?)")
+        loadTimeDistance()
         job.invokeOnCompletion {
             Log.d(logTag, "New place in UiState: ${placeInfoUiState.value.placeInfo}")
         }
@@ -98,6 +110,24 @@ class PlaceInfoViewModel(
     fun snackbarDismissed() {
         _placeInfoUiState.update { currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false)
+        }
+    }
+
+    fun loadTimeDistance() {
+        viewModelScope.launch (Dispatchers.IO) {
+            val userLoc: UserLocation = userLocationRepository.getUserLocation()
+            val timePlaceList = directionsRepository.getAllTravelDurationDistance(
+                fromLat = userLoc.lat,
+                fromLong = userLoc.long,
+                toLat = _placeInfoUiState.value.placeInfo.lat,
+                toLong = _placeInfoUiState.value.placeInfo.long
+            )
+            Log.d(logTag,timePlaceList.toString())
+            _placeInfoUiState.update { currentPlaceInfoUiState ->
+                currentPlaceInfoUiState.copy(
+                    mapTimeDistance = timePlaceList
+                )
+            }
         }
     }
 
