@@ -7,10 +7,13 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.ForwardGeocoding
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.GeocodeLocation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.ReverseGeocoding
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.ReverseGeocodeLocation
 
 private const val logTag: String = "GeoCodingDataSource"
+
+private const val FORWARD_PATH = "https://api.mapbox.com/search/geocode/v6/forward?"
 
 class GeocodingDataSource {
 
@@ -28,7 +31,7 @@ class GeocodingDataSource {
      * from the first element of the list. If not, the place is of such low interest that
      * it will be unnamed.
      */
-    suspend fun fetchReverseGeocodeLocation(lat: String, long: String): ReverseGeocodeLocation {
+    suspend fun fetchReverseGeocodeLocation(lat: String, long: String): GeocodeLocation {
         val apiResponse: ReverseGeocoding = fetchReverseGeocodeResponse(lat = lat, long = long)
         val placeName: String = try {
             apiResponse.features[0].properties.context.place.name
@@ -37,7 +40,7 @@ class GeocodingDataSource {
             // Returns empty string if user is in area without a place name
             ""
         }
-        return ReverseGeocodeLocation(lat = lat, long = long, placeName = placeName)
+        return GeocodeLocation(lat = lat, long = long, placeName = placeName)
     }
     /*
     Private function that fetches the reverse geocode body
@@ -47,6 +50,43 @@ class GeocodingDataSource {
             val path = "https://api.mapbox.com/search/geocode/v6/reverse?" +
                     "longitude=$long,&" +
                     "latitude=$lat&" +
+                    "access_token=sk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0dTZmMjZ3MWF6NzJpcGNtajBqaWUxMSJ9.A7ntsS5LTvXYD5hnjYjEXQ"
+            val response: HttpResponse = client.get(path)
+            return response.body()
+        } catch (e: Exception) {
+            Log.e(logTag, "Error fetching place name", e)
+            throw e
+        }
+    }
+
+    /**
+     *
+     */
+    suspend fun fetchForwardGeocodeLocation(address: String): List<GeocodeLocation> {
+        val apiResponse: ForwardGeocoding = fetchForwardGeocodeResponse(address = address)
+        val outList = mutableListOf<GeocodeLocation>()
+        apiResponse.features.forEach {
+            outList.add(
+                GeocodeLocation(
+                    lat = it.properties.coordinates.latitude.toString(),
+                    long = it.properties.coordinates.longitude.toString(),
+                    placeName = it.properties.full_address
+                )
+            )
+        }
+
+        return outList.toList()
+    }
+
+    /**
+     *
+     */
+    private suspend fun fetchForwardGeocodeResponse(address: String): ForwardGeocoding {
+        try {
+            val path = FORWARD_PATH +
+                    "q=$address&" +
+                    "permanent=true&" +
+                    "types=address&" +
                     "access_token=sk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0dTZmMjZ3MWF6NzJpcGNtajBqaWUxMSJ9.A7ntsS5LTvXYD5hnjYjEXQ"
             val response: HttpResponse = client.get(path)
             return response.body()
