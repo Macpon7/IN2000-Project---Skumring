@@ -126,7 +126,7 @@ fun FavoriteListContent(navController : NavController,
                 val sunEvents = place.sunEvents
 
                 if (place.sunEvents.isNotEmpty()) {
-                    val sunEvent = sunEvents[0]
+                    val weatherConditionsRating = sunEvents[0].conditions.weatherRating
 
                     ListCard(
                         name = place.name,
@@ -136,7 +136,7 @@ fun FavoriteListContent(navController : NavController,
                             navController.navigate("placeinfoscreen/${place.id}")
                         },
                         onFavouriteClick = {favoriteViewModel.toggleFavourite(place = place)},
-                        sunEvent = sunEvent
+                        weatherConditionsRating = weatherConditionsRating
                     )
                 }
             }

@@ -194,7 +194,7 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                         val sunEvents = place.sunEvents
 
                         if (place.sunEvents.isNotEmpty()) {
-                            val sunEvent = sunEvents[0]
+                            val weatherConditionsRating = sunEvents[0].conditions.weatherRating
 
                             ListCard(
                                 name = place.name,
@@ -204,7 +204,7 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                                     navController.navigate("placeinfoscreen/${place.id}")
                                 },
                                 onFavouriteClick = {mapListViewModel.toggleFavourite(place)},
-                                sunEvent = sunEvent
+                                weatherConditionsRating = weatherConditionsRating
                             )
                         }
                     }

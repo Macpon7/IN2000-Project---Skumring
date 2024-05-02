@@ -210,7 +210,7 @@ fun ContentMyPage(
                 val sunEvents = place.sunEvents
 
                 if (place.sunEvents.isNotEmpty()) {
-                    val sunEvent = sunEvents[0]
+                    val weatherConditionsRating = sunEvents[0].conditions.weatherRating
 
                     ListCard(
                         name = place.name,
@@ -222,7 +222,7 @@ fun ContentMyPage(
                             )
                         },
                         onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) },
-                        sunEvent = sunEvent
+                        weatherConditionsRating = weatherConditionsRating
                     )
                 }
             }

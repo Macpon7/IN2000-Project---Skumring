@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 
 /**
  * Cards with information about places
@@ -38,14 +38,14 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 @Preview
 @Composable
 fun ListCardPreview() {
-    /*
     ListCard(
         name = "Holmenkollen stadion",
         description = "Holmenkollen er et fantastisk fint sted å ta bilde av dine nære og kjære under en utrolig fin solnedgang",
         isFavourite = false,
         onItemClick = {},
-        onFavouriteClick = {})
-     */
+        onFavouriteClick = {},
+        weatherConditionsRating = WeatherConditionsRating.DECENT
+    )
 }
 
 /**
@@ -53,7 +53,7 @@ fun ListCardPreview() {
  */
 @Composable
 fun ListCard(
-    sunEvent: SunEvent,
+    weatherConditionsRating: WeatherConditionsRating,
     name: String,
     description: String, isFavourite: Boolean,
     onItemClick: () -> Unit,
@@ -82,7 +82,7 @@ fun ListCard(
                 }
                 Box( //Box for content description
                     modifier = Modifier
-                        .height(100.dp)
+                        .height(120.dp)
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
@@ -121,7 +121,29 @@ fun ListCard(
                             }
                         }
                     }
-                    //Text for description. Do we want weather condition in the future?
+                    Box {
+                        Row(  //For displaying weather conditions and information popup
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+
+                        ) {//Conditions at sunset
+                            Text(
+                                text = stringResource(R.string.weather_condition),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                //text changing based on weather conditions, in different textbox because of change of color
+                                text = stringResource(id = weatherConditionsRating.stringResourceId),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                    //Text for description
                     Text(
                         text = description,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
