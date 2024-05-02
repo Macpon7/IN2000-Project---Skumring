@@ -45,7 +45,11 @@
 
     <!-- MapListScreen -->
     <string name="toggle_list">Liste</string>
+    <string name="toggle_list_icon">Liste ikon</string>
+
     <string name="toggle_map">Kart</string>
+    <string name="toggle_map_icon">Kart ikon</string>
+
     <string name="places_nearby">Steder i nærheten</string>
     <string name="search_hint">Søk</string>
 

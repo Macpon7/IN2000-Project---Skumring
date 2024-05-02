@@ -134,11 +134,6 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
         }
     }
 
-    /*
-    TODO: These belong to searchbar
-     */
-    //var text by remember { mutableStateOf("") }
-    //var active by remember { mutableStateOf(false) }
     Scaffold (
         topBar = {
             SkumringTopBar(
@@ -166,16 +161,6 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
 @Composable
 fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
-    /*
-    SearchBar(query = text,
-        onQueryChange = {text = it} ,
-        onSearch = {active = false },
-        active = active,
-        onActiveChange =  {active = it}
-    ) {
-     //TODO legge til søkefelt
-    }
-     */
 
     ToggleButtonThemeSwitcher (
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
@@ -309,7 +294,7 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp),
                         imageVector = Icons.Default.Menu,
-                        contentDescription = "Theme Icon",
+                        contentDescription = stringResource(id = R.string.toggle_list_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
                     )
@@ -331,7 +316,7 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
-                        contentDescription = "place icon",
+                        contentDescription = stringResource(id = R.string.toggle_map_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
                     )
@@ -387,13 +372,13 @@ BoxWithConstraints {
                             .offset((-30).dp)
                             .padding(start = 10.dp),
                         imageVector = Icons.Default.Menu,
-                        contentDescription = "Theme Icon",
+                        contentDescription = stringResource(id = R.string.toggle_list_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "List", // TODO xml
+                        text = stringResource(id = R.string.toggle_list),
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
                         else MaterialTheme.colorScheme.secondary
@@ -409,13 +394,13 @@ BoxWithConstraints {
                         modifier = Modifier
                             .offset((-30).dp, 0.dp),
                         imageVector = Icons.Default.Place,
-                        contentDescription = "place icon",
+                        contentDescription = stringResource(id = R.string.toggle_map_icon),
                         tint = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
                     )
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = "Map", // TODO xml
+                        text = stringResource(id = R.string.toggle_map),
                         style = MaterialTheme.typography.headlineSmall,
                         color = if (mapTheme) MaterialTheme.colorScheme.secondary
                         else MaterialTheme.colorScheme.onSecondary
