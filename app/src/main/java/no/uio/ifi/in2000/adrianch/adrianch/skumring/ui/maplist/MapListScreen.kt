@@ -391,8 +391,7 @@ fun ToggleButtonThemeSwitcher(
                     ) {
                         Icon(
                             modifier = Modifier
-                                .offset((-30).dp)
-                                .padding(start = 10.dp, bottom = 10.dp),
+                                .offset((-30).dp, 0.dp),
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Theme Icon",
                             tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
