@@ -101,7 +101,7 @@
     <string name="mypage_add_photo">Legg til bilde</string>
     <string name="location_name">Stedets navn</string>
     <string name="address">Stedets addresse</string>
-    <string name="time">Velg dato</string>
+    <string name="choose_date">Velg dato</string>
     <string name="description">Beskrivelse</string>
     <string name="add_photo">Legg til bilde</string>
     <string name="add_location">Legg til sted</string>
@@ -118,6 +118,11 @@
     <string name="weather_conditions_decent_explanation">Litt overskyet, men det blir forhåpentligvis et fint bilde likevel!</string>
     <string name="weather_conditions_poor_explanation">Skyene henger lavt, sikten er ikke god og gir ikke gode bildeforhold</string>
     <string name="weather_conditions_popUp_dismiss">Lukk</string>
+
+
+    <!--Descriptions of Icons and Images-->
+    <string name="favourite_icon">Favorittikon</string>
+
 
     <!--WeatherIconCheck-->
     <string name="weather_icon_thunder">Værikon torden</string>
@@ -149,5 +154,9 @@
     <string name="distance_minutes">m</string>
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Avstand fra din posisjon</string>
+    <string name="time">Tid</string>
+    <string name="close">LUKK</string>
+    <string name="place_icon">Stedsikon</string>
+    <string name="theme_icon">Tema ikon</string>
     <string name="no_route_available">Fant ikke vei</string>
 </resources>

@@ -425,7 +425,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     isError = newPlaceUiState.dateTextFieldError,
                     label = {
                         Text(
-                            text = stringResource(R.string.time),
+                            text = stringResource(R.string.choose_date),
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     },
