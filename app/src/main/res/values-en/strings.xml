@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="app_name">Skumring</string>
     <string name="back_button">Back</string>
     <string name="nav_map_button">Map</string>
     <string name="nav_home_button">Home</string>
@@ -141,4 +140,6 @@
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Distance from your location</string>
     <string name="no_route_available">No route available</string>
+    <string name="new_place_address_no_results">Found no addresses, have you remembered the house number?</string>
+    <string name="new_place_address_many_results">Found too many addresses, specify with post code and location</string>
 </resources>

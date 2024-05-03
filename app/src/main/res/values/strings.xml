@@ -150,4 +150,6 @@
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Avstand fra din posisjon</string>
     <string name="no_route_available">Fant ikke vei</string>
+    <string name="new_place_address_no_results">Fant ingen addresser, har du husket husnummer?</string>
+    <string name="new_place_address_many_results">Fant for mange adresser, spesifiser med postnummer og stedsnavn</string>
 </resources>
