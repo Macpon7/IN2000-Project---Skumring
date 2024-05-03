@@ -43,6 +43,8 @@
     <string name="homescreen_icon_blue_sun">Blue sun icon</string>
 
     <!-- MapListScreen -->
+    <string name="map_list">map and list</string>
+
     <string name="toggle_list">List</string>
     <string name="toggle_list_icon">List icon</string>
 
@@ -54,6 +56,7 @@
 
     <!-- FavoritesScreen -->
     <string name="no_places">No places</string>
+    <string name="favourites">Favoritter</string>
 
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Picture taken</string>
