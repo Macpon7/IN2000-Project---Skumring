@@ -191,15 +191,22 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                 // Column for list view
                 Column (Modifier.verticalScroll(rememberScrollState())) {
                     mapListUiState.places.forEach {place ->
-                        ListCard(
-                            name = place.name,
-                            description = place.description,
-                            isFavourite = place.isFavourite,
-                            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                                navController.navigate("placeinfoscreen/${place.id}")
-                            },
-                            onFavouriteClick = {mapListViewModel.toggleFavourite(place)}
-                        )
+                        val sunEvents = place.sunEvents
+
+                        if (place.sunEvents.isNotEmpty()) {
+                            val weatherConditionsRating = sunEvents[0].conditions.weatherRating
+
+                            ListCard(
+                                name = place.name,
+                                description = place.description,
+                                isFavourite = place.isFavourite,
+                                onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                                    navController.navigate("placeinfoscreen/${place.id}")
+                                },
+                                onFavouriteClick = {mapListViewModel.toggleFavourite(place)},
+                                weatherConditionsRating = weatherConditionsRating
+                            )
+                        }
                     }
                 }
             }
@@ -423,6 +430,7 @@ fun BottomSheetContent(
         modifier = Modifier.fillMaxWidth()
     )
     {
+        /*
         ListCard(
             name = place.name,
             description = place.description,
@@ -433,8 +441,11 @@ fun BottomSheetContent(
             },
             onFavouriteClick = {
                 mapListViewModel.toggleFavourite(place = place)
-            }
+            },
+
         )
+
+         */
         Spacer(modifier = Modifier.height(40.dp))
     }
 }
