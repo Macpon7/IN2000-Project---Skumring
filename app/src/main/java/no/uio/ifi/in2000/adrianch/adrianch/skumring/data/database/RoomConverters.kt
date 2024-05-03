@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
 import androidx.room.TypeConverter
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -41,6 +42,16 @@ class RoomConverters {
     fun convertIntToBool(int: Int): Boolean {
         // This expression will be true if int==1, and false in every other case
         return int == 1
+    }
+
+    @TypeConverter
+    fun convertLocalDateToString(localDate: LocalDate): String {
+        return localDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+    }
+
+    @TypeConverter
+    fun convertStringToLocalDate(string: String): LocalDate {
+        return LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE)
     }
 
 }

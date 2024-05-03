@@ -144,7 +144,7 @@ fun MyPageScreen(
                     ) {
                         Icon(
                             Icons.Default.Settings,
-                            contentDescription = "Settings"
+                            contentDescription = stringResource(id = R.string.settings)
                         )
                     }
                 }
@@ -164,7 +164,7 @@ fun MyPageScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "Add location"
+                    contentDescription = stringResource(id = R.string.add_location)
                 )
             }
         }
@@ -207,16 +207,24 @@ fun ContentMyPage(
             )
         } else {
             myPageUiState.places.forEach { place ->
-                ListCard(
-                    name = place.name,
-                    description = place.description,
-                    isFavourite = place.isFavourite,
-                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                        navController.navigate(
-                            route = "placeinfoscreen/${place.id}"
-                        )
-                    },
-                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) })
+                val sunEvents = place.sunEvents
+
+                if (place.sunEvents.isNotEmpty()) {
+                    val weatherConditionsRating = sunEvents[0].conditions.weatherRating
+
+                    ListCard(
+                        name = place.name,
+                        description = place.description,
+                        isFavourite = place.isFavourite,
+                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                            navController.navigate(
+                                route = "placeinfoscreen/${place.id}"
+                            )
+                        },
+                        onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) },
+                        weatherConditionsRating = weatherConditionsRating
+                    )
+                }
             }
         }
     }
@@ -308,7 +316,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Info,
-                            contentDescription = "name",
+                            contentDescription = stringResource(id = R.string.location_name),
                         )
                     },
                     supportingText = {
@@ -352,7 +360,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.LocationOn,
-                            contentDescription = "addresse",
+                            contentDescription = stringResource(id = R.string.address),
                         )
                     },
                     supportingText = {
@@ -424,7 +432,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.DateRange,
-                            contentDescription = "Date",
+                            contentDescription = stringResource(id = R.string.time),
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     },
@@ -449,7 +457,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Create,
-                            contentDescription = "description"
+                            contentDescription = stringResource(id = R.string.description)
                         )
                     },
                     supportingText = {
@@ -496,7 +504,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     )
                     Icon(
                         imageVector = Icons.Outlined.Check,
-                        contentDescription = "add place",
+                        contentDescription = stringResource(id = R.string.add_location),
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
@@ -565,7 +573,7 @@ fun PickImageFromGallery(
         )
         Icon(
             imageVector = Icons.Outlined.Add,
-            contentDescription = "add photo",
+            contentDescription = stringResource(id = R.string.add_photo),
             tint = MaterialTheme.colorScheme.onPrimary
         )
     }

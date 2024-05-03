@@ -118,9 +118,9 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
     /**
      * The function will add an image to the database by adding the path to the internal location where the image is stored
      */
-    suspend fun addImage(contentUri: Uri, placeId: Int){
+    suspend fun addImage(contentUri: Uri, placeId: Int, timestamp: LocalDate){
         Log.d(TAG,"contentUri: $contentUri, placeId is $placeId")
-        val succeeded: Boolean = placeRepository.saveImageToInternalStorage(context = context, contentUri = contentUri, placeId = placeId)
+        val succeeded: Boolean = placeRepository.saveImageToInternalStorage(context = context, contentUri = contentUri, placeId = placeId, timestamp = timestamp)
         Log.d(TAG, "is image added to internal storage: $succeeded")
     }
 
@@ -185,7 +185,7 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
                     //If image is not
 
                     Log.d(TAG, "In MyPageViewModel Uri is ${newPlaceUiState.value.imageUri}")
-                    newPlaceUiState.value.imageUri?.let { addImage(contentUri = it, placeId = 0) //TODO make this the placeId that is generated for the new place
+                    newPlaceUiState.value.imageUri?.let { addImage(contentUri = it, placeId = 0, timestamp = newPlaceUiState.value.pickedDate) //TODO make this the placeId that is generated for the new place
                     Log.d(TAG, "saving image")}
                     hideNewForm()
                     resetNewPlaceUiState()

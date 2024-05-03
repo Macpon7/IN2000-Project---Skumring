@@ -84,12 +84,6 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             }
         }
     }
-
-    /*
-    TODO: These belong to searchbar
-     */
-    //var text by remember { mutableStateOf("") }
-    //var active by remember { mutableStateOf(false) }
     Scaffold (
         topBar = {
             SkumringTopBar(
@@ -116,38 +110,35 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Show the list of cards of places available
+ */
 @Composable
 fun FavoriteListContent(navController : NavController,
                         favoriteViewModel: FavoritesViewModel,
                         favoritesUiState: FavoritesUiState
                         ) {
-    /*
-    SearchBar(query = text,
-        onQueryChange = {text = it} ,
-        onSearch = {active = false },
-        active = active,
-        onActiveChange =  {active = it}
-    ) {
-     //TODO legge til søkefelt
-    }
-     */
-
     Column (Modifier.verticalScroll(rememberScrollState())) {
         if (favoritesUiState.places.isEmpty()){
             Text(text = stringResource(R.string.no_places))
         } else {
             favoritesUiState.places.forEach { place ->
-                ListCard(
-                    name = place.name,
-                    description = place.description,
-                    isFavourite = place.isFavourite,
-                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                        navController.navigate("placeinfoscreen/${place.id}")
-                    },
-                    onFavouriteClick = {favoriteViewModel.toggleFavourite(place = place)}
-                )
+                val sunEvents = place.sunEvents
+
+                if (place.sunEvents.isNotEmpty()) {
+                    val weatherConditionsRating = sunEvents[0].conditions.weatherRating
+
+                    ListCard(
+                        name = place.name,
+                        description = place.description,
+                        isFavourite = place.isFavourite,
+                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                            navController.navigate("placeinfoscreen/${place.id}")
+                        },
+                        onFavouriteClick = {favoriteViewModel.toggleFavourite(place = place)},
+                        weatherConditionsRating = weatherConditionsRating
+                    )
+                }
             }
         }
     }

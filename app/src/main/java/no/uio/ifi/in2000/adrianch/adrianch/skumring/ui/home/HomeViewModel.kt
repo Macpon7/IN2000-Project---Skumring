@@ -36,6 +36,8 @@ data class HomeUiState(
     val sunsetDate: String = "",
     val sunsetWeatherIcon: String? = "",
     val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
+    val blueHour: String = "",
+    val goldenHour: String = "",
     val placeName: String = "",
 
     var favoritePlaces: List<PlaceInfo> = emptyList(),
@@ -144,6 +146,10 @@ class HomeViewModel(
                             DateTimeFormatter.ISO_LOCAL_DATE),
                         sunsetWeatherIcon = userPlace.sunEvents[0].weatherIcon,
                         weatherConditions = userPlace.sunEvents[0].conditions.weatherRating,
+                        blueHour = userPlace.sunEvents[0].blueHourTime.toLocalTime().format(
+                            DateTimeFormatter.ofPattern("HH':'mm")),
+                        goldenHour = userPlace.sunEvents[0].goldenHourTime.toLocalTime().format(
+                            DateTimeFormatter.ofPattern("HH':'mm")),
                     )
 
                     /*Log.d(logTag, "fetching sunsetweather")

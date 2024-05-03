@@ -10,6 +10,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -84,6 +85,7 @@ import com.mapbox.maps.plugin.annotation.AnnotationConfig
 import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
+import com.mapbox.maps.plugin.compass.generated.CompassSettings
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
@@ -158,12 +160,7 @@ fun MapListScreen(
         }
     }
 
-    /*
-    TODO: These belong to searchbar
-     */
-    //var text by remember { mutableStateOf("") }
-    //var active by remember { mutableStateOf(false) }
-    Scaffold(
+    Scaffold (
         topBar = {
             SkumringTopBar(
                 title = stringResource(id = MapListDestination.titleRes),
@@ -192,17 +189,6 @@ fun MapListScreen(
 fun MapListContent(navController: NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
-    /*
-    SearchBar(query = text,
-        onQueryChange = {text = it} ,
-        onSearch = {active = false },
-        active = active,
-        onActiveChange =  {active = it}
-    ) {
-     //TODO legge til søkefelt
-    }
-     */
-
     ToggleButtonThemeSwitcher(
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
         onClick = { mapListViewModel.toggleMapListState() }
@@ -228,17 +214,24 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
         if (mapListUiState.mapListToggle == MapListToggleState.LIST) {
             Surface(color = MaterialTheme.colorScheme.background) {
                 // Column for list view
-                Column(Modifier.verticalScroll(rememberScrollState())) {
-                    mapListUiState.places.forEach { place ->
-                        ListCard(
-                            name = place.name,
-                            description = place.description,
-                            isFavourite = place.isFavourite,
-                            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                                navController.navigate("placeinfoscreen/${place.id}")
-                            },
-                            onFavouriteClick = { mapListViewModel.toggleFavourite(place) }
-                        )
+                Column (Modifier.verticalScroll(rememberScrollState())) {
+                    mapListUiState.places.forEach {place ->
+                        val sunEvents = place.sunEvents
+
+                        if (place.sunEvents.isNotEmpty()) {
+                            val weatherConditionsRating = sunEvents[0].conditions.weatherRating
+
+                            ListCard(
+                                name = place.name,
+                                description = place.description,
+                                isFavourite = place.isFavourite,
+                                onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                                    navController.navigate("placeinfoscreen/${place.id}")
+                                },
+                                onFavouriteClick = {mapListViewModel.toggleFavourite(place)},
+                                weatherConditionsRating = weatherConditionsRating
+                            )
+                        }
                     }
                 }
             }
@@ -628,6 +621,11 @@ fun MapArea(
     val userPoint =
         Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
     val context = LocalContext.current
+    val style: String = if (isSystemInDarkTheme()) {
+        Style.DARK
+        } else {
+            Style.OUTDOORS
+        }
 
     MapboxMap(
         modifier = Modifier
@@ -637,15 +635,19 @@ fun MapArea(
         mapInitOptionsFactory = { context ->
             MapInitOptions(
                 context = context,
-                styleUri = Style.OUTDOORS,
+                styleUri = style,
             )
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
         },
+        compassSettings = CompassSettings {
+            enabled = true
+            visibility = true
+            fadeWhenFacingNorth = false
+            }
     ) {
-
         if (mapListUiState.userLocUpdated) {
             MapEffect { mapView ->
                 Log.d(logTag, "userloc updated")
