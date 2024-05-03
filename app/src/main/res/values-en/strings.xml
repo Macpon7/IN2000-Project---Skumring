@@ -43,6 +43,8 @@
     <string name="homescreen_icon_blue_sun">Blue sun icon</string>
 
     <!-- MapListScreen -->
+    <string name="map_list">List and Map</string>
+
     <string name="toggle_list">List</string>
     <string name="toggle_list_icon">List icon</string>
 
@@ -54,6 +56,7 @@
 
     <!-- FavoritesScreen -->
     <string name="no_places">No places</string>
+    <string name="favourites">Favourites</string>
 
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Picture taken</string>
@@ -149,4 +152,9 @@
     <string name="place_icon">"place icon "</string>
     <string name="theme_icon">"Theme icon "</string>
     <string name="no_route_available">No route available</string>
+    <string name="dropdown_arrow_icon">dropdown arrow icon</string>
+    <string name="bike_icon">bike icon</string>
+    <string name="walk_icon">walk icon</string>
+    <string name="drive_icon">drive icon</string>
+    <string name="information_icon">information icon</string>
 </resources>

@@ -110,7 +110,7 @@ object MapListDestination : NavigationDestination {
     override val icon = Icons.Outlined.Place
     override val buttonTitle = R.string.nav_map_button
     override val route = "maplist"
-    override val titleRes = R.string.app_name
+    override val titleRes = R.string.map_list
 }
 
 /**

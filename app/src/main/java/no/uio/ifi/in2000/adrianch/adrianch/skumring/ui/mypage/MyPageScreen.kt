@@ -73,7 +73,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
@@ -133,7 +132,7 @@ fun MyPageScreen(
     Scaffold(
         topBar = {
             SkumringTopBar(
-                title = stringResource(id = HomeDestination.titleRes),
+                title = stringResource(id = MyPageDestination.titleRes),
                 canNavigateBack = false,
                 // Button to navigate to settings-page
                 actions = {
