@@ -157,6 +157,8 @@ class MyPageViewModel(
                 var isNameMissing = false
                 var isDescriptionMissing = false
                 var isAddressMissing = false
+                var addressNoResults = false
+                var addressTooManyResults = false
 
                 var isReady = true
 
@@ -197,30 +199,24 @@ class MyPageViewModel(
                         addressTooManyResults = addressTooManyResults
                     )
                 } else {
-                    //TODO get coordinates of address
-                    val addresses = geocodingRepository.getCoordinatesFromAddress(address = currentNewPlaceUiState.address)
-
-                    //TODO if addresses list is empty, give error to user
-                    //TODO if list has more than one, give error
-
-
-
-                    val newId = placeRepository.insertCustomPlace(PlaceInfo(
-                        id = 0,
-                        name = currentNewPlaceUiState.locationName,
-                        description = currentNewPlaceUiState.description,
-                        lat = currentNewPlaceUiState.lat,
-                        long = currentNewPlaceUiState.long,
-                        isFavourite = false,
-                        isCustomPlace = true,
-                        hasNotification = false,
-                        images = emptyList(),
-                        sunEvents = emptyList()
-                    )
+                    Log.d(TAG, "Trying to add new custom place to DB")
+                    val newId = placeRepository.insertCustomPlace(
+                        PlaceInfo(
+                            id = 0,
+                            name = currentNewPlaceUiState.locationName,
+                            description = currentNewPlaceUiState.description,
+                            lat = addresses.first().lat,
+                            long = addresses.first().long,
+                            isFavourite = false,
+                            isCustomPlace = true,
+                            hasNotification = false,
+                            images = emptyList(),
+                            sunEvents = emptyList()
+                        )
                     )
 
                     Log.d(TAG, "In MyPageViewModel Uri is ${newPlaceUiState.value.imageUri}")
-                    newPlaceUiState.value.imageUri?.let { addImage(contentUri = it, placeId = 0, timestamp = newPlaceUiState.value.pickedDate) //TODO make this the placeId that is generated for the new place
+                    newPlaceUiState.value.imageUri?.let { addImage(contentUri = it, placeId = newId, timestamp = newPlaceUiState.value.pickedDate) //TODO make this the placeId that is generated for the new place
                     Log.d(TAG, "saving image")}
                     hideNewForm()
                     resetNewPlaceUiState()
@@ -245,6 +241,8 @@ class MyPageViewModel(
                     locationNameIsMissing = false,
                     address = "",
                     addressIsMissing = false,
+                    addressTooManyResults = false,
+                    addressNoResults = false,
                     description = "",
                     descriptionIsMissing = false,
                     imageUri = null,
