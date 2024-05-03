@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.compose.material3.DatePickerDefaults
@@ -75,7 +74,6 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     // Variables for picture:
     var imageUri: Uri? = null,
-    var bitmap: List<Bitmap?> = emptyList(), // TODO tror ikke det er liste men usikker på hva
 
     // Show the date picker when the user want to pick a date
     var showDatePicker: Boolean = false,
@@ -122,32 +120,6 @@ class MyPageViewModel(
         Log.d(TAG,"contentUri: $contentUri, placeId is $placeId")
         val succeeded: Boolean = placeRepository.saveImageToInternalStorage(context = context, contentUri = contentUri, placeId = placeId, timestamp = timestamp)
         Log.d(TAG, "is image added to internal storage: $succeeded")
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateImageUri(uri : Uri?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(
-                    imageUri = uri
-                )
-            }
-        }
-    }
-
-    // TODO, usikker på hvordan det skal se ut her
-    /**
-     * The function will update the bitmap variable of newPlaceUiState
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateBitMap(bitmap : List<Bitmap?>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(
-                    bitmap = bitmap
-                )
-            }
-        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -361,17 +333,6 @@ class MyPageViewModel(
         }
     }
 
-    /**
-     * When a card is added the locations will be shown
-     */
-    fun showNewLocations() {
-        viewModelScope.launch (Dispatchers.IO) {
-            _myPageUiState.update { currentMyPageUiState ->
-                currentMyPageUiState.copy(showLocations = true)
-            }
-        }
-    }
-
     fun hideNewForm() {
         viewModelScope.launch (Dispatchers.IO) {
             _myPageUiState.update {currentMyPageUiState ->
@@ -384,7 +345,18 @@ class MyPageViewModel(
      * Load the list of places
      */
     fun loadList(){
-        // TODO load the list of the users customs places, will probably look similar to the list in maplistviewmodel
+        viewModelScope.launch(Dispatchers.IO) {
+            _myPageUiState.update { currentMyPageUiState ->
+                try {
+                    currentMyPageUiState.copy(places = placeRepository.getCustomPlaces())
+                } catch (e: Exception) {
+                    currentMyPageUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = e.message?: "Unknown error while loading custom places!"
+                    )
+                }
+            }
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
