@@ -53,7 +53,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -462,18 +461,16 @@ fun HorizontalInfoCardContent(
                 ) {//Conditions at sunset
                     Text(
                         text = stringResource(R.string.weather_condition) + " ",
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp
+                        fontWeight = FontWeight.Bold
                     )
                     Text(
                         //text changing based on weather conditions, in different textbox because of change of color
                         text = stringResource(id = weatherConditionsRating.stringResourceId),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
