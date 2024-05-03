@@ -30,6 +30,10 @@ class GeocodingRepositoryImpl(
         return geocodingDataSource.fetchReverseGeocodeLocation(lat = lat, long = long)
     }
 
+    /**
+     * Using the Mapbox Geocode API, we send in an address string given by the user and get
+     * coordinates matching that address back from Mapbox
+     */
     override suspend fun getCoordinatesFromAddress(address: String): List<GeocodeLocation> {
         return geocodingDataSource.fetchForwardGeocodeLocation(address = address)
     }
