@@ -354,7 +354,7 @@ class PlaceRepositoryImpl(
     }
 
     override suspend fun getCustomPlaces(): List<PlaceInfo> {
-        val entities = placeInfoDao.getFavourites()
+        val entities = placeInfoDao.getCustomPlaces()
         return if (entities.isEmpty()) {
             emptyList()
         } else {
