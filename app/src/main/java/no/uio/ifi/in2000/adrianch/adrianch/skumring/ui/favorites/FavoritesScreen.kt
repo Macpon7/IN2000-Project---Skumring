@@ -123,22 +123,29 @@ fun FavoriteListContent(navController : NavController,
             Text(text = stringResource(R.string.no_places))
         } else {
             favoritesUiState.places.forEach { place ->
-                val sunEvents = place.sunEvents
+                ListCard(
+                    name = place.name,
+                    description = place.description,
+                    isFavourite = place.isFavourite,
+                    isCustom = place.isCustomPlace,
+                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                        navController.navigate("placeinfoscreen/${place.id}")
+                    },
+                    onFavouriteClick = {favoriteViewModel.toggleFavourite(place = place)
+                    },
 
-                if (place.sunEvents.isNotEmpty()) {
-                    val weatherConditionsRating = sunEvents[0].conditions.weatherRating
-
-                    ListCard(
-                        name = place.name,
-                        description = place.description,
-                        isFavourite = place.isFavourite,
-                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                            navController.navigate("placeinfoscreen/${place.id}")
-                        },
-                        onFavouriteClick = {favoriteViewModel.toggleFavourite(place = place)},
-                        weatherConditionsRating = weatherConditionsRating
-                    )
-                }
+                    //TODO gjor dynamisk slik at den henter ID
+                    imageToDisplay = if (place.isCustomPlace and place.isFavourite) {
+                        //TODO hente bilde fra bildedatabasen
+                        "" //endres, kun satt for at det ikke krasjer
+                    } else if (place.isFavourite) {
+                        "${place.id}.jpg"
+                    } else {
+                        //TODO // If isFavourite is false it should not be displayed
+                       ""
+                    },
+                    weatherConditionsRating = place.sunEvents[0].conditions.weatherRating
+                )
             }
         }
     }
