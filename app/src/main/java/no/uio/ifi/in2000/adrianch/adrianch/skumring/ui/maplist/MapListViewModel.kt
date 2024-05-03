@@ -36,7 +36,7 @@ data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val places: List<PlaceInfo> = emptyList(),
     var clickedId: Int = 1,
     var mapListToggle: MapListToggleState = MapListToggleState.MAP,
-    var sheetState: SheetState = SheetState(skipPartiallyExpanded = true),
+    var sheetState: SheetState = SheetState(skipPartiallyExpanded = false),
     var showBottomSheet: Boolean = false,
     var userLat: String = "0",
     var userLong: String = "0",
@@ -48,8 +48,22 @@ data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     // Variable that change according to the error message we get:
     var errorMessage: String = "",
     // Variable for snackbar:
-    val snackbarHostState: SnackbarHostState = SnackbarHostState()
-)
+    val snackbarHostState: SnackbarHostState = SnackbarHostState(),
+
+    var placeInfo: PlaceInfo = PlaceInfo(
+        id = 0,
+        name = "",
+        description = "",
+        lat = "",
+        long = "",
+        isFavourite = false,
+        isCustomPlace = false,
+        hasNotification = false,
+        images = emptyList(),
+        sunEvents = emptyList()
+    ),
+
+    )
 
 private const val logTag = "MapListViewModel"
 

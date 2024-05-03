@@ -10,10 +10,12 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,22 +23,30 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,6 +68,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.google.gson.JsonPrimitive
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -74,12 +85,24 @@ import com.mapbox.maps.plugin.annotation.AnnotationConfig
 import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
+import com.mapbox.maps.plugin.compass.generated.CompassSettings
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 private const val logTag = "MapListScreen"
 
@@ -93,9 +116,12 @@ object MapListDestination : NavigationDestination {
 /**
  * Main composable function for displaying the map screen
  */
-        @OptIn(ExperimentalMaterial3Api::class)
-        @Composable
-fun MapListScreen(navController : NavHostController, mapListViewModel: MapListViewModel = viewModel(factory = MapListViewModel.Factory)) {
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MapListScreen(
+    navController: NavHostController,
+    mapListViewModel: MapListViewModel = viewModel(factory = MapListViewModel.Factory)
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
@@ -145,11 +171,12 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
         bottomBar = {
             SkumringBottomBar(navController = navController)
         }
-    ) {innerPadding ->
-        Column (modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()
-            .padding(8.dp),
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(8.dp),
             verticalArrangement = Arrangement.Top
         ) {
             MapListContent(navController = navController, mapListViewModel = mapListViewModel)
@@ -159,16 +186,15 @@ fun MapListScreen(navController : NavHostController, mapListViewModel: MapListVi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapListContent(navController : NavController, mapListViewModel: MapListViewModel) {
+fun MapListContent(navController: NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
-    ToggleButtonThemeSwitcher (
+    ToggleButtonThemeSwitcher(
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
         onClick = { mapListViewModel.toggleMapListState() }
     )
     Surface {
         MapArea(
-            navController = navController,
             mapListUiState = mapListUiState,
             mapListViewModel = mapListViewModel
         )
@@ -176,18 +202,17 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
             ModalBottomSheet(
                 onDismissRequest = { mapListViewModel.hideBottomSheet() },
                 sheetState = mapListUiState.sheetState,
-                dragHandle = {}
-                ) {
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ) {
                 BottomSheetContent(
                     place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
                     navController = navController,
                     mapListViewModel = mapListViewModel
-                    )
+                )
             }
         }
-
         if (mapListUiState.mapListToggle == MapListToggleState.LIST) {
-            Surface (color = MaterialTheme.colorScheme.background ){
+            Surface(color = MaterialTheme.colorScheme.background) {
                 // Column for list view
                 Column (Modifier.verticalScroll(rememberScrollState())) {
                     mapListUiState.places.forEach {place ->
@@ -200,11 +225,13 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
                                 name = place.name,
                                 description = place.description,
                                 isFavourite = place.isFavourite,
+                                isCustom = place.isCustomPlace,
                                 onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                                     navController.navigate("placeinfoscreen/${place.id}")
                                 },
                                 onFavouriteClick = {mapListViewModel.toggleFavourite(place)},
-                                weatherConditionsRating = weatherConditionsRating
+                                weatherConditionsRating = weatherConditionsRating,
+                                imageToDisplay = "${place.id}.jpg"
                             )
                         }
                     }
@@ -214,18 +241,6 @@ fun MapListContent(navController : NavController, mapListViewModel: MapListViewM
     }
 }
 
-/**
- * Preview function for ToggleButtonThemeSwitcher
- */
-@Preview
-@Composable
-fun ToggleButtonThemeSwitcherPreview() {
-    var isMapTheme by remember { mutableStateOf(false) }
-    ToggleButtonThemeSwitcher(
-        mapTheme = isMapTheme,
-        onClick = { isMapTheme = !isMapTheme }
-    )
-}
 
 /**
  * Togglebutton that switches between Map view and List view
@@ -241,226 +256,378 @@ fun ToggleButtonThemeSwitcher(
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val buttonHeightFactor = 0.15f //Height of the button
-    val buttonHeight = screenWidth * buttonHeightFactor //how high the button is based on the screenwidth
-    val buttonWidth =  screenWidth //Width of the button
+    val buttonHeight =
+        screenWidth * buttonHeightFactor //how high the button is based on the screenwidth
 
     //how much the togglebutton should offset to the side based on size of the screen
     val offsetSmallScreen by animateDpAsState(
-        targetValue = if (mapTheme) 0.dp else (buttonWidth/2 - buttonWidth/24),
+        targetValue = if (mapTheme) 0.dp else (screenWidth / 2 - screenWidth / 24),
         animationSpec = animationSpec, label = ""
     )
 
     //how much the togglebutton should offset to the side based on size of the screen
     val offsetLargeScreen by animateDpAsState(
-        targetValue = if (mapTheme) 0.dp else (buttonWidth/2 - buttonWidth/50),
+        targetValue = if (mapTheme) 0.dp else (screenWidth / 2 - screenWidth / 50),
         animationSpec = animationSpec, label = ""
     )
 
-BoxWithConstraints {
-    if (maxWidth < 400.dp) {
-        // button container
-        Box(
-            modifier = Modifier
-                .width(buttonWidth)
-                .height(buttonHeight)
-                .clip(shape = parentShape)
-                .clickable { onClick() }
-                .background(MaterialTheme.colorScheme.onSecondary)
-        ) {
-            // toggle animation
+    BoxWithConstraints {
+        if (maxWidth < 400.dp) {
+            // button container
             Box(
                 modifier = Modifier
-                    .width(buttonWidth / 2) // size of the toggle button
+                    .width(screenWidth)
                     .height(buttonHeight)
-                    .offset(x = offsetSmallScreen)
                     .clip(shape = parentShape)
-                    .background(MaterialTheme.colorScheme.secondary)
-
-            )
-            // the icons and text representing list and map views
-            Row(
-                modifier = Modifier
-                    .border(
-                        border = BorderStroke(
-                            width = borderWidth,
-                            color = MaterialTheme.colorScheme.secondary
-                        ),
-                        shape = parentShape
-                    ),
-                verticalAlignment = Alignment.CenterVertically
+                    .clickable { onClick() }
+                    .background(MaterialTheme.colorScheme.onSecondary)
             ) {
+                // toggle animation
                 Box(
-                    //List and list icon
-                    contentAlignment = Alignment.CenterStart,
                     modifier = Modifier
-                        .width(buttonWidth / 2)
+                        .width(screenWidth / 2) // size of the toggle button
                         .height(buttonHeight)
-                        .padding(start = 80.dp),
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .offset((-30).dp),
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = stringResource(id = R.string.toggle_list_icon),
-                        tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 5.dp),
-                        text = stringResource(R.string.toggle_list),
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
-                    )
-                }
-                Box( //map and map icon
-                    contentAlignment = Alignment.Center,
+                        .offset(x = offsetSmallScreen)
+                        .clip(shape = parentShape)
+                        .background(MaterialTheme.colorScheme.secondary)
+
+                )
+                // the icons and text representing list and map views
+                Row(
                     modifier = Modifier
-                        .width(buttonWidth / 2)
-                        .height(buttonHeight)
+                        .border(
+                            border = BorderStroke(
+                                width = borderWidth,
+                                color = MaterialTheme.colorScheme.secondary
+                            ),
+                            shape = parentShape
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
+                    Box(
+                        //List and list icon
+                        contentAlignment = Alignment.CenterStart,
                         modifier = Modifier
-                            .offset((-30).dp, 0.dp),
-                        imageVector = Icons.Default.Place,
-                        contentDescription = stringResource(id = R.string.toggle_map_icon),
-                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 15.dp),
-                        text = stringResource(R.string.toggle_map),
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
-                    )
+                            .width(screenWidth / 2)
+                            .height(buttonHeight)
+                            .padding(start = 80.dp),
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .offset((-30).dp),
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = stringResource(R.string.theme_icon),
+                            tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                            else MaterialTheme.colorScheme.secondary
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 5.dp),
+                            text = stringResource(R.string.toggle_list),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                            else MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    Box( //map and map icon
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .width(screenWidth / 2)
+                            .height(buttonHeight)
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .offset((-30).dp, 0.dp),
+                            imageVector = Icons.Default.Place,
+                            contentDescription = stringResource(R.string.place_icon),
+                            tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                            else MaterialTheme.colorScheme.onSecondary
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 15.dp),
+                            text = stringResource(R.string.toggle_map),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = if (mapTheme) MaterialTheme.colorScheme.secondary
+                            else MaterialTheme.colorScheme.onSecondary
+                        )
+                    }
                 }
             }
-        }
-    } else { //if screen is bigger
-        Box(
-            modifier = Modifier
-                .width(buttonWidth)
-                .height(buttonHeight / 2)
-                .clip(shape = parentShape)
-                .clickable { onClick() }
-                .background(MaterialTheme.colorScheme.onSecondary)
-        ) {
-            // toggle animation
+        } else { //if screen is bigger
             Box(
                 modifier = Modifier
-                    .width(buttonWidth / 2) // size of the toggle button
+                    .width(screenWidth)
                     .height(buttonHeight / 2)
-                    .offset(x = offsetLargeScreen)
                     .clip(shape = parentShape)
-                    .background(MaterialTheme.colorScheme.secondary)
-            )
-            // the icons and text representing list and map views
-            Row(
-                modifier = Modifier
-                    .border(
-                        border = BorderStroke(
-                            width = borderWidth,
-                            color = MaterialTheme.colorScheme.secondary
-                        ),
-                        shape = parentShape
-                    ),
-                verticalAlignment = Alignment.CenterVertically
+                    .clickable { onClick() }
+                    .background(MaterialTheme.colorScheme.onSecondary)
             ) {
+                // toggle animation
                 Box(
-                    //List and list icon
-                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .width(buttonWidth / 2)
-                        .height(buttonHeight)
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .offset((-30).dp)
-                            .padding(start = 10.dp),
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = stringResource(id = R.string.toggle_list_icon),
-                        tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 15.dp),
-                        text = stringResource(id = R.string.toggle_list),
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.secondary
-                    )
-                }
-                Box( //map and map icon
-                    contentAlignment = Alignment.Center,
+                        .width(screenWidth / 2) // size of the toggle button
+                        .height(buttonHeight / 2)
+                        .offset(x = offsetLargeScreen)
+                        .clip(shape = parentShape)
+                        .background(MaterialTheme.colorScheme.secondary)
+                )
+                // the icons and text representing list and map views
+                Row(
                     modifier = Modifier
-                        .width(buttonWidth / 2)
-                        .height(buttonHeight)
+                        .border(
+                            border = BorderStroke(
+                                width = borderWidth,
+                                color = MaterialTheme.colorScheme.secondary
+                            ),
+                            shape = parentShape
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
+                    Box(
+                        //List and list icon
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .offset((-30).dp, 0.dp),
-                        imageVector = Icons.Default.Place,
-                        contentDescription = stringResource(id = R.string.toggle_map_icon),
-                        tint = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 15.dp),
-                        text = stringResource(id = R.string.toggle_map),
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = if (mapTheme) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.onSecondary
-                    )
+                            .width(screenWidth / 2)
+                            .height(buttonHeight)
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .offset((-30).dp)
+                                .padding(start = 10.dp, bottom = 10.dp),
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Theme Icon",
+                            tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                            else MaterialTheme.colorScheme.secondary
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 15.dp),
+                            text = stringResource(R.string.toggle_list),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
+                            else MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    Box( //map and map icon
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .width(screenWidth / 2)
+                            .height(buttonHeight)
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .offset((-30).dp, 0.dp),
+                            imageVector = Icons.Default.Place,
+                            contentDescription = stringResource(R.string.place_icon),
+                            tint = if (mapTheme) MaterialTheme.colorScheme.secondary
+                            else MaterialTheme.colorScheme.onSecondary
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 15.dp),
+                            text = stringResource(R.string.toggle_map),
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = if (mapTheme) MaterialTheme.colorScheme.secondary
+                            else MaterialTheme.colorScheme.onSecondary
+                        )
+                    }
                 }
             }
         }
-    }
     }
 }
 
+
+/**
+ * Bottomsheet pop up that displays information about the pin you click.
+ * can add as favourite and decide to go to PlaceInfoScreen for more information about the place by clicking
+ * "more information" button
+ */
 @Composable
 fun BottomSheetContent(
     place: PlaceInfo,
     navController: NavController,
-    mapListViewModel: MapListViewModel
+    mapListViewModel: MapListViewModel,
 ) {
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-    )
-    {
-        /*
-        ListCard(
-            name = place.name,
-            description = place.description,
-            isFavourite = place.isFavourite,
-            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                mapListViewModel.hideBottomSheet()
-                navController.navigate("placeinfoscreen/${place.id}")
-            },
-            onFavouriteClick = {
-                mapListViewModel.toggleFavourite(place = place)
-            },
-
+    Column(
+        modifier = Modifier.padding(top = 0.dp, bottom = 20.dp, start = 12.dp, end = 12.dp)
+    ) {
+        //name of place and favourite button
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp)
         )
+        {
+            Text(
+                text = place.name,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+            IconButton(onClick = {
+                mapListViewModel.toggleFavourite(place = place)
+            }
+            ) {
+                if (place.isFavourite) {
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = stringResource(id = R.string.favourite_icon),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(60.dp)
 
-         */
-        Spacer(modifier = Modifier.height(40.dp))
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Filled.FavoriteBorder,
+                        contentDescription = stringResource(R.string.favourite_icon),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(60.dp)
+                    )
+
+                }
+            }
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        )
+        {
+            //sunset today string
+            Text(
+                text = stringResource(id = R.string.home_sunset),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+            )
+            Divider(
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                thickness = 1.dp,
+                modifier = Modifier.padding(start = 80.dp, end = 80.dp)
+            )
+            //time for sunset
+            Text(
+                text = stringResource(R.string.time) + ": ${
+                    place.sunEvents[0].time.format(
+                        DateTimeFormatter.ofPattern("HH':'mm")
+                    )
+                }",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.padding(top = 10.dp)
+            )
+            //temerature at sunset
+            Text(
+                text = stringResource(R.string.temp_at_sunset) + ": ${place.sunEvents[0].tempAtEvent} °C",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+            )
+            //Conditions at sunset
+            Text(
+                text = stringResource(R.string.weather_condition) + stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+            )
+            //Weather icon
+            Box(
+                modifier = Modifier
+                    .size(70.dp)
+                    .padding(bottom = 10.dp)
+            ) {
+                WeatherIconCheck(
+                    weatherCondition = place.sunEvents[0].weatherIcon,
+                    weather = place.sunEvents[0].conditions.weatherRating
+                )
+            }
+            //description string
+            Text(
+                text = stringResource(R.string.description),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+            )
+            Divider(
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                thickness = 1.dp,
+                modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
+            )
+            //description about the place
+            Text(
+                text = place.description,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            //close button and more information button
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 10.dp)
+            )
+            {
+                TextButton(
+                    onClick = {
+                        mapListViewModel.hideBottomSheet()
+
+                    },
+                    contentPadding = PaddingValues(12.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.close),
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
+                Button(
+                    onClick = {
+                        mapListViewModel.hideBottomSheet()
+                        navController.navigate("placeinfoscreen/${place.id}")
+                    },
+                    contentPadding = PaddingValues(12.dp),
+                    modifier = Modifier.padding(start = 15.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+
+                    ) {
+                    Text(
+                        text = stringResource(R.string.home_more_details_button),
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        style = MaterialTheme.typography.bodyLarge,
+
+                        )
+                }
+
+            }
+        }
     }
 }
+
 
 /**
  * Placeholder for the map display area
  */
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapArea(mapListUiState: MapListUiState,
-            navController: NavController,
-            mapListViewModel: MapListViewModel) {
+fun MapArea(
+    mapListUiState: MapListUiState,
+    mapListViewModel: MapListViewModel
+) {
 
-    val userPoint = Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
+    val userPoint =
+        Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
     val context = LocalContext.current
+    val style: String = if (isSystemInDarkTheme()) {
+        Style.DARK
+        } else {
+            Style.OUTDOORS
+        }
 
     MapboxMap(
         modifier = Modifier
@@ -470,15 +637,19 @@ fun MapArea(mapListUiState: MapListUiState,
         mapInitOptionsFactory = { context ->
             MapInitOptions(
                 context = context,
-                styleUri = Style.OUTDOORS,
+                styleUri = style,
             )
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
         },
-        ) {
-
+        compassSettings = CompassSettings {
+            enabled = true
+            visibility = true
+            fadeWhenFacingNorth = false
+            }
+    ) {
         if (mapListUiState.userLocUpdated) {
             MapEffect { mapView ->
                 Log.d(logTag, "userloc updated")
@@ -492,12 +663,14 @@ fun MapArea(mapListUiState: MapListUiState,
         }
 
         PointAnnotationGroup(
-            annotations = mapListUiState.pins.map {pinInfo ->
+            annotations = mapListUiState.pins.map { pinInfo ->
                 val long = pinInfo.long.toDouble()
                 val lat = pinInfo.lat.toDouble()
                 val point = Point.fromLngLat(long, lat)
 
-                val iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.place_location_pin)!!.toBitmap()
+                val iconImageBitmap =
+                    AppCompatResources.getDrawable(context, R.drawable.place_location_pin)!!
+                        .toBitmap()
 
                 PointAnnotationOptions()
                     .withPoint(point)
@@ -526,8 +699,80 @@ fun MapArea(mapListUiState: MapListUiState,
         // User location
         PointAnnotation(
             point = userPoint,
-            iconImageBitmap = AppCompatResources.getDrawable(context, R.drawable.user_location_puck)!!.toBitmap()
+            iconImageBitmap = AppCompatResources.getDrawable(
+                context,
+                R.drawable.user_location_puck
+            )!!.toBitmap()
         )
 
+    }
+}
+
+/**
+ * Preview function for ToggleButtonThemeSwitcher
+ */
+@Preview
+@Composable
+fun ToggleButtonThemeSwitcherPreview() {
+    var isMapTheme by remember { mutableStateOf(false) }
+    ToggleButtonThemeSwitcher(
+        mapTheme = isMapTheme,
+        onClick = { isMapTheme = !isMapTheme }
+    )
+}
+
+/**
+ * Preview for the BottomSheet content
+ */
+@Preview
+@Composable
+fun BottomSheetPreview(navController: NavHostController = rememberNavController()) {
+    val context = LocalContext.current
+    val database = AppDatabase.getDatabase(context = context)
+    val imageDao = database.imageDao()
+    val forecastDao = database.forecastDao()
+    val placeInfoDao = database.placeInfoDao()
+    val placeRepository = PlaceRepositoryImpl(
+        placeInfoDao = placeInfoDao,
+        forecastDao = forecastDao,
+        imageDao = imageDao
+    )
+    SkumringTheme {
+        Surface {
+            BottomSheetContent(
+                place = PlaceInfo(
+                    id = 123,
+                    name = "Monrads gate 33",
+                    description = "godt sted å ta bilde på en solrik dag",
+                    lat = "",
+                    long = "",
+                    isFavourite = false,
+                    isCustomPlace = false,
+                    hasNotification = false,
+                    images = emptyList(),
+                    sunEvents = listOf(
+                        SunEvent(
+                            time = LocalDateTime.now(),
+                            tempAtEvent = "20",
+                            weatherIcon = ":)",
+                            conditions = WeatherConditions(
+                                weatherRating = WeatherConditionsRating.EXCELLENT,
+                                cloudConditionLow = CloudConditions.CLEAR,
+                                cloudConditionHigh = CloudConditions.CLEAR,
+                                cloudConditionMedium = CloudConditions.CLEAR,
+                                airCondition = AirConditions.LOW
+                            ),
+                            blueHourTime = LocalDateTime.now(),
+                            goldenHourTime = LocalDateTime.now()
+                        )
+                    )
+                ),
+                navController = navController,
+                mapListViewModel = MapListViewModel(
+                    context = context,
+                    placeRepository = placeRepository
+                )
+            )
+        }
     }
 }
