@@ -283,7 +283,7 @@ fun TodayInfoCard(
                             Icon(
                                 imageVector = Icons.Filled.Favorite,
                                 modifier = Modifier.size(40.dp),
-                                contentDescription = "",
+                                contentDescription = stringResource(R.string.favourite_icon),
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
                             //if not favourite, show heart with border
@@ -291,7 +291,7 @@ fun TodayInfoCard(
                             Icon(
                                 imageVector = Icons.Filled.FavoriteBorder,
                                 modifier = Modifier.size(40.dp),
-                                contentDescription = "",
+                                contentDescription = stringResource(R.string.favourite_icon),
                                 tint = MaterialTheme.colorScheme.onPrimary
 
                             )
@@ -338,7 +338,7 @@ fun TodayInfoCard(
                     Row {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.walk),
-                            contentDescription = "walk icon",
+                            contentDescription = stringResource(R.string.walk_icon),
                             tint = Color.Unspecified,
                         )
                         Text(
@@ -375,7 +375,7 @@ fun TodayInfoCard(
                     Row {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.bike),
-                            contentDescription = "bike icon",
+                            contentDescription = stringResource(R.string.bike_icon),
                             tint = Color.Unspecified,
                         )
                         Text(
@@ -389,7 +389,7 @@ fun TodayInfoCard(
                     }
                     Text(
                         text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.distance +
-                                " " + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                                " " + stringResource(R.string.distance_kilometers),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -402,7 +402,7 @@ fun TodayInfoCard(
                                 stringResource(id = R.string.distance_hour) +
                                 " " +
                                 placeInfoUiState.mapTimeDistance[MeansOfTransportation.BIKING]?.durationMinutes +
-                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
+                                stringResource(id = R.string.distance_minutes),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -415,7 +415,7 @@ fun TodayInfoCard(
 
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.drive),
-                            contentDescription = "drive icon",
+                            contentDescription = stringResource(R.string.drive_icon),
                             tint = Color.Unspecified,
 
                             )
@@ -430,7 +430,7 @@ fun TodayInfoCard(
                     }
                     Text(
                         text = placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.distance +
-                                " " + stringResource(R.string.distance_kilometers), //TODO //change this later to stringformat
+                                " " + stringResource(R.string.distance_kilometers),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -443,7 +443,7 @@ fun TodayInfoCard(
                                 stringResource(id = R.string.distance_hour) +
                                 " " +
                                 placeInfoUiState.mapTimeDistance[MeansOfTransportation.DRIVING]?.durationMinutes +
-                                stringResource(id = R.string.distance_minutes), //TODO //change this later to stringformat
+                                stringResource(id = R.string.distance_minutes),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -470,7 +470,7 @@ fun TodayInfoCard(
             //Sunset Icon
             Icon(
                 painter = painterResource(id = R.drawable.sunsetsymbol),
-                contentDescription = "Sunset Icon",
+                contentDescription = stringResource(R.string.homescreen_icon_sunset),
                 tint = Color.Unspecified,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -508,7 +508,7 @@ fun TodayInfoCard(
                 )
                 //Clickable icon for showing more info about the weather conditions
                 Icon(Icons.Default.Info,
-                    contentDescription = "Info",
+                    contentDescription = stringResource(R.string.information_icon),
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
                         .clickable { showPopUp = true }
@@ -559,7 +559,7 @@ fun TodayInfoCard(
                     )
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
-                        contentDescription = "yellow sun icon",
+                        contentDescription = stringResource(R.string.homescreen_icon_yellow_sun),
                         tint = Color.Unspecified,
                         modifier = Modifier.padding(
                             start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -567,7 +567,7 @@ fun TodayInfoCard(
 
                     )
                     Text(
-                        text = goldenHourTime, //TODO //change this later to $goldenHourTime
+                        text = goldenHourTime,
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -587,14 +587,14 @@ fun TodayInfoCard(
                     )//Blue hour icon and time
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
-                        contentDescription = "blue sun icon",
+                        contentDescription = stringResource(R.string.homescreen_icon_blue_sun),
                         tint = Color.Unspecified,
                         modifier = Modifier.padding(
                             start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                         )
                     )
                     Text(
-                        text = blueHourTime, //TODO //change this later to $blueHourTime
+                        text = blueHourTime,
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -666,7 +666,7 @@ fun SunEventInfoCard(
             //Sunset icon
             Icon(
                 painter = painterResource(id = R.drawable.sunsetsymbol),
-                contentDescription = "Sunset Icon",
+                contentDescription = stringResource(R.string.homescreen_icon_sunset),
                 tint = Color.Unspecified,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -730,7 +730,7 @@ fun SunEventInfoCard(
                     )
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Drop-down arrow",
+                        contentDescription = stringResource(R.string.dropdown_arrow_icon),
                         tint = MaterialTheme.colorScheme.primaryContainer,
                         modifier = Modifier
                             .rotate(rotationState)
@@ -769,14 +769,14 @@ fun SunEventInfoCard(
                         )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
-                            contentDescription = "yellow sun icon",
+                            contentDescription = stringResource(R.string.homescreen_icon_yellow_sun),
                             tint = Color.Unspecified,
                             modifier = Modifier.padding(
                                 start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                             )
                         )
                         Text(
-                            text = goldenHourTime, //TODO //change this later to $goldenHourTime
+                            text = goldenHourTime,
                             style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
@@ -796,14 +796,14 @@ fun SunEventInfoCard(
                         )//Blue hour icon and time
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
-                            contentDescription = "blue sun icon",
+                            contentDescription = stringResource(R.string.homescreen_icon_blue_sun),
                             tint = Color.Unspecified,
                             modifier = Modifier.padding(
                                 start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                             )
                         )
                         Text(
-                            text = blueHourTime, //TODO //change this later to $blueHourTime
+                            text = blueHourTime,
                             style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
