@@ -225,11 +225,13 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
                                 name = place.name,
                                 description = place.description,
                                 isFavourite = place.isFavourite,
+                                isCustom = place.isCustomPlace,
                                 onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                                     navController.navigate("placeinfoscreen/${place.id}")
                                 },
                                 onFavouriteClick = {mapListViewModel.toggleFavourite(place)},
-                                weatherConditionsRating = weatherConditionsRating
+                                weatherConditionsRating = weatherConditionsRating,
+                                imageToDisplay = "${place.id}.jpg"
                             )
                         }
                     }
@@ -759,7 +761,9 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
                                 cloudConditionHigh = CloudConditions.CLEAR,
                                 cloudConditionMedium = CloudConditions.CLEAR,
                                 airCondition = AirConditions.LOW
-                            )
+                            ),
+                            blueHourTime = LocalDateTime.now(),
+                            goldenHourTime = LocalDateTime.now()
                         )
                     )
                 ),
