@@ -32,6 +32,8 @@
     <string name="no_favourites">No favourites!</string>
     <string name="error_sunset">Error with getting data</string>
 
+    <string name="loading_user_location">Laster inn brukerlokasjon</string>
+
     <string name="conditions_poor">Poor</string>
     <string name="conditions_decent">Decent</string>
     <string name="conditions_excellent">Excellent</string>

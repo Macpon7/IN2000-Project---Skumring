@@ -32,6 +32,8 @@
     <string name="no_favourites">Ingen favoritter!</string>
     <string name="error_sunset">Feil med å få data</string>
 
+    <string name="loading_user_location">Loading user location</string>
+
     <string name="conditions_poor">Dårlig</string>
     <string name="conditions_decent">Grei nok</string>
     <string name="conditions_excellent">Fantastisk</string>
