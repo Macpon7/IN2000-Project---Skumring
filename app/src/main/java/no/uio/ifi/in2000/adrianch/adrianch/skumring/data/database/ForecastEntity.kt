@@ -28,5 +28,7 @@ data class ForecastEntity(
     @ColumnInfo(name = "air_condition") var airCondition: AirConditions,
     @ColumnInfo(name = "sunset_temp") var sunsetTemp: String,
     @ColumnInfo(name = "weather_icon") var weatherIcon: String,
+    @ColumnInfo(name = "blue_hour_time") var blueHourDateTime: LocalDateTime,
+    @ColumnInfo(name = "golden_hour_time") var goldenHourDateTime: LocalDateTime,
     var timestamp: LocalDateTime
 )

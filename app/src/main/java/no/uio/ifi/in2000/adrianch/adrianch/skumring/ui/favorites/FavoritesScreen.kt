@@ -84,12 +84,6 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             }
         }
     }
-
-    /*
-    TODO: These belong to searchbar
-     */
-    //var text by remember { mutableStateOf("") }
-    //var active by remember { mutableStateOf(false) }
     Scaffold (
         topBar = {
             SkumringTopBar(
@@ -116,24 +110,14 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Show the list of cards of places available
+ */
 @Composable
 fun FavoriteListContent(navController : NavController,
                         favoriteViewModel: FavoritesViewModel,
                         favoritesUiState: FavoritesUiState
                         ) {
-    /*
-    SearchBar(query = text,
-        onQueryChange = {text = it} ,
-        onSearch = {active = false },
-        active = active,
-        onActiveChange =  {active = it}
-    ) {
-     //TODO legge til søkefelt
-    }
-     */
-
     Column (Modifier.verticalScroll(rememberScrollState())) {
         if (favoritesUiState.places.isEmpty()){
             Text(text = stringResource(R.string.no_places))
@@ -159,7 +143,8 @@ fun FavoriteListContent(navController : NavController,
                     } else {
                         //TODO // If isFavourite is false it should not be displayed
                        ""
-                    }
+                    },
+                    weatherConditionsRating = place.sunEvents[0].conditions.weatherRating
                 )
             }
         }

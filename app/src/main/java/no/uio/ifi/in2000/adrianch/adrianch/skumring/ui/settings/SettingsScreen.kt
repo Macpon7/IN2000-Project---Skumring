@@ -141,14 +141,6 @@ fun ContentSettings(settingsViewModel: SettingsViewModel) {
             focusedContainerColor = FocusedContainerColor,
             unfocusedContainerColor = UnfocusedContainerColor
         )
-
-        // Content for choosing LocationAs:
-        ChooseLocationAs(
-            settingsViewModel = settingsViewModel,
-            textColor = TextColor,
-            focusedContainerColor = FocusedContainerColor,
-            unfocusedContainerColor = UnfocusedContainerColor
-        )
     }
 }
 
@@ -463,99 +455,6 @@ fun ChooseStartLocation(
 @Preview
 fun PreviewStartLocation(settingsViewModel: SettingsViewModel = viewModel()) {
     //ChooseStartLocation(settingsViewModel)
-}
-
-/**
- * Function to show how to show the mean of transportation to a location
- * Here it shows the alternative: walk, bike or drive
- * Shown as a dropdownmenu
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ChooseLocationAs(
-    settingsViewModel: SettingsViewModel,
-    textColor: Color,
-    focusedContainerColor: Color,
-    unfocusedContainerColor: Color
-) {
-
-    val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
-
-    ExposedDropdownMenuBox(
-        expanded = settingsUiState.dropdownExpandedLocationAs,
-        onExpandedChange = { settingsViewModel.expandDropdownLocationAs() }) {
-        TextField(
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            readOnly = true,
-            value = settingsUiState.selectedLocationAs,
-            onValueChange = {},
-            label = {
-                Text(
-                    text = stringResource(R.string.means_of_transportation),
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    fontWeight = FontWeight.Bold,
-                    color = textColor
-                )
-            },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = settingsUiState.dropdownExpandedLocationAs
-                )
-            },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = focusedContainerColor,
-                unfocusedContainerColor = unfocusedContainerColor
-            )
-        )
-        ExposedDropdownMenu(
-            expanded = settingsUiState.dropdownExpandedLocationAs,
-            onDismissRequest = { settingsViewModel.expandDropdownLocationAs() }) {
-            DropdownMenuItem(
-                modifier = Modifier,
-                text = {
-                    Text(
-                        text = stringResource(R.string.walk),
-                        color = textColor
-                    )
-                },
-                onClick = {
-                    settingsViewModel.updateSelectedLocationAs(
-                        locationAs = LocationAs.WALK,
-                    )
-                }
-            )
-            DropdownMenuItem(
-                modifier = Modifier,
-                text = {
-                    Text(
-                        text = stringResource(R.string.bike),
-                        color = textColor
-                    )
-                },
-                onClick = {
-                    settingsViewModel.updateSelectedLocationAs(
-                        locationAs = LocationAs.BIKE,
-                    )
-                })
-            DropdownMenuItem(
-                modifier = Modifier,
-                text = {
-                    Text(
-                        text = stringResource(R.string.drive),
-                        color = textColor
-                    )
-                },
-                onClick = {
-                    settingsViewModel.updateSelectedLocationAs(
-                        locationAs = LocationAs.DRIVE,
-                    )
-                }
-            )
-        }
-    }
 }
 
 @Composable
