@@ -139,8 +139,9 @@ class HomeViewModel(
         viewModelScope.launch(Dispatchers.IO){
             try {
                 loadUserLocation()
-
-                userPlace = placeRepository.getUserLocationPlace(lat = homeUiState.value.lat, long = homeUiState.value.long)
+                if (!(homeUiState.value.lat == "0") && !(homeUiState.value.long == "0")) {
+                    userPlace = placeRepository.getUserLocationPlace(lat = homeUiState.value.lat, long = homeUiState.value.long)
+                }
                 _homeUiState.update{ currentHomeUiState->
                     // Check if the userlocation is 0,0, which is the default-place
                     if (currentHomeUiState.lat == "0" && currentHomeUiState.long == "0") {
