@@ -60,7 +60,7 @@ class GoldenHourBlueHourDataSource {
             val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&date=$dateString"
             val response = fetchSunriseSunset(path)
 
-            return convertResponseToGoldenHourBlueHour(response, dateString)
+            return convertResponseToGoldenHourBlueHour(response)
 
         } catch (e: Exception) {
             Log.e(logTag, "Failed fetching Golden/Blue Hour", e)
@@ -73,14 +73,13 @@ class GoldenHourBlueHourDataSource {
      */
     fun convertResponseToGoldenHourBlueHour(
         response: SunriseSunset,
-        dateString: String
     ): GoldenHourBlueHour {
         val goldenHourDateTime: LocalDateTime = formatTime(
             time = response.results.golden_hour ?: "",
-            date = dateString)
+            date = response.results.date)
         val blueHourDateTime: LocalDateTime = formatTime(
             time = response.results.dusk ?: "",
-            date = dateString)
+            date = response.results.date)
         Log.d(logTag, "Golden hour: $goldenHourDateTime, Blue hour: $blueHourDateTime")
         return GoldenHourBlueHour(goldenHour = goldenHourDateTime, blueHour = blueHourDateTime)
     }

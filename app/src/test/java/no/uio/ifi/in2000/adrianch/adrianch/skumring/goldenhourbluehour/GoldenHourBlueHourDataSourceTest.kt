@@ -24,13 +24,13 @@ class GoldenHourBlueHourDataSourceTest {
 
     /*
     Testing that a response gets correctly converted to our custom object
-    as well as the time getting converted correctly
+    as well as the time getting converted correctly.
      */
     @Test
     fun checkFixTimeFormat() {
         val formatter = DateTimeFormatter.ofPattern("HH':'mm")
         val expected = "13:26"
-        val responseDateTime = source.convertResponseToGoldenHourBlueHour(osloTestData, dummyDate).goldenHour
+        val responseDateTime = source.convertResponseToGoldenHourBlueHour(osloTestData).goldenHour
         val result = responseDateTime.format(formatter)
 
         assert(expected == result)
@@ -44,7 +44,7 @@ class GoldenHourBlueHourDataSourceTest {
     @Test
     fun checkNoGoldenOrBlueHour() {
         val expected = "2000-01-01T00:00"
-        val responseDateTime = source.convertResponseToGoldenHourBlueHour(northPoleTestData,dummyDate).blueHour
+        val responseDateTime = source.convertResponseToGoldenHourBlueHour(northPoleTestData).blueHour
         val result = responseDateTime.toString()
 
         assert(expected == result)
