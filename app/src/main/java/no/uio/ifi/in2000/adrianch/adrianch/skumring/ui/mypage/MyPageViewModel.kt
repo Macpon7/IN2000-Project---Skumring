@@ -50,6 +50,8 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     var address: String = "",
     var addressIsMissing: Boolean = false,
+    var addressNoResults: Boolean = false,
+    var addressTooManyResults: Boolean = false,
 
     var lat: String = "",
     var long: String = "",
@@ -172,11 +174,27 @@ class MyPageViewModel(
                     isReady = false
                 }
 
+                val addresses = geocodingRepository.getCoordinatesFromAddress(address = currentNewPlaceUiState.address)
+
+                if (addresses.size == 0) {
+                    //TODO set correct error and set error message under address field
+                    addressNoResults = true
+                    isReady = false
+                } else if (addresses.size > 1) {
+                    //TODO set correct error and set message under address field
+                    addressTooManyResults = true
+                    isReady = false
+                }
+
+                //TODO add option to use User's current location instead of writing in an address
+
                 if (!isReady) {
                     currentNewPlaceUiState.copy(
                         locationNameIsMissing = isNameMissing,
                         addressIsMissing = isAddressMissing,
-                        descriptionIsMissing = isDescriptionMissing
+                        descriptionIsMissing = isDescriptionMissing,
+                        addressNoResults = addressNoResults,
+                        addressTooManyResults = addressTooManyResults
                     )
                 } else {
                     //TODO get coordinates of address

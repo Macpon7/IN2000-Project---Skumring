@@ -363,6 +363,16 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                                 text = stringResource(R.string.error_address),
                                 color = MaterialTheme.colorScheme.error
                             )
+                        } else if (newPlaceUiState.addressNoResults) {
+                            Text(
+                                text = stringResource(id = R.string.new_place_address_no_results),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        } else if (newPlaceUiState.addressTooManyResults) {
+                            Text(
+                                text = stringResource(id = R.string.new_place_address_many_results),
+                                color = MaterialTheme.colorScheme.error
+                            )
                         }
                     },
                     colors = outlinedTextFieldColors,
