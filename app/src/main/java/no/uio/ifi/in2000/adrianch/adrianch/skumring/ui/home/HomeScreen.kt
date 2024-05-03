@@ -53,6 +53,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -147,7 +148,8 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
-            SunsetInfoCard(homeUiState.sunsetTime,
+            SunsetInfoCard(
+                homeUiState.sunsetTime,
                 homeUiState.weatherConditions,
                 homeUiState.temp,
                 homeUiState.sunsetWeatherIcon,
@@ -452,21 +454,26 @@ fun HorizontalInfoCardContent(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .padding(start = 8.dp)
-                        .align(Alignment.Center)
+                        .padding(
+                            bottom = 8.dp,
+                            start = 8.dp
+                        )
+                        .align(Alignment.BottomStart)
                 ) {//Conditions at sunset
-                    androidx.compose.material3.Text(
+                    Text(
                         text = stringResource(R.string.weather_condition) + " ",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp
                     )
-                    androidx.compose.material3.Text(
+                    Text(
                         //text changing based on weather conditions, in different textbox because of change of color
                         text = stringResource(id = weatherConditionsRating.stringResourceId),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp
                     )
                 }
             }
