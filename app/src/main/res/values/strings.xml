@@ -45,6 +45,8 @@
 
 
     <!-- MapListScreen -->
+    <string name="map_list">Liste og Kart</string>
+
     <string name="toggle_list">Liste</string>
     <string name="toggle_list_icon">Liste ikon</string>
 
@@ -56,6 +58,7 @@
 
     <!-- FavoritesScreen -->
     <string name="no_places">Ingen steder lagret enda</string>
+    <string name="favourites">Favoritter</string>
 
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Bilde tatt</string>
