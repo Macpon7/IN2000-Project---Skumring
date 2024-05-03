@@ -38,7 +38,7 @@ object FavoritesDestination : NavigationDestination {
     override val icon = Icons.Outlined.FavoriteBorder
     override val buttonTitle = R.string.nav_fav_button
     override val route = "favorite"
-    override val titleRes = R.string.app_name
+    override val titleRes = R.string.favourites
 }
 
 /**
