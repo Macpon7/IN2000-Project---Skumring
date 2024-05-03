@@ -10,6 +10,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -74,6 +75,7 @@ import com.mapbox.maps.plugin.annotation.AnnotationConfig
 import com.mapbox.maps.plugin.annotation.AnnotationSourceOptions
 import com.mapbox.maps.plugin.annotation.ClusterOptions
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
+import com.mapbox.maps.plugin.compass.generated.CompassSettings
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
@@ -461,6 +463,11 @@ fun MapArea(mapListUiState: MapListUiState,
 
     val userPoint = Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
     val context = LocalContext.current
+    val style: String = if (isSystemInDarkTheme()) {
+        Style.DARK
+        } else {
+            Style.OUTDOORS
+        }
 
     MapboxMap(
         modifier = Modifier
@@ -470,15 +477,19 @@ fun MapArea(mapListUiState: MapListUiState,
         mapInitOptionsFactory = { context ->
             MapInitOptions(
                 context = context,
-                styleUri = Style.OUTDOORS,
+                styleUri = style,
             )
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
             true
         },
-        ) {
-
+        compassSettings = CompassSettings {
+            enabled = true
+            visibility = true
+            fadeWhenFacingNorth = false
+            }
+    ) {
         if (mapListUiState.userLocUpdated) {
             MapEffect { mapView ->
                 Log.d(logTag, "userloc updated")
