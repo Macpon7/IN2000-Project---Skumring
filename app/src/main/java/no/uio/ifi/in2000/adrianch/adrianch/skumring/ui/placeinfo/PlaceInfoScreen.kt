@@ -494,14 +494,14 @@ fun TodayInfoCard(
             ) {
                 //Conditions at sunset
                 Text(
-                    text = stringResource(R.string.weather_condition),
+                    text = stringResource(R.string.weather_condition) + " ",
                     style = typography.bodyMedium,
                     color = MaterialTheme.colorScheme.inverseOnSurface,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
                     //text changing based on weather conditions, in different textbox because of change of color
-                    text = "${sunEvent.conditions.weatherRating}", //TODO fix so this is also in Norwegian
+                    text = stringResource(id = sunEvent.conditions.weatherRating.stringResourceId),
                     style = typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
@@ -684,7 +684,7 @@ fun SunEventInfoCard(
             )
             //text changes based on weather conditions
             Text(
-                text = stringResource(R.string.weather_condition) + ": ${sunEvent.conditions.weatherRating}",
+                text = stringResource(R.string.weather_condition) +" " + stringResource(id = sunEvent.conditions.weatherRating.stringResourceId),
                 style = typography.bodyMedium,
                 color = MaterialTheme.colorScheme.inverseOnSurface,
                 fontWeight = FontWeight.Bold,
