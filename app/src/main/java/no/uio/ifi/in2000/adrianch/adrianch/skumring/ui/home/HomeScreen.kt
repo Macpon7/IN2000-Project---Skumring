@@ -179,9 +179,20 @@ fun SunsetInfoCard(
     icon: String?,
     goldenHourTime: String,
     blueHourTime: String
-) { //, add goldenHourTime: String, blueHourTime: String later
+) {
 
     var showPopUp by remember { mutableStateOf(false) }
+
+    val goldenHourTimeString = if (goldenHourTime == "00:00") {
+         "--N/A--"
+    } else {
+        "$goldenHourTime - $sunsetTime"
+    }
+    val blueHourTimeString = if (blueHourTime == "00:00") {
+        "--N/A--"
+    } else {
+        "$sunsetTime - $blueHourTime"
+    }
 
     Card(
         shape = RoundedCornerShape(15.dp),
@@ -318,7 +329,7 @@ fun SunsetInfoCard(
 
                         )
                         Text(
-                            text = goldenHourTime,
+                            text = goldenHourTimeString,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
@@ -327,7 +338,7 @@ fun SunsetInfoCard(
                             )
                         )
                     }
-                    Spacer(modifier = Modifier.padding(50.dp))
+                    Spacer(modifier = Modifier.padding(20.dp))
                     //box for blue hour icon and time
                     Box {
                         Text(
@@ -346,7 +357,7 @@ fun SunsetInfoCard(
                             )
                         )
                         Text(
-                            text = blueHourTime,
+                            text = blueHourTimeString,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
