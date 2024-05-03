@@ -148,15 +148,15 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
-                SunsetInfoCard(
-                    sunsetTime = homeUiState.sunsetTime,
-                    weatherConditions = homeUiState.weatherConditions,
-                    temp = homeUiState.temp,
-                    icon = homeUiState.sunsetWeatherIcon,
-                    goldenHourTime = homeUiState.goldenHour,
-                    blueHourTime = homeUiState.blueHour,
-                    userlocationReady = homeUiState.userLocationReady
-                )
+            SunsetInfoCard(
+                sunsetTime = homeUiState.sunsetTime,
+                weatherConditions = homeUiState.weatherConditions,
+                temp = homeUiState.temp,
+                icon = homeUiState.sunsetWeatherIcon,
+                goldenHourTime = homeUiState.goldenHour,
+                blueHourTime = homeUiState.blueHour,
+                userlocationReady = homeUiState.userLocationReady
+            )
 
             Text(
                 text = stringResource(R.string.home_favourite_places),
@@ -206,174 +206,175 @@ fun SunsetInfoCard(
                     )
                 )
         )
-        {//Displaying the information in the card
+        {
+
+            //Displaying the information in the card
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Check if the userlocation is 0,0
                 if (!userlocationReady) {
-                    Text(
-                        text = "loading user location",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.bodyMedium,
+                    Row(modifier = Modifier.padding(start = 20.dp, top = 8.dp, bottom = 2.dp)) {
+                        Text(
+                            text = stringResource(id = R.string.loading_user_location) + " ",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .padding(start = 10.dp, bottom = 10.dp)
+                        )
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
+                Text(
+                    text = stringResource(R.string.home_sunset),
+                    color = MaterialTheme.colorScheme.onPrimary, //outline
+                    style = MaterialTheme.typography.headlineLarge,
+                )
+                Box { //Sunset icon and time of sunset, in box because it needs to overlap
+                    Icon(
+                        painter = painterResource(id = R.drawable.sunsetsymbol),
+                        contentDescription = stringResource(id = R.string.homescreen_icon_sunset),
+                        tint = Color.Unspecified,
                         modifier = Modifier
-                            .padding(top = 10.dp, bottom = 10.dp)
+                            .size(140.dp)
                     )
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(50.dp),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                } else {
                     Text(
-                        text = stringResource(R.string.home_sunset),
-                        color = MaterialTheme.colorScheme.onPrimary, //outline
-                        style = MaterialTheme.typography.headlineLarge,
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                    )
-                    Box { //Sunset icon and time of sunset, in box because it needs to overlap
-                        Icon(
-                            painter = painterResource(id = R.drawable.sunsetsymbol),
-                            contentDescription = stringResource(id = R.string.homescreen_icon_sunset),
-                            tint = Color.Unspecified,
-                            modifier = Modifier
-                                .size(140.dp)
-                        )
-                        Text(
-                            text = sunsetTime,
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .padding(bottom = 10.dp, top = 125.dp)
-                        )
-                    }
-                    Row( //For displaying weather conditions
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.weather_condition),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            textAlign = TextAlign.Center,
-                        )
-                        Text(
-                            //text changing based on weather conditions, in different textbox because of change of color
-                            text = stringResource(id = weatherConditions.stringResourceId),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                        )
-                        //Clickable icon for showing more info about the weather conditions
-                        Icon(
-                            Icons.Default.Info,
-                            contentDescription = stringResource(id = R.string.information),
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier
-                                .clickable { showPopUp = true }
-                                .size(30.dp)
-                                .padding(start = 5.dp, bottom = 10.dp)
-                        )
-                    }
-                    if (icon != null) {
-                        WeatherIconCheck(
-                            weatherCondition = icon,
-                            weatherConditions
-                        ) //shows the icon that fits the weather forecast
-                    } else {
-                        Icon( //if icon is null, "show image not found"
-                            painterResource(id = R.drawable.image_not_found),
-                            contentDescription = stringResource(id = R.string.homescreen_icon_cloudy),
-                            tint = Color.Unspecified,
-                            modifier = Modifier.size(140.dp)
-                        )
-                    }
-                    Text(
-                        text = "$temp °C",
+                        text = sunsetTime,
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
-                            // .align(Alignment.BottomCenter)
-                            .padding(bottom = 5.dp)
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 10.dp, top = 125.dp)
                     )
-                    Divider( // For dividing sunset today info from golden hour and blue hour times
-                        modifier = Modifier.padding(
-                            start = 18.dp,
-                            end = 18.dp,
-                            top = 10.dp,
-                            bottom = 15.dp
-                        ),
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        thickness = 1.dp
+                }
+                Row( //For displaying weather conditions
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.weather_condition),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        textAlign = TextAlign.Center,
                     )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                    Text(
+                        //text changing based on weather conditions, in different textbox because of change of color
+                        text = stringResource(id = weatherConditions.stringResourceId),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    )
+                    //Clickable icon for showing more info about the weather conditions
+                    Icon(
+                        Icons.Default.Info,
+                        contentDescription = stringResource(id = R.string.information),
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
-                            //.fillMaxWidth()
-                            .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
-                    ) {
-                        //Box for golden hour icon and time
-                        Box {
-                            Text(
-                                text = stringResource(R.string.golden_hour),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.inverseOnSurface,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(bottom = 0.dp)
+                            .clickable { showPopUp = true }
+                            .size(30.dp)
+                            .padding(start = 5.dp, bottom = 10.dp)
+                    )
+                }
+                if (icon != null) {
+                    WeatherIconCheck(
+                        weatherCondition = icon,
+                        weatherConditions
+                    ) //shows the icon that fits the weather forecast
+                } else {
+                    Icon( //if icon is null, "show image not found"
+                        painterResource(id = R.drawable.image_not_found),
+                        contentDescription = stringResource(id = R.string.homescreen_icon_cloudy),
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(140.dp)
+                    )
+                }
+                Text(
+                    text = "$temp °C",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        // .align(Alignment.BottomCenter)
+                        .padding(bottom = 5.dp)
+                )
+                Divider( // For dividing sunset today info from golden hour and blue hour times
+                    modifier = Modifier.padding(
+                        start = 18.dp,
+                        end = 18.dp,
+                        top = 10.dp,
+                        bottom = 15.dp
+                    ),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    thickness = 1.dp
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        //.fillMaxWidth()
+                        .padding(start = 15.dp, end = 15.dp, bottom = 10.dp)
+                ) {
+                    //Box for golden hour icon and time
+                    Box {
+                        Text(
+                            text = stringResource(R.string.golden_hour),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(bottom = 0.dp)
+                        )
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
+                            contentDescription = "yellow sun icon",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.padding(
+                                start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                             )
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
-                                contentDescription = "yellow sun icon",
-                                tint = Color.Unspecified,
-                                modifier = Modifier.padding(
-                                    start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
-                                )
 
+                        )
+                        Text(
+                            text = goldenHourTime,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(
+                                start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                             )
-                            Text(
-                                text = goldenHourTime,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.inverseOnSurface,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(
-                                    start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
-                                )
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(50.dp))
+                    //box for blue hour icon and time
+                    Box {
+                        Text(
+                            text = stringResource(R.string.blue_hour),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            textAlign = TextAlign.Center,
+                        )//Blue hour icon and time
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
+                            contentDescription = "blue sun icon",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.padding(
+                                start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                             )
-                        }
-                        Spacer(modifier = Modifier.padding(50.dp))
-                        //box for blue hour icon and time
-                        Box {
-                            Text(
-                                text = stringResource(R.string.blue_hour),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.inverseOnSurface,
-                                textAlign = TextAlign.Center,
-                            )//Blue hour icon and time
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
-                                contentDescription = "blue sun icon",
-                                tint = Color.Unspecified,
-                                modifier = Modifier.padding(
-                                    start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
-                                )
+                        )
+                        Text(
+                            text = blueHourTime,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(
+                                start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                             )
-                            Text(
-                                text = blueHourTime,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.inverseOnSurface,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(
-                                    start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
-                                )
-                            )
-                        }
+                        )
 
                     }
                 }
