@@ -1,11 +1,13 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,6 +60,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -89,6 +93,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.Skumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
 import java.time.LocalDate
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconPopUp
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -183,7 +188,7 @@ fun PlaceInfoScreen(
 fun TodayInfoCard(
     sunEvent: SunEvent,
     placeInfo: PlaceInfo,
-    imageDetails: ImageDetails,
+    imageDetails: ImageDetails, //has path and description
     dateString: String,
     timeString: String,
     placeInfoViewModel: PlaceInfoViewModel,
@@ -225,24 +230,35 @@ fun TodayInfoCard(
             ) {
                 //if placeInfo.id is smaller than 16, show image from imageDetails.path.
                 //If placeInfo.id is bigger than 16, load image from file path
-                /*
-                if(placeInfo.sunEvents.isNotEmpty()) {
-                    if (placeInfo.id < 16) {
+
+                if (placeInfo.sunEvents.isNotEmpty()) {
+                    val id: Int = placeInfoUiState.placeInfo.id
+                    if (id < 16) {
+                        val bitmap =
+                            BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/${id}.jpg"))
+                                .asImageBitmap()
                         Image(
-                            painter = painterResource(id = imageDetails.path.toInt()),
-                            contentDescription = imageDetails.description
+                            bitmap,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxSize() //Fill the entire available space in the Box and maintain aspect ratio of the image
+                                .aspectRatio(bitmap.width.toFloat() / bitmap.height)
                         )
                     } else {
+
+                        //this is for fetching/getting images that are uploaded into internal storage
                         val context = LocalContext.current
                         val imagePath = File(context.filesDir, imageDetails.path)
                         val imagePainter = imagePath.path.toInt()
                         Image(
-                            painter = painterResource(imagePainter), contentDescription = null
-
+                            painter = painterResource(imagePainter),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxSize()
                         )
                     }
-               }
-                */
+                }
+
                 //IconButton for choosing place as favourite
                 Box(
                     modifier = Modifier.fillMaxWidth()
@@ -528,7 +544,10 @@ fun TodayInfoCard(
                 Box(
                     modifier = Modifier.size(80.dp)
                 ) {
-                    WeatherIconCheck(weatherCondition = sunEvent.weatherIcon, weather = sunEvent.conditions.weatherRating)
+                    WeatherIconCheck(
+                        weatherCondition = sunEvent.weatherIcon,
+                        weather = sunEvent.conditions.weatherRating
+                    )
                 }
                 //Box for golden hour icon and time
                 Box {
@@ -727,7 +746,10 @@ fun SunEventInfoCard(
                     Box(
                         modifier = Modifier.size(60.dp)
                     ) {
-                        WeatherIconCheck(weatherCondition = sunEvent.weatherIcon, weather = sunEvent.conditions.weatherRating)
+                        WeatherIconCheck(
+                            weatherCondition = sunEvent.weatherIcon,
+                            weather = sunEvent.conditions.weatherRating
+                        )
                     }
                     //golden hour text, icon and time
                     Box {
@@ -863,7 +885,15 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
         }
 
         TodayInfoCard(
-            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel, goldenHourTime, blueHourTime, placeInfoUiState
+            sunEvent = sunEvent,
+            placeInfo = placeInfo,
+            imageDetails = imageDetails,
+            dateString = dateString,
+            timeString = timeString,
+            goldenHourTime = goldenHourTime,
+            blueHourTime = blueHourTime,
+            placeInfoViewModel = placeInfoViewModel,
+            placeInfoUiState = placeInfoUiState
         )
     }
 }

@@ -110,8 +110,9 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Show the list of cards of places available
+ */
 @Composable
 fun FavoriteListContent(navController : NavController,
                         favoriteViewModel: FavoritesViewModel,
@@ -126,10 +127,24 @@ fun FavoriteListContent(navController : NavController,
                     name = place.name,
                     description = place.description,
                     isFavourite = place.isFavourite,
+                    isCustom = place.isCustomPlace,
                     onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                         navController.navigate("placeinfoscreen/${place.id}")
                     },
-                    onFavouriteClick = {favoriteViewModel.toggleFavourite(place = place)}
+                    onFavouriteClick = {favoriteViewModel.toggleFavourite(place = place)
+                    },
+
+                    //TODO gjor dynamisk slik at den henter ID
+                    imageToDisplay = if (place.isCustomPlace and place.isFavourite) {
+                        //TODO hente bilde fra bildedatabasen
+                        "" //endres, kun satt for at det ikke krasjer
+                    } else if (place.isFavourite) {
+                        "${place.id}.jpg"
+                    } else {
+                        //TODO // If isFavourite is false it should not be displayed
+                       ""
+                    },
+                    weatherConditionsRating = place.sunEvents[0].conditions.weatherRating
                 )
             }
         }

@@ -204,7 +204,7 @@ fun ContentMyPage(
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
         //Slik leser vi inn fra assets/presetImages
-        //Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/holmenkollen.jpg")).asImageBitmap(), contentDescription = null)
+        //Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/stedsnavn.jpg")).asImageBitmap(), contentDescription = null)
 
         if (myPageUiState.places.isEmpty()) {
             Text(
@@ -214,16 +214,27 @@ fun ContentMyPage(
             )
         } else {
             myPageUiState.places.forEach { place ->
-                ListCard(
-                    name = place.name,
-                    description = place.description,
-                    isFavourite = place.isFavourite,
-                    onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                        navController.navigate(
-                            route = "placeinfoscreen/${place.id}"
-                        )
-                    },
-                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) })
+                val sunEvents = place.sunEvents
+
+                if (place.sunEvents.isNotEmpty()) {
+                    val weatherConditionsRating = sunEvents[0].conditions.weatherRating
+
+                    ListCard(
+                        name = place.name,
+                        description = place.description,
+                        isFavourite = place.isFavourite,
+                        isCustom = place.isCustomPlace,
+                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                            navController.navigate(
+                                route = "placeinfoscreen/${place.id}"
+                            )
+                        },
+                        onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) },
+                        weatherConditionsRating = weatherConditionsRating,
+                        //TODO make this dynamic based on name or id
+                        imageToDisplay = "${place.id}.jpg"
+                    )
+                }
             }
         }
     }
@@ -424,7 +435,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     isError = newPlaceUiState.dateTextFieldError,
                     label = {
                         Text(
-                            text = stringResource(R.string.time),
+                            text = stringResource(R.string.choose_date),
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     },
