@@ -1,92 +1,66 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme
 import androidx.compose.ui.graphics.Color
 
+//DARKTHEME
+/**
+ * Darktheme colors sorted after the screens that use the colors
+ * if the color is used in another screen as well it is commented out
+ */
 
+//HOMESCREEN COLORS
+val inverseSurfaceDark = Color(0xFF151F38) //Sunset gradient colors
+val inverseOnSurfaceDark = Color(0xFF1F4A6C) //Sunset gradient colors
+val inversePrimaryDark = Color(0xFF45455E) //Sunset gradient colors
+val primaryDark = Color(0xFFAEC6FF)  //sunset today text
+val onPrimaryContainerDark = Color(0xFFD8E2FF) //SunsetInfoCard text color
 
-//accent color roles used to emphasize or de-emphasize foreground elements
-val primaryDark = Color(0xFFAEC6FF) //WCAG OK Sunset today text
+//MAPLIST COLORS
+val secondaryDark = Color(0xFFBFADFF) //favourite heart color
+val tertiaryDark = Color(0xFFB5C4FF) //Togglebutton text color
+val onTertiaryDark = Color(0xFF1C2D61)//Togglebutton background color
+val primaryContainerDark = Color(0xFF2C4678) //card background color
+//val onPrimaryContainerDark = Color(0xFFD8E2FF) //card text color
 
+//PLACEINFOSCREEN COLORS
+val surfaceVariantDark = Color(0xFF1E1E1E) // background color
+val onSurfaceVariantDark = Color(0xFFC5C6D0) //text color
+val secondaryContainerDark = Color(0xFF4B3E76)//button background color
+val onSecondaryContainerDark = Color(0xFFE7DEFF) //button text color
+// val primaryDark = Color(0xFFAEC6FF) //headline text
+//val secondaryDark = Color(0xFFBFADFF) //favourite heart color
 
-val onPrimaryDark = Color(0xFF122F60) //on- color for text or icons on top of its paired parent color
+//MYPAGE
+val errorDark = Color(0xFFFFB4AB) //error color
+//val surfaceVariantDark = Color(0xFF1E1E1E) // background color
+//val secondaryContainerDark = Color(0xFF4B3E76)//MyPage button background color
+//val onSecondaryContainerDark = Color(0xFFE7DEFF) //MyPage button text color
+//val onPrimaryContainerDark = Color(0xFFD8E2FF) // text color
 
+//SETTINGS
+val backgroundDark = Color(0xFF121318) //background color
+val onSurfaceDark = Color(0xFFE2E2E9) //text color
+val onSecondaryDark = Color(0xFF34275E) //container color
 
-//kortfarge og tekst //WCAG OK
-val primaryContainerDark = Color(0xFF2C4678) //used as a fill color for foreground elements like buttons
-val onPrimaryContainerDark = Color(0xFFD8E2FF) //SunsetInfoCard color and favourite color
+//WEATHERCONDITIONS POPUP
+//val primaryDark = Color(0xFFAEC6FF) //Headline text and "close" text color
+//val onSurfaceVariantDark = Color(0xFFC5C6D0) //text color
 
-
-val secondaryDark = Color(0xFFBFADFF) //WCAG OK
-val onSecondaryDark = Color(0xFF34275E)
-val secondaryContainerDark = Color(0xFF4B3E76)
-val onSecondaryContainerDark = Color(0xFFE7DEFF)
-val tertiaryDark = Color(0xFFB5C4FF)
-val onTertiaryDark = Color(0xFF1C2D61)
+//ADDITIONAL COLORS NOT USED
+val onPrimaryDark = Color(0xFF122F60)
 val tertiaryContainerDark = Color(0xFF344479)
-
-
 val onTertiaryContainerDark = Color(0xFFDCE1FF)
-
-
-val errorDark = Color(0xFFFFB4AB)
 val onErrorDark = Color(0xFF690005)
 val errorContainerDark = Color(0xFF93000A)
 val onErrorContainerDark = Color(0xFFFFDAD6)
-val backgroundDark = Color(0xFF121318)
 val onBackgroundDark = Color(0xFFE2E2E9)
-
-//for backgrounds and large, low ehmpasis areas of the screen
-val surfaceDark = Color(0xFF121318)
-val onSurfaceDark = Color(0xFFE2E2E9)
-
-//variant- lower emphasis alternative to its non-variant pair
-
-//PlaceInfoScreen
-val surfaceVariantDark = Color(0xFF1E1E1E) // WCAG OK val surfaceVariantDark = Color(0xFF44474F)
-//description placeInfoScreen
-val onSurfaceVariantDark = Color(0xFFC5C6D0) //WCAG OK
-
-
 val outlineDark = Color(0xFF8E9099)
 val outlineVariantDark = Color(0xFF858FBC) //val outlineVariantDark = Color(0xFF44474F)
-
-
-val scrimDark = Color(0xFF1E1F25) //surfaceContainer topbar and bottombar
-
-
-//sunset colors
-/*
-val inverseSurfaceDark = Color(0xFFE2E2E9)
-val inverseOnSurfaceDark = Color(0xFF2F3036)
-val inversePrimaryDark = Color(0xFF455E91)
- */
-val inverseSurfaceDark = Color(0xFF151F38) //WCAG OK
-val inverseOnSurfaceDark = Color(0xFF1F4A6C) //WCAG OK
-val inversePrimaryDark = Color(0xFF45455E) //WCAG OK
-
-
-val surfaceDimDark = Color(0xFF121318)
-val surfaceBrightDark = Color(0xFF37393E)
-val surfaceContainerLowestDark = Color(0xFF0C0E13)
-
-val surfaceContainerLowDark = Color(0xFF1A1B20)
-
-
-val surfaceContainerDark = Color(0xFF1E1F25)
-val surfaceContainerHighDark = Color(0xFF282A2F)
-val surfaceContainerHighestDark = Color(0xFF33353A)
-
-
-//Dark SunsetInfoCard gradient colors -blue
-val md_theme_dark_scrim = Color(0xFF151F38) //SunsetInfoCard color 0xFF1B1B1F
-val md_theme_dark_surfaceTint = Color(0xFF1F4A6C) //SunsetInfoCard color
-val md_theme_dark_outlineVariant = Color(0xFF52526F) //SunsetInfoCard color
+val surfaceDark = Color(0xFF121318)
+val scrimDark = Color(0xFF1E1F25)
 
 
 
-
-
-
-
+//LIGHT COLORS
 val primaryLight = Color(0xFF001A42) //Sunset text homescreen, original: 0xFF455E91
 val onPrimaryLight = Color(0xFFFFFFFF)
 
