@@ -761,7 +761,9 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
                                 cloudConditionHigh = CloudConditions.CLEAR,
                                 cloudConditionMedium = CloudConditions.CLEAR,
                                 airCondition = AirConditions.LOW
-                            )
+                            ),
+                            blueHourTime = LocalDateTime.now(),
+                            goldenHourTime = LocalDateTime.now()
                         )
                     )
                 ),
