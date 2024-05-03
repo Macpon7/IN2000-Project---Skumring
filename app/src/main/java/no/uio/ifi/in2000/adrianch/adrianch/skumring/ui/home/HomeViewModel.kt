@@ -147,6 +147,19 @@ class HomeViewModel(
             try {
                 loadUserLocation()
                 do {
+                    _homeUiState.update { currentHomeUiState ->
+
+                        // will show location when the userlocation is available
+                        currentHomeUiState.copy(
+                            temp = "N/A",
+                            sunsetTime = "N/A",
+                            sunsetDate = "N/A",
+                            sunsetWeatherIcon = null,
+                            blueHour = "N/A",
+                            goldenHour = "N/A",
+                            userLocationReady = false
+                        )
+                    }
                     // check if the lat and long is updated
                     if (homeUiState.value.lat != "0" && homeUiState.value.long != "0") {
                         userPlace = placeRepository.getUserLocationPlace(
