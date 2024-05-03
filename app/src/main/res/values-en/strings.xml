@@ -152,4 +152,9 @@
     <string name="place_icon">"place icon "</string>
     <string name="theme_icon">"Theme icon "</string>
     <string name="no_route_available">No route available</string>
+    <string name="dropdown_arrow_icon">dropdown arrow icon</string>
+    <string name="bike_icon">bike icon</string>
+    <string name="walk_icon">walk icon</string>
+    <string name="drive_icon">drive icon</string>
+    <string name="information_icon">information icon</string>
 </resources>
