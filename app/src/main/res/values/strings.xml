@@ -45,7 +45,7 @@
 
 
     <!-- MapListScreen -->
-    <string name="map_list">Kart og liste</string>
+    <string name="map_list">Liste og Kart</string>
 
     <string name="toggle_list">Liste</string>
     <string name="toggle_list_icon">Liste ikon</string>
