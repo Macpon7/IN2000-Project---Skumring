@@ -40,6 +40,9 @@ data class HomeUiState(
     val goldenHour: String = "",
     val placeName: String = "",
 
+    // Variable to check if the userlocation is ready
+    var userLocationReady: Boolean = false,
+
     var favoritePlaces: List<PlaceInfo> = emptyList(),
 
     // Variable for checking if there is an error:
@@ -136,21 +139,30 @@ class HomeViewModel(
         viewModelScope.launch(Dispatchers.IO){
             try {
                 loadUserLocation()
+
                 userPlace = placeRepository.getUserLocationPlace(lat = homeUiState.value.lat, long = homeUiState.value.long)
                 _homeUiState.update{ currentHomeUiState->
-                    currentHomeUiState.copy(
-                        temp = userPlace.sunEvents[0].tempAtEvent,
-                        sunsetTime = userPlace.sunEvents[0].time.toLocalTime().format(
-                            DateTimeFormatter.ofPattern("HH':'mm")),
-                        sunsetDate = userPlace.sunEvents[0].time.toLocalDate().format(
-                            DateTimeFormatter.ISO_LOCAL_DATE),
-                        sunsetWeatherIcon = userPlace.sunEvents[0].weatherIcon,
-                        weatherConditions = userPlace.sunEvents[0].conditions.weatherRating,
-                        blueHour = userPlace.sunEvents[0].blueHourTime.toLocalTime().format(
-                            DateTimeFormatter.ofPattern("HH':'mm")),
-                        goldenHour = userPlace.sunEvents[0].goldenHourTime.toLocalTime().format(
-                            DateTimeFormatter.ofPattern("HH':'mm")),
-                    )
+                    // Check if the userlocation is 0,0, which is the default-place
+                    if (currentHomeUiState.lat == "0" && currentHomeUiState.long == "0") {
+                        currentHomeUiState.copy(
+                            userLocationReady = false
+                        )
+                    } else { // will show location when the userlocation is available
+                        currentHomeUiState.copy(
+                            temp = userPlace.sunEvents[0].tempAtEvent,
+                            sunsetTime = userPlace.sunEvents[0].time.toLocalTime().format(
+                                DateTimeFormatter.ofPattern("HH':'mm")),
+                            sunsetDate = userPlace.sunEvents[0].time.toLocalDate().format(
+                                DateTimeFormatter.ISO_LOCAL_DATE),
+                            sunsetWeatherIcon = userPlace.sunEvents[0].weatherIcon,
+                            weatherConditions = userPlace.sunEvents[0].conditions.weatherRating,
+                            blueHour = userPlace.sunEvents[0].blueHourTime.toLocalTime().format(
+                                DateTimeFormatter.ofPattern("HH':'mm")),
+                            goldenHour = userPlace.sunEvents[0].goldenHourTime.toLocalTime().format(
+                                DateTimeFormatter.ofPattern("HH':'mm")),
+                            userLocationReady = true
+                        )
+                    }
 
                     /*Log.d(logTag, "fetching sunsetweather")
                     val sunsetWeather = placeInfo.getLocalSunsetWeather(
