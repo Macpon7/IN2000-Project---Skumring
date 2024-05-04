@@ -19,6 +19,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home.HomeDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.maplist.MapListDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.MyPageDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo.PlaceInfoScreenDestination
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.SettingsScreenDestination
 
 
 @Composable
@@ -52,22 +53,16 @@ fun SkumringBottomBar(
                     //when the current route is PlaceInfoScreen and you push the HomeDestinationButton,
                     //go back to homeScreen, else go back to MapListScreen.
                     // Else, proceed with regular navigation
-                    when {
-                        currentRoute == PlaceInfoScreenDestination.route -> {
-                            if (screen == HomeDestination) {
-                                navController.popBackStack(HomeDestination.route, false)
-                            } else {
-                                navController.popBackStack(MapListDestination.route, false)
+                    if (currentRoute == PlaceInfoScreenDestination.route || currentRoute == SettingsScreenDestination.route) {
+                        navController.popBackStack(screen.route, false)
+                    }
+                    else {
+                        navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
                             }
-                        }
-                        else -> {
-                            navController.navigate(screen.route!!) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
                     }
                 },
