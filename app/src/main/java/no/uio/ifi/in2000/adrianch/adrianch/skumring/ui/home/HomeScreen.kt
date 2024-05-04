@@ -524,16 +524,3 @@ fun HomeScreenTest(navController: NavHostController = rememberNavController()) {
     HomeScreen(navController = navController)
 }
 
-/**
- * For testing the info cards displayed in a lazyrow on the HomeScreen
- */
-/*
-@Preview
-@Composable
-fun TestHorizontalInfoCard(navController: NavHostController = rememberNavController()) {
-    HorizontalInfoCardContent(
-        place =
-        onItemClick = { navController.navigate("destination_route") },
-        modifier = Modifier
-    )
-}*/

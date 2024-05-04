@@ -112,7 +112,6 @@ fun ListCard(
                         .background(Color.LightGray, RoundedCornerShape((0.dp)))
                         .fillMaxWidth()
                 ) {
-                    //TODO: needs to handle uploaded custom image/uploaded
                     if (place.isCustomPlace) {
                         //this is for fetching/getting images that are uploaded into internal storage
                         val context = LocalContext.current
@@ -136,7 +135,7 @@ fun ListCard(
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .fillMaxSize() // Fill the entire available space in the Box and maintain aspect ratio of the image
+                                .fillMaxSize()
                         )
                     }
                 }
