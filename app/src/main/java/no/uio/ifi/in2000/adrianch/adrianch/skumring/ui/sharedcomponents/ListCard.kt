@@ -30,12 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.AirConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.CloudConditions
@@ -43,6 +45,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherCondit
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
+import java.io.File
 import java.time.LocalDateTime
 
 /**
@@ -111,7 +114,16 @@ fun ListCard(
                 ) {
                     //TODO: needs to handle uploaded custom image/uploaded
                     if (place.isCustomPlace) {
-                        //TODO load image from localstorage
+                        //this is for fetching/getting images that are uploaded into internal storage
+                        val context = LocalContext.current
+                        val imageFile = File(context.filesDir, place.images[0].path)
+                        AsyncImage(model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageFile)
+                            .build(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.FillWidth
+                        )
                     } else {
                         val bitmap = BitmapFactory.decodeStream(
                             LocalContext.current.assets.open(
@@ -125,12 +137,6 @@ fun ListCard(
                                 .aspectRatio(bitmap.width.toFloat() / bitmap.height)
                         )
                     }
-
-
-                    //Text(
-                    //    text = stringResource(R.string.place_display_placeholder),
-                    //    modifier = Modifier.align(Alignment.Center)
-                    //)
                 }
                 Box( //Box for content description
                     modifier = Modifier
@@ -213,21 +219,17 @@ fun ListCard(
                         .background(Color.LightGray, RoundedCornerShape((0.dp)))
                         .fillMaxWidth()
                 ) {
-                    //This is how PlaceInfoScreen solves getting images
-                    //But then a imageDetail has to be imported in the card??
-
-                    if (place.isCustomPlace){
-                        //TODO load from local storage
-                        /*
+                    if (place.isCustomPlace) {
+                        //this is for fetching/getting images that are uploaded into internal storage
                         val context = LocalContext.current
-                        val imagePath = File(context.filesDir, imageDetails.path)
-                        val imagePainter = imagePath.path.toInt()
-                        Image(
-                            painter = painterResource(imagePainter),
+                        val imageFile = File(context.filesDir, place.images[0].path)
+                        AsyncImage(model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageFile)
+                            .build(),
                             contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                        ) */
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.FillWidth
+                        )
                     } else {
                         val bitmap = BitmapFactory.decodeStream(
                             LocalContext.current.assets.open(
