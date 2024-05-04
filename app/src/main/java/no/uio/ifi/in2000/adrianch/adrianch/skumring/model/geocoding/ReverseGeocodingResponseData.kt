@@ -2,7 +2,7 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding
 
 data class ReverseGeocoding(
     val attribution: String,
-    val features: List<Feature>,
+    val features: List<ReverseFeature>,
     val type: String
 )
 
@@ -28,7 +28,7 @@ data class Country(
     val wikidata_id: String
 )
 
-data class Context(
+data class ReverseContext(
     val address: Address,
     val country: Country,
     val place: Place,
@@ -37,10 +37,10 @@ data class Context(
     val street: Street
 )
 
-data class Feature(
+data class ReverseFeature(
     val geometry: Geometry,
     val id: String,
-    val properties: Properties,
+    val properties: ReverseProperties,
     val type: String
 )
 
@@ -67,10 +67,10 @@ data class Postcode(
     val name: String
 )
 
-data class Properties(
+data class ReverseProperties(
     val additional_feature_types: List<String>,
     val bbox: List<Double>,
-    val context: Context,
+    val context: ReverseContext,
     val coordinates: Coordinates,
     val feature_type: String,
     val full_address: String,

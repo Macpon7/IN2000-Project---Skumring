@@ -151,14 +151,14 @@ class MapListViewModel(
     fun toggleFavourite(place: PlaceInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             if (place.isFavourite) {
-                placeRepository.unmakeFavourite(id = place.id)
+                placeRepository.unmakeFavourite(placeId = place.id)
                 _mapListUiState.update { currentMapListUiState ->
                     currentMapListUiState.copy(
                         places = placeRepository.getAllPlaces()
                     )
                 }
             } else {
-                placeRepository.makeFavourite(id = place.id)
+                placeRepository.makeFavourite(placeId = place.id)
                 _mapListUiState.update { currentMapListUiState ->
                     currentMapListUiState.copy(
                         places = placeRepository.getAllPlaces()

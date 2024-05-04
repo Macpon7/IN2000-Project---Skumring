@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.compose.material3.DatePickerDefaults
@@ -19,6 +18,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import java.time.LocalDate
@@ -41,18 +42,6 @@ data class MyPageUiState(
     val showLocations : Boolean = false
 )
 
-/* TODO , lag en dataklasse som innholder alt data som brukeren legger inn
-Dette skal sendes inn til placerepository
- */
-data class NewPlace(
-    val locationName: String,
-    val address: String,
-    val pickedDate: LocalDate,
-    val descriptions: String,
-    var imageUri: Uri?,
-    )
-
-
 data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     var locationName: String = "",
@@ -60,6 +49,11 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     var address: String = "",
     var addressIsMissing: Boolean = false,
+    var addressNoResults: Boolean = false,
+    var addressTooManyResults: Boolean = false,
+
+    var lat: String = "",
+    var long: String = "",
 
     // TODO add location
     // TODO get date from user
@@ -75,12 +69,11 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     // This will not make an error since if it is not picked it will be the current date:
     var pickedDate: LocalDate = LocalDate.now(),
 
-    var descriptions: String = "",
-    var descriptionsIsMissing: Boolean = false,
+    var description: String = "",
+    var descriptionIsMissing: Boolean = false,
 
     // Variables for picture:
     var imageUri: Uri? = null,
-    var bitmap: List<Bitmap?> = emptyList(), // TODO tror ikke det er liste men usikker på hva
 
     // Show the date picker when the user want to pick a date
     var showDatePicker: Boolean = false,
@@ -101,7 +94,12 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 // TODO: Use this is the functions in viewmodel where errors can happen:
 private const val logTag = "MyPageViewModel"
 
-class MyPageViewModel(private val placeRepository: PlaceRepository, private val context: Context) : ViewModel(){
+class MyPageViewModel(
+    private val placeRepository: PlaceRepository,
+    private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl(),
+    private val context: Context
+) : ViewModel()
+{
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
 
@@ -125,38 +123,14 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    fun updateImageUri(uri : Uri?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(
-                    imageUri = uri
-                )
-            }
-        }
-    }
-
-    // TODO, usikker på hvordan det skal se ut her
-    /**
-     * The function will update the bitmap variable of newPlaceUiState
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateBitMap(bitmap : List<Bitmap?>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(
-                    bitmap = bitmap
-                )
-            }
-        }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
     fun addLocation() {
         viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 var isNameMissing = false
                 var isDescriptionMissing = false
                 var isAddressMissing = false
+                var addressNoResults = false
+                var addressTooManyResults = false
 
                 var isReady = true
 
@@ -165,7 +139,7 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
                     isNameMissing = true
                     isReady = false
                 }
-                if (currentNewPlaceUiState.descriptions == "") {
+                if (currentNewPlaceUiState.description == "") {
                     isDescriptionMissing = true
                     isReady = false
                 }
@@ -174,18 +148,47 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
                     isReady = false
                 }
 
+                val addresses = geocodingRepository.getCoordinatesFromAddress(address = currentNewPlaceUiState.address)
+
+                if (addresses.size == 0) {
+                    //TODO set correct error and set error message under address field
+                    addressNoResults = true
+                    isReady = false
+                } else if (addresses.size > 1) {
+                    //TODO set correct error and set message under address field
+                    addressTooManyResults = true
+                    isReady = false
+                }
+
+                //TODO add option to use User's current location instead of writing in an address
+
                 if (!isReady) {
                     currentNewPlaceUiState.copy(
                         locationNameIsMissing = isNameMissing,
                         addressIsMissing = isAddressMissing,
-                        descriptionsIsMissing = isDescriptionMissing
+                        descriptionIsMissing = isDescriptionMissing,
+                        addressNoResults = addressNoResults,
+                        addressTooManyResults = addressTooManyResults
                     )
                 } else {
-                    //TODO save as new place
-                    //If image is not
+                    Log.d(TAG, "Trying to add new custom place to DB")
+                    val newId = placeRepository.insertCustomPlace(
+                        PlaceInfo(
+                            id = 0,
+                            name = currentNewPlaceUiState.locationName,
+                            description = currentNewPlaceUiState.description,
+                            lat = addresses.first().lat,
+                            long = addresses.first().long,
+                            isFavourite = false,
+                            isCustomPlace = true,
+                            hasNotification = false,
+                            images = emptyList(),
+                            sunEvents = emptyList()
+                        )
+                    )
 
                     Log.d(TAG, "In MyPageViewModel Uri is ${newPlaceUiState.value.imageUri}")
-                    newPlaceUiState.value.imageUri?.let { addImage(contentUri = it, placeId = 0, timestamp = newPlaceUiState.value.pickedDate) //TODO make this the placeId that is generated for the new place
+                    newPlaceUiState.value.imageUri?.let { addImage(contentUri = it, placeId = newId, timestamp = newPlaceUiState.value.pickedDate) //TODO make this the placeId that is generated for the new place
                     Log.d(TAG, "saving image")}
                     hideNewForm()
                     resetNewPlaceUiState()
@@ -210,8 +213,10 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
                     locationNameIsMissing = false,
                     address = "",
                     addressIsMissing = false,
-                    descriptions = "",
-                    descriptionsIsMissing = false,
+                    addressTooManyResults = false,
+                    addressNoResults = false,
+                    description = "",
+                    descriptionIsMissing = false,
                     imageUri = null,
                     // TODO add bitmap ?
                     pickedDate = LocalDate.now(),
@@ -310,7 +315,7 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
     fun updateNewLocationDescription(descriptions: String) {
         viewModelScope.launch (Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(descriptions = descriptions)
+                currentNewPlaceUiState.copy(description = descriptions)
             }
         }
     }
@@ -328,17 +333,6 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
         }
     }
 
-    /**
-     * When a card is added the locations will be shown
-     */
-    fun showNewLocations() {
-        viewModelScope.launch (Dispatchers.IO) {
-            _myPageUiState.update { currentMyPageUiState ->
-                currentMyPageUiState.copy(showLocations = true)
-            }
-        }
-    }
-
     fun hideNewForm() {
         viewModelScope.launch (Dispatchers.IO) {
             _myPageUiState.update {currentMyPageUiState ->
@@ -351,21 +345,32 @@ class MyPageViewModel(private val placeRepository: PlaceRepository, private val 
      * Load the list of places
      */
     fun loadList(){
-        // TODO load the list of the users customs places, will probably look similar to the list in maplistviewmodel
+        viewModelScope.launch(Dispatchers.IO) {
+            _myPageUiState.update { currentMyPageUiState ->
+                try {
+                    currentMyPageUiState.copy(places = placeRepository.getCustomPlaces())
+                } catch (e: Exception) {
+                    currentMyPageUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = e.message?: "Unknown error while loading custom places!"
+                    )
+                }
+            }
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun toggleFavourite(place: PlaceInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             if (place.isFavourite) {
-                placeRepository.unmakeFavourite(id = place.id)
+                placeRepository.unmakeFavourite(placeId = place.id)
                 _myPageUiState.update { currentMyPageUiState ->
                     currentMyPageUiState.copy(
                         places = placeRepository.getCustomPlaces()
                     )
                 }
             } else {
-                placeRepository.makeFavourite(id = place.id)
+                placeRepository.makeFavourite(placeId = place.id)
                 _myPageUiState.update { currentMyPageUiState ->
                     currentMyPageUiState.copy(
                         places = placeRepository.getCustomPlaces()
