@@ -1,8 +1,8 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.directions
 
-class DirectionsDummyData {
 
-    val walkingUioToOslomet: String = """
+
+    val walkingUioToOsloMet: String = """
         {
         "routes": [
         {
@@ -227,7 +227,7 @@ class DirectionsDummyData {
         "uuid": "LKfPbcpQbE2-Sj8Grq9ET7HmlBpCFYq4BAnB-2jYHcSM6yjuqxX7BQ=="
         }
     """.trimIndent()
-    val cyclingUioToOslomet: String = """
+    val cyclingUioToOsloMet: String = """
         {
         "routes": [
         {
@@ -369,7 +369,7 @@ class DirectionsDummyData {
         "uuid": "b7ivuImy8JDeVeGJe6v2QQnolk0G530KaTOK8JDR9gHzi2T3WCGcKQ=="
         }
     """.trimIndent()
-    val drivingUioToOslomet: String = """{
+    val drivingUioToOsloMet: String = """{
 "routes": [
 {
 "weight_name": "auto",
@@ -534,13 +534,10 @@ class DirectionsDummyData {
 }
         
     """.trimIndent()
-
-    val drivingNullIslandToOslomet: String = """
+    val drivingNullIslandToOsloMet: String = """
         {
         "code": "NoSegment",
         "message": "Could not find a matching segment for input coordinates",
         "routes": []
         }
     """.trimIndent()
-
-}
