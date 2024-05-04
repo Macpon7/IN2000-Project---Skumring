@@ -160,8 +160,9 @@ fun MyPageScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Top
 
         ) {
             ContentMyPage(
@@ -183,9 +184,6 @@ fun ContentMyPage(
     myPageUiState: MyPageUiState
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
-        //Slik leser vi inn fra assets/presetImages
-        //Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/stedsnavn.jpg")).asImageBitmap(), contentDescription = null)
-
         if (myPageUiState.places.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_location),
@@ -198,9 +196,7 @@ fun ContentMyPage(
                 ListCard(
                     place = place,
                     onItemClick = { //Navigate when it is clicked on
-                        navController.navigate(
-                            route = "placeinfoscreen/${place.id}"
-                        )
+                        navController.navigate(route = "placeinfoscreen/${place.id}")
                     },
                     onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) }
                 )
