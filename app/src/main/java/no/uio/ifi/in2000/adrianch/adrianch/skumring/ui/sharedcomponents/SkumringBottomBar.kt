@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -50,20 +49,20 @@ fun SkumringBottomBar(
                 },
                 selected = currentRoute == screen.route,
                 onClick = {
-                    //when the current route is PlaceInfoScreen and you push the HomeDestinationButton,
-                    //go back to homeScreen, else go back to MapListScreen.
-                    // Else, proceed with regular navigation
+                    /*
+                    If the current screen is PlaceInfo or Settings, we pop back one step in the stack before navigating
+                    This stops us from getting sent back to PlaceInfo or Settings next time we click on Map or MyPage
+                     */
                     if (currentRoute == PlaceInfoScreenDestination.route || currentRoute == SettingsScreenDestination.route) {
-                        navController.popBackStack(screen.route, false)
+                        navController.popBackStack()
                     }
-                    else {
-                        navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+                    navController.navigate(screen.route)
+                    {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 },
                colors = NavigationBarItemDefaults.colors(
