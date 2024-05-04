@@ -60,7 +60,8 @@ private const val logTag = "HomeViewModel" //for logging
 @SuppressLint("StaticFieldLeak")
 class HomeViewModel(
     private val placeRepository: PlaceRepository,
-    private val context: Context) : ViewModel() {
+    private val context: Context
+) : ViewModel() {
 
     private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
     private var userPlace: PlaceInfo = PlaceInfo(
