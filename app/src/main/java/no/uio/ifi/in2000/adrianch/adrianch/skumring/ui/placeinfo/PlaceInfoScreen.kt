@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -76,6 +77,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
@@ -91,9 +94,9 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
-import java.time.LocalDate
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconPopUp
 import java.io.File
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -231,14 +234,23 @@ fun TodayInfoCard(
                         )
                     )
             ) {
-                //if placeInfo.id is smaller than 16, show image from imageDetails.path.
-                //If placeInfo.id is bigger than 16, load image from file path
+                //if place is custom, who image from filesDir, otherwise use assets folder
 
                 if (placeInfo.sunEvents.isNotEmpty()) {
-                    val id: Int = placeInfoUiState.placeInfo.id
-                    if (id < 16) {
+                    if (placeInfo.isCustomPlace) {
+                        //this is for fetching/getting images that are uploaded into internal storage
+                        val context = LocalContext.current
+                        val imageFile = File(context.filesDir, imageDetails.path)
+                        AsyncImage(model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageFile)
+                            .build(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.FillWidth
+                        )
+                    } else {
                         val bitmap =
-                            BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/${id}.jpg"))
+                            BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/${imageDetails.path}"))
                                 .asImageBitmap()
                         Image(
                             bitmap,
@@ -246,18 +258,6 @@ fun TodayInfoCard(
                             modifier = Modifier
                                 .fillMaxSize() //Fill the entire available space in the Box and maintain aspect ratio of the image
                                 .aspectRatio(bitmap.width.toFloat() / bitmap.height)
-                        )
-                    } else {
-
-                        //this is for fetching/getting images that are uploaded into internal storage
-                        val context = LocalContext.current
-                        val imagePath = File(context.filesDir, imageDetails.path)
-                        val imagePainter = imagePath.path.toInt()
-                        Image(
-                            painter = painterResource(imagePainter),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
                         )
                     }
                 }

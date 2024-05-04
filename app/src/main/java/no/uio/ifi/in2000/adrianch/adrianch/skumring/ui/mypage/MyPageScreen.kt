@@ -1,24 +1,15 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -55,11 +46,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -179,8 +167,9 @@ fun MyPageScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.Top
 
         ) {
             ContentMyPage(
@@ -202,9 +191,6 @@ fun ContentMyPage(
     myPageUiState: MyPageUiState
 ) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
-        //Slik leser vi inn fra assets/presetImages
-        //Image(BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/stedsnavn.jpg")).asImageBitmap(), contentDescription = null)
-
         if (myPageUiState.places.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_location),
@@ -214,27 +200,13 @@ fun ContentMyPage(
             )
         } else {
             myPageUiState.places.forEach { place ->
-                val sunEvents = place.sunEvents
-
-                if (place.sunEvents.isNotEmpty()) {
-                    val weatherConditionsRating = sunEvents[0].conditions.weatherRating
-
-                    ListCard(
-                        name = place.name,
-                        description = place.description,
-                        isFavourite = place.isFavourite,
-                        isCustom = place.isCustomPlace,
-                        onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                            navController.navigate(
-                                route = "placeinfoscreen/${place.id}"
-                            )
-                        },
-                        onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) },
-                        weatherConditionsRating = weatherConditionsRating,
-                        //TODO make this dynamic based on name or id
-                        imageToDisplay = "${place.id}.jpg"
-                    )
-                }
+                ListCard(
+                    place = place,
+                    onItemClick = { //Navigate when it is clicked on
+                        navController.navigate(route = "placeinfoscreen/${place.id}")
+                    },
+                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) }
+                )
             }
         }
     }
@@ -255,6 +227,26 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
     val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
 
     // TODO keep the change when the phone change from standing to lying
+
+    val outlinedTextFieldColors = ExposedDropdownMenuDefaults.textFieldColors(
+        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
+        errorTextColor = MaterialTheme.colorScheme.onPrimary,
+        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        errorCursorColor = MaterialTheme.colorScheme.error,
+        errorIndicatorColor = MaterialTheme.colorScheme.error,
+        errorLeadingIconColor = MaterialTheme.colorScheme.error,
+    )
 
     // Show when the user pick a date:
     if (newPlaceUiState.showDatePicker) {
@@ -342,25 +334,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                             )
                         }
                     },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        errorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        errorContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        errorCursorColor = MaterialTheme.colorScheme.error,
-                        errorIndicatorColor = MaterialTheme.colorScheme.error,
-                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
-                    ),
+                    colors = outlinedTextFieldColors,
                     isError = (newPlaceUiState.locationNameIsMissing)
                 )
 
@@ -386,43 +360,21 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                                 color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.bodyMedium,
                             )
+                        } else if (newPlaceUiState.addressNoResults) {
+                            Text(
+                                text = stringResource(id = R.string.new_place_address_no_results),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        } else if (newPlaceUiState.addressTooManyResults) {
+                            Text(
+                                text = stringResource(id = R.string.new_place_address_many_results),
+                                color = MaterialTheme.colorScheme.error
+                            )
                         }
                     },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        errorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        errorContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        errorCursorColor = MaterialTheme.colorScheme.error,
-                        errorIndicatorColor = MaterialTheme.colorScheme.error,
-                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
-                    ),
+                    colors = outlinedTextFieldColors,
                     isError = newPlaceUiState.addressIsMissing
                 )
-                // TODO logikken skjer i viewmodel, sender inn string med addresse
-
-
-                /*
-        // Alternative to OutlinedTextField for datepicker
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { myPageViewModel.showDatePicker() }) {
-            Text(text = newPlaceUiState.pickedDate.format(
-                DateTimeFormatter.ISO_LOCAL_DATE
-            ))
-        }
-         */
-
                 // Time skal lages made datepicker dialog
                 OutlinedTextField(
                     value = newPlaceUiState.pickedDate.format(
@@ -465,7 +417,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 // String with description
                 OutlinedTextField(
                     modifier = Modifier.padding(all = 2.dp),
-                    value = newPlaceUiState.descriptions,
+                    value = newPlaceUiState.description,
                     onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
                     label = {
                         Text(text = "${stringResource(R.string.description)} *",
@@ -481,7 +433,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                         )
                     },
                     supportingText = {
-                        if (newPlaceUiState.descriptionsIsMissing) {
+                        if (newPlaceUiState.descriptionIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_description),
                                 color = MaterialTheme.colorScheme.error,
@@ -489,30 +441,33 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                             )
                         }
                     },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-
-                        errorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        errorContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        errorCursorColor = MaterialTheme.colorScheme.error,
-                        errorIndicatorColor = MaterialTheme.colorScheme.error,
-                        errorLeadingIconColor = MaterialTheme.colorScheme.error,
-                    ),
-                    isError = newPlaceUiState.descriptionsIsMissing,
+                    colors = outlinedTextFieldColors,
+                    isError = newPlaceUiState.descriptionIsMissing,
                 )
 
                 // Button to add photo
-                PickImageFromGallery(myPageViewModel = myPageViewModel)
+                val launcher =
+                    rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+                        newPlaceUiState.imageUri = uri
+                        Log.d(TAG, "imageUri is $newPlaceUiState.imageUri")
+                    }
+
+                Button(
+                    onClick = { launcher.launch("image/*") },
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(
+                        text = stringResource(R.string.add_photo),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        contentDescription = stringResource(id = R.string.add_photo),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
 
                 // Button that is pressed when the location is added:
                 Button(
@@ -541,67 +496,6 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 }
             }
         }
-    }
-}
-
-/**
- * In this function all the logic for adding picture happens
- */
-@Composable
-fun PickImageFromGallery(
-    myPageViewModel: MyPageViewModel,
-) {
-    val newPlaceUiState: NewPlaceUiState by myPageViewModel.newPlaceUiState.collectAsState()
-
-    val context = LocalContext.current
-    // TODO usikker på hvordan bitmap skal lagres i viewmodel
-    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
-
-    val launcher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-            newPlaceUiState.imageUri = uri
-            Log.d(TAG, "imageUri is $newPlaceUiState.imageUri")
-        }
-
-    Box() {
-        newPlaceUiState.imageUri?.let {
-            if (Build.VERSION.SDK_INT < 28) {
-                bitmap.value = MediaStore.Images
-                    .Media.getBitmap(context.contentResolver, it)
-            } else {
-                val source = ImageDecoder.createSource(context.contentResolver, it)
-                bitmap.value = ImageDecoder.decodeBitmap(source)
-            }
-
-            bitmap.value?.let { btm ->
-                Image(
-                    bitmap = btm.asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(400.dp)
-                        .padding(20.dp)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-    }
-    Button(
-        onClick = { launcher.launch("image/*") },
-        modifier = Modifier.padding(vertical = 8.dp),
-        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondaryContainer)
-    ) {
-        Text(
-            text = stringResource(R.string.add_photo),
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        Icon(
-            imageVector = Icons.Outlined.Add,
-            contentDescription = stringResource(id = R.string.add_photo),
-            tint = MaterialTheme.colorScheme.onSecondaryContainer
-        )
     }
 }
 

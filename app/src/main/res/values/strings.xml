@@ -167,4 +167,6 @@
     <string name="walk_icon">gåikon</string>
     <string name="drive_icon">kjøreikon</string>
     <string name="information_icon">informasjonsikon</string>
+    <string name="new_place_address_no_results">Fant ingen addresser, har du husket husnummer?</string>
+    <string name="new_place_address_many_results">Fant for mange adresser, spesifiser med postnummer og stedsnavn</string>
 </resources>

@@ -39,7 +39,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.Skumring
 object SettingsScreenDestination : NavigationDestination {
     override val icon = null
     override val buttonTitle = null
-    override val route = "Settings"
+    override val route = "settings"
     override val titleRes = null
 }
 
@@ -75,6 +75,10 @@ fun SettingsScreen(
                 }
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        settingsViewModel.readJSONSettings()
     }
 
     Scaffold(
@@ -121,8 +125,9 @@ fun ChooseTheme(
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
-    ExposedDropdownMenuBox(expanded = settingsUiState.dropdownExpandedTheme,
-        onExpandedChange = { settingsViewModel.expandDropdownTheme() }) {
+    ExposedDropdownMenuBox(
+        expanded = settingsUiState.isThemeDropdownExpanded,
+        onExpandedChange = { settingsViewModel.toggleThemeDropdown() }) {
         TextField(
             modifier = Modifier
                 .menuAnchor()
@@ -131,7 +136,7 @@ fun ChooseTheme(
                     bottom = 16.dp, top = 16.dp
                 ),
             readOnly = true,
-            value = settingsUiState.selectedDropDownOptionTheme, // TODO change text color?
+            value = stringResource(id = settingsUiState.settings.theme.stringResourceId), // TODO change text color?
             onValueChange = {},
             label = {
                 Text(
@@ -144,25 +149,19 @@ fun ChooseTheme(
             },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = settingsUiState.dropdownExpandedTheme
+                    expanded = settingsUiState.isThemeDropdownExpanded
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
                 focusedContainerColor = MaterialTheme.colorScheme.onSecondary,
                 unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary
             ),
-            /*
-            leadingIcon = {
-                Icon( // TODO
-                    imageVector = settingsUiState.theme.iconImageVector,
-                    contentDescription = "FOLLOW_SYSTEM"
-                )
-            }
-             */
         )
-        ExposedDropdownMenu(modifier = Modifier.fillMaxWidth(),
-            expanded = settingsUiState.dropdownExpandedTheme,
-            onDismissRequest = { settingsViewModel.expandDropdownTheme() }) {
+        ExposedDropdownMenu(
+            modifier = Modifier.fillMaxWidth(),
+            expanded = settingsUiState.isThemeDropdownExpanded,
+            onDismissRequest = { settingsViewModel.toggleThemeDropdown() }
+        ) {
             DropdownMenuItem(
                 modifier = Modifier,
                 text = {
@@ -177,14 +176,6 @@ fun ChooseTheme(
                         theme = Theme.FOLLOW_SYSTEM
                     )
                 },
-                /*
-                leadingIcon = {
-                    Icon( // TODO
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = "FOLLOW_SYSTEM"
-                    )
-                }
-                 */
             )
             DropdownMenuItem(
                 modifier = Modifier,
@@ -241,15 +232,16 @@ fun ChooseLanguage(
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
-    ExposedDropdownMenuBox(expanded = settingsUiState.dropdownExpandedLanguage,
-        onExpandedChange = { settingsViewModel.expandDropdownLanguage() }) {
+    ExposedDropdownMenuBox(
+        expanded = settingsUiState.isLanguageDropdownExpanded,
+        onExpandedChange = { settingsViewModel.toggleLanguageDropdown() }) {
         TextField(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
             readOnly = true,
-            value = settingsUiState.selectedDropDownOptionLanguage,
+            value = stringResource(id = settingsUiState.settings.language.stringResourceId),
             onValueChange = {},
             label = {
                 Text(
@@ -262,7 +254,7 @@ fun ChooseLanguage(
             },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = settingsUiState.dropdownExpandedLanguage
+                    expanded = settingsUiState.isLanguageDropdownExpanded
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
@@ -271,8 +263,8 @@ fun ChooseLanguage(
             ),
         )
         ExposedDropdownMenu(
-            expanded = settingsUiState.dropdownExpandedLanguage,
-            onDismissRequest = { settingsViewModel.expandDropdownLanguage() }
+            expanded = settingsUiState.isLanguageDropdownExpanded,
+            onDismissRequest = { settingsViewModel.toggleLanguageDropdown() }
         ) {
             DropdownMenuItem(
                 modifier = Modifier,
@@ -342,15 +334,16 @@ fun ChooseStartLocation(
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
-    ExposedDropdownMenuBox(expanded = settingsUiState.dropdownExpandedStartLocation,
-        onExpandedChange = { settingsViewModel.expandDropdownStartLocation() }) {
+    ExposedDropdownMenuBox(
+        expanded = settingsUiState.isLocationDropdownExpanded,
+        onExpandedChange = { settingsViewModel.toggleDefaultLocationDropdown() }) {
         TextField(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
             readOnly = true,
-            value = settingsUiState.selectedDropDownOptionLocation,
+            value = stringResource(id = settingsUiState.settings.location.stringResourceId),
             onValueChange = {},
             label = {
                 Text(
@@ -363,7 +356,7 @@ fun ChooseStartLocation(
             },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = settingsUiState.dropdownExpandedStartLocation
+                    expanded = settingsUiState.isLocationDropdownExpanded
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
@@ -372,8 +365,8 @@ fun ChooseStartLocation(
             )
         )
         ExposedDropdownMenu(
-            expanded = settingsUiState.dropdownExpandedStartLocation,
-            onDismissRequest = { settingsViewModel.expandDropdownStartLocation() }
+            expanded = settingsUiState.isLocationDropdownExpanded,
+            onDismissRequest = { settingsViewModel.toggleDefaultLocationDropdown() }
         ) {
             DropdownMenuItem(
                 modifier = Modifier,

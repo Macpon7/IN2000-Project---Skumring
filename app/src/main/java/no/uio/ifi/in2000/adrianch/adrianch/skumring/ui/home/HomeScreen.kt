@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -185,10 +184,12 @@ fun SunsetInfoCard(
     viewModel: HomeViewModel
 ) {
 
-    var showPopUp by remember { mutableStateOf(false) }
 
     //variable for fetching the blueHourIcon based on light mode and dark mode
     val blueHourIcon = viewModel.updateBlueHourIcon()
+
+
+    var showPopUp by remember { mutableStateOf(false) }
 
     val goldenHourTimeString = if (goldenHourTime == "00:00") {
          "--N/A--"
