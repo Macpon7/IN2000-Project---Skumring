@@ -8,9 +8,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 
 // Enum classes with settings
-
-// Lag det som alpaca
-
 enum class Theme(val stringResourceId: Int) {
     FOLLOW_SYSTEM(R.string.follow_system),
     DARK_MODE(R.string.dark_mode),

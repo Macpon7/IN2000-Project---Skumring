@@ -159,7 +159,7 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val gson = Gson()
             val jsonSettings: String = gson.toJson(settingsUiState.value.settings)
-            val settingsFileObject = File(context.filesDir,"settings.json")
+            val settingsFileObject = File(context.filesDir, "settings.json")
             Log.d("SettingsViewModel", "JSON setting file is updated")
             settingsFileObject.writeText(jsonSettings)
 
@@ -177,11 +177,14 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
 
             //settings.json files does not exist before this code is run so the first time
             //settings are being read the file is also created
-            val settingsFileObject = File(context.filesDir,"settings.json")
+            val settingsFileObject = File(context.filesDir, "settings.json")
 
-            if (!settingsFileObject.exists()){
+            if (!settingsFileObject.exists()) {
                 settingsFileObject.writeText(gson.toJson(settingsUiState.value.settings))
-                Log.d("SettingsViewModel", "Setting file did not exist, created file at ${settingsFileObject.absolutePath} ")
+                Log.d(
+                    "SettingsViewModel",
+                    "Setting file did not exist, created file at ${settingsFileObject.absolutePath} "
+                )
             } else {
                 //Reading from settings and converts it into a Settings object
                 val json = settingsFileObject.readText()

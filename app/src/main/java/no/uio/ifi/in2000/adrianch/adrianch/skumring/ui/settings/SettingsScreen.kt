@@ -77,7 +77,7 @@ fun SettingsScreen(
         }
     }
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         settingsViewModel.readJSONSettings()
     }
 
