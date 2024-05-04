@@ -123,7 +123,7 @@ fun ListCard(
                                 .build(),
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.FillWidth
+                            contentScale = ContentScale.Crop
                         )
                     } else {
                         val bitmap = BitmapFactory.decodeStream(
@@ -134,9 +134,9 @@ fun ListCard(
                         Image(
                             bitmap,
                             contentDescription = null,
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxSize() // Fill the entire available space in the Box and maintain aspect ratio of the image
-                                .aspectRatio(bitmap.width.toFloat() / bitmap.height)
                         )
                     }
                 }
