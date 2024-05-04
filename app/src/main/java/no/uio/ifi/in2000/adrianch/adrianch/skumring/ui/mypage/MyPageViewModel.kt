@@ -363,14 +363,14 @@ class MyPageViewModel(
     fun toggleFavourite(place: PlaceInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             if (place.isFavourite) {
-                placeRepository.unmakeFavourite(id = place.id)
+                placeRepository.unmakeFavourite(placeId = place.id)
                 _myPageUiState.update { currentMyPageUiState ->
                     currentMyPageUiState.copy(
                         places = placeRepository.getCustomPlaces()
                     )
                 }
             } else {
-                placeRepository.makeFavourite(id = place.id)
+                placeRepository.makeFavourite(placeId = place.id)
                 _myPageUiState.update { currentMyPageUiState ->
                     currentMyPageUiState.copy(
                         places = placeRepository.getCustomPlaces()
