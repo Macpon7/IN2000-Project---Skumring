@@ -10,10 +10,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 // Lag det som alpaca
 
-enum class Theme(val iconImageVector: ImageVector) {
-    FOLLOW_SYSTEM(Icons.Outlined.Settings),
-    DARK_MODE(Icons.Outlined.Star),
-    LIGHT_MODE(Icons.Outlined.Home)
+enum class Theme() {
+    FOLLOW_SYSTEM,
+    DARK_MODE,
+    LIGHT_MODE
 }
 
 enum class Language {
