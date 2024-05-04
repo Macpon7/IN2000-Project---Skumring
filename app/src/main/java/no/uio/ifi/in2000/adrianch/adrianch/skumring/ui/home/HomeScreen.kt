@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -153,7 +154,8 @@ fun HomeScreen(
                 homeUiState.temp,
                 homeUiState.sunsetWeatherIcon,
                 homeUiState.goldenHour,
-                homeUiState.blueHour
+                homeUiState.blueHour,
+                homeViewModel
             )
             Text(
                 text = stringResource(R.string.home_favourite_places),
@@ -179,6 +181,14 @@ fun SunsetInfoCard(
     temp: String,
     icon: String?,
     goldenHourTime: String,
+    blueHourTime: String,
+    viewModel: HomeViewModel
+) { //, add goldenHourTime: String, blueHourTime: String later
+
+    var showPopUp by remember { mutableStateOf(false) }
+
+    //variable for fetching the blueHourIcon based on light mode and dark mode
+    val blueHourIcon = viewModel.updateBlueHourIcon()
     blueHourTime: String
 ) {
 
@@ -350,7 +360,7 @@ fun SunsetInfoCard(
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
+                            imageVector = ImageVector.vectorResource(id = blueHourIcon),
                             contentDescription = "blue sun icon",
                             tint = Color.Unspecified,
                             modifier = Modifier.padding(
