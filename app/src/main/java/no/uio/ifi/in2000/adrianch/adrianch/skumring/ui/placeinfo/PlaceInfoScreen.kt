@@ -206,6 +206,9 @@ fun TodayInfoCard(
     //popup for displaying more information about weather conditions
     var showPopUp by remember { mutableStateOf(false) }
 
+    //variable for fetching the blueHourIcon based on light mode and dark mode
+    val blueHourIcon = placeInfoViewModel.updateBlueHourIcon()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -587,7 +590,7 @@ fun TodayInfoCard(
                         textAlign = TextAlign.Center,
                     )//Blue hour icon and time
                     Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
+                        imageVector = ImageVector.vectorResource(id = blueHourIcon),
                         contentDescription = stringResource(R.string.homescreen_icon_blue_sun),
                         tint = Color.Unspecified,
                         modifier = Modifier.padding(
@@ -623,7 +626,8 @@ fun SunEventInfoCard(
     dateString: String,
     timeString: String,
     goldenHourTime: String,
-    blueHourTime: String
+    blueHourTime: String,
+    placeInfoViewModel: PlaceInfoViewModel
 ) {
 
     //state for remembering if button is pushed or not
@@ -633,6 +637,8 @@ fun SunEventInfoCard(
     val rotationState by animateFloatAsState(
         targetValue = if (expandedState) 180f else 0f, label = ""
     )
+    //variable for fetching the blueHourIcon based on light mode and dark mode
+    val blueHourIcon = placeInfoViewModel.updateBlueHourIcon()
 
     Card(elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inversePrimary),
@@ -788,7 +794,7 @@ fun SunEventInfoCard(
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
+                            imageVector = ImageVector.vectorResource(id = blueHourIcon),
                             contentDescription = stringResource(R.string.homescreen_icon_blue_sun),
                             tint = Color.Unspecified,
                             modifier = Modifier.padding(
@@ -840,7 +846,7 @@ fun SunEventInfoContent(
 
         // Shows the sunset events for tomorrow and the following days
         placeInfoUiState.placeInfo.sunEvents.forEachIndexed { _, _ ->
-            SunEventInfoTomorrow(placeInfoUiState)
+            SunEventInfoTomorrow(placeInfoUiState, placeInfoViewModel)
 
 
         }
@@ -875,12 +881,12 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
         val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.goldenHourTime.format(formatter)
+            "${sunEvent.goldenHourTime.format(formatter)} - $timeString"
         }
         val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.blueHourTime.format(formatter)
+            "$timeString - ${sunEvent.blueHourTime.format(formatter)}"
         }
 
         TodayInfoCard(
@@ -903,7 +909,7 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
  * Date, time and weather conditions
  */
 @Composable
-fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
+fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel) {
 
     val sunEvents = placeInfoUiState.placeInfo.sunEvents
     var index = 1
@@ -935,14 +941,14 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
         val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.goldenHourTime.format(formatter)
+            "${sunEvent.goldenHourTime.format(formatter)} - ${sunEvent.time.format(formatter)}"
         }
         val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.blueHourTime.format(formatter)
+            "${sunEvent.time.format(formatter)} - ${sunEvent.blueHourTime.format(formatter)}"
         }
-        SunEventInfoCard(sunEvent, dateString, timeString, goldenHourTime, blueHourTime)
+        SunEventInfoCard(sunEvent, dateString, timeString, goldenHourTime, blueHourTime, placeInfoViewModel)
 
         //Spacer between cards
         Spacer(modifier = Modifier.height(10.dp))

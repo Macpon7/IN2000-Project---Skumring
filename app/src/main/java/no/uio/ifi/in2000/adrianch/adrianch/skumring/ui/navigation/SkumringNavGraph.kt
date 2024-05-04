@@ -42,6 +42,9 @@ fun SkumringNavHost(
         composable(route = FavoritesDestination.route){
             FavoritesScreen(navController = navController)
         }
+        composable(route = SettingsScreenDestination.route) {
+            SettingsScreen(navController = navController)
+        }
         composable(
             route = PlaceInfoScreenDestination.route,
             arguments = listOf(
@@ -56,8 +59,6 @@ fun SkumringNavHost(
                 )
             }
         }
-        composable(route = SettingsScreenDestination.route) {
-            SettingsScreen(navController = navController)
-        }
+
     }
 }

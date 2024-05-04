@@ -208,6 +208,7 @@ fun ContentMyPage(
         if (myPageUiState.places.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_location),
+                style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -265,6 +266,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     Text(
                         text = stringResource(R.string.add_date),
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             },
@@ -275,6 +277,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     Text(
                         text = stringResource(R.string.cancel),
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
@@ -302,6 +305,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 Text(
                     text = stringResource(R.string.mypage_fill_in_fields),
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(
                         bottom = 4.dp,
                         top = 6.dp
@@ -318,6 +322,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     label = {
                         Text(
                             text = "${stringResource(R.string.location_name)} *",
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -332,7 +337,8 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                         if (newPlaceUiState.locationNameIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_location_name),
-                                color = MaterialTheme.colorScheme.error
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     },
@@ -363,7 +369,8 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     modifier = Modifier.padding(all = 2.dp),
                     value = newPlaceUiState.address,
                     onValueChange = { myPageViewModel.updateNewLocationAddress(it) },
-                    label = { Text(text = "${stringResource(R.string.address)} *") },
+                    label = { Text(text = "${stringResource(R.string.address)} *",
+                        style = MaterialTheme.typography.bodyMedium) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     singleLine = true,
                     leadingIcon = {
@@ -376,7 +383,8 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                         if (newPlaceUiState.addressIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_address),
-                                color = MaterialTheme.colorScheme.error
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyMedium,
                             )
                         }
                     },
@@ -436,6 +444,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                         Text(
                             text = stringResource(R.string.choose_date),
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     },
                     leadingIcon = {
@@ -459,7 +468,9 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     value = newPlaceUiState.descriptions,
                     onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
                     label = {
-                        Text(text = "${stringResource(R.string.description)} *")
+                        Text(text = "${stringResource(R.string.description)} *",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     singleLine = true,
@@ -473,7 +484,8 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                         if (newPlaceUiState.descriptionsIsMissing) {
                             Text(
                                 text = stringResource(R.string.error_description),
-                                color = MaterialTheme.colorScheme.error
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     },
@@ -510,6 +522,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 ) {
                     Text(
                         text = stringResource(R.string.add_location),
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Icon(
@@ -522,6 +535,7 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 if (newPlaceUiState.missingInfo) {
                     Text(
                         text = stringResource(R.string.missing_fields),
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
@@ -581,6 +595,7 @@ fun PickImageFromGallery(
         Text(
             text = stringResource(R.string.add_photo),
             color = MaterialTheme.colorScheme.onSecondaryContainer,
+            style = MaterialTheme.typography.bodyMedium,
         )
         Icon(
             imageVector = Icons.Outlined.Add,

@@ -138,7 +138,8 @@ fun ChooseTheme(
                     text = stringResource(R.string.choose_theme),
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(bottom = 8.dp),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             },
             trailingIcon = {
@@ -167,6 +168,7 @@ fun ChooseTheme(
                 text = {
                     Text(
                         text = stringResource(R.string.follow_system),
+                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 },
@@ -184,26 +186,36 @@ fun ChooseTheme(
                 }
                  */
             )
-            DropdownMenuItem(modifier = Modifier, text = {
-                Text(
-                    text = stringResource(R.string.light_mode),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }, onClick = {
-                settingsViewModel.updateTheme(
-                    theme = Theme.LIGHT_MODE
-                )
-            })
-            DropdownMenuItem(modifier = Modifier, text = {
-                Text(
-                    text = stringResource(R.string.dark_mode),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }, onClick = {
-                settingsViewModel.updateTheme(
-                    theme = Theme.DARK_MODE
-                )
-            })
+            DropdownMenuItem(
+                modifier = Modifier,
+                text = {
+                    Text(
+                        text = stringResource(R.string.light_mode),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                onClick = {
+                    settingsViewModel.updateTheme(
+                        theme = Theme.LIGHT_MODE
+                    )
+                }
+            )
+            DropdownMenuItem(
+                modifier = Modifier,
+                text = {
+                    Text(
+                        text = stringResource(R.string.dark_mode),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                onClick = {
+                    settingsViewModel.updateTheme(
+                        theme = Theme.DARK_MODE
+                    )
+                }
+            )
         }
     }
 }
@@ -242,6 +254,7 @@ fun ChooseLanguage(
             label = {
                 Text(
                     text = stringResource(R.string.choose_language),
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -257,38 +270,55 @@ fun ChooseLanguage(
                 unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary
             ),
         )
-        ExposedDropdownMenu(expanded = settingsUiState.dropdownExpandedLanguage,
-            onDismissRequest = { settingsViewModel.expandDropdownLanguage() }) {
-            DropdownMenuItem(modifier = Modifier, text = {
-                Text(
-                    text = stringResource(R.string.follow_system),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }, onClick = {
-                settingsViewModel.updateLanguage(
-                    language = Language.FOLLOW_SYSTEM
-                )
-            })
-            DropdownMenuItem(modifier = Modifier, text = {
-                Text(
-                    text = stringResource(R.string.english),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }, onClick = {
-                settingsViewModel.updateLanguage(
-                    language = Language.ENGLISH,
-                )
-            })
-            DropdownMenuItem(modifier = Modifier, text = {
-                Text(
-                    text = stringResource(R.string.norwegian),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }, onClick = {
-                settingsViewModel.updateLanguage(
-                    language = Language.NORWEGIAN,
-                )
-            })
+        ExposedDropdownMenu(
+            expanded = settingsUiState.dropdownExpandedLanguage,
+            onDismissRequest = { settingsViewModel.expandDropdownLanguage() }
+        ) {
+            DropdownMenuItem(
+                modifier = Modifier,
+                text = {
+                    Text(
+                        text = stringResource(R.string.follow_system),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                onClick = {
+                    settingsViewModel.updateLanguage(
+                        language = Language.FOLLOW_SYSTEM
+                    )
+                }
+            )
+            DropdownMenuItem(
+                modifier = Modifier,
+                text = {
+                    Text(
+                        text = stringResource(R.string.english),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                onClick = {
+                    settingsViewModel.updateLanguage(
+                        language = Language.ENGLISH,
+                    )
+                }
+            )
+            DropdownMenuItem(
+                modifier = Modifier,
+                text = {
+                    Text(
+                        text = stringResource(R.string.norwegian),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                onClick = {
+                    settingsViewModel.updateLanguage(
+                        language = Language.NORWEGIAN,
+                    )
+                }
+            )
         }
     }
 }
@@ -325,6 +355,7 @@ fun ChooseStartLocation(
             label = {
                 Text(
                     text = stringResource(R.string.choose_default_location),
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -340,30 +371,42 @@ fun ChooseStartLocation(
                 unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary
             )
         )
-        ExposedDropdownMenu(expanded = settingsUiState.dropdownExpandedStartLocation,
-            onDismissRequest = { settingsViewModel.expandDropdownStartLocation() }) {
-            DropdownMenuItem(modifier = Modifier, text = {
-                Text(
-                    text = stringResource(R.string.costum_location),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }, onClick = {
-                settingsViewModel.updateSelectedDefaultLocation(
-                    location = Location.COSTUM_LOCATION
-                )
+        ExposedDropdownMenu(
+            expanded = settingsUiState.dropdownExpandedStartLocation,
+            onDismissRequest = { settingsViewModel.expandDropdownStartLocation() }
+        ) {
+            DropdownMenuItem(
+                modifier = Modifier,
+                text = {
+                    Text(
+                        text = stringResource(R.string.costum_location),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                onClick = {
+                    settingsViewModel.updateSelectedDefaultLocation(
+                        location = Location.COSTUM_LOCATION
+                    )
 
-                // TODO show a dropdown meny or a searchbar to choose location?
-            })
-            DropdownMenuItem(modifier = Modifier, text = {
-                Text(
-                    text = stringResource(R.string.phones_location),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }, onClick = {
-                settingsViewModel.updateSelectedDefaultLocation(
-                    location = Location.PHONES_LOCATION
-                )
-            })
+                    // TODO show a dropdown meny or a searchbar to choose location?
+                }
+            )
+            DropdownMenuItem(
+                modifier = Modifier,
+                text = {
+                    Text(
+                        text = stringResource(R.string.phones_location),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                onClick = {
+                    settingsViewModel.updateSelectedDefaultLocation(
+                        location = Location.PHONES_LOCATION
+                    )
+                }
+            )
         }
     }
 }
