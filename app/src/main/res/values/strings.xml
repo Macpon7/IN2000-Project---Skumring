@@ -169,4 +169,7 @@
     <string name="information_icon">informasjonsikon</string>
     <string name="new_place_address_no_results">Fant ingen addresser, har du husket husnummer?</string>
     <string name="new_place_address_many_results">Fant for mange adresser, spesifiser med postnummer og stedsnavn</string>
+    <string name="delete_place_confirmation">Er du sikker?</string>
+    <string name="delete_place_info">Stedet vil bli permanent slettet!</string>
+    <string name="delete_place_confirm_button">Slett</string>
 </resources>
