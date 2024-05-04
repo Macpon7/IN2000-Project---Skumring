@@ -888,12 +888,12 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
         val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.goldenHourTime.format(formatter)
+            "${sunEvent.goldenHourTime.format(formatter)} - $timeString"
         }
         val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.blueHourTime.format(formatter)
+            "$timeString - ${sunEvent.blueHourTime.format(formatter)}"
         }
 
         TodayInfoCard(
@@ -948,12 +948,12 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel:
         val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.goldenHourTime.format(formatter)
+            "${sunEvent.goldenHourTime.format(formatter)} - ${sunEvent.time.format(formatter)}"
         }
         val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.blueHourTime.format(formatter)
+            "${sunEvent.time.format(formatter)} - ${sunEvent.blueHourTime.format(formatter)}"
         }
         SunEventInfoCard(sunEvent, dateString, timeString, goldenHourTime, blueHourTime, placeInfoViewModel)
 

@@ -179,7 +179,8 @@ fun ChooseTheme(
                     text = stringResource(R.string.choose_theme),
                     color = textColor,
                     modifier = Modifier.padding(bottom = 8.dp),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             },
             trailingIcon = {
@@ -210,6 +211,7 @@ fun ChooseTheme(
                 text = {
                     Text(
                         text = stringResource(R.string.follow_system),
+                        style = MaterialTheme.typography.bodyLarge,
                         color = textColor
                     )
                 },
@@ -232,6 +234,7 @@ fun ChooseTheme(
                 text = {
                     Text(
                         text = stringResource(R.string.light_mode),
+                        style = MaterialTheme.typography.bodyLarge,
                         color = textColor
                     )
                 },
@@ -246,6 +249,7 @@ fun ChooseTheme(
                 text = {
                     Text(
                         text = stringResource(R.string.dark_mode),
+                        style = MaterialTheme.typography.bodyLarge,
                         color = textColor
                     )
                 },
@@ -297,6 +301,7 @@ fun ChooseLanguage(
             label = {
                 Text(
                     text = stringResource(R.string.choose_language),
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold,
                     color = textColor
@@ -321,6 +326,7 @@ fun ChooseLanguage(
                 text = {
                     Text(
                         text = stringResource(R.string.follow_system),
+                        style = MaterialTheme.typography.bodyLarge,
                         color = textColor
                     )
                 },
@@ -335,6 +341,7 @@ fun ChooseLanguage(
                 text = {
                     Text(
                         text = stringResource(R.string.english),
+                        style = MaterialTheme.typography.bodyLarge,
                         color = textColor
                     )
                 },
@@ -349,6 +356,7 @@ fun ChooseLanguage(
                 text = {
                     Text(
                         text = stringResource(R.string.norwegian),
+                        style = MaterialTheme.typography.bodyLarge,
                         color = textColor
                     )
                 },
@@ -398,6 +406,7 @@ fun ChooseStartLocation(
             label = {
                 Text(
                     text = stringResource(R.string.choose_default_location),
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold,
                     color = textColor
@@ -422,6 +431,7 @@ fun ChooseStartLocation(
                 text = {
                     Text(
                         text = stringResource(R.string.costum_location),
+                        style = MaterialTheme.typography.bodyLarge,
                         color = textColor
                     )
                 },
@@ -438,6 +448,7 @@ fun ChooseStartLocation(
                 text = {
                     Text(
                         text = stringResource(R.string.phones_location),
+                        style = MaterialTheme.typography.bodyLarge,
                         color = textColor
                     )
                 },

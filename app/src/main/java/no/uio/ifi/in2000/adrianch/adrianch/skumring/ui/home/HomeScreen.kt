@@ -148,7 +148,8 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
-            SunsetInfoCard(homeUiState.sunsetTime,
+            SunsetInfoCard(
+                homeUiState.sunsetTime,
                 homeUiState.weatherConditions,
                 homeUiState.temp,
                 homeUiState.sunsetWeatherIcon,
@@ -188,6 +189,21 @@ fun SunsetInfoCard(
 
     //variable for fetching the blueHourIcon based on light mode and dark mode
     val blueHourIcon = viewModel.updateBlueHourIcon()
+    blueHourTime: String
+) {
+
+    var showPopUp by remember { mutableStateOf(false) }
+
+    val goldenHourTimeString = if (goldenHourTime == "00:00") {
+         "--N/A--"
+    } else {
+        "$goldenHourTime - $sunsetTime"
+    }
+    val blueHourTimeString = if (blueHourTime == "00:00") {
+        "--N/A--"
+    } else {
+        "$sunsetTime - $blueHourTime"
+    }
 
     Card(
         shape = RoundedCornerShape(15.dp),
@@ -324,7 +340,7 @@ fun SunsetInfoCard(
 
                         )
                         Text(
-                            text = goldenHourTime,
+                            text = goldenHourTimeString,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
@@ -333,7 +349,7 @@ fun SunsetInfoCard(
                             )
                         )
                     }
-                    Spacer(modifier = Modifier.padding(50.dp))
+                    Spacer(modifier = Modifier.padding(20.dp))
                     //box for blue hour icon and time
                     Box {
                         Text(
@@ -352,7 +368,7 @@ fun SunsetInfoCard(
                             )
                         )
                         Text(
-                            text = blueHourTime,
+                            text = blueHourTimeString,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
@@ -384,8 +400,12 @@ fun HorizontalInfoCardRow(homeUiState: HomeUiState, navHostController: NavHostCo
     } else {
         LazyRow {
             items(homeUiState.favoritePlaces) { place ->
+                // For getting the weatherConditionsRating:
+                val weatherConditionsRating = place.sunEvents[0].conditions.weatherRating
+
                 HorizontalInfoCardContent(
                     name = place.name,
+                    weatherConditionsRating = weatherConditionsRating,
                     onItemClick = {
                         navHostController.navigate("placeinfoscreen/${place.id}")
                     },
@@ -400,7 +420,12 @@ fun HorizontalInfoCardRow(homeUiState: HomeUiState, navHostController: NavHostCo
  * Infocards that shows picture of the favourite places of the user and the distance to them from the users current location
  */
 @Composable
-fun HorizontalInfoCardContent(name: String, onItemClick: () -> Unit, modifier: Modifier) {
+fun HorizontalInfoCardContent(
+    name: String,
+    weatherConditionsRating: WeatherConditionsRating,
+    onItemClick: () -> Unit,
+    modifier: Modifier
+) {
     Card(
         modifier = modifier
             .width(220.dp)
@@ -444,9 +469,33 @@ fun HorizontalInfoCardContent(name: String, onItemClick: () -> Unit, modifier: M
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                 )
+                Row(
+                    //For displaying weather conditions and information popup
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .padding(
+                            bottom = 8.dp,
+                            start = 8.dp
+                        )
+                        .align(Alignment.BottomStart)
+                ) {//Conditions at sunset
+                    Text(
+                        text = stringResource(R.string.weather_condition) + " ",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        //text changing based on weather conditions, in different textbox because of change of color
+                        text = stringResource(id = weatherConditionsRating.stringResourceId),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
-
     }
 }
 
@@ -467,6 +516,7 @@ fun HomeScreenTest(navController: NavHostController = rememberNavController()) {
 fun TestHorizontalInfoCard(navController: NavHostController = rememberNavController()) {
     HorizontalInfoCardContent(
         name = "Hei",
+        weatherConditionsRating = WeatherConditionsRating.DECENT,
         onItemClick = { navController.navigate("destination_route") },
         modifier = Modifier
     )

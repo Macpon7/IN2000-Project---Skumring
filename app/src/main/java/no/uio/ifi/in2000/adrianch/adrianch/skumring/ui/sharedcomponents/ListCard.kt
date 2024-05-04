@@ -122,8 +122,8 @@ fun ListCard(name: String,
                                     modifier = Modifier
                                         .padding(vertical = 2.dp),
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    style = MaterialTheme.typography.headlineSmall,
                                 )
                                 Row {
                                     IconButton(onClick = { onFavouriteClick() }) {
@@ -152,7 +152,7 @@ fun ListCard(name: String,
                             ) {//Conditions at sunset
                                 Text(
                                     text = stringResource(R.string.weather_condition),
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                                     fontWeight = FontWeight.Bold,
                                 )
@@ -161,7 +161,7 @@ fun ListCard(name: String,
                                     text = stringResource(id = weatherConditionsRating.stringResourceId),
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    fontWeight = FontWeight.Bold,
+
                                 )
                             }
                             //Text for description
@@ -240,8 +240,8 @@ fun ListCard(name: String,
                                     modifier = Modifier
                                         .padding(vertical = 2.dp),
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    style = MaterialTheme.typography.headlineMedium
                                 )
                                 Spacer(modifier = Modifier.width(20.dp))
                                 Row {
@@ -270,14 +270,14 @@ fun ListCard(name: String,
                             ) {//Conditions at sunset
                                 Text(
                                     text = stringResource(R.string.weather_condition),
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = MaterialTheme.typography.titleLarge,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                                     fontWeight = FontWeight.Bold,
                                 )
                                 Text(
                                     //text changing based on weather conditions, in different textbox because of change of color
                                     text = stringResource(id = weatherConditionsRating.stringResourceId),
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = MaterialTheme.typography.titleLarge,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                                     fontWeight = FontWeight.Bold,
                                 )
