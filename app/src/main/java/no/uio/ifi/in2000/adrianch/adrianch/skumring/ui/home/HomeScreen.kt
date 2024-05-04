@@ -190,7 +190,7 @@ fun SunsetInfoCard(
     var showPopUp by remember { mutableStateOf(false) }
 
     val goldenHourTimeString = if (goldenHourTime == "00:00") {
-         "--N/A--"
+        "--N/A--"
     } else {
         "$goldenHourTime - $sunsetTime"
     }
