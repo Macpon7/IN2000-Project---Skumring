@@ -42,7 +42,8 @@ fun SkumringBottomBar(
 
             NavigationBarItem(
                 label = {
-                    Text(text = stringResource(screen.buttonTitle!!)) // Have to use StringResource to make the resource to String
+                    Text(text = stringResource(screen.buttonTitle!!),
+                        style = MaterialTheme.typography.bodyMedium) // Have to use StringResource to make the resource to String
                 },
                 icon = {
                     screen.icon?.let { Icon(imageVector = it, contentDescription = "") }
@@ -66,7 +67,8 @@ fun SkumringBottomBar(
                     }
                 },
                colors = NavigationBarItemDefaults.colors(
-                 unselectedTextColor = MaterialTheme.colorScheme.inverseOnSurface, selectedTextColor = MaterialTheme.colorScheme.inverseOnSurface,
+                 unselectedTextColor = MaterialTheme.colorScheme.inverseOnSurface,
+                   selectedTextColor = MaterialTheme.colorScheme.inverseOnSurface,
                 ),
             )
         }
