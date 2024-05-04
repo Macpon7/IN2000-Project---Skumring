@@ -21,6 +21,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastReposi
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.ImageDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import java.io.File
@@ -34,14 +35,15 @@ private const val TAG = "PlaceRepository"
 
 interface PlaceRepository {
     suspend fun getAllPlaces(): List<PlaceInfo>
-    suspend fun getPlace(id: Int): PlaceInfo
+    suspend fun getPlace(placeId: Int): PlaceInfo
     suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo
     suspend fun getFavourites(): List<PlaceInfo>
     suspend fun getCustomPlaces(): List<PlaceInfo>
     suspend fun insertCustomPlace(place: PlaceInfo): Int
-    suspend fun removeCustomPlace(id: Int)
-    suspend fun makeFavourite(id: Int)
-    suspend fun unmakeFavourite(id: Int)
+    suspend fun removeCustomPlace(placeId: Int)
+    suspend fun makeFavourite(placeId: Int)
+    suspend fun unmakeFavourite(placeId: Int)
+    suspend fun getImages(placeId: Int): List<ImageDetails>
     suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int, timestamp: LocalDate): Boolean
 
 }
@@ -61,7 +63,7 @@ class PlaceRepositoryImpl(
     //Image database implementation
     fun insertImagePath(path: String, timestamp: LocalDate){
         //TODO endre argumentet til ImageEntity slik at placeId ikke er 1, men id til det nyopprettete stedet
-        val imageEntity: ImageEntity = ImageEntity(placeId = 1, imgPath = path, timestamp = timestamp)
+        val imageEntity = ImageEntity(placeId = 1, imgPath = path, timestamp = timestamp)
         imageDao.insertSingleImage(imageEntity)
     }
 
@@ -266,7 +268,7 @@ class PlaceRepositoryImpl(
                 isFavourite = it.isFavourite,
                 isCustomPlace = it.isCustomPlace,
                 hasNotification = false,
-                images = emptyList(),
+                images = getImages(placeId = it.id),
                 sunEvents = emptyList()
             )
         }
@@ -290,7 +292,7 @@ class PlaceRepositoryImpl(
             isFavourite = placeEntity.isFavourite,
             isCustomPlace = placeEntity.isCustomPlace,
             hasNotification = placeEntity.hasNotification,
-            images = emptyList(),
+            images = getImages(placeId = placeEntity.id),
             sunEvents = getForecastData(
                 placeId = placeEntity.id,
                 lat = placeEntity.latitude,
@@ -343,7 +345,7 @@ class PlaceRepositoryImpl(
                 isFavourite = it.isFavourite,
                 isCustomPlace = it.isCustomPlace,
                 hasNotification = false,
-                images = emptyList(),
+                images = getImages(it.id),
                 sunEvents = getForecastData(
                     placeId = it.id,
                     lat = it.latitude,
@@ -368,7 +370,7 @@ class PlaceRepositoryImpl(
                     isFavourite = it.isFavourite,
                     isCustomPlace = it.isCustomPlace,
                     hasNotification = it.hasNotification,
-                    images = emptyList(),
+                    images = getImages(it.id),
                     sunEvents = getForecastData(
                         placeId = it.id,
                         lat = it.latitude,
@@ -426,13 +428,29 @@ class PlaceRepositoryImpl(
     }
 
     /**
-     *This methods sets a location as favorite by setting is_custom_place = 0
+     * This methods sets a location as favorite by setting is_custom_place = 0
      */
     override suspend fun unmakeFavourite(placeId: Int) {
         placeInfoDao.unmarkAsFavorite(placeId)
     }
 
+    /**
+     * TODO
+     */
+    override suspend fun getImages(placeId: Int): List<ImageDetails> {
+        val entities = imageDao.getImages(placeId = placeId)
 
+        return if (entities.isEmpty()) {
+            emptyList()
+        } else {
+            return entities.map {
+                ImageDetails(
+                    path = it.imgPath,
+                    timeStamp = it.timestamp
+                )
+            }
+        }
+    }
 }
 
 
