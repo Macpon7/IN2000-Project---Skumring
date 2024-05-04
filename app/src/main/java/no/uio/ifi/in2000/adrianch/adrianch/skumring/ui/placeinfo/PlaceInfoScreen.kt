@@ -241,9 +241,10 @@ fun TodayInfoCard(
                         //this is for fetching/getting images that are uploaded into internal storage
                         val context = LocalContext.current
                         val imageFile = File(context.filesDir, imageDetails.path)
-                        AsyncImage(model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageFile)
-                            .build(),
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imageFile)
+                                .build(),
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.FillWidth
@@ -690,7 +691,7 @@ fun SunEventInfoCard(
             )
             //text changes based on weather conditions
             Text(
-                text = stringResource(R.string.weather_condition) +" " + stringResource(id = sunEvent.conditions.weatherRating.stringResourceId),
+                text = stringResource(R.string.weather_condition) + " " + stringResource(id = sunEvent.conditions.weatherRating.stringResourceId),
                 style = typography.bodyMedium,
                 color = MaterialTheme.colorScheme.inverseOnSurface,
                 fontWeight = FontWeight.Bold,
@@ -881,8 +882,10 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
                 )
             )
         }"
-        val nullTime = LocalDateTime.parse("2000-01-01 00:00:00 AM",
-            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH))
+        val nullTime = LocalDateTime.parse(
+            "2000-01-01 00:00:00 AM",
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
+        )
         val formatter = DateTimeFormatter.ofPattern("HH':'mm")
         val timeString = sunEvent.time.format(formatter)
         val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
@@ -916,7 +919,10 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
  * Date, time and weather conditions
  */
 @Composable
-fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel) {
+fun SunEventInfoTomorrow(
+    placeInfoUiState: PlaceInfoUiState,
+    placeInfoViewModel: PlaceInfoViewModel
+) {
 
     val sunEvents = placeInfoUiState.placeInfo.sunEvents
     var index = 1
@@ -941,8 +947,10 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel:
         index++
 
         //time of day for sunset
-        val nullTime = LocalDateTime.parse("2000-01-01 00:00:00 AM",
-            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH))
+        val nullTime = LocalDateTime.parse(
+            "2000-01-01 00:00:00 AM",
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
+        )
         val formatter = DateTimeFormatter.ofPattern("HH':'mm")
         val timeString = sunEvent.time.format(formatter)
         val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
@@ -955,7 +963,14 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel:
         } else {
             "${sunEvent.time.format(formatter)} - ${sunEvent.blueHourTime.format(formatter)}"
         }
-        SunEventInfoCard(sunEvent, dateString, timeString, goldenHourTime, blueHourTime, placeInfoViewModel)
+        SunEventInfoCard(
+            sunEvent,
+            dateString,
+            timeString,
+            goldenHourTime,
+            blueHourTime,
+            placeInfoViewModel
+        )
 
         //Spacer between cards
         Spacer(modifier = Modifier.height(10.dp))
