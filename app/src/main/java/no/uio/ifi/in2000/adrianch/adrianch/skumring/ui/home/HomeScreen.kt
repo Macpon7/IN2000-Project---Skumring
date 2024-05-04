@@ -185,12 +185,10 @@ fun SunsetInfoCard(
     viewModel: HomeViewModel
 ) { //, add goldenHourTime: String, blueHourTime: String later
 
-    var showPopUp by remember { mutableStateOf(false) }
 
     //variable for fetching the blueHourIcon based on light mode and dark mode
     val blueHourIcon = viewModel.updateBlueHourIcon()
-    blueHourTime: String
-) {
+
 
     var showPopUp by remember { mutableStateOf(false) }
 
