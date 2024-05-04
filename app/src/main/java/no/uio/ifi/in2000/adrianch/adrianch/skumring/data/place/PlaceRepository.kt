@@ -60,16 +60,8 @@ class PlaceRepositoryImpl(
         // If we need to do anything on initialization of DB, this is the place to do it
     }
 
-    //Image database implementation
-    fun insertImagePath(path: String, timestamp: LocalDate){
-        //TODO endre argumentet til ImageEntity slik at placeId ikke er 1, men id til det nyopprettete stedet
-        val imageEntity = ImageEntity(placeId = 1, imgPath = path, timestamp = timestamp)
-        imageDao.insertSingleImage(imageEntity)
-    }
 
-
-
-     override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int, timestamp: LocalDate): Boolean {
+    override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int, timestamp: LocalDate): Boolean {
         return withContext(Dispatchers.IO) {
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
@@ -88,7 +80,13 @@ class PlaceRepositoryImpl(
 
                 outputStream = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                insertImagePath(path = "/placeImages/$fileName", timestamp = timestamp)
+
+                // Insert the image details into the database
+                imageDao.insertSingleImage(ImageEntity(
+                    placeId = placeId,
+                    imgPath = "/placeImages/$fileName",
+                    timestamp = timestamp))
+
                 Log.d("MyPage", "added to database")
                 Log.d("MyPage", "the new path is /placeImages/$fileName")
 
