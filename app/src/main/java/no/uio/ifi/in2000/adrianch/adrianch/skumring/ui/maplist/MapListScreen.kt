@@ -216,24 +216,13 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
                 // Column for list view
                 Column (Modifier.verticalScroll(rememberScrollState())) {
                     mapListUiState.places.forEach {place ->
-                        val sunEvents = place.sunEvents
-
-                        if (place.sunEvents.isNotEmpty()) {
-                            val weatherConditionsRating = sunEvents[0].conditions.weatherRating
-
-                            ListCard(
-                                name = place.name,
-                                description = place.description,
-                                isFavourite = place.isFavourite,
-                                isCustom = place.isCustomPlace,
-                                onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                                    navController.navigate("placeinfoscreen/${place.id}")
-                                },
-                                onFavouriteClick = {mapListViewModel.toggleFavourite(place)},
-                                weatherConditionsRating = weatherConditionsRating,
-                                imageToDisplay = "${place.id}.jpg"
-                            )
-                        }
+                        ListCard(
+                            place = place,
+                            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                                navController.navigate("placeinfoscreen/${place.id}")
+                            },
+                            onFavouriteClick = {mapListViewModel.toggleFavourite(place)}
+                        )
                     }
                 }
             }
