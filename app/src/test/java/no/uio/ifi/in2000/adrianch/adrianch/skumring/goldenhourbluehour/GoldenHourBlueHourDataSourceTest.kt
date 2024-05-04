@@ -8,16 +8,14 @@ import java.time.format.DateTimeFormatter
 
 class GoldenHourBlueHourDataSourceTest {
 
-    val gson = Gson()
+    private val gson = Gson()
+    private val source: GoldenHourBlueHourDataSource = GoldenHourBlueHourDataSource()
 
-    val source: GoldenHourBlueHourDataSource = GoldenHourBlueHourDataSource()
-    val dummyDate: String = "2000-01-01"
-
-    val osloTestData: SunriseSunset = gson.fromJson(
+    private val osloTestData: SunriseSunset = gson.fromJson(
         osloTestCall,
         SunriseSunset::class.java
     )
-    val northPoleTestData: SunriseSunset  = gson.fromJson(
+    private val northPoleTestData: SunriseSunset  = gson.fromJson(
         northPoleTestCall,
         SunriseSunset::class.java
     )
