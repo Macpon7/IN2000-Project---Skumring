@@ -62,14 +62,14 @@ class FavoritesViewModel(
     fun toggleFavourite(place: PlaceInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             if (place.isFavourite) {
-                placeRepository.unmakeFavourite(id = place.id)
+                placeRepository.unmakeFavourite(placeId = place.id)
                 _favoritesUiState.update { currentFavoritesUiState ->
                     currentFavoritesUiState.copy(
                         places = placeRepository.getFavourites()
                     )
                 }
             } else {
-                placeRepository.makeFavourite(id = place.id)
+                placeRepository.makeFavourite(placeId = place.id)
                 _favoritesUiState.update { currentFavoritesUiState ->
                     currentFavoritesUiState.copy(
                         places = placeRepository.getFavourites()
