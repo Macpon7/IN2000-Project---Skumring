@@ -45,6 +45,8 @@
 
 
     <!-- MapListScreen -->
+    <string name="map_list">Liste og Kart</string>
+
     <string name="toggle_list">Liste</string>
     <string name="toggle_list_icon">Liste ikon</string>
 
@@ -56,6 +58,7 @@
 
     <!-- FavoritesScreen -->
     <string name="no_places">Ingen steder lagret enda</string>
+    <string name="favourites">Favoritter</string>
 
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Bilde tatt</string>
@@ -159,6 +162,11 @@
     <string name="place_icon">Stedsikon</string>
     <string name="theme_icon">Tema ikon</string>
     <string name="no_route_available">Fant ikke vei</string>
+    <string name="dropdown_arrow_icon">pilikon</string>
+    <string name="bike_icon">sykkelikon</string>
+    <string name="walk_icon">gåikon</string>
+    <string name="drive_icon">kjøreikon</string>
+    <string name="information_icon">informasjonsikon</string>
     <string name="new_place_address_no_results">Fant ingen addresser, har du husket husnummer?</string>
     <string name="new_place_address_many_results">Fant for mange adresser, spesifiser med postnummer og stedsnavn</string>
 </resources>

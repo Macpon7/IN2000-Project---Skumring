@@ -110,7 +110,7 @@ object MapListDestination : NavigationDestination {
     override val icon = Icons.Outlined.Place
     override val buttonTitle = R.string.nav_map_button
     override val route = "maplist"
-    override val titleRes = R.string.app_name
+    override val titleRes = R.string.map_list
 }
 
 /**
@@ -380,8 +380,7 @@ fun ToggleButtonThemeSwitcher(
                     ) {
                         Icon(
                             modifier = Modifier
-                                .offset((-30).dp)
-                                .padding(start = 10.dp, bottom = 10.dp),
+                                .offset((-30).dp, 0.dp),
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Theme Icon",
                             tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
