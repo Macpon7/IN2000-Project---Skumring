@@ -38,7 +38,7 @@ class GeocodingDataSource {
     /*
     Split up and made public for testing purposes
      */
-    fun convertReverseGeocodingResponse(response: ReverseGeocoding): ReverseGeocodeLocation {
+    fun convertReverseGeocodingResponse(response: ReverseGeocoding): GeocodeLocation {
         val placeName: String = try {
             response.features[0].properties.context.place.name
         } catch (e: Exception) {
@@ -50,7 +50,6 @@ class GeocodingDataSource {
         val lat = response.features[0].geometry.coordinates[1].toString()
         val long = response.features[0].geometry.coordinates[0].toString()
 
-        return ReverseGeocodeLocation(lat = lat, long = long, placeName = placeName)
         return GeocodeLocation(lat = lat, long = long, placeName = placeName)
     }
     /*
