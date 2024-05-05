@@ -21,7 +21,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage.NewPlaceUiState
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
