@@ -50,6 +50,7 @@ class GeocodingDataSource {
         val lat = response.features[0].geometry.coordinates[1].toString()
         val long = response.features[0].geometry.coordinates[0].toString()
 
+        Log.d(logTag, "Got place: $placeName from coords: $lat, $long")
         return GeocodeLocation(lat = lat, long = long, placeName = placeName)
     }
     /*
