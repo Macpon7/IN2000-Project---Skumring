@@ -128,7 +128,8 @@
 
     <!--Descriptions of Icons and Images-->
     <string name="favourite_icon">Favorittikon</string>
-
+    <string name="favourite_filled_icon">Favorittikon fylt</string>
+    <string name="favourite_unfilled_icon">Favorittikon uten fyll</string>
 
     <!--WeatherIconCheck-->
     <string name="weather_icon_thunder">Værikon torden</string>
