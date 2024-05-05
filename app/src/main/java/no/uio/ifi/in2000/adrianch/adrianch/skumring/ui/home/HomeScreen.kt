@@ -22,12 +22,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -65,7 +65,6 @@ import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
@@ -103,7 +102,7 @@ fun HomeScreen(
         locationPermissions.launchMultiplePermissionRequest()
     }
 
-    //Load information for the HomeScreen every time the user navigates here
+    //Load the favourites every time the user navigates to this screen
     LaunchedEffect(Unit) {
         homeViewModel.loadHomeScreen()
     }
@@ -223,35 +222,31 @@ fun SunsetInfoCard(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Check if the userlocation is 0,0
-                if (!userlocationReady) {
-                    Row(modifier = Modifier.padding(start = 20.dp, top = 8.dp, bottom = 2.dp)) {
-                        Text(
-                            text = stringResource(id = R.string.loading_user_location) + " ",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier
-                                .padding(start = 10.dp, bottom = 10.dp)
-                        )
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                }
                 Text(
                     text = stringResource(R.string.home_sunset),
                     color = MaterialTheme.colorScheme.onPrimary, //outline
                     style = MaterialTheme.typography.headlineLarge,
                 )
                 Box { //Sunset icon and time of sunset, in box because it needs to overlap
-                    Icon(
-                        painter = painterResource(id = R.drawable.sunsetsymbol),
-                        contentDescription = stringResource(id = R.string.homescreen_icon_sunset),
-                        tint = Color.Unspecified,
-                        modifier = Modifier
-                            .size(140.dp)
-                    )
+                    if (homeUiState.isLoading) {
+                        Box (
+                            modifier = Modifier.size(140.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(100.dp),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.sunsetsymbol),
+                            contentDescription = stringResource(id = R.string.homescreen_icon_sunset),
+                            tint = Color.Unspecified,
+                            modifier = Modifier
+                                .size(140.dp)
+                        )
+                    }
                     Text(
                         text = homeUiState.sunsetTime,
                         style = MaterialTheme.typography.headlineMedium,
