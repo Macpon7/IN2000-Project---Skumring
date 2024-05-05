@@ -163,6 +163,9 @@
     <string name="walk_icon">walk icon</string>
     <string name="drive_icon">drive icon</string>
     <string name="information_icon">information icon</string>
+    <string name="delete_place_confirmation">Are you sure?</string>
+    <string name="delete_place_info">This place will be permanently deleted!</string>
+    <string name="delete_place_confirm_button">Delete</string>
     <string name="double_arrow">double arrow icon</string>
     <string name="find_loaction">Find location</string>
 </resources>
