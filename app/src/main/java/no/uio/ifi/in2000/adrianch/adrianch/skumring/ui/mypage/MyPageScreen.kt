@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -229,20 +230,20 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
     // TODO keep the change when the phone change from standing to lying
 
     val outlinedTextFieldColors = ExposedDropdownMenuDefaults.textFieldColors(
-        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
         focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
         focusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
         focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
         unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
         unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
         unfocusedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
         unfocusedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
 
-        errorTextColor = MaterialTheme.colorScheme.onPrimary,
-        errorContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        errorTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        errorContainerColor = MaterialTheme.colorScheme.surfaceVariant,
         errorCursorColor = MaterialTheme.colorScheme.error,
         errorIndicatorColor = MaterialTheme.colorScheme.error,
         errorLeadingIconColor = MaterialTheme.colorScheme.error,
@@ -455,17 +456,17 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                 Button(
                     onClick = { launcher.launch("image/*") },
                     modifier = Modifier.padding(vertical = 8.dp),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
                     Text(
                         text = stringResource(R.string.add_photo),
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Icon(
                         imageVector = Icons.Outlined.Add,
                         contentDescription = stringResource(id = R.string.add_photo),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
 
