@@ -41,17 +41,30 @@ class DirectionsDataSource {
         toLong: String,
         meansOfTransportation: MeansOfTransportation
     ): TravelDurationDistance {
+        val apiResponse = fetchDirectionsResponse(
+            fromLat = fromLat,
+            fromLong = fromLong,
+            toLat = toLat,
+            toLong = toLong,
+            meansOfTransportation = meansOfTransportation
+        )
+        return convertResponseToTravelDurationDistance(
+            response = apiResponse,
+            meansOfTransportation = meansOfTransportation
+        )
+    }
+    /*
+    Function that converts response data to our object, separated and made public for testing purposes
+     */
+    fun convertResponseToTravelDurationDistance
+                (response: Directions,
+                 meansOfTransportation: MeansOfTransportation
+    ): TravelDurationDistance {
         try {
-            val apiResponse = fetchDirectionsResponse(
-                fromLat = fromLat,
-                fromLong = fromLong,
-                toLat = toLat,
-                toLong = toLong,
-                meansOfTransportation = meansOfTransportation
-            )
-            val durationMinutes: String = secondsToMinutes(apiResponse.routes[0].legs[0].duration)
-            val durationHours: String = secondsToHours(apiResponse.routes[0].legs[0].duration)
-            val distance: String = "%.1f".format((apiResponse.routes[0].legs[0].distance/1000).toFloat())
+
+            val durationMinutes: String = secondsToMinutes(response.routes[0].legs[0].duration)
+            val durationHours: String = secondsToHours(response.routes[0].legs[0].duration)
+            val distance: String = "%.1f".format((response.routes[0].legs[0].distance/1000).toFloat())
 
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
@@ -69,7 +82,6 @@ class DirectionsDataSource {
             )
         }
     }
-
     /*
     Function that returns the response body from the API call
      */
