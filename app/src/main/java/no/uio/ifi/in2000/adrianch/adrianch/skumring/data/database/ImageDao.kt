@@ -12,4 +12,7 @@ interface ImageDao {
 
     @Query("SELECT * FROM images WHERE place_id = :placeId")
     fun getImages(placeId: Int): List<ImageEntity>
+
+    @Query("DELETE FROM images WHERE place_id = :placeId")
+    fun deleteImages(placeId: Int)
 }
