@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -76,6 +77,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
@@ -91,9 +94,9 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
-import java.time.LocalDate
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconPopUp
 import java.io.File
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -206,6 +209,9 @@ fun TodayInfoCard(
     //popup for displaying more information about weather conditions
     var showPopUp by remember { mutableStateOf(false) }
 
+    //variable for fetching the blueHourIcon based on light mode and dark mode
+    val blueHourIcon = placeInfoViewModel.updateBlueHourIcon()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -228,33 +234,32 @@ fun TodayInfoCard(
                         )
                     )
             ) {
-                //if placeInfo.id is smaller than 16, show image from imageDetails.path.
-                //If placeInfo.id is bigger than 16, load image from file path
+                //if place is custom, who image from filesDir, otherwise use assets folder
 
                 if (placeInfo.sunEvents.isNotEmpty()) {
-                    val id: Int = placeInfoUiState.placeInfo.id
-                    if (id < 16) {
+                    if (placeInfo.isCustomPlace) {
+                        //this is for fetching/getting images that are uploaded into internal storage
+                        val context = LocalContext.current
+                        val imageFile = File(context.filesDir, imageDetails.path)
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imageFile)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
                         val bitmap =
-                            BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/${id}.jpg"))
+                            BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/${imageDetails.path}"))
                                 .asImageBitmap()
                         Image(
                             bitmap,
                             contentDescription = null,
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxSize() //Fill the entire available space in the Box and maintain aspect ratio of the image
-                                .aspectRatio(bitmap.width.toFloat() / bitmap.height)
-                        )
-                    } else {
 
-                        //this is for fetching/getting images that are uploaded into internal storage
-                        val context = LocalContext.current
-                        val imagePath = File(context.filesDir, imageDetails.path)
-                        val imagePainter = imagePath.path.toInt()
-                        Image(
-                            painter = painterResource(imagePainter),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
                         )
                     }
                 }
@@ -586,7 +591,7 @@ fun TodayInfoCard(
                         textAlign = TextAlign.Center,
                     )//Blue hour icon and time
                     Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
+                        imageVector = ImageVector.vectorResource(id = blueHourIcon),
                         contentDescription = stringResource(R.string.homescreen_icon_blue_sun),
                         tint = Color.Unspecified,
                         modifier = Modifier.padding(
@@ -622,7 +627,8 @@ fun SunEventInfoCard(
     dateString: String,
     timeString: String,
     goldenHourTime: String,
-    blueHourTime: String
+    blueHourTime: String,
+    placeInfoViewModel: PlaceInfoViewModel
 ) {
 
     //state for remembering if button is pushed or not
@@ -632,6 +638,8 @@ fun SunEventInfoCard(
     val rotationState by animateFloatAsState(
         targetValue = if (expandedState) 180f else 0f, label = ""
     )
+    //variable for fetching the blueHourIcon based on light mode and dark mode
+    val blueHourIcon = placeInfoViewModel.updateBlueHourIcon()
 
     Card(elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inversePrimary),
@@ -684,7 +692,7 @@ fun SunEventInfoCard(
             )
             //text changes based on weather conditions
             Text(
-                text = stringResource(R.string.weather_condition) +" " + stringResource(id = sunEvent.conditions.weatherRating.stringResourceId),
+                text = stringResource(R.string.weather_condition) + " " + stringResource(id = sunEvent.conditions.weatherRating.stringResourceId),
                 style = typography.bodyMedium,
                 color = MaterialTheme.colorScheme.inverseOnSurface,
                 fontWeight = FontWeight.Bold,
@@ -795,7 +803,7 @@ fun SunEventInfoCard(
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
+                            imageVector = ImageVector.vectorResource(id = blueHourIcon),
                             contentDescription = stringResource(R.string.homescreen_icon_blue_sun),
                             tint = Color.Unspecified,
                             modifier = Modifier.padding(
@@ -847,7 +855,7 @@ fun SunEventInfoContent(
 
         // Shows the sunset events for tomorrow and the following days
         placeInfoUiState.placeInfo.sunEvents.forEachIndexed { _, _ ->
-            SunEventInfoTomorrow(placeInfoUiState)
+            SunEventInfoTomorrow(placeInfoUiState, placeInfoViewModel)
 
 
         }
@@ -875,19 +883,21 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
                 )
             )
         }"
-        val nullTime = LocalDateTime.parse("2000-01-01 00:00:00 AM",
-            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH))
+        val nullTime = LocalDateTime.parse(
+            "2000-01-01 00:00:00 AM",
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
+        )
         val formatter = DateTimeFormatter.ofPattern("HH':'mm")
         val timeString = sunEvent.time.format(formatter)
         val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.goldenHourTime.format(formatter)
+            "${sunEvent.goldenHourTime.format(formatter)} - $timeString"
         }
         val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.blueHourTime.format(formatter)
+            "$timeString - ${sunEvent.blueHourTime.format(formatter)}"
         }
 
         TodayInfoCard(
@@ -910,7 +920,10 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
  * Date, time and weather conditions
  */
 @Composable
-fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
+fun SunEventInfoTomorrow(
+    placeInfoUiState: PlaceInfoUiState,
+    placeInfoViewModel: PlaceInfoViewModel
+) {
 
     val sunEvents = placeInfoUiState.placeInfo.sunEvents
     var index = 1
@@ -935,21 +948,30 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
         index++
 
         //time of day for sunset
-        val nullTime = LocalDateTime.parse("2000-01-01 00:00:00 AM",
-            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH))
+        val nullTime = LocalDateTime.parse(
+            "2000-01-01 00:00:00 AM",
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
+        )
         val formatter = DateTimeFormatter.ofPattern("HH':'mm")
         val timeString = sunEvent.time.format(formatter)
         val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.goldenHourTime.format(formatter)
+            "${sunEvent.goldenHourTime.format(formatter)} - ${sunEvent.time.format(formatter)}"
         }
         val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.blueHourTime.format(formatter)
+            "${sunEvent.time.format(formatter)} - ${sunEvent.blueHourTime.format(formatter)}"
         }
-        SunEventInfoCard(sunEvent, dateString, timeString, goldenHourTime, blueHourTime)
+        SunEventInfoCard(
+            sunEvent,
+            dateString,
+            timeString,
+            goldenHourTime,
+            blueHourTime,
+            placeInfoViewModel
+        )
 
         //Spacer between cards
         Spacer(modifier = Modifier.height(10.dp))

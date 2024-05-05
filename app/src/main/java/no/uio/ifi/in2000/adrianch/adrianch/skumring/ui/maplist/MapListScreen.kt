@@ -160,7 +160,7 @@ fun MapListScreen(
         }
     }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             SkumringTopBar(
                 title = stringResource(id = MapListDestination.titleRes),
@@ -214,26 +214,15 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
         if (mapListUiState.mapListToggle == MapListToggleState.LIST) {
             Surface(color = MaterialTheme.colorScheme.background) {
                 // Column for list view
-                Column (Modifier.verticalScroll(rememberScrollState())) {
-                    mapListUiState.places.forEach {place ->
-                        val sunEvents = place.sunEvents
-
-                        if (place.sunEvents.isNotEmpty()) {
-                            val weatherConditionsRating = sunEvents[0].conditions.weatherRating
-
-                            ListCard(
-                                name = place.name,
-                                description = place.description,
-                                isFavourite = place.isFavourite,
-                                isCustom = place.isCustomPlace,
-                                onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                                    navController.navigate("placeinfoscreen/${place.id}")
-                                },
-                                onFavouriteClick = {mapListViewModel.toggleFavourite(place)},
-                                weatherConditionsRating = weatherConditionsRating,
-                                imageToDisplay = "${place.id}.jpg"
-                            )
-                        }
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    mapListUiState.places.forEach { place ->
+                        ListCard(
+                            place = place,
+                            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                                navController.navigate("placeinfoscreen/${place.id}")
+                            },
+                            onFavouriteClick = { mapListViewModel.toggleFavourite(place) }
+                        )
                     }
                 }
             }
@@ -391,8 +380,7 @@ fun ToggleButtonThemeSwitcher(
                     ) {
                         Icon(
                             modifier = Modifier
-                                .offset((-30).dp)
-                                .padding(start = 10.dp, bottom = 10.dp),
+                                .offset((-30).dp, 0.dp),
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Theme Icon",
                             tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
@@ -625,9 +613,9 @@ fun MapArea(
     val context = LocalContext.current
     val style: String = if (isSystemInDarkTheme()) {
         Style.DARK
-        } else {
-            Style.OUTDOORS
-        }
+    } else {
+        Style.OUTDOORS
+    }
 
     MapboxMap(
         modifier = Modifier
@@ -648,7 +636,7 @@ fun MapArea(
             enabled = true
             visibility = true
             fadeWhenFacingNorth = false
-            }
+        }
     ) {
         if (mapListUiState.userLocUpdated) {
             MapEffect { mapView ->

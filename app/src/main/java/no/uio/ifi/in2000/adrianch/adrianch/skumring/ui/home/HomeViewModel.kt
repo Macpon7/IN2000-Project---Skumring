@@ -2,6 +2,7 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
@@ -24,6 +25,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocati
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.Theme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -83,6 +85,9 @@ class HomeViewModel(
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
+
+    private val blueHourIconLightMode = R.drawable.bluesunlightmode
+    private val blueHourIconDarkMode = R.drawable.bluesundarkmode
 
     init {
         //loadHomeScreen()
@@ -145,7 +150,6 @@ class HomeViewModel(
     private fun updateWeather() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                loadUserLocation()
                 do {
                     _homeUiState.update { currentHomeUiState ->
 
@@ -250,6 +254,7 @@ class HomeViewModel(
             currentMapUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch(Dispatchers.IO) {
+            loadUserLocation()
             loadFavourites()
             updateWeather()
         }
@@ -270,6 +275,21 @@ class HomeViewModel(
                     context = application.context
                 ) as T
             }
+        }
+    }
+
+    fun updateBlueHourIcon(): Int {
+        return when (getCurrentSystemTheme(context)) {
+            Theme.DARK_MODE -> blueHourIconDarkMode
+            Theme.LIGHT_MODE -> blueHourIconLightMode
+            else -> blueHourIconDarkMode
+        }
+    }
+
+    private fun getCurrentSystemTheme(context: Context): Theme {
+        return when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> Theme.DARK_MODE
+            else -> Theme.LIGHT_MODE
         }
     }
 }

@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -57,15 +60,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconPopUp
+import java.io.File
 
 object HomeDestination : NavigationDestination {
     //This one is used in the SkumringButtonBar to choose destination
@@ -155,9 +162,9 @@ fun HomeScreen(
                 icon = homeUiState.sunsetWeatherIcon,
                 goldenHourTime = homeUiState.goldenHour,
                 blueHourTime = homeUiState.blueHour,
-                userlocationReady = homeUiState.userLocationReady
+                userlocationReady = homeUiState.userLocationReady,
+                viewModel = homeViewModel
             )
-
             Text(
                 text = stringResource(R.string.home_favourite_places),
                 style = MaterialTheme.typography.headlineSmall,
@@ -183,10 +190,27 @@ fun SunsetInfoCard(
     icon: String?,
     goldenHourTime: String,
     blueHourTime: String,
-    userlocationReady: Boolean
+    userlocationReady: Boolean,
+    viewModel: HomeViewModel
 ) { //, add goldenHourTime: String, blueHourTime: String later
 
+
+    //variable for fetching the blueHourIcon based on light mode and dark mode
+    val blueHourIcon = viewModel.updateBlueHourIcon()
+
+
     var showPopUp by remember { mutableStateOf(false) }
+
+    val goldenHourTimeString = if (goldenHourTime == "00:00") {
+        "--N/A--"
+    } else {
+        "$goldenHourTime - $sunsetTime"
+    }
+    val blueHourTimeString = if (blueHourTime == "00:00") {
+        "--N/A--"
+    } else {
+        "$sunsetTime - $blueHourTime"
+    }
 
     Card(
         shape = RoundedCornerShape(15.dp),
@@ -339,7 +363,7 @@ fun SunsetInfoCard(
 
                         )
                         Text(
-                            text = goldenHourTime,
+                            text = goldenHourTimeString,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
@@ -348,7 +372,7 @@ fun SunsetInfoCard(
                             )
                         )
                     }
-                    Spacer(modifier = Modifier.padding(50.dp))
+                    Spacer(modifier = Modifier.padding(20.dp))
                     //box for blue hour icon and time
                     Box {
                         Text(
@@ -359,7 +383,7 @@ fun SunsetInfoCard(
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
+                            imageVector = ImageVector.vectorResource(id = blueHourIcon),
                             contentDescription = "blue sun icon",
                             tint = Color.Unspecified,
                             modifier = Modifier.padding(
@@ -367,7 +391,7 @@ fun SunsetInfoCard(
                             )
                         )
                         Text(
-                            text = blueHourTime,
+                            text = blueHourTimeString,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
@@ -375,18 +399,18 @@ fun SunsetInfoCard(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                             )
                         )
-
                     }
                 }
             }
         }
-        //close pop up that shows more information about weather conditions
-        if (showPopUp) {
-            WeatherIconPopUp(onClose = {
-                showPopUp = false
-            })
-        }
     }
+    //close pop up that shows more information about weather conditions
+    if (showPopUp) {
+        WeatherIconPopUp(onClose = {
+            showPopUp = false
+        })
+    }
+}
 }
 
 /**
@@ -399,8 +423,9 @@ fun HorizontalInfoCardRow(homeUiState: HomeUiState, navHostController: NavHostCo
     } else {
         LazyRow {
             items(homeUiState.favoritePlaces) { place ->
+
                 HorizontalInfoCardContent(
-                    name = place.name,
+                    place = place,
                     onItemClick = {
                         navHostController.navigate("placeinfoscreen/${place.id}")
                     },
@@ -415,7 +440,11 @@ fun HorizontalInfoCardRow(homeUiState: HomeUiState, navHostController: NavHostCo
  * Infocards that shows picture of the favourite places of the user and the distance to them from the users current location
  */
 @Composable
-fun HorizontalInfoCardContent(name: String, onItemClick: () -> Unit, modifier: Modifier) {
+fun HorizontalInfoCardContent(
+    place: PlaceInfo,
+    onItemClick: () -> Unit,
+    modifier: Modifier
+) {
     Card(
         modifier = modifier
             .width(220.dp)
@@ -427,14 +456,32 @@ fun HorizontalInfoCardContent(name: String, onItemClick: () -> Unit, modifier: M
         Box( //displays the image and the information under the image
             modifier = Modifier.fillMaxSize()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.sunset_picture), //Change to dynamic image later
-                contentDescription = stringResource(id = R.string.homescreen_sunset_image),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-            )
+            if (place.isCustomPlace) {
+                //this is for fetching/getting images that are uploaded into internal storage
+                val context = LocalContext.current
+                val imageFile = File(context.filesDir, place.images[0].path)
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageFile)
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                val bitmap = BitmapFactory.decodeStream(
+                    LocalContext.current.assets.open(
+                        "presetImages/${place.images[0].path}"
+                    )
+                ).asImageBitmap()
+                Image(
+                    bitmap,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize() // Fill the entire available space in the Box and maintain aspect ratio of the image
+                )
+            }
             Divider( //for dividing photo from bottom text
                 modifier = Modifier.padding(top = 142.dp),
                 color = MaterialTheme.colorScheme.outlineVariant,
@@ -454,14 +501,38 @@ fun HorizontalInfoCardContent(name: String, onItemClick: () -> Unit, modifier: M
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 5.dp),
-                    text = name,
+                    text = place.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                 )
+                Row(
+                    //For displaying weather conditions and information popup
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .padding(
+                            bottom = 8.dp,
+                            start = 8.dp
+                        )
+                        .align(Alignment.BottomStart)
+                ) {//Conditions at sunset
+                    Text(
+                        text = stringResource(R.string.weather_condition) + " ",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        //text changing based on weather conditions, in different textbox because of change of color
+                        text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
-
     }
 }
 
@@ -472,17 +543,4 @@ fun HorizontalInfoCardContent(name: String, onItemClick: () -> Unit, modifier: M
 @Composable
 fun HomeScreenTest(navController: NavHostController = rememberNavController()) {
     HomeScreen(navController = navController)
-}
-
-/**
- * For testing the info cards displayed in a lazyrow on the HomeScreen
- */
-@Preview
-@Composable
-fun TestHorizontalInfoCard(navController: NavHostController = rememberNavController()) {
-    HorizontalInfoCardContent(
-        name = "Hei",
-        onItemClick = { navController.navigate("destination_route") },
-        modifier = Modifier
-    )
 }

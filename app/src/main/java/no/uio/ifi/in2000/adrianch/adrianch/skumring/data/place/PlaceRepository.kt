@@ -21,6 +21,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastReposi
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.LocationForecastDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.ImageDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import java.io.File
@@ -34,14 +35,15 @@ private const val TAG = "PlaceRepository"
 
 interface PlaceRepository {
     suspend fun getAllPlaces(): List<PlaceInfo>
-    suspend fun getPlace(id: Int): PlaceInfo
+    suspend fun getPlace(placeId: Int): PlaceInfo
     suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo
     suspend fun getFavourites(): List<PlaceInfo>
     suspend fun getCustomPlaces(): List<PlaceInfo>
-    suspend fun insertCustomPlace(place: PlaceInfo)
-    suspend fun removeCustomPlace(id: Int)
-    suspend fun makeFavourite(id: Int)
-    suspend fun unmakeFavourite(id: Int)
+    suspend fun insertCustomPlace(place: PlaceInfo): Int
+    suspend fun removeCustomPlace(placeId: Int)
+    suspend fun makeFavourite(placeId: Int)
+    suspend fun unmakeFavourite(placeId: Int)
+    suspend fun getImages(placeId: Int): List<ImageDetails>
     suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int, timestamp: LocalDate): Boolean
 
 }
@@ -58,16 +60,8 @@ class PlaceRepositoryImpl(
         // If we need to do anything on initialization of DB, this is the place to do it
     }
 
-    //Image database implementation
-    fun insertImagePath(path: String, timestamp: LocalDate){
-        //TODO endre argumentet til ImageEntity slik at placeId ikke er 1, men id til det nyopprettete stedet
-        val imageEntity: ImageEntity = ImageEntity(placeId = 1, imgPath = path, timestamp = timestamp)
-        imageDao.insertSingleImage(imageEntity)
-    }
 
-
-
-     override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int, timestamp: LocalDate): Boolean {
+    override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int, timestamp: LocalDate): Boolean {
         return withContext(Dispatchers.IO) {
             var inputStream: InputStream? = null
             var outputStream: FileOutputStream? = null
@@ -86,7 +80,13 @@ class PlaceRepositoryImpl(
 
                 outputStream = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                insertImagePath(path = "/placeImages/$fileName", timestamp = timestamp)
+
+                // Insert the image details into the database
+                imageDao.insertSingleImage(ImageEntity(
+                    placeId = placeId,
+                    imgPath = "/placeImages/$fileName",
+                    timestamp = timestamp))
+
                 Log.d("MyPage", "added to database")
                 Log.d("MyPage", "the new path is /placeImages/$fileName")
 
@@ -266,7 +266,7 @@ class PlaceRepositoryImpl(
                 isFavourite = it.isFavourite,
                 isCustomPlace = it.isCustomPlace,
                 hasNotification = false,
-                images = emptyList(),
+                images = getImages(placeId = it.id),
                 sunEvents = emptyList()
             )
         }
@@ -290,7 +290,7 @@ class PlaceRepositoryImpl(
             isFavourite = placeEntity.isFavourite,
             isCustomPlace = placeEntity.isCustomPlace,
             hasNotification = placeEntity.hasNotification,
-            images = emptyList(),
+            images = getImages(placeId = placeEntity.id),
             sunEvents = getForecastData(
                 placeId = placeEntity.id,
                 lat = placeEntity.latitude,
@@ -343,7 +343,7 @@ class PlaceRepositoryImpl(
                 isFavourite = it.isFavourite,
                 isCustomPlace = it.isCustomPlace,
                 hasNotification = false,
-                images = emptyList(),
+                images = getImages(it.id),
                 sunEvents = getForecastData(
                     placeId = it.id,
                     lat = it.latitude,
@@ -354,16 +354,55 @@ class PlaceRepositoryImpl(
     }
 
     override suspend fun getCustomPlaces(): List<PlaceInfo> {
-        TODO()
-        //placeInfoDao.getFavourites()
+        val entities = placeInfoDao.getCustomPlaces()
+        return if (entities.isEmpty()) {
+            emptyList()
+        } else {
+            entities.map {
+                PlaceInfo(
+                    id = it.id,
+                    name = it.name,
+                    description = it.description,
+                    lat = it.latitude,
+                    long = it.longitude,
+                    isFavourite = it.isFavourite,
+                    isCustomPlace = it.isCustomPlace,
+                    hasNotification = it.hasNotification,
+                    images = getImages(it.id),
+                    sunEvents = getForecastData(
+                        placeId = it.id,
+                        lat = it.latitude,
+                        long = it.longitude
+                    )
+                )
+            }
+        }
     }
 
 
 //works but should take another input
-    override suspend fun insertCustomPlace(place: PlaceInfo){
+    /**
+     * Inserts a new place in the database, and returns the placeId value assigned to this place
+     */
+    override suspend fun insertCustomPlace(place: PlaceInfo): Int{
         //input is PlaceInfo object
-        //API is called so user can access weather forecast immidieately
-        //placeInfoDao.insertCustomPlace(place)
+        val placeInfoEntity = PlaceInfoEntity(
+            name = place.name,
+            description = place.description,
+            latitude = place.lat,
+            longitude = place.long,
+            isCustomPlace = true,
+            isFavourite = false,
+            hasNotification = false
+        )
+
+        placeInfoDao.insertCustomPlace(placeInfoEntity)
+
+        // Calling this will fetch weather data for the newly added custom place, and let us get its ID
+        val allCustomPlaces = getCustomPlaces()
+
+        //The newest custom place will always be the last in the list, here we fetch its ID and returns to the caller
+        return allCustomPlaces.last().id
     }
 
     /**
@@ -387,13 +426,29 @@ class PlaceRepositoryImpl(
     }
 
     /**
-     *This methods sets a location as favorite by setting is_custom_place = 0
+     * This methods sets a location as favorite by setting is_custom_place = 0
      */
     override suspend fun unmakeFavourite(placeId: Int) {
         placeInfoDao.unmarkAsFavorite(placeId)
     }
 
+    /**
+     * TODO
+     */
+    override suspend fun getImages(placeId: Int): List<ImageDetails> {
+        val entities = imageDao.getImages(placeId = placeId)
 
+        return if (entities.isEmpty()) {
+            emptyList()
+        } else {
+            return entities.map {
+                ImageDetails(
+                    path = it.imgPath,
+                    timeStamp = it.timestamp
+                )
+            }
+        }
+    }
 }
 
 
