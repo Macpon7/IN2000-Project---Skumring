@@ -60,6 +60,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.DeletePlaceDialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
@@ -183,6 +184,12 @@ fun ContentMyPage(
     myPageViewModel: MyPageViewModel,
     myPageUiState: MyPageUiState
 ) {
+    if (myPageUiState.showDeleteDialog) {
+        DeletePlaceDialog(
+            onDismissRequest = {myPageViewModel.hideDeleteDialog()},
+            onConfirmClick = {myPageViewModel.deleteCustomPlace()}
+        )
+    }
     Column(Modifier.verticalScroll(rememberScrollState())) {
         if (myPageUiState.places.isEmpty()) {
             Text(
@@ -198,7 +205,8 @@ fun ContentMyPage(
                     onItemClick = { //Navigate when it is clicked on
                         navController.navigate(route = "placeinfoscreen/${place.id}")
                     },
-                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) }
+                    onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) },
+                    onDeleteClick = { myPageViewModel.showDeleteDialog(place.id) }
                 )
             }
         }
