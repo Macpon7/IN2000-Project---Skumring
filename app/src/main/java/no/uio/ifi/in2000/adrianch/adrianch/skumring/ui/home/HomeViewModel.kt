@@ -183,6 +183,14 @@ class HomeViewModel(
                         )
                     }
                 }
+                else {
+                    _homeUiState.update { currentHomeUiState->
+                        currentHomeUiState.copy(
+                            showSnackbar = true,
+                            errorMessage = context.getString(R.string.error_message_getting_placeinfo)
+                        )
+                    }
+                }
 
                     /*Log.d(logTag, "fetching sunsetweather")
                     val sunsetWeather = placeInfo.getLocalSunsetWeather(
@@ -239,6 +247,7 @@ class HomeViewModel(
             currentMapUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch(Dispatchers.IO) {
+            loadUserLocation()
             loadFavourites()
             updateWeather()
         }
