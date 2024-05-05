@@ -39,7 +39,7 @@ interface PlaceRepository {
     suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo
     suspend fun getFavourites(): List<PlaceInfo>
     suspend fun getCustomPlaces(): List<PlaceInfo>
-    suspend fun insertCustomPlace(place: PlaceInfo): Int
+    suspend fun addCustomPlace(place: PlaceInfo): Int
     suspend fun removeCustomPlace(placeId: Int)
     suspend fun makeFavourite(placeId: Int)
     suspend fun unmakeFavourite(placeId: Int)
@@ -384,7 +384,7 @@ class PlaceRepositoryImpl(
     /**
      * Inserts a new place in the database, and returns the placeId value assigned to this place
      */
-    override suspend fun insertCustomPlace(place: PlaceInfo): Int{
+    override suspend fun addCustomPlace(place: PlaceInfo): Int{
         //input is PlaceInfo object
         val placeInfoEntity = PlaceInfoEntity(
             name = place.name,
