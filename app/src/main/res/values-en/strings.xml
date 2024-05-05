@@ -146,6 +146,8 @@
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Distance from your location</string>
     <string name="favourite_icon">Favourite icon</string>
+    <string name="favourite_filled_icon">Favourite icon filled</string>
+    <string name="favourite_unfilled_icon">Favourite icon not filled</string>
     <string name="time">Time</string>
     <string name="close">CLOSE</string>
     <string name="place_icon">"place icon "</string>
