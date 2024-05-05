@@ -30,6 +30,9 @@
     <string name="home_favourite_places">Favourite places</string>
     <string name="no_favourites">No favourites!</string>
     <string name="error_sunset">Error with getting data</string>
+    <string name="error_place_info">Error with loading place info</string>
+
+    <string name="loading_user_location">Laster inn brukerlokasjon</string>
 
     <string name="conditions_poor">Poor</string>
     <string name="conditions_decent">Decent</string>

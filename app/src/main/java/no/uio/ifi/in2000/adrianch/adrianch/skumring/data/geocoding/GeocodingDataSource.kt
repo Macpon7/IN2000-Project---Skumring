@@ -40,6 +40,7 @@ class GeocodingDataSource {
             // Returns empty string if user is in area without a place name
             ""
         }
+        Log.d(logTag, "Got place: $placeName from coords: $lat, $long")
         return GeocodeLocation(lat = lat, long = long, placeName = placeName)
     }
     /*
