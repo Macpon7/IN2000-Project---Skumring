@@ -641,7 +641,7 @@ fun SunEventInfoCard(
     val blueHourIcon = placeInfoViewModel.updateBlueHourIcon()
 
     Card(elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inversePrimary),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize(
