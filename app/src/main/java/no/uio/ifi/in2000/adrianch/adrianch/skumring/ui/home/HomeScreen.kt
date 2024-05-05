@@ -154,14 +154,8 @@ fun HomeScreen(
                 .background(color = MaterialTheme.colorScheme.background),
         ) {
             SunsetInfoCard(
-                sunsetTime = homeUiState.sunsetTime,
-                weatherConditions = homeUiState.weatherConditions,
-                temp = homeUiState.temp,
-                icon = homeUiState.sunsetWeatherIcon,
-                goldenHourTime = homeUiState.goldenHour,
-                blueHourTime = homeUiState.blueHour,
-                userlocationReady = homeUiState.userLocationReady,
-                viewModel = homeViewModel
+                homeUiState = homeUiState,
+                homeViewModel = homeViewModel
             )
             Text(
                 text = stringResource(R.string.home_favourite_places),
@@ -182,32 +176,26 @@ fun HomeScreen(
  */
 @Composable
 fun SunsetInfoCard(
-    sunsetTime: String,
-    weatherConditions: WeatherConditionsRating,
-    temp: String,
-    icon: String?,
-    goldenHourTime: String,
-    blueHourTime: String,
-    userlocationReady: Boolean,
-    viewModel: HomeViewModel
+    homeUiState: HomeUiState,
+    homeViewModel: HomeViewModel
 ) { //, add goldenHourTime: String, blueHourTime: String later
 
 
     //variable for fetching the blueHourIcon based on light mode and dark mode
-    val blueHourIcon = viewModel.updateBlueHourIcon()
+    val blueHourIcon = homeViewModel.updateBlueHourIcon()
 
 
     var showPopUp by remember { mutableStateOf(false) }
 
-    val goldenHourTimeString = if (goldenHourTime == "00:00") {
+    val goldenHourTimeString = if (homeUiState.goldenHour == "00:00") {
         "--N/A--"
     } else {
-        "$goldenHourTime - $sunsetTime"
+        "${homeUiState.goldenHour} - ${homeUiState.sunsetTime}"
     }
-    val blueHourTimeString = if (blueHourTime == "00:00") {
+    val blueHourTimeString = if (homeUiState.blueHour == "00:00") {
         "--N/A--"
     } else {
-        "$sunsetTime - $blueHourTime"
+        "${homeUiState.sunsetTime} - ${homeUiState.blueHour}"
     }
 
     Card(
@@ -265,7 +253,7 @@ fun SunsetInfoCard(
                             .size(140.dp)
                     )
                     Text(
-                        text = sunsetTime,
+                        text = homeUiState.sunsetTime,
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Center,
@@ -286,7 +274,7 @@ fun SunsetInfoCard(
                     )
                     Text(
                         //text changing based on weather conditions, in different textbox because of change of color
-                        text = stringResource(id = weatherConditions.stringResourceId),
+                        text = stringResource(id = homeUiState.weatherConditionsRating.stringResourceId),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
@@ -303,10 +291,10 @@ fun SunsetInfoCard(
                             .padding(start = 5.dp, bottom = 10.dp)
                     )
                 }
-                if (icon != null) {
+                if (homeUiState.sunsetWeatherIcon != null) {
                     WeatherIconCheck(
-                        weatherCondition = icon,
-                        weatherConditions
+                        weatherCondition = homeUiState.sunsetWeatherIcon!!,
+                        weather = homeUiState.weatherConditionsRating
                     ) //shows the icon that fits the weather forecast
                 } else {
                     Icon( //if icon is null, "show image not found"
@@ -317,7 +305,7 @@ fun SunsetInfoCard(
                     )
                 }
                 Text(
-                    text = "$temp °C",
+                    text = "${homeUiState.temp} °C",
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
