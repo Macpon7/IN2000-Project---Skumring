@@ -187,9 +187,21 @@ class HomeViewModel(
         _homeUiState.update { currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false)
         }
-        viewModelScope.launch(Dispatchers.IO) {
-            loadUserLocation()
-            updateWeather()
+        loadHomeScreen()
+    }
+
+    fun updateBlueHourIcon(): Int {
+        return when (getCurrentSystemTheme(context)) {
+            Theme.DARK_MODE -> blueHourIconDarkMode
+            Theme.LIGHT_MODE -> blueHourIconLightMode
+            else -> blueHourIconDarkMode
+        }
+    }
+
+    private fun getCurrentSystemTheme(context: Context): Theme {
+        return when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> Theme.DARK_MODE
+            else -> Theme.LIGHT_MODE
         }
     }
 
@@ -208,21 +220,6 @@ class HomeViewModel(
                     context = application.context
                 ) as T
             }
-        }
-    }
-
-    fun updateBlueHourIcon(): Int {
-        return when (getCurrentSystemTheme(context)) {
-            Theme.DARK_MODE -> blueHourIconDarkMode
-            Theme.LIGHT_MODE -> blueHourIconLightMode
-            else -> blueHourIconDarkMode
-        }
-    }
-
-    private fun getCurrentSystemTheme(context: Context): Theme {
-        return when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> Theme.DARK_MODE
-            else -> Theme.LIGHT_MODE
         }
     }
 }
