@@ -95,7 +95,6 @@ class HomeViewModel(
 
     fun loadHomeScreen() {
         viewModelScope.launch(Dispatchers.IO) {
-            loadUserLocation()
             loadFavourites()
             updateWeather()
         }
@@ -150,6 +149,8 @@ class HomeViewModel(
     private fun updateWeather() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                loadUserLocation()
+
                 do {
                     _homeUiState.update { currentHomeUiState ->
 
@@ -254,7 +255,6 @@ class HomeViewModel(
             currentMapUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch(Dispatchers.IO) {
-            loadUserLocation()
             loadFavourites()
             updateWeather()
         }
