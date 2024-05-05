@@ -28,10 +28,11 @@ import java.time.ZoneOffset
 
 
 private const val TAG = "MyPageViewModel"
+
 data class MyPageUiState(
     val places: List<PlaceInfo> = emptyList(),
 
-    var showNewPlaceDialog : Boolean = false,
+    var showNewPlaceDialog: Boolean = false,
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
@@ -39,7 +40,7 @@ data class MyPageUiState(
     // Variable for snackbar:
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
     // If mypage has locations added they will be shown
-    val showLocations : Boolean = false
+    val showLocations: Boolean = false
 )
 
 data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
@@ -64,7 +65,7 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
         initialDisplayedMonthMillis = null,
         yearRange = DatePickerDefaults.YearRange,
         initialDisplayMode = DisplayMode.Picker
-        ),
+    ),
 
     // This will not make an error since if it is not picked it will be the current date:
     var pickedDate: LocalDate = LocalDate.now(),
@@ -98,13 +99,12 @@ class MyPageViewModel(
     private val placeRepository: PlaceRepository,
     private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl(),
     private val context: Context
-) : ViewModel()
-{
+) : ViewModel() {
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
 
     private val _newPlaceUiState = MutableStateFlow(NewPlaceUiState())
-    val newPlaceUiState : StateFlow<NewPlaceUiState> = _newPlaceUiState
+    val newPlaceUiState: StateFlow<NewPlaceUiState> = _newPlaceUiState
 
     init {
         loadList()
@@ -116,9 +116,14 @@ class MyPageViewModel(
     /**
      * The function will add an image to the database by adding the path to the internal location where the image is stored
      */
-    suspend fun addImage(contentUri: Uri, placeId: Int, timestamp: LocalDate){
-        Log.d(TAG,"contentUri: $contentUri, placeId is $placeId")
-        val succeeded: Boolean = placeRepository.saveImageToInternalStorage(context = context, contentUri = contentUri, placeId = placeId, timestamp = timestamp)
+    suspend fun addImage(contentUri: Uri, placeId: Int, timestamp: LocalDate) {
+        Log.d(TAG, "contentUri: $contentUri, placeId is $placeId")
+        val succeeded: Boolean = placeRepository.saveImageToInternalStorage(
+            context = context,
+            contentUri = contentUri,
+            placeId = placeId,
+            timestamp = timestamp
+        )
         Log.d(TAG, "is image added to internal storage: $succeeded")
     }
 
@@ -148,7 +153,8 @@ class MyPageViewModel(
                     isReady = false
                 }
 
-                val addresses = geocodingRepository.getCoordinatesFromAddress(address = currentNewPlaceUiState.address)
+                val addresses =
+                    geocodingRepository.getCoordinatesFromAddress(address = currentNewPlaceUiState.address)
 
                 if (addresses.size == 0) {
                     //TODO set correct error and set error message under address field
@@ -188,8 +194,14 @@ class MyPageViewModel(
                     )
 
                     Log.d(TAG, "In MyPageViewModel Uri is ${newPlaceUiState.value.imageUri}")
-                    newPlaceUiState.value.imageUri?.let { addImage(contentUri = it, placeId = newId, timestamp = newPlaceUiState.value.pickedDate) //TODO make this the placeId that is generated for the new place
-                    Log.d(TAG, "saving image")}
+                    newPlaceUiState.value.imageUri?.let {
+                        addImage(
+                            contentUri = it,
+                            placeId = newId,
+                            timestamp = newPlaceUiState.value.pickedDate
+                        ) //TODO make this the placeId that is generated for the new place
+                        Log.d(TAG, "saving image")
+                    }
                     hideNewForm()
                     resetNewPlaceUiState()
                     currentNewPlaceUiState.copy()
@@ -199,13 +211,12 @@ class MyPageViewModel(
     }
 
 
-
     /**
      * Functions for updating NewPlaceUiState:
      *
      */
     @OptIn(ExperimentalMaterial3Api::class)
-    fun resetNewPlaceUiState(){
+    fun resetNewPlaceUiState() {
         viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(
@@ -246,7 +257,7 @@ class MyPageViewModel(
      */
     @OptIn(ExperimentalMaterial3Api::class)
     fun dismissDatePicker() {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(
                     dateTextFieldError = true,
@@ -272,7 +283,7 @@ class MyPageViewModel(
                     )
                 } else {
                     val date = LocalDateTime.ofEpochSecond(
-                        dateFromPicker/1000, 0, ZoneOffset.UTC
+                        dateFromPicker / 1000, 0, ZoneOffset.UTC
                     ).toLocalDate()!!
                     currentNewPlaceUiState.copy(
                         datePickerError = false,
@@ -289,7 +300,7 @@ class MyPageViewModel(
      */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateNewLocationName(locationName: String) {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(locationName = locationName)
             }
@@ -301,7 +312,7 @@ class MyPageViewModel(
      */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateNewLocationAddress(address: String) {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(address = address)
             }
@@ -313,7 +324,7 @@ class MyPageViewModel(
      */
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateNewLocationDescription(descriptions: String) {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(description = descriptions)
             }
@@ -326,7 +337,7 @@ class MyPageViewModel(
      *  The form for adding a location is added
      */
     fun showNewForm() {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             _myPageUiState.update { currentMyPageUiState ->
                 currentMyPageUiState.copy(showNewPlaceDialog = true)
             }
@@ -334,8 +345,8 @@ class MyPageViewModel(
     }
 
     fun hideNewForm() {
-        viewModelScope.launch (Dispatchers.IO) {
-            _myPageUiState.update {currentMyPageUiState ->
+        viewModelScope.launch(Dispatchers.IO) {
+            _myPageUiState.update { currentMyPageUiState ->
                 currentMyPageUiState.copy(showNewPlaceDialog = false)
             }
         }
@@ -344,7 +355,7 @@ class MyPageViewModel(
     /**
      * Load the list of places
      */
-    fun loadList(){
+    fun loadList() {
         viewModelScope.launch(Dispatchers.IO) {
             _myPageUiState.update { currentMyPageUiState ->
                 try {
@@ -352,7 +363,7 @@ class MyPageViewModel(
                 } catch (e: Exception) {
                     currentMyPageUiState.copy(
                         showSnackbar = true,
-                        errorMessage = e.message?: "Unknown error while loading custom places!"
+                        errorMessage = e.message ?: "Unknown error while loading custom places!"
                     )
                 }
             }
@@ -394,20 +405,22 @@ class MyPageViewModel(
      */
     fun refresh() {
         _myPageUiState.update { currentMyPageUiState ->
-            currentMyPageUiState.copy(showSnackbar = false) }
-        viewModelScope.launch (Dispatchers.IO) {
+            currentMyPageUiState.copy(showSnackbar = false)
+        }
+        viewModelScope.launch(Dispatchers.IO) {
             // TODO: Add what gets updated when the API fails
         }
     }
 
     @Suppress("UNCHECKED_CAST")
     companion object {
-        val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as ApplicationSkumring
+                val application =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as ApplicationSkumring
 
                 return MyPageViewModel(
                     placeRepository = application.dbRepository,
