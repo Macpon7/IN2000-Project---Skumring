@@ -3,12 +3,14 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
@@ -20,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,7 +41,7 @@ object FavoritesDestination : NavigationDestination {
     override val icon = Icons.Outlined.FavoriteBorder
     override val buttonTitle = R.string.nav_fav_button
     override val route = "favorite"
-    override val titleRes = R.string.app_name
+    override val titleRes = R.string.favourites
 }
 
 /**
@@ -46,7 +49,10 @@ object FavoritesDestination : NavigationDestination {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesScreen(navController : NavHostController, favoritesViewModel: FavoritesViewModel = viewModel(factory = FavoritesViewModel.Factory)) {
+fun FavoritesScreen(
+    navController: NavHostController,
+    favoritesViewModel: FavoritesViewModel = viewModel(factory = FavoritesViewModel.Factory)
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val favoritesUiState: FavoritesUiState by favoritesViewModel.favoritesUiState.collectAsState()
@@ -84,7 +90,7 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             }
         }
     }
-    Scaffold (
+    Scaffold(
         topBar = {
             SkumringTopBar(
                 title = stringResource(id = FavoritesDestination.titleRes),
@@ -95,41 +101,50 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
         bottomBar = {
             SkumringBottomBar(navController = navController)
         }
-    ) {innerPadding ->
-        Column (modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()
-            .padding(8.dp),
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(8.dp),
             verticalArrangement = Arrangement.Top
         ) {
             FavoriteListContent(
                 navController = navController,
                 favoriteViewModel = favoritesViewModel,
-                favoritesUiState = favoritesUiState)
+                favoritesUiState = favoritesUiState
+            )
         }
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Show the list of cards of places available
+ */
 @Composable
-fun FavoriteListContent(navController : NavController,
-                        favoriteViewModel: FavoritesViewModel,
-                        favoritesUiState: FavoritesUiState
-                        ) {
-    Column (Modifier.verticalScroll(rememberScrollState())) {
-        if (favoritesUiState.places.isEmpty()){
-            Text(text = stringResource(R.string.no_places))
+fun FavoriteListContent(
+    navController: NavController,
+    favoriteViewModel: FavoritesViewModel,
+    favoritesUiState: FavoritesUiState
+) {
+    Column(Modifier.verticalScroll(rememberScrollState())) {
+        if (favoritesUiState.places.isEmpty()) {
+            Text(
+                text = stringResource(R.string.no_places),
+                style = typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         } else {
             favoritesUiState.places.forEach { place ->
                 ListCard(
-                    name = place.name,
-                    description = place.description,
-                    isFavourite = place.isFavourite,
+                    place = place,
                     onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                         navController.navigate("placeinfoscreen/${place.id}")
                     },
-                    onFavouriteClick = {favoriteViewModel.toggleFavourite(place = place)}
+                    onFavouriteClick = {
+                        favoriteViewModel.toggleFavourite(place = place)
+                    }
                 )
             }
         }

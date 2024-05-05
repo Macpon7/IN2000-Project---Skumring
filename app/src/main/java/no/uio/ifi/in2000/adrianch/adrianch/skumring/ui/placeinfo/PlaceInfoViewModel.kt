@@ -2,6 +2,7 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
@@ -26,6 +27,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTran
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.Theme
 
 private const val logTag = "PlaceInfoViewModel"
 
@@ -41,9 +43,9 @@ data class PlaceInfoUiState(
         hasNotification = false,
         images = emptyList(),
         sunEvents = emptyList(),
-        ),
+    ),
 
-    var mapTimeDistance: Map<MeansOfTransportation,TravelDurationDistance> = emptyMap(),
+    var mapTimeDistance: Map<MeansOfTransportation, TravelDurationDistance> = emptyMap(),
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -60,27 +62,31 @@ data class PlaceInfoUiState(
 class PlaceInfoViewModel(
     private val context: Context,
     private val placeRepository: PlaceRepository,
-): ViewModel() {
+) : ViewModel() {
     private val _placeInfoUiState = MutableStateFlow(PlaceInfoUiState())
     val placeInfoUiState: StateFlow<PlaceInfoUiState> = _placeInfoUiState.asStateFlow()
 
     private val directionsRepository: DirectionsRepository = DirectionsRepositoryImpl()
-    private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
+    private val userLocationRepository: UserLocationRepository =
+        UserLocationRepositoryImpl(context = context)
 
-    fun addFavourite(placeId : Int) {
+    private val blueHourIconLightMode = R.drawable.bluesunlightmode
+    private val blueHourIconDarkMode = R.drawable.bluesundarkmode
+
+    fun addFavourite(placeId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             placeRepository.makeFavourite(placeId)
         }
     }
 
-    fun removeFavourite(placeId : Int) {
+    fun removeFavourite(placeId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             placeRepository.unmakeFavourite(placeId)
         }
     }
 
-    fun loadPlaceInfo(id: Int){
-        val job = viewModelScope.launch(Dispatchers.IO){
+    fun loadPlaceInfo(id: Int) {
+        val job = viewModelScope.launch(Dispatchers.IO) {
             Log.d(logTag, "loadPlaceInfo called")
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 try {
@@ -88,12 +94,13 @@ class PlaceInfoViewModel(
                     currentPlaceInfoUiState.copy(
                         placeInfo = placeInfoObject,
                         isLoading = false,
-                        )
-                } catch(e: Exception) {
+                    )
+                } catch (e: Exception) {
                     Log.e(logTag, "Error getting PlaceInfo object for place with id: $id", e)
                     currentPlaceInfoUiState.copy(
                         showSnackbar = true,
-                        errorMessage = context.getString(R.string.error_message_getting_placeinfo))
+                        errorMessage = context.getString(R.string.error_message_getting_placeinfo)
+                    )
                 }
             }
         }
@@ -106,7 +113,7 @@ class PlaceInfoViewModel(
 
     /**
      * Set showSnackbar to false, so when the snackbar refresh it will be shown again
-      */
+     */
     fun snackbarDismissed() {
         _placeInfoUiState.update { currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false)
@@ -114,7 +121,7 @@ class PlaceInfoViewModel(
     }
 
     fun loadTimeDistance() {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             val userLoc: UserLocation = userLocationRepository.getUserLocation()
             val timePlaceList = directionsRepository.getAllTravelDurationDistance(
                 fromLat = userLoc.lat,
@@ -122,7 +129,7 @@ class PlaceInfoViewModel(
                 toLat = _placeInfoUiState.value.placeInfo.lat,
                 toLong = _placeInfoUiState.value.placeInfo.long
             )
-            Log.d(logTag,timePlaceList.toString())
+            Log.d(logTag, timePlaceList.toString())
             _placeInfoUiState.update { currentPlaceInfoUiState ->
                 currentPlaceInfoUiState.copy(
                     mapTimeDistance = timePlaceList
@@ -134,18 +141,18 @@ class PlaceInfoViewModel(
     /**
      *  This function refresh loadPlaceInfo when you use snackbar in MapListScreen:
      */
-    fun refresh(id: Int = 0 ) {
-        _placeInfoUiState.update {currentMapUiState ->
+    fun refresh(id: Int = 0) {
+        _placeInfoUiState.update { currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false)
         }
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             loadPlaceInfo(id)
         }
     }
 
     @Suppress("UNCHECKED_CAST")
     companion object {
-        val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
@@ -157,6 +164,21 @@ class PlaceInfoViewModel(
                     context = application.context
                 ) as T
             }
+        }
+    }
+
+    fun updateBlueHourIcon(): Int {
+        return when (getCurrentSystemTheme(context)) {
+            Theme.DARK_MODE -> blueHourIconDarkMode
+            Theme.LIGHT_MODE -> blueHourIconLightMode
+            else -> blueHourIconDarkMode
+        }
+    }
+
+    private fun getCurrentSystemTheme(context: Context): Theme {
+        return when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> Theme.DARK_MODE
+            else -> Theme.LIGHT_MODE
         }
     }
 }

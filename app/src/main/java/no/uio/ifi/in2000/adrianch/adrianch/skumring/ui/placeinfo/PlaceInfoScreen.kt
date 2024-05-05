@@ -1,11 +1,13 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,7 +60,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -72,6 +77,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
@@ -87,8 +94,9 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDest
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconCheck
-import java.time.LocalDate
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.WeatherIconPopUp
+import java.io.File
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -183,7 +191,7 @@ fun PlaceInfoScreen(
 fun TodayInfoCard(
     sunEvent: SunEvent,
     placeInfo: PlaceInfo,
-    imageDetails: ImageDetails,
+    imageDetails: ImageDetails, //has path and description
     dateString: String,
     timeString: String,
     placeInfoViewModel: PlaceInfoViewModel,
@@ -200,6 +208,9 @@ fun TodayInfoCard(
 
     //popup for displaying more information about weather conditions
     var showPopUp by remember { mutableStateOf(false) }
+
+    //variable for fetching the blueHourIcon based on light mode and dark mode
+    val blueHourIcon = placeInfoViewModel.updateBlueHourIcon()
 
     Card(
         modifier = Modifier
@@ -223,26 +234,36 @@ fun TodayInfoCard(
                         )
                     )
             ) {
-                //if placeInfo.id is smaller than 16, show image from imageDetails.path.
-                //If placeInfo.id is bigger than 16, load image from file path
-                /*
-                if(placeInfo.sunEvents.isNotEmpty()) {
-                    if (placeInfo.id < 16) {
-                        Image(
-                            painter = painterResource(id = imageDetails.path.toInt()),
-                            contentDescription = imageDetails.description
+                //if place is custom, who image from filesDir, otherwise use assets folder
+
+                if (placeInfo.sunEvents.isNotEmpty()) {
+                    if (placeInfo.isCustomPlace) {
+                        //this is for fetching/getting images that are uploaded into internal storage
+                        val context = LocalContext.current
+                        val imageFile = File(context.filesDir, imageDetails.path)
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imageFile)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
                         )
                     } else {
-                        val context = LocalContext.current
-                        val imagePath = File(context.filesDir, imageDetails.path)
-                        val imagePainter = imagePath.path.toInt()
+                        val bitmap =
+                            BitmapFactory.decodeStream(LocalContext.current.assets.open("presetImages/${imageDetails.path}"))
+                                .asImageBitmap()
                         Image(
-                            painter = painterResource(imagePainter), contentDescription = null
+                            bitmap,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize() //Fill the entire available space in the Box and maintain aspect ratio of the image
 
                         )
                     }
-               }
-                */
+                }
+
                 //IconButton for choosing place as favourite
                 Box(
                     modifier = Modifier.fillMaxWidth()
@@ -267,7 +288,7 @@ fun TodayInfoCard(
                             Icon(
                                 imageVector = Icons.Filled.Favorite,
                                 modifier = Modifier.size(40.dp),
-                                contentDescription = "",
+                                contentDescription = stringResource(R.string.favourite_icon),
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
                             //if not favourite, show heart with border
@@ -275,7 +296,7 @@ fun TodayInfoCard(
                             Icon(
                                 imageVector = Icons.Filled.FavoriteBorder,
                                 modifier = Modifier.size(40.dp),
-                                contentDescription = "",
+                                contentDescription = stringResource(R.string.favourite_icon),
                                 tint = MaterialTheme.colorScheme.onPrimary
 
                             )
@@ -322,7 +343,7 @@ fun TodayInfoCard(
                     Row {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.walk),
-                            contentDescription = "walk icon",
+                            contentDescription = stringResource(R.string.walk_icon),
                             tint = Color.Unspecified,
                         )
                         Text(
@@ -359,7 +380,7 @@ fun TodayInfoCard(
                     Row {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.bike),
-                            contentDescription = "bike icon",
+                            contentDescription = stringResource(R.string.bike_icon),
                             tint = Color.Unspecified,
                         )
                         Text(
@@ -399,7 +420,7 @@ fun TodayInfoCard(
 
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.drive),
-                            contentDescription = "drive icon",
+                            contentDescription = stringResource(R.string.drive_icon),
                             tint = Color.Unspecified,
 
                             )
@@ -454,7 +475,7 @@ fun TodayInfoCard(
             //Sunset Icon
             Icon(
                 painter = painterResource(id = R.drawable.sunsetsymbol),
-                contentDescription = "Sunset Icon",
+                contentDescription = stringResource(R.string.homescreen_icon_sunset),
                 tint = Color.Unspecified,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -478,21 +499,21 @@ fun TodayInfoCard(
             ) {
                 //Conditions at sunset
                 Text(
-                    text = stringResource(R.string.weather_condition),
+                    text = stringResource(R.string.weather_condition) + " ",
                     style = typography.bodyMedium,
                     color = MaterialTheme.colorScheme.inverseOnSurface,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
                     //text changing based on weather conditions, in different textbox because of change of color
-                    text = "${sunEvent.conditions.weatherRating}", //TODO fix so this is also in Norwegian
+                    text = stringResource(id = sunEvent.conditions.weatherRating.stringResourceId),
                     style = typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
                 )
                 //Clickable icon for showing more info about the weather conditions
                 Icon(Icons.Default.Info,
-                    contentDescription = "Info",
+                    contentDescription = stringResource(R.string.information_icon),
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
                         .clickable { showPopUp = true }
@@ -526,7 +547,10 @@ fun TodayInfoCard(
                 Box(
                     modifier = Modifier.size(80.dp)
                 ) {
-                    WeatherIconCheck(weatherCondition = sunEvent.weatherIcon, weather = sunEvent.conditions.weatherRating)
+                    WeatherIconCheck(
+                        weatherCondition = sunEvent.weatherIcon,
+                        weather = sunEvent.conditions.weatherRating
+                    )
                 }
                 //Box for golden hour icon and time
                 Box {
@@ -540,7 +564,7 @@ fun TodayInfoCard(
                     )
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
-                        contentDescription = "yellow sun icon",
+                        contentDescription = stringResource(R.string.homescreen_icon_yellow_sun),
                         tint = Color.Unspecified,
                         modifier = Modifier.padding(
                             start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -548,7 +572,7 @@ fun TodayInfoCard(
 
                     )
                     Text(
-                        text = goldenHourTime, //TODO //change this later to $goldenHourTime
+                        text = goldenHourTime,
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -567,15 +591,15 @@ fun TodayInfoCard(
                         textAlign = TextAlign.Center,
                     )//Blue hour icon and time
                     Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
-                        contentDescription = "blue sun icon",
+                        imageVector = ImageVector.vectorResource(id = blueHourIcon),
+                        contentDescription = stringResource(R.string.homescreen_icon_blue_sun),
                         tint = Color.Unspecified,
                         modifier = Modifier.padding(
                             start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                         )
                     )
                     Text(
-                        text = blueHourTime, //TODO //change this later to $blueHourTime
+                        text = blueHourTime,
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.inverseOnSurface,
                         textAlign = TextAlign.Center,
@@ -603,7 +627,8 @@ fun SunEventInfoCard(
     dateString: String,
     timeString: String,
     goldenHourTime: String,
-    blueHourTime: String
+    blueHourTime: String,
+    placeInfoViewModel: PlaceInfoViewModel
 ) {
 
     //state for remembering if button is pushed or not
@@ -613,6 +638,8 @@ fun SunEventInfoCard(
     val rotationState by animateFloatAsState(
         targetValue = if (expandedState) 180f else 0f, label = ""
     )
+    //variable for fetching the blueHourIcon based on light mode and dark mode
+    val blueHourIcon = placeInfoViewModel.updateBlueHourIcon()
 
     Card(elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inversePrimary),
@@ -647,7 +674,7 @@ fun SunEventInfoCard(
             //Sunset icon
             Icon(
                 painter = painterResource(id = R.drawable.sunsetsymbol),
-                contentDescription = "Sunset Icon",
+                contentDescription = stringResource(R.string.homescreen_icon_sunset),
                 tint = Color.Unspecified,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -665,7 +692,7 @@ fun SunEventInfoCard(
             )
             //text changes based on weather conditions
             Text(
-                text = stringResource(R.string.weather_condition) + ": ${sunEvent.conditions.weatherRating}",
+                text = stringResource(R.string.weather_condition) + " " + stringResource(id = sunEvent.conditions.weatherRating.stringResourceId),
                 style = typography.bodyMedium,
                 color = MaterialTheme.colorScheme.inverseOnSurface,
                 fontWeight = FontWeight.Bold,
@@ -711,7 +738,7 @@ fun SunEventInfoCard(
                     )
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Drop-down arrow",
+                        contentDescription = stringResource(R.string.dropdown_arrow_icon),
                         tint = MaterialTheme.colorScheme.primaryContainer,
                         modifier = Modifier
                             .rotate(rotationState)
@@ -733,7 +760,10 @@ fun SunEventInfoCard(
                     Box(
                         modifier = Modifier.size(60.dp)
                     ) {
-                        WeatherIconCheck(weatherCondition = sunEvent.weatherIcon, weather = sunEvent.conditions.weatherRating)
+                        WeatherIconCheck(
+                            weatherCondition = sunEvent.weatherIcon,
+                            weather = sunEvent.conditions.weatherRating
+                        )
                     }
                     //golden hour text, icon and time
                     Box {
@@ -747,14 +777,14 @@ fun SunEventInfoCard(
                         )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.gulsol),
-                            contentDescription = "yellow sun icon",
+                            contentDescription = stringResource(R.string.homescreen_icon_yellow_sun),
                             tint = Color.Unspecified,
                             modifier = Modifier.padding(
                                 start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                             )
                         )
                         Text(
-                            text = goldenHourTime, //TODO //change this later to $goldenHourTime
+                            text = goldenHourTime,
                             style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
@@ -773,15 +803,15 @@ fun SunEventInfoCard(
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.blaasol),
-                            contentDescription = "blue sun icon",
+                            imageVector = ImageVector.vectorResource(id = blueHourIcon),
+                            contentDescription = stringResource(R.string.homescreen_icon_blue_sun),
                             tint = Color.Unspecified,
                             modifier = Modifier.padding(
                                 start = 0.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
                             )
                         )
                         Text(
-                            text = blueHourTime, //TODO //change this later to $blueHourTime
+                            text = blueHourTime,
                             style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.inverseOnSurface,
                             textAlign = TextAlign.Center,
@@ -825,7 +855,7 @@ fun SunEventInfoContent(
 
         // Shows the sunset events for tomorrow and the following days
         placeInfoUiState.placeInfo.sunEvents.forEachIndexed { _, _ ->
-            SunEventInfoTomorrow(placeInfoUiState)
+            SunEventInfoTomorrow(placeInfoUiState, placeInfoViewModel)
 
 
         }
@@ -853,23 +883,33 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
                 )
             )
         }"
-        val nullTime = LocalDateTime.parse("2000-01-01 00:00:00 AM",
-            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH))
+        val nullTime = LocalDateTime.parse(
+            "2000-01-01 00:00:00 AM",
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
+        )
         val formatter = DateTimeFormatter.ofPattern("HH':'mm")
         val timeString = sunEvent.time.format(formatter)
         val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.goldenHourTime.format(formatter)
+            "${sunEvent.goldenHourTime.format(formatter)} - $timeString"
         }
         val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.blueHourTime.format(formatter)
+            "$timeString - ${sunEvent.blueHourTime.format(formatter)}"
         }
 
         TodayInfoCard(
-            sunEvent, placeInfo, imageDetails, dateString, timeString, placeInfoViewModel, goldenHourTime, blueHourTime, placeInfoUiState
+            sunEvent = sunEvent,
+            placeInfo = placeInfo,
+            imageDetails = imageDetails,
+            dateString = dateString,
+            timeString = timeString,
+            goldenHourTime = goldenHourTime,
+            blueHourTime = blueHourTime,
+            placeInfoViewModel = placeInfoViewModel,
+            placeInfoUiState = placeInfoUiState
         )
     }
 }
@@ -880,7 +920,10 @@ fun SunEventInfoToday(placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: Pl
  * Date, time and weather conditions
  */
 @Composable
-fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
+fun SunEventInfoTomorrow(
+    placeInfoUiState: PlaceInfoUiState,
+    placeInfoViewModel: PlaceInfoViewModel
+) {
 
     val sunEvents = placeInfoUiState.placeInfo.sunEvents
     var index = 1
@@ -905,21 +948,30 @@ fun SunEventInfoTomorrow(placeInfoUiState: PlaceInfoUiState) {
         index++
 
         //time of day for sunset
-        val nullTime = LocalDateTime.parse("2000-01-01 00:00:00 AM",
-            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH))
+        val nullTime = LocalDateTime.parse(
+            "2000-01-01 00:00:00 AM",
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
+        )
         val formatter = DateTimeFormatter.ofPattern("HH':'mm")
         val timeString = sunEvent.time.format(formatter)
         val goldenHourTime = if (sunEvent.goldenHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.goldenHourTime.format(formatter)
+            "${sunEvent.goldenHourTime.format(formatter)} - ${sunEvent.time.format(formatter)}"
         }
         val blueHourTime = if (sunEvent.blueHourTime == nullTime) {
             "--N/A--"
         } else {
-            sunEvent.blueHourTime.format(formatter)
+            "${sunEvent.time.format(formatter)} - ${sunEvent.blueHourTime.format(formatter)}"
         }
-        SunEventInfoCard(sunEvent, dateString, timeString, goldenHourTime, blueHourTime)
+        SunEventInfoCard(
+            sunEvent,
+            dateString,
+            timeString,
+            goldenHourTime,
+            blueHourTime,
+            placeInfoViewModel
+        )
 
         //Spacer between cards
         Spacer(modifier = Modifier.height(10.dp))

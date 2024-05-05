@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Navigation -->
-    <string name="app_name">Skumring</string>
     <string name="back_button">Back</string>
     <string name="nav_map_button">Map</string>
     <string name="nav_home_button">Home</string>
@@ -43,6 +42,8 @@
     <string name="homescreen_icon_blue_sun">Blue sun icon</string>
 
     <!-- MapListScreen -->
+    <string name="map_list">List and Map</string>
+
     <string name="toggle_list">List</string>
     <string name="toggle_list_icon">List icon</string>
 
@@ -54,6 +55,7 @@
 
     <!-- FavoritesScreen -->
     <string name="no_places">No places</string>
+    <string name="favourites">Favourites</string>
 
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Picture taken</string>
@@ -78,6 +80,9 @@
     <string name="costum_location">Costum location</string>
     <string name="phones_location">Phone location</string>
 
+    <string name="light_mode">Dark theme</string>
+    <string name="dark_mode">Light theme</string>
+
     <string name="norwegian">Norwegian</string>
     <string name="english">English</string>
     <string name="choose_language">Choose language</string>
@@ -93,7 +98,7 @@
     <string name="mypage_add_photo">Add photo</string>
     <string name="location_name">Location name</string>
     <string name="address">Location address</string>
-    <string name="time">Choose date</string>
+    <string name="choose_date">Choose date</string>
     <string name="description">Description</string>
     <string name="add_photo">Add photo</string>
     <string name="add_location">Add location</string>
@@ -140,5 +145,17 @@
     <string name="distance_minutes">m</string>
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Distance from your location</string>
+    <string name="favourite_icon">Favourite icon</string>
+    <string name="time">Time</string>
+    <string name="close">CLOSE</string>
+    <string name="place_icon">"place icon "</string>
+    <string name="theme_icon">"Theme icon "</string>
     <string name="no_route_available">No route available</string>
+    <string name="new_place_address_no_results">Found no addresses, have you remembered the house number?</string>
+    <string name="new_place_address_many_results">Found too many addresses, specify with post code and location</string>
+    <string name="dropdown_arrow_icon">dropdown arrow icon</string>
+    <string name="bike_icon">bike icon</string>
+    <string name="walk_icon">walk icon</string>
+    <string name="drive_icon">drive icon</string>
+    <string name="information_icon">information icon</string>
 </resources>

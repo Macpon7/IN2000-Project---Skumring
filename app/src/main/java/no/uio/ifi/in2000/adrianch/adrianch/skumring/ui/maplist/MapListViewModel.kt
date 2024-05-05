@@ -26,7 +26,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocati
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
-enum class MapListToggleState (val stateAsBool: Boolean) {
+enum class MapListToggleState(val stateAsBool: Boolean) {
     MAP(stateAsBool = false),
     LIST(stateAsBool = true)
 }
@@ -36,7 +36,7 @@ data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val places: List<PlaceInfo> = emptyList(),
     var clickedId: Int = 1,
     var mapListToggle: MapListToggleState = MapListToggleState.MAP,
-    var sheetState: SheetState = SheetState(skipPartiallyExpanded = true),
+    var sheetState: SheetState = SheetState(skipPartiallyExpanded = false),
     var showBottomSheet: Boolean = false,
     var userLat: String = "0",
     var userLong: String = "0",
@@ -48,20 +48,36 @@ data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     // Variable that change according to the error message we get:
     var errorMessage: String = "",
     // Variable for snackbar:
-    val snackbarHostState: SnackbarHostState = SnackbarHostState()
-)
+    val snackbarHostState: SnackbarHostState = SnackbarHostState(),
+
+    var placeInfo: PlaceInfo = PlaceInfo(
+        id = 0,
+        name = "",
+        description = "",
+        lat = "",
+        long = "",
+        isFavourite = false,
+        isCustomPlace = false,
+        hasNotification = false,
+        images = emptyList(),
+        sunEvents = emptyList()
+    ),
+
+    )
 
 private const val logTag = "MapListViewModel"
 
 @SuppressLint("StaticFieldLeak")
 class MapListViewModel(
     private val context: Context,
-    private val placeRepository: PlaceRepository): ViewModel() {
+    private val placeRepository: PlaceRepository
+) : ViewModel() {
 
     private val _mapListUiState = MutableStateFlow(MapListUiState())
     val mapListUiState: StateFlow<MapListUiState> = _mapListUiState.asStateFlow()
 
-    private val userLocationRepository: UserLocationRepository = UserLocationRepositoryImpl(context = context)
+    private val userLocationRepository: UserLocationRepository =
+        UserLocationRepositoryImpl(context = context)
 
     // TODO make this work instead of having the user press a button
     init {
@@ -69,7 +85,7 @@ class MapListViewModel(
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    fun loadPlaces(){
+    fun loadPlaces() {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(logTag, "Loading all places from DB")
             _mapListUiState.update { currentMapListUiState ->
@@ -85,11 +101,12 @@ class MapListViewModel(
                     }
 
                     currentMapListUiState.copy(places = places, pins = pins)
-                } catch(e: Exception) {
+                } catch (e: Exception) {
                     Log.e(logTag, "Error getting places from DB", e)
                     currentMapListUiState.copy(
                         showSnackbar = true,
-                        errorMessage = context.getString(R.string.error_message_getting_places_from_database))
+                        errorMessage = context.getString(R.string.error_message_getting_places_from_database)
+                    )
                 }
             }
         }.invokeOnCompletion {
@@ -113,12 +130,14 @@ class MapListViewModel(
     @OptIn(ExperimentalMaterial3Api::class)
     fun hideBottomSheet() {
         viewModelScope.launch(Dispatchers.IO) {
-            withContext(DefaultMonotonicFrameClock) {_mapListUiState.value.sheetState.hide()}
-        }.invokeOnCompletion { _mapListUiState.update { currentMapListUiState ->
-            currentMapListUiState.copy(
-                showBottomSheet = false
-            )
-        } }
+            withContext(DefaultMonotonicFrameClock) { _mapListUiState.value.sheetState.hide() }
+        }.invokeOnCompletion {
+            _mapListUiState.update { currentMapListUiState ->
+                currentMapListUiState.copy(
+                    showBottomSheet = false
+                )
+            }
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -137,14 +156,14 @@ class MapListViewModel(
     fun toggleFavourite(place: PlaceInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             if (place.isFavourite) {
-                placeRepository.unmakeFavourite(id = place.id)
+                placeRepository.unmakeFavourite(placeId = place.id)
                 _mapListUiState.update { currentMapListUiState ->
                     currentMapListUiState.copy(
                         places = placeRepository.getAllPlaces()
                     )
                 }
             } else {
-                placeRepository.makeFavourite(id = place.id)
+                placeRepository.makeFavourite(placeId = place.id)
                 _mapListUiState.update { currentMapListUiState ->
                     currentMapListUiState.copy(
                         places = placeRepository.getAllPlaces()
@@ -164,10 +183,10 @@ class MapListViewModel(
     // For refreshing when you use snackbar in MapListScreen:
     @OptIn(ExperimentalMaterial3Api::class)
     fun refreshPlaces() {
-        _mapListUiState.update {currentMapUiState ->
+        _mapListUiState.update { currentMapUiState ->
             currentMapUiState.copy(showSnackbar = false)
         }
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             loadPlaces()
             updateUserLocation()
         }
@@ -175,7 +194,7 @@ class MapListViewModel(
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateUserLocation() {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 _mapListUiState.update { currentMapUiState ->
                     val userLoc = userLocationRepository.getUserLocation()
@@ -195,12 +214,13 @@ class MapListViewModel(
 
     @Suppress("UNCHECKED_CAST")
     companion object {
-        val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val application =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return MapListViewModel(
                     placeRepository = (application as ApplicationSkumring).dbRepository,
