@@ -492,24 +492,38 @@ fun HorizontalInfoCardContent(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .padding(
-                            bottom = 8.dp,
-                            start = 8.dp
+                            bottom = 2.dp,
+                            start = 8.dp,
+                            end = 8.dp
                         )
                         .align(Alignment.BottomStart)
                 ) {//Conditions at sunset
                     Text(
                         text = stringResource(R.string.weather_condition) + " ",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         //text changing based on weather conditions, in different textbox because of change of color
                         text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontWeight = FontWeight.Bold
                     )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.double_arrow),
+                            contentDescription = stringResource(R.string.double_arrow),
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                                .size(25.dp)
+                        )
+                    }
                 }
             }
         }

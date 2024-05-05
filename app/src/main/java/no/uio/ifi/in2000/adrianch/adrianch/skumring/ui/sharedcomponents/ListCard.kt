@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -115,10 +117,13 @@ fun ListCard(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(start = 15.dp, end = 8.dp)
                         )
                         {
                             Text(
                                 text = place.name,
+                                modifier = Modifier
+                                    .padding(vertical = 2.dp),
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 style = MaterialTheme.typography.headlineSmall,
@@ -153,7 +158,13 @@ fun ListCard(
                         Row(
                             //For displaying weather conditions and information popup
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.padding(
+                                start = 15.dp,
+                                end = 12.dp,
+                                bottom = 5.dp
+                            )
+                                . fillMaxWidth()
                         ) {//Conditions at sunset
                             Text(
                                 text = stringResource(R.string.weather_condition),
@@ -168,6 +179,20 @@ fun ListCard(
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
 
                             )
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 20.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.double_arrow),
+                                    contentDescription = stringResource(R.string.double_arrow),
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                        .size(30.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -244,13 +269,13 @@ fun ListCard(
                                     if (place.isFavourite) {
                                         Icon(
                                             imageVector = Icons.Filled.Favorite,
-                                            contentDescription = "",
+                                            contentDescription = stringResource(id = R.string.favourite_unfilled_icon),
                                             tint = MaterialTheme.colorScheme.onSecondaryContainer
                                         )
                                     } else {
                                         Icon(
                                             imageVector = Icons.Filled.FavoriteBorder,
-                                            contentDescription = "",
+                                            contentDescription = stringResource(id = R.string.favourite_filled_icon),
                                             tint = MaterialTheme.colorScheme.onSecondaryContainer
                                         )
                                     }
@@ -260,8 +285,14 @@ fun ListCard(
                         Row(
                             //For displaying weather conditions and information popup
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.padding(start = 8.dp)
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                start = 20.dp,
+                                end = 15.dp,
+                                bottom = 8.dp
+                            )
                         ) {//Conditions at sunset
                             Text(
                                 text = stringResource(R.string.weather_condition),
@@ -276,6 +307,18 @@ fun ListCard(
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 fontWeight = FontWeight.Bold,
                             )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.double_arrow),
+                                    contentDescription = stringResource(R.string.double_arrow),
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                        .size(35.dp)
+                                )
+                            }
                         }
                     }
                 }
