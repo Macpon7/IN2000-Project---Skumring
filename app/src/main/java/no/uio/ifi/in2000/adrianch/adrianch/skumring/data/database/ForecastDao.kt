@@ -15,4 +15,7 @@ interface ForecastDao {
 
     @Query("SELECT * FROM forecasts WHERE place_id = :placeId")
     fun getForecasts(placeId: Int): List<ForecastEntity>
+
+    @Query("DELETE FROM forecasts WHERE place_id = :placeId")
+    fun deleteForecasts(placeId: Int)
 }
