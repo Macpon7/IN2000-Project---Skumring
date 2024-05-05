@@ -79,24 +79,26 @@ fun ListCard(
                         //this is for fetching/getting images that are uploaded into internal storage
                         val context = LocalContext.current
                         val imageFile = File(context.filesDir, place.images[0].path)
-                        AsyncImage(model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageFile)
-                            .build(),
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imageFile)
+                                .build(),
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.FillWidth
+                            contentScale = ContentScale.Crop
                         )
                     } else {
                         val bitmap = BitmapFactory.decodeStream(
                             LocalContext.current.assets.open(
-                                "presetImages/${place.images[0].path}")
+                                "presetImages/${place.images[0].path}"
+                            )
                         ).asImageBitmap()
                         Image(
                             bitmap,
                             contentDescription = null,
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .fillMaxSize() // Fill the entire available space in the Box and maintain aspect ratio of the image
-                                .aspectRatio(bitmap.width.toFloat() / bitmap.height)
+                                .fillMaxSize()
                         )
                     }
                 }
@@ -188,9 +190,10 @@ fun ListCard(
                         //this is for fetching/getting images that are uploaded into internal storage
                         val context = LocalContext.current
                         val imageFile = File(context.filesDir, place.images[0].path)
-                        AsyncImage(model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageFile)
-                            .build(),
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imageFile)
+                                .build(),
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.FillWidth
@@ -198,7 +201,8 @@ fun ListCard(
                     } else {
                         val bitmap = BitmapFactory.decodeStream(
                             LocalContext.current.assets.open(
-                                "presetImages/${place.images[0].path}")
+                                "presetImages/${place.images[0].path}"
+                            )
                         ).asImageBitmap()
                         Image(
                             bitmap,

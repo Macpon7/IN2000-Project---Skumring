@@ -344,8 +344,12 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     modifier = Modifier.padding(all = 2.dp),
                     value = newPlaceUiState.address,
                     onValueChange = { myPageViewModel.updateNewLocationAddress(it) },
-                    label = { Text(text = "${stringResource(R.string.address)} *",
-                        style = MaterialTheme.typography.bodyMedium) },
+                    label = {
+                        Text(
+                            text = "${stringResource(R.string.address)} *",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     singleLine = true,
                     leadingIcon = {
@@ -421,7 +425,8 @@ fun NewPlaceDialog(myPageViewModel: MyPageViewModel) {
                     value = newPlaceUiState.description,
                     onValueChange = { myPageViewModel.updateNewLocationDescription(it) },
                     label = {
-                        Text(text = "${stringResource(R.string.description)} *",
+                        Text(
+                            text = "${stringResource(R.string.description)} *",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },

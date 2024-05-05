@@ -49,7 +49,10 @@ object FavoritesDestination : NavigationDestination {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesScreen(navController : NavHostController, favoritesViewModel: FavoritesViewModel = viewModel(factory = FavoritesViewModel.Factory)) {
+fun FavoritesScreen(
+    navController: NavHostController,
+    favoritesViewModel: FavoritesViewModel = viewModel(factory = FavoritesViewModel.Factory)
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val favoritesUiState: FavoritesUiState by favoritesViewModel.favoritesUiState.collectAsState()
@@ -87,7 +90,7 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
             }
         }
     }
-    Scaffold (
+    Scaffold(
         topBar = {
             SkumringTopBar(
                 title = stringResource(id = FavoritesDestination.titleRes),
@@ -98,17 +101,19 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
         bottomBar = {
             SkumringBottomBar(navController = navController)
         }
-    ) {innerPadding ->
-        Column (modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()
-            .padding(8.dp),
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(8.dp),
             verticalArrangement = Arrangement.Top
         ) {
             FavoriteListContent(
                 navController = navController,
                 favoriteViewModel = favoritesViewModel,
-                favoritesUiState = favoritesUiState)
+                favoritesUiState = favoritesUiState
+            )
         }
     }
 }
@@ -117,18 +122,19 @@ fun FavoritesScreen(navController : NavHostController, favoritesViewModel: Favor
  * Show the list of cards of places available
  */
 @Composable
-fun FavoriteListContent(navController : NavController,
-                        favoriteViewModel: FavoritesViewModel,
-                        favoritesUiState: FavoritesUiState
-                        ) {
+fun FavoriteListContent(
+    navController: NavController,
+    favoriteViewModel: FavoritesViewModel,
+    favoritesUiState: FavoritesUiState
+) {
     Column(Modifier.verticalScroll(rememberScrollState())) {
-        if (favoritesUiState.places.isEmpty()){
+        if (favoritesUiState.places.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_places),
                 style = typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
-                )
+            )
         } else {
             favoritesUiState.places.forEach { place ->
                 ListCard(
@@ -136,7 +142,8 @@ fun FavoriteListContent(navController : NavController,
                     onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                         navController.navigate("placeinfoscreen/${place.id}")
                     },
-                    onFavouriteClick = {favoriteViewModel.toggleFavourite(place = place)
+                    onFavouriteClick = {
+                        favoriteViewModel.toggleFavourite(place = place)
                     }
                 )
             }

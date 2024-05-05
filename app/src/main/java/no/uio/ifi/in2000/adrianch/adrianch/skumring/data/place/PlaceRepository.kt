@@ -304,7 +304,7 @@ class PlaceRepositoryImpl(
     override suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo {
         Log.d(TAG, "Trying to create PlaceInfo object at user's current location")
 
-        //TODO fetch images
+        // This will never have any images, so images here is just an empty list
         return PlaceInfo(
             id = 0,
             name = "",
