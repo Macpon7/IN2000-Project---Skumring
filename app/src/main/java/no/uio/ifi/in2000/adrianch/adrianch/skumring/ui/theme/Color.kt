@@ -21,6 +21,13 @@ val onTertiaryDark = Color(0xFF1C2D61)//Togglebutton background color
 val primaryContainerDark = Color(0xFF2C4678) //card background color
 //val onPrimaryContainerDark = Color(0xFFD8E2FF) //card text color
 
+//MAPLISTSCREEN POPUP
+//val surfaceVariantDark = Color(0xFF1E1E1E) // background color
+//val onSurfaceVariantDark = Color(0xFFC5C6D0) //text color
+// val primaryDark = Color(0xFFAEC6FF) //headline text
+//val secondaryDark = Color(0xFFBFADFF) //favourite heart color
+//val secondaryContainerDark = Color(0xFF4B3E76)//button background color
+
 //PLACEINFOSCREEN COLORS
 val surfaceVariantDark = Color(0xFF1E1E1E) // background color
 val onSurfaceVariantDark = Color(0xFFC5C6D0) //text color
@@ -28,6 +35,7 @@ val secondaryContainerDark = Color(0xFF4B3E76)//button background color
 val onSecondaryContainerDark = Color(0xFFE7DEFF) //button text color
 // val primaryDark = Color(0xFFAEC6FF) //headline text
 //val secondaryDark = Color(0xFFBFADFF) //favourite heart color
+
 
 //MYPAGE
 val errorDark = Color(0xFFFFB4AB) //error color
@@ -76,17 +84,24 @@ val onPrimaryContainerLight = Color(0xFF001A42) //SunsetInfoCard text color
 
 //MAPLIST COLORS
 val secondaryLight = Color(0xFF63568F) //favourite heart color
-val tertiaryLight = Color(0xFF4C5C92) //Togglebutton text color
-val onTertiaryLight = Color(0xFFFFFFFF) //Togglebutton background color
-val primaryContainerLight = Color(0xFFD8E2FF) //card background color
+val tertiaryLight = Color(0xFFFFFFFF) //Togglebutton text color
+val onTertiaryLight = Color(0xFF4C5C92) //Togglebutton background color
+val primaryContainerLight = Color(0xFFC3E8FF) //card background color //0xFFD8E2FF
 //val onPrimaryContainerLight = Color(0xFF001A42) //card text color
 
+//MAPLIST POPUP
+//val surfaceVariantLight = Color(0xFFE1E2EC) // background color
+//val onSurfaceVariantLight = Color(0xFF44474F) //text color
+//val primaryLight = Color(0xFF001A42) //Sunset today text homescreen, original: 0xFF455E91
+//val secondaryLight = Color(0xFF63568F) //favourite heart color
+//val onSecondaryContainerLight = Color(0xFF1F1048) //Button text color
+
 //PLACEINFOSCREEN COLORS
-val surfaceVariantLight = Color(0xFFE1E2EC) // background color
+val surfaceVariantLight = Color(0xFFE0EFFF) // background color //0xFFE1E2EC
 val onSurfaceVariantLight = Color(0xFF44474F) //text color
-val secondaryContainerLight = Color(0xFFE7DEFF) //Button background color
+val secondaryContainerLight = Color(0xFF5B87A2) //Button background color //0xFFE7DEFF
 val onSecondaryContainerLight = Color(0xFF1F1048) //Button text color
-// val primaryLight = Color(0xFF001A42) //headline text
+val outlineVariantLight = Color(0xFF001A42)//headline text
 //val secondaryLight = Color(0xFF63568F) //favourite heart color
 
 //MYPAGE
@@ -116,7 +131,7 @@ val backgroundLight = Color(0xFFFAF9FF)
 val onBackgroundLight = Color(0xFF1A1B20)
 val surfaceLight = Color(0xFFFAF9FF)
 val outlineLight = Color(0xFF757780)
-val outlineVariantLight = Color(0xFFC5C6D0)
+
 val scrimLight = Color(0xFFEEEDF4)  //SurfaceContainer color for Bottombar & topBar
 
 
