@@ -35,25 +35,27 @@ private const val logTag = "FavoritesViewModel"
 @SuppressLint("StaticFieldLeak")
 class FavoritesViewModel(
     private val context: Context,
-    private val placeRepository: PlaceRepository): ViewModel() {
+    private val placeRepository: PlaceRepository
+) : ViewModel() {
     private val _favoritesUiState = MutableStateFlow(FavoritesUiState())
     val favoritesUiState: StateFlow<FavoritesUiState> = _favoritesUiState.asStateFlow()
 
     init {
-           //loadList()
+        //loadList()
     }
 
-    fun loadList(){
+    fun loadList() {
         viewModelScope.launch(Dispatchers.IO) {
             _favoritesUiState.update { currentfavoritesUiState ->
                 try {
                     val placeSummaryList = placeRepository.getFavourites()
                     currentfavoritesUiState.copy(places = placeSummaryList)
-                } catch(e: Exception) {
+                } catch (e: Exception) {
                     Log.e(logTag, "Error loading list", e)
                     currentfavoritesUiState.copy(
                         showSnackbar = true,
-                        errorMessage = context.getString(R.string.error_message_loading_list))
+                        errorMessage = context.getString(R.string.error_message_loading_list)
+                    )
                 }
             }
         }
@@ -83,7 +85,7 @@ class FavoritesViewModel(
      * Set showSnackbar to false, so when the snackbar refresh it will be shown again
      */
     fun snackbarDismissed() {
-        _favoritesUiState.update { currentfavoritesUiState->
+        _favoritesUiState.update { currentfavoritesUiState ->
             currentfavoritesUiState.copy(
                 showSnackbar = false,
             )
@@ -94,21 +96,23 @@ class FavoritesViewModel(
      *  This function refresh loadPlaceInfo when you use snackbar in favouritescreen:
      */
     fun refreshList() {
-        _favoritesUiState.update {currentfavoritesUiState ->
-            currentfavoritesUiState.copy(showSnackbar = false) }
-        viewModelScope.launch (Dispatchers.IO) {
+        _favoritesUiState.update { currentfavoritesUiState ->
+            currentfavoritesUiState.copy(showSnackbar = false)
+        }
+        viewModelScope.launch(Dispatchers.IO) {
             loadList()
         }
     }
 
     @Suppress("UNCHECKED_CAST")
     companion object {
-        val Factory: ViewModelProvider.Factory = object: ViewModelProvider.Factory {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras,
             ): T {
-                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val application =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return FavoritesViewModel(
                     placeRepository = (application as ApplicationSkumring).dbRepository,
