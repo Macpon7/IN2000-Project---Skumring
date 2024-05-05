@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,20 +30,18 @@ import java.time.format.DateTimeFormatter
 
 data class HomeUiState(
     // Setting up dummy info, default location to OJD
-    val date: LocalDate = LocalDate.of(2000, 1, 1),
-    var long: String = "0",
-    var lat: String = "0",
-    val temp: String = "N/A",
-    val sunsetTime: String = "N/A",
-    val sunsetDate: String = "N/A",
-    val sunsetWeatherIcon: String? = null,
-    val weatherConditions: WeatherConditionsRating = WeatherConditionsRating.POOR,
-    val blueHour: String = "N/A",
-    val goldenHour: String = "N/A",
-    val placeName: String = "",
+    var date: LocalDate = LocalDate.of(2000, 1, 1),
+    var temp: String = "N/A",
+    var sunsetTime: String = "N/A",
+    var sunsetDate: String = "N/A",
+    var sunsetWeatherIcon: String? = null,
+    var weatherConditionsRating: WeatherConditionsRating = WeatherConditionsRating.POOR,
+    var blueHour: String = "N/A",
+    var goldenHour: String = "N/A",
+    var placeName: String = "",
 
-    // Variable to check if the userlocation is ready
-    var userLocationReady: Boolean = false,
+    // Variable to check if we are loading weather info
+    var isLoading: Boolean = true,
 
     var favoritePlaces: List<PlaceInfo> = emptyList(),
 
@@ -69,35 +66,26 @@ class HomeViewModel(
 
     private val userLocationRepository: UserLocationRepository =
         UserLocationRepositoryImpl(context = context)
-    private var userPlace: PlaceInfo = PlaceInfo(
-        id = 0,
-        name = "",
-        description = "",
-        lat = "",
-        long = "",
-        isFavourite = false,
-        isCustomPlace = false,
-        hasNotification = false,
-        images = emptyList(),
-        sunEvents = emptyList()
-    )
+
     private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl()
 
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
 
+    private var long: String = "0"
+    private var lat: String = "0"
+
     private val blueHourIconLightMode = R.drawable.bluesunlightmode
     private val blueHourIconDarkMode = R.drawable.bluesundarkmode
 
     init {
-        //loadHomeScreen()
+        loadHomeScreen()
     }
 
     fun loadHomeScreen() {
         viewModelScope.launch(Dispatchers.IO) {
             loadUserLocation()
             loadFavourites()
-            updateWeather()
         }
     }
 
@@ -115,54 +103,39 @@ class HomeViewModel(
     /**
      *    Updates coordinates used to ask for weather to devices' current coords
      */
-    @SuppressLint("StringFormatInvalid")
     private fun loadUserLocation() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _homeUiState.update { currentHomeUiState ->
-                    val userLoc = userLocationRepository.getUserLocation()
-                    val userLat = userLoc.lat
-                    val userLong = userLoc.long
+                val location = userLocationRepository.getUserLocation()
+
+                // Shorten the amount of decimal points, so we don't fetch new weather info unless
+                // the user has moved at least 111m from the currently saved position
+                val newLat = "%.3f".format(location.lat.toDouble())
+                val newLong = "%.3f".format(location.long.toDouble())
+                Log.d(logTag + "LoadUserLoc", "Lat: $newLat, Long: $newLong")
+
+                // Only fetch place name and weather data if the user's current location is not
+                // the same as the user's location that we have saved
+                if (newLat != lat || newLong != long) {
+                    // First, save the coordinates
+                    lat = newLat
+                    long = newLong
+
                     val userPlaceName = geocodingRepository.getPlaceNameFromCoordinates(
-                        lat = userLat,
-                        long = userLong
+                        lat = location.lat,
+                        long = location.long
                     )
-                    Log.d(logTag + "LoadUserLoc", "Lat: ${userLoc.lat}, Long: ${userLoc.long}")
-                    currentHomeUiState.copy(
-                        lat = userLat,
-                        long = userLong,
-                        placeName = userPlaceName.placeName
-                    )
-                }
-            } catch (e: Exception) {
-                // Practically no way this should happen
-                Log.e(logTag, "Error updating user location", e)
-                _homeUiState.update { currentHomeUiState ->
-                    currentHomeUiState.copy(
-                        showSnackbar = true,
-                        errorMessage = context.getString(R.string.error_message_loadUserLocation)
-                    )
-                }
-            }
-        }
-    }
 
-    private fun updateWeather() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                delay(2000) // make it wait again until it tries again
-
-                // check if the lat and long is updated
-                if (homeUiState.value.lat != "0" && homeUiState.value.long != "0") {
-                    userPlace = placeRepository.getUserLocationPlace(
-                        lat = homeUiState.value.lat,
-                        long = homeUiState.value.long
+                    val userPlace = placeRepository.getUserLocationPlace(
+                        lat = lat,
+                        long = long
                     )
+
 
                     _homeUiState.update { currentHomeUiState ->
-
-                        // will show location when the userlocation is available
+                        Log.d(logTag, "Updating home UI state")
                         currentHomeUiState.copy(
+                            placeName = userPlaceName.placeName,
                             temp = userPlace.sunEvents[0].tempAtEvent,
                             sunsetTime = userPlace.sunEvents[0].time.toLocalTime().format(
                                 DateTimeFormatter.ofPattern("HH':'mm")
@@ -171,7 +144,7 @@ class HomeViewModel(
                                 DateTimeFormatter.ISO_LOCAL_DATE
                             ),
                             sunsetWeatherIcon = userPlace.sunEvents[0].weatherIcon,
-                            weatherConditions = userPlace.sunEvents[0].conditions.weatherRating,
+                            weatherConditionsRating = userPlace.sunEvents[0].conditions.weatherRating,
                             blueHour = userPlace.sunEvents[0].blueHourTime.toLocalTime().format(
                                 DateTimeFormatter.ofPattern("HH':'mm")
                             ),
@@ -179,49 +152,17 @@ class HomeViewModel(
                                 .format(
                                     DateTimeFormatter.ofPattern("HH':'mm")
                                 ),
-                            userLocationReady = true
+                            isLoading = false
                         )
                     }
                 }
-                else {
-                    _homeUiState.update { currentHomeUiState->
-                        currentHomeUiState.copy(
-                            showSnackbar = true,
-                            errorMessage = context.getString(R.string.error_message_getting_placeinfo)
-                        )
-                    }
-                }
-
-                    /*Log.d(logTag, "fetching sunsetweather")
-                    val sunsetWeather = placeInfo.getLocalSunsetWeather(
-                        lat = _homeUiState.value.lat,
-                        long = _homeUiState.value.long)
-                    // Adding try/catch to handle date missing
-                    // Add to snackbar?
-                    val sunsetWeatherDateTime: List<String> = try {
-                        sunsetWeather.time.toString().split("T")
-                    } catch (e: Exception) {
-                        Log.e(logTag, "Failed fetching date",e)
-                        listOf("", "")
-                    }
-                    val sunsetTime = sunsetWeatherDateTime[1]
-                    val sunsetDate = sunsetWeatherDateTime[0]
-                    // REMEMBER IS NULLABLE
-                    val sunsetWeatherIcon = sunsetWeather.icon
-                    currenthomeUiState.copy(
-                        sunsetTime = sunsetTime,
-                        sunsetDate = sunsetDate,
-                        sunsetWeatherIcon = sunsetWeatherIcon,
-                        date = LocalDate.now(),
-                        temp = sunsetWeather.instant.air_temperature.toString(),
-                        weatherConditions = placeInfo.getWeatherConditions(sunsetWeather).weatherRating
-                    )*/
             } catch (e: Exception) {
-                Log.e(logTag, "Error getting sunset, failed updating state", e)
-                _homeUiState.update { currenthomeUiState ->
-                    currenthomeUiState.copy(
+                // Practically no way this should happen
+                Log.e(logTag, "Error updating user location", e)
+                _homeUiState.update { currentHomeUiState ->
+                    currentHomeUiState.copy(
                         showSnackbar = true,
-                        errorMessage = context.getString(R.string.error_message_getting_sunset)
+                        errorMessage = context.getString(R.string.error_message_loadUserLocation)
                     )
                 }
             }
