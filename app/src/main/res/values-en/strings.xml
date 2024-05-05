@@ -163,4 +163,6 @@
     <string name="walk_icon">walk icon</string>
     <string name="drive_icon">drive icon</string>
     <string name="information_icon">information icon</string>
+    <string name="double_arrow">double arrow icon</string>
+    <string name="find_loaction">Find location</string>
 </resources>

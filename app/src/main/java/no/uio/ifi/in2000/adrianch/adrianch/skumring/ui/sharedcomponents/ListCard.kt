@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -152,7 +154,7 @@ fun ListCard(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 8.dp, end = 8.dp)
+                                    .padding(start = 15.dp, end = 8.dp)
                             )
                             {
                                 Text(
@@ -182,28 +184,49 @@ fun ListCard(
                                     }
                                 }
                             }
-                            Row(
-                                //For displaying weather conditions and information popup
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier.padding(start = 8.dp)
-                            ) {//Conditions at sunset
-                                Text(
-                                    text = stringResource(R.string.weather_condition),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    //text changing based on weather conditions, in different textbox because of change of color
-                                    text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-
+                                Row(
+                                    //For displaying weather conditions and information popup
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.End,
+                                    modifier = Modifier.padding(
+                                        start = 15.dp,
+                                        end = 12.dp,
+                                        bottom = 5.dp
                                     )
+                                        . fillMaxWidth()
+                                ) {//Conditions at sunset
+                                    Text(
+                                        text = stringResource(R.string.weather_condition),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                    Text(
+                                        //text changing based on weather conditions, in different textbox because of change of color
+                                        text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+
+                                        )
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 8.dp, vertical = 20.dp)
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.double_arrow),
+                                            contentDescription = stringResource(R.string.double_arrow),
+                                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            modifier = Modifier.align(Alignment.CenterEnd)
+                                                .size(30.dp)
+                                        )
+                                }
+
                             }
                         }
+
                     }
+
                 }
             }
         } else {
@@ -293,8 +316,13 @@ fun ListCard(
                             Row(
                                 //For displaying weather conditions and information popup
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier.padding(start = 8.dp)
+                                horizontalArrangement = Arrangement.End,
+                                modifier = Modifier.padding(
+                                    start = 20.dp,
+                                    end = 15.dp,
+                                    bottom = 8.dp
+                                )
+                                    . fillMaxWidth()
                             ) {//Conditions at sunset
                                 Text(
                                     text = stringResource(R.string.weather_condition),
@@ -309,6 +337,20 @@ fun ListCard(
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                                     fontWeight = FontWeight.Bold,
                                 )
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.double_arrow),
+                                        contentDescription = stringResource(R.string.double_arrow),
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        modifier = Modifier.align(Alignment.CenterEnd)
+                                            .size(35.dp)
+                                    )
+                                }
                             }
                         }
                     }
