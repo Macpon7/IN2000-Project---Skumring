@@ -90,9 +90,6 @@ fun HomeScreen(
     navController: NavHostController
 ) {
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
-    val topBarTitle = homeUiState.placeName.ifEmpty {
-        stringResource(R.string.reverse_geocode_unknown_place)
-    }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val locationPermissions = rememberMultiplePermissionsState(
@@ -140,7 +137,7 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             SkumringTopBar(
-                title = topBarTitle,
+                title = homeUiState.placeName,
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior
             )
