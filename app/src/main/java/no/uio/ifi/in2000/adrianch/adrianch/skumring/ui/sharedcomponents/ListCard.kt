@@ -300,13 +300,13 @@ fun ListCard(
                                         if (place.isFavourite) {
                                             Icon(
                                                 imageVector = Icons.Filled.Favorite,
-                                                contentDescription = "",
+                                                contentDescription = stringResource(id = R.string.favourite_unfilled_icon),
                                                 tint = MaterialTheme.colorScheme.onSecondaryContainer
                                             )
                                         } else {
                                             Icon(
                                                 imageVector = Icons.Filled.FavoriteBorder,
-                                                contentDescription = "",
+                                                contentDescription = stringResource(id = R.string.favourite_filled_icon),
                                                 tint = MaterialTheme.colorScheme.onSecondaryContainer
                                             )
                                         }
