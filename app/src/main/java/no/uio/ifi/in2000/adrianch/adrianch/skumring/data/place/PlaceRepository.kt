@@ -82,7 +82,7 @@ class PlaceRepositoryImpl(
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
 
                 // Insert the image details into the database
-                imageDao.insertSingleImage(ImageEntity(
+                imageDao.insertImage(ImageEntity(
                     placeId = placeId,
                     imgPath = "/placeImages/$fileName",
                     timestamp = timestamp))
@@ -411,7 +411,14 @@ class PlaceRepositoryImpl(
     override suspend fun removeCustomPlace(placeId: Int) {
         val customPlace: Boolean = placeInfoDao.checkIfCustomPlace(placeId)
         if (customPlace){
-            placeInfoDao.deleteCustomPlace(placeId)
+            // Delete all forecasts associated with this place
+            forecastDao.deleteForecasts(placeId = placeId)
+
+            // Delete images associated with this place
+            imageDao.deleteImages(placeId = placeId)
+
+            // Finally, delete the place itself
+            placeInfoDao.deleteCustomPlace(placeId = placeId)
         } else {
             throw IllegalArgumentException("Cannot delete a non-custom place")
         }
