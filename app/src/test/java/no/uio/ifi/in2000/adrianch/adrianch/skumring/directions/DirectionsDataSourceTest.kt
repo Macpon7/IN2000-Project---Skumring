@@ -53,4 +53,70 @@ class DirectionsDataSourceTest {
                 expectedHours == responseHours))
 
     }
+    @Test
+    fun checkCyclingDurationDistance() {
+        val expectedHours = "0"
+        val expectedMinutes = "15"
+        val expectedDistance = "3.5"
+        val responseMinutes = source.convertResponseToTravelDurationDistance(
+            cyclingUioToOsloMetTestData,
+            biking).durationMinutes
+        val responseHours = source.convertResponseToTravelDurationDistance(
+            cyclingUioToOsloMetTestData,
+            biking).durationHours
+        val responseDistance = source.convertResponseToTravelDurationDistance(
+            cyclingUioToOsloMetTestData,
+            biking).distance
+
+        assert((expectedDistance == responseDistance &&
+                expectedMinutes == responseMinutes &&
+                expectedHours == responseHours))
+
+    }
+    @Test
+    fun checkDrivingDurationDistance() {
+        val expectedHours = "0"
+        val expectedMinutes = "15"
+        val expectedDistance = "4.1"
+        val responseMinutes = source.convertResponseToTravelDurationDistance(
+            drivingUioToOsloMetTestData,
+            driving).durationMinutes
+        val responseHours = source.convertResponseToTravelDurationDistance(
+            drivingUioToOsloMetTestData,
+            driving).durationHours
+        val responseDistance = source.convertResponseToTravelDurationDistance(
+            drivingUioToOsloMetTestData,
+            driving).distance
+
+        assert((expectedDistance == responseDistance &&
+                expectedMinutes == responseMinutes &&
+                expectedHours == responseHours))
+
+    }
+
+    /*
+    Testing that a response containing no routs gets converted properly and displays
+    the correct elements.
+     */
+    @Test
+    fun checkDrivingFromNullIsland() {
+        val expectedHours = "0"
+        val expectedMinutes = "0"
+        val expectedDistance = "N/A"
+
+        val responseMinutes = source.convertResponseToTravelDurationDistance(
+            drivingNullIslandToOsloMetTestData,
+            driving).durationMinutes
+        val responseHours = source.convertResponseToTravelDurationDistance(
+            drivingNullIslandToOsloMetTestData,
+            driving).durationHours
+        val responseDistance = source.convertResponseToTravelDurationDistance(
+            drivingNullIslandToOsloMetTestData,
+            driving).distance
+
+        assert((expectedDistance == responseDistance &&
+                expectedMinutes == responseMinutes &&
+                expectedHours == responseHours))
+
+    }
 }
