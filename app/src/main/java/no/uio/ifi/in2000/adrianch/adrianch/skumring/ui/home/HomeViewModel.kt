@@ -248,7 +248,6 @@ class HomeViewModel(
         }
         viewModelScope.launch(Dispatchers.IO) {
             loadUserLocation()
-            loadFavourites()
             updateWeather()
         }
     }
