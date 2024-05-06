@@ -30,6 +30,9 @@
     <string name="home_favourite_places">Favourite places</string>
     <string name="no_favourites">No favourites!</string>
     <string name="error_sunset">Error with getting data</string>
+    <string name="error_place_info">Error with loading place info</string>
+
+    <string name="loading_user_location">Laster inn brukerlokasjon</string>
 
     <string name="conditions_poor">Poor</string>
     <string name="conditions_decent">Decent</string>
@@ -146,6 +149,8 @@
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Distance from your location</string>
     <string name="favourite_icon">Favourite icon</string>
+    <string name="favourite_filled_icon">Favourite icon filled</string>
+    <string name="favourite_unfilled_icon">Favourite icon not filled</string>
     <string name="time">Time</string>
     <string name="close">CLOSE</string>
     <string name="place_icon">"place icon "</string>
@@ -158,4 +163,9 @@
     <string name="walk_icon">walk icon</string>
     <string name="drive_icon">drive icon</string>
     <string name="information_icon">information icon</string>
+    <string name="delete_place_confirmation">Are you sure?</string>
+    <string name="delete_place_info">This place will be permanently deleted!</string>
+    <string name="delete_place_confirm_button">Delete</string>
+    <string name="double_arrow">double arrow icon</string>
+    <string name="find_loaction">Find location</string>
 </resources>

@@ -31,6 +31,9 @@
     <string name="home_favourite_places">Favorittsteder</string>
     <string name="no_favourites">Ingen favoritter!</string>
     <string name="error_sunset">Feil med å få data</string>
+    <string name="error_place_info">Feil med å laste inn stedsinfo</string>
+
+    <string name="loading_user_location">Loading user location</string>
 
     <string name="conditions_poor">Dårlig</string>
     <string name="conditions_decent">Grei nok</string>
@@ -125,7 +128,8 @@
 
     <!--Descriptions of Icons and Images-->
     <string name="favourite_icon">Favorittikon</string>
-
+    <string name="favourite_filled_icon">Favorittikon fylt</string>
+    <string name="favourite_unfilled_icon">Favorittikon uten fyll</string>
 
     <!--WeatherIconCheck-->
     <string name="weather_icon_thunder">Værikon torden</string>
@@ -169,4 +173,9 @@
     <string name="information_icon">informasjonsikon</string>
     <string name="new_place_address_no_results">Fant ingen addresser, har du husket husnummer?</string>
     <string name="new_place_address_many_results">Fant for mange adresser, spesifiser med postnummer og stedsnavn</string>
+    <string name="delete_place_confirmation">Er du sikker?</string>
+    <string name="delete_place_info">Stedet vil bli permanent slettet!</string>
+    <string name="delete_place_confirm_button">Slett</string>
+    <string name="double_arrow">dobbelt pil ikon</string>
+    <string name="find_loaction">"Finn lokasjon "</string>
 </resources>

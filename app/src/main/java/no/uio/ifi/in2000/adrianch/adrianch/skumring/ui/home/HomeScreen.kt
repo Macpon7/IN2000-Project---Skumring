@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -32,6 +32,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -64,7 +65,6 @@ import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
@@ -89,9 +89,6 @@ fun HomeScreen(
     navController: NavHostController
 ) {
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
-    val topBarTitle = homeUiState.placeName.ifEmpty {
-        stringResource(R.string.reverse_geocode_unknown_place)
-    }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val locationPermissions = rememberMultiplePermissionsState(
@@ -105,7 +102,7 @@ fun HomeScreen(
         locationPermissions.launchMultiplePermissionRequest()
     }
 
-    //Load information for the HomeScreen every time the user navigates here
+    //Load the favourites every time the user navigates to this screen
     LaunchedEffect(Unit) {
         homeViewModel.loadHomeScreen()
     }
@@ -139,15 +136,16 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             SkumringTopBar(
-                title = topBarTitle,
+                title = homeUiState.placeName,
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior,
             )
         },
         bottomBar = {
             SkumringBottomBar(navController = navController)
-        }
-    ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
+        },
+        snackbarHost = { SnackbarHost(hostState = homeUiState.snackbarHostState) },
+        ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState()) //makes the column scrollable
@@ -155,13 +153,8 @@ fun HomeScreen(
                 .background(color = MaterialTheme.colorScheme.surface),
         ) {
             SunsetInfoCard(
-                homeUiState.sunsetTime,
-                homeUiState.weatherConditions,
-                homeUiState.temp,
-                homeUiState.sunsetWeatherIcon,
-                homeUiState.goldenHour,
-                homeUiState.blueHour,
-                homeViewModel
+                homeUiState = homeUiState,
+                homeViewModel = homeViewModel
             )
             Text(
                 text = stringResource(R.string.home_favourite_places),
@@ -182,31 +175,26 @@ fun HomeScreen(
  */
 @Composable
 fun SunsetInfoCard(
-    sunsetTime: String,
-    weatherConditions: WeatherConditionsRating,
-    temp: String,
-    icon: String?,
-    goldenHourTime: String,
-    blueHourTime: String,
-    viewModel: HomeViewModel
-) {
+    homeUiState: HomeUiState,
+    homeViewModel: HomeViewModel
+) { //, add goldenHourTime: String, blueHourTime: String later
 
 
     //variable for fetching the blueHourIcon based on light mode and dark mode
-    val blueHourIcon = viewModel.updateBlueHourIcon()
+    val blueHourIcon = homeViewModel.updateBlueHourIcon()
 
 
     var showPopUp by remember { mutableStateOf(false) }
 
-    val goldenHourTimeString = if (goldenHourTime == "00:00") {
+    val goldenHourTimeString = if (homeUiState.goldenHour == "00:00") {
         "--N/A--"
     } else {
-        "$goldenHourTime - $sunsetTime"
+        "${homeUiState.goldenHour} - ${homeUiState.sunsetTime}"
     }
-    val blueHourTimeString = if (blueHourTime == "00:00") {
+    val blueHourTimeString = if (homeUiState.blueHour == "00:00") {
         "--N/A--"
     } else {
-        "$sunsetTime - $blueHourTime"
+        "${homeUiState.sunsetTime} - ${homeUiState.blueHour}"
     }
 
     Card(
@@ -227,7 +215,9 @@ fun SunsetInfoCard(
                     )
                 )
         )
-        {//Displaying the information in the card
+        {
+
+            //Displaying the information in the card
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -236,19 +226,29 @@ fun SunsetInfoCard(
                     text = stringResource(R.string.home_sunset),
                     color = MaterialTheme.colorScheme.primary, //outline
                     style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier
-                        .padding(top = 10.dp)
                 )
                 Box { //Sunset icon and time of sunset, in box because it needs to overlap
-                    Icon(
-                        painter = painterResource(id = R.drawable.sunsetsymbol),
-                        contentDescription = stringResource(id = R.string.homescreen_icon_sunset),
-                        tint = Color.Unspecified,
-                        modifier = Modifier
-                            .size(140.dp)
-                    )
+                    if (homeUiState.isLoading) {
+                        Box (
+                            modifier = Modifier.size(140.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(100.dp),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.sunsetsymbol),
+                            contentDescription = stringResource(id = R.string.homescreen_icon_sunset),
+                            tint = Color.Unspecified,
+                            modifier = Modifier
+                                .size(140.dp)
+                        )
+                    }
                     Text(
-                        text = sunsetTime,
+                        text = homeUiState.sunsetTime,
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
@@ -269,7 +269,7 @@ fun SunsetInfoCard(
                     )
                     Text(
                         //text changing based on weather conditions, in different textbox because of change of color
-                        text = stringResource(id = weatherConditions.stringResourceId),
+                        text = stringResource(id = homeUiState.weatherConditionsRating.stringResourceId),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold,
@@ -286,10 +286,10 @@ fun SunsetInfoCard(
                             .padding(start = 5.dp, bottom = 10.dp)
                     )
                 }
-                if (icon != null) {
+                if (homeUiState.sunsetWeatherIcon != null) {
                     WeatherIconCheck(
-                        weatherCondition = icon,
-                        weatherConditions
+                        weatherCondition = homeUiState.sunsetWeatherIcon!!,
+                        weather = homeUiState.weatherConditionsRating
                     ) //shows the icon that fits the weather forecast
                 } else {
                     Icon( //if icon is null, "show image not found"
@@ -300,7 +300,7 @@ fun SunsetInfoCard(
                     )
                 }
                 Text(
-                    text = "$temp °C",
+                    text = "${homeUiState.temp} °C",
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier
@@ -381,16 +381,15 @@ fun SunsetInfoCard(
                             )
                         )
                     }
-
                 }
             }
         }
-        //close pop up that shows more information about weather conditions
-        if (showPopUp) {
-            WeatherIconPopUp(onClose = {
-                showPopUp = false
-            })
-        }
+    }
+    //close pop up that shows more information about weather conditions
+    if (showPopUp) {
+        WeatherIconPopUp(onClose = {
+            showPopUp = false
+        })
     }
 }
 
@@ -499,24 +498,38 @@ fun HorizontalInfoCardContent(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .padding(
-                            bottom = 8.dp,
-                            start = 8.dp
+                            bottom = 2.dp,
+                            start = 8.dp,
+                            end = 8.dp
                         )
                         .align(Alignment.BottomStart)
                 ) {//Conditions at sunset
                     Text(
                         text = stringResource(R.string.weather_condition) + " ",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         //text changing based on weather conditions, in different textbox because of change of color
                         text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontWeight = FontWeight.Bold
                     )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.double_arrow),
+                            contentDescription = stringResource(R.string.double_arrow),
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                                .size(25.dp)
+                        )
+                    }
                 }
             }
         }
@@ -531,4 +544,3 @@ fun HorizontalInfoCardContent(
 fun HomeScreenTest(navController: NavHostController = rememberNavController()) {
     HomeScreen(navController = navController)
 }
-

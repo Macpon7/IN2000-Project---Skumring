@@ -39,8 +39,10 @@ data class MyPageUiState(
     var errorMessage: String = "",
     // Variable for snackbar:
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
-    // If mypage has locations added they will be shown
-    val showLocations: Boolean = false
+
+    // Variables for deleting custom places
+    var showDeleteDialog: Boolean = false,
+    var deleteId: Int = 0
 )
 
 data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
@@ -409,6 +411,38 @@ class MyPageViewModel(
         }
         viewModelScope.launch(Dispatchers.IO) {
             // TODO: Add what gets updated when the API fails
+        }
+    }
+
+    fun showDeleteDialog(placeId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _myPageUiState.update { currentMyPageUiState ->
+                currentMyPageUiState.copy(
+                    deleteId = placeId,
+                    showDeleteDialog = true
+                )
+            }
+        }
+    }
+
+    fun hideDeleteDialog() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _myPageUiState.update { currentMyPageUiState ->
+                currentMyPageUiState.copy(
+                    showDeleteDialog = false
+                )
+            }
+        }
+    }
+
+    fun deleteCustomPlace() {
+        viewModelScope.launch (Dispatchers.IO) {
+            placeRepository.removeCustomPlace(placeId = myPageUiState.value.deleteId)
+            _myPageUiState.update { currentMyPageUiState ->
+                currentMyPageUiState.copy(
+                    showDeleteDialog = false,
+                    places = placeRepository.getCustomPlaces())
+            }
         }
     }
 

@@ -15,6 +15,10 @@ android {
         schemaDirectory("$projectDir/schemas")
     }
 
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
     defaultConfig {
         applicationId = "no.uio.ifi.in2000.adrianch.adrianch.skumring"
         minSdk = 26

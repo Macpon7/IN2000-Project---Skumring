@@ -33,13 +33,24 @@ class GeocodingDataSource {
      */
     suspend fun fetchReverseGeocodeLocation(lat: String, long: String): GeocodeLocation {
         val apiResponse: ReverseGeocoding = fetchReverseGeocodeResponse(lat = lat, long = long)
+        return convertReverseGeocodingResponse(apiResponse)
+    }
+    /*
+    Split up and made public for testing purposes
+     */
+    fun convertReverseGeocodingResponse(response: ReverseGeocoding): GeocodeLocation {
         val placeName: String = try {
-            apiResponse.features[0].properties.context.place.name
+            response.features[0].properties.context.place.name
         } catch (e: Exception) {
             Log.d(logTag, "Error: Placename not found", e)
             // Returns empty string if user is in area without a place name
             ""
         }
+
+        val lat = response.features[0].geometry.coordinates[1].toString()
+        val long = response.features[0].geometry.coordinates[0].toString()
+
+        Log.d(logTag, "Got place: $placeName from coords: $lat, $long")
         return GeocodeLocation(lat = lat, long = long, placeName = placeName)
     }
     /*

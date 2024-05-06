@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -14,12 +15,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,51 +54,13 @@ import java.time.LocalDateTime
 /**
  * Cards with information about places
  */
-@Preview
-@Composable
-fun ListCardPreview() {
-    ListCard(
-        place = PlaceInfo(
-            id = 0,
-            name = "Holmenkollen",
-            description = "Et fantastisk fint sted å ta bilde av dine nære og kjære under en solnedgang som ikke kan sammenlignes med noe annet",
-            lat = "",
-            long = "",
-            isFavourite = false,
-            isCustomPlace = false,
-            hasNotification = false,
-            images = emptyList(),
-            sunEvents = listOf(
-                SunEvent(
-                    time = LocalDateTime.now(),
-                    tempAtEvent = "4.7",
-                    weatherIcon = "suncloudy",
-                    conditions = WeatherConditions(
-                        weatherRating = WeatherConditionsRating.EXCELLENT,
-                        cloudConditionLow = CloudConditions.CLEAR,
-                        cloudConditionHigh = CloudConditions.CLEAR,
-                        cloudConditionMedium = CloudConditions.CLEAR,
-                        airCondition = AirConditions.LOW,
-                    ),
-                    blueHourTime = LocalDateTime.now(),
-                    goldenHourTime = LocalDateTime.now()
-                )
-            )
-        ),
-        onItemClick = {},
-        onFavouriteClick = {}
-    )
-}
-
-/**
- * Cards with information about places
- */
 @Composable
 fun ListCard(
     place: PlaceInfo,
     onItemClick: () -> Unit,
     onFavouriteClick: () -> Unit,
-) {
+    onDeleteClick: () -> Unit = {}
+    ) {
     BoxWithConstraints {
         if (maxWidth < 400.dp) {
             Card(
@@ -109,7 +74,7 @@ fun ListCard(
                 Box(
                     modifier = Modifier
                         .height(150.dp)
-                        .background(Color.LightGray, RoundedCornerShape((0.dp)))
+                        .background(Color.LightGray)
                         .fillMaxWidth()
                 ) {
                     if (place.isCustomPlace) {
@@ -141,66 +106,92 @@ fun ListCard(
                 }
                 Box( //Box for content description
                     modifier = Modifier
-                        .height(120.dp)
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.primaryContainer)
                 ) {
-                    LazyColumn {
-                        item {
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
+                    Column (
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 15.dp, end = 8.dp)
+                        )
+                        {
+                            Text(
+                                text = place.name,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 8.dp, end = 8.dp)
+                                    .padding(vertical = 2.dp),
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                style = MaterialTheme.typography.headlineSmall,
                             )
-                            {
-                                Text(
-                                    text = place.name,
-                                    modifier = Modifier
-                                        .padding(vertical = 2.dp),
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    style = MaterialTheme.typography.headlineSmall,
-                                )
-                                Row {
-                                    IconButton(onClick = { onFavouriteClick() }) {
-                                        if (place.isFavourite) {
-                                            Icon(
-                                                imageVector = Icons.Filled.Favorite,
-                                                contentDescription = "",
-                                                tint = MaterialTheme.colorScheme.secondary
-                                            )
-                                        } else {
-                                            Icon(
-                                                imageVector = Icons.Filled.FavoriteBorder,
-                                                contentDescription = "",
-                                                tint = MaterialTheme.colorScheme.secondary
-                                            )
+                            Row {
+                                if (place.isCustomPlace) {
+                                    IconButton(onClick = onDeleteClick) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Delete,
+                                            contentDescription = "",
+                                            tint = MaterialTheme.colorScheme.secondary)
+                                    }
+                                }
+                                IconButton(onClick = onFavouriteClick) {
+                                    if (place.isFavourite) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Favorite,
+                                            contentDescription = "",
+                                            tint = MaterialTheme.colorScheme.secondary
+                                        )
+                                    } else {
+                                        Icon(
+                                            imageVector = Icons.Filled.FavoriteBorder,
+                                            contentDescription = "",
+                                            tint = MaterialTheme.colorScheme.secondary
+                                        )
 
-                                        }
                                     }
                                 }
                             }
-                            Row(
-                                //For displaying weather conditions and information popup
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier.padding(start = 8.dp)
-                            ) {//Conditions at sunset
-                                Text(
-                                    text = stringResource(R.string.weather_condition),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    //text changing based on weather conditions, in different textbox because of change of color
-                                    text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        }
+                        Row(
+                            //For displaying weather conditions and information popup
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.padding(
+                                start = 15.dp,
+                                end = 12.dp,
+                                bottom = 5.dp
+                            )
+                                . fillMaxWidth()
+                        ) {//Conditions at sunset
+                            Text(
+                                text = stringResource(R.string.weather_condition),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                //text changing based on weather conditions, in different textbox because of change of color
+                                text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                                    )
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 20.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.double_arrow),
+                                    contentDescription = stringResource(R.string.double_arrow),
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                        .size(30.dp)
+                                )
                             }
                         }
                     }
@@ -253,61 +244,79 @@ fun ListCard(
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.primaryContainer)
                 ) {
-                    LazyColumn {
-                        item {
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically,
+                    Column (
+
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 8.dp, end = 8.dp),
+                        )
+                        {
+                            Text(
+                                text = place.name,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 8.dp, end = 8.dp),
+                                    .padding(vertical = 2.dp),
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                style = MaterialTheme.typography.headlineMedium
                             )
-                            {
-                                Text(
-                                    text = place.name,
-                                    modifier = Modifier
-                                        .padding(vertical = 2.dp),
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    style = MaterialTheme.typography.headlineMedium
-                                )
-                                Spacer(modifier = Modifier.width(20.dp))
-                                Row {
-                                    IconButton(onClick = { onFavouriteClick() }) {
-                                        if (place.isFavourite) {
-                                            Icon(
-                                                imageVector = Icons.Filled.Favorite,
-                                                contentDescription = "",
-                                                tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                            )
-                                        } else {
-                                            Icon(
-                                                imageVector = Icons.Filled.FavoriteBorder,
-                                                contentDescription = "",
-                                                tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                            )
-                                        }
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Row {
+                                IconButton(onClick = { onFavouriteClick() }) {
+                                    if (place.isFavourite) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Favorite,
+                                            contentDescription = stringResource(id = R.string.favourite_unfilled_icon),
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    } else {
+                                        Icon(
+                                            imageVector = Icons.Filled.FavoriteBorder,
+                                            contentDescription = stringResource(id = R.string.favourite_filled_icon),
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
                                     }
                                 }
                             }
-                            Row(
-                                //For displaying weather conditions and information popup
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier.padding(start = 8.dp)
-                            ) {//Conditions at sunset
-                                Text(
-                                    text = stringResource(R.string.weather_condition),
-                                    style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    //text changing based on weather conditions, in different textbox because of change of color
-                                    text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
-                                    style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    fontWeight = FontWeight.Bold,
+                        }
+                        Row(
+                            //For displaying weather conditions and information popup
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                start = 20.dp,
+                                end = 15.dp,
+                                bottom = 8.dp
+                            )
+                        ) {//Conditions at sunset
+                            Text(
+                                text = stringResource(R.string.weather_condition),
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                //text changing based on weather conditions, in different textbox because of change of color
+                                text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.double_arrow),
+                                    contentDescription = stringResource(R.string.double_arrow),
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                        .size(35.dp)
                                 )
                             }
                         }
@@ -316,4 +325,43 @@ fun ListCard(
             }
         }
     }
+}
+
+/**
+ * Cards with information about places
+ */
+@Preview
+@Composable
+fun ListCardPreview() {
+    ListCard(
+        place = PlaceInfo(
+            id = 0,
+            name = "Holmenkollen",
+            description = "Et fantastisk fint sted å ta bilde av dine nære og kjære under en solnedgang som ikke kan sammenlignes med noe annet",
+            lat = "",
+            long = "",
+            isFavourite = false,
+            isCustomPlace = false,
+            hasNotification = false,
+            images = emptyList(),
+            sunEvents = listOf(
+                SunEvent(
+                    time = LocalDateTime.now(),
+                    tempAtEvent = "4.7",
+                    weatherIcon = "suncloudy",
+                    conditions = WeatherConditions(
+                        weatherRating = WeatherConditionsRating.EXCELLENT,
+                        cloudConditionLow = CloudConditions.CLEAR,
+                        cloudConditionHigh = CloudConditions.CLEAR,
+                        cloudConditionMedium = CloudConditions.CLEAR,
+                        airCondition = AirConditions.LOW,
+                    ),
+                    blueHourTime = LocalDateTime.now(),
+                    goldenHourTime = LocalDateTime.now()
+                )
+            )
+        ),
+        onItemClick = {},
+        onFavouriteClick = {}
+    )
 }

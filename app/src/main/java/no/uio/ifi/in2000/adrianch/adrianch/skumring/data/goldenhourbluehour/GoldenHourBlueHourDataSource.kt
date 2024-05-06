@@ -9,6 +9,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.GoldenHourBlueHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.SunriseSunset
+import org.jetbrains.annotations.VisibleForTesting
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -58,21 +59,29 @@ class GoldenHourBlueHourDataSource {
             // Fetches info for Central European TZ
             val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&date=$dateString"
             val response = fetchSunriseSunset(path)
-            Log.d(logTag, response.results.golden_hour ?: "")
-            val goldenHourDateTime: LocalDateTime = formatTime(
-                time = response.results.golden_hour ?: "",
-                date = dateString)
-            val blueHourDateTime: LocalDateTime = formatTime(
-                time = response.results.dusk ?: "",
-                date = dateString)
-            Log.d(logTag, "Golden hour: $goldenHourDateTime, Blue hour: $blueHourDateTime")
 
-            return GoldenHourBlueHour(goldenHour = goldenHourDateTime, blueHour = blueHourDateTime)
+            return convertResponseToGoldenHourBlueHour(response)
+
         } catch (e: Exception) {
             Log.e(logTag, "Failed fetching Golden/Blue Hour", e)
             throw e
         }
 
+    }
+    /*
+    Function that does the conversion, separated and made public for testing purposes
+     */
+    fun convertResponseToGoldenHourBlueHour(
+        response: SunriseSunset,
+    ): GoldenHourBlueHour {
+        val goldenHourDateTime: LocalDateTime = formatTime(
+            time = response.results.golden_hour ?: "",
+            date = response.results.date)
+        val blueHourDateTime: LocalDateTime = formatTime(
+            time = response.results.dusk ?: "",
+            date = response.results.date)
+        Log.d(logTag, "Golden hour: $goldenHourDateTime, Blue hour: $blueHourDateTime")
+        return GoldenHourBlueHour(goldenHour = goldenHourDateTime, blueHour = blueHourDateTime)
     }
 
     /**
