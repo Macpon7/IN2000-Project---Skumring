@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
-import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -12,8 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepository
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
@@ -36,9 +33,7 @@ data class MyPageUiState(
 )
 
 class MyPageViewModel(
-    private val placeRepository: PlaceRepository,
-    private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl(),
-    private val context: Context
+    private val placeRepository: PlaceRepository
 ) : ViewModel() {
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
@@ -169,8 +164,7 @@ class MyPageViewModel(
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as ApplicationSkumring
 
                 return MyPageViewModel(
-                    placeRepository = application.dbRepository,
-                    context = application.context
+                    placeRepository = application.dbRepository
                 ) as T
             }
         }
