@@ -39,7 +39,7 @@ interface PlaceRepository {
     suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo
     suspend fun getFavourites(): List<PlaceInfo>
     suspend fun getCustomPlaces(): List<PlaceInfo>
-    suspend fun addCustomPlace(place: PlaceInfo): Int
+    suspend fun addCustomPlace(place: PlaceInfo, imageUri: Uri, imageTimestamp: LocalDate, context: Context)
     suspend fun removeCustomPlace(placeId: Int)
     suspend fun makeFavourite(placeId: Int)
     suspend fun unmakeFavourite(placeId: Int)
@@ -380,11 +380,15 @@ class PlaceRepositoryImpl(
     }
 
 
-//works but should take another input
     /**
      * Inserts a new place in the database, and returns the placeId value assigned to this place
      */
-    override suspend fun addCustomPlace(place: PlaceInfo): Int{
+    override suspend fun addCustomPlace(
+        place: PlaceInfo,
+        imageUri: Uri,
+        imageTimestamp: LocalDate,
+        context: Context
+        ) {
         //input is PlaceInfo object
         val placeInfoEntity = PlaceInfoEntity(
             name = place.name,
@@ -399,10 +403,10 @@ class PlaceRepositoryImpl(
         placeInfoDao.insertCustomPlace(placeInfoEntity)
 
         // Calling this will fetch weather data for the newly added custom place, and let us get its ID
-        val allCustomPlaces = getCustomPlaces()
-
         //The newest custom place will always be the last in the list, here we fetch its ID and returns to the caller
-        return allCustomPlaces.last().id
+        val newId = getCustomPlaces().last().id
+
+        saveImageToInternalStorage(context = context, contentUri = imageUri, placeId = newId, timestamp = imageTimestamp)
     }
 
     /**
