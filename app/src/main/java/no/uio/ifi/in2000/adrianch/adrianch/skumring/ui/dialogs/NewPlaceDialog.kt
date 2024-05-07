@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
@@ -123,12 +122,10 @@ fun NewPlaceDialog(
                 Text(
                     text = stringResource(R.string.mypage_fill_in_fields),
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(
-                        bottom = 4.dp,
-                        top = 6.dp
-                    ),
-                    fontSize = 16.sp
+                        bottom = 4.dp
+                    )
                 )
 
                 // String with name
@@ -139,7 +136,7 @@ fun NewPlaceDialog(
                     onValueChange = { newPlaceViewModel.updateNewLocationName(it) },
                     label = {
                         Text(
-                            text = "${stringResource(R.string.location_name)} *",
+                            text = stringResource(R.string.location_name),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },
@@ -171,7 +168,7 @@ fun NewPlaceDialog(
                     onValueChange = { newPlaceViewModel.updateNewLocationAddress(it) },
                     label = {
                         Text(
-                            text = "${stringResource(R.string.address)} *",
+                            text = stringResource(R.string.address),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },
@@ -221,6 +218,7 @@ fun NewPlaceDialog(
                         .padding(all = 2.dp),
                     enabled = false,
                     readOnly = true,
+                    supportingText = {},
                     isError = newPlaceUiState.dateTextFieldError,
                     label = {
                         Text(
@@ -251,7 +249,7 @@ fun NewPlaceDialog(
                     onValueChange = { newPlaceViewModel.updateNewLocationDescription(it) },
                     label = {
                         Text(
-                            text = "${stringResource(R.string.description)} *",
+                            text = stringResource(R.string.description),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },
