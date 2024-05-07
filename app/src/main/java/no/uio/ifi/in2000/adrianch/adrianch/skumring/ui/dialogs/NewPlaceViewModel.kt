@@ -49,9 +49,6 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     var description: String = "",
     var descriptionIsMissing: Boolean = false,
 
-    // Variables for picture:
-    var imageUri: Uri? = null,
-
     // Show the date picker when the user want to pick a date
     var showDatePicker: Boolean = false,
 
@@ -68,9 +65,11 @@ class NewPlaceViewModel(
     private val placeRepository: PlaceRepository,
     private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl(),
     private val context: Context
-    ) : ViewModel() {
+) : ViewModel() {
     private val _newPlaceUiState = MutableStateFlow(NewPlaceUiState())
     val newPlaceUiState: StateFlow<NewPlaceUiState> = _newPlaceUiState
+
+    var imageUri: Uri? = null
 
     init {
 
@@ -93,7 +92,6 @@ class NewPlaceViewModel(
                     addressNoResults = false,
                     description = "",
                     descriptionIsMissing = false,
-                    imageUri = null,
                     // TODO add bitmap ?
                     pickedDate = LocalDate.now(),
                     missingInfo = false
@@ -103,8 +101,12 @@ class NewPlaceViewModel(
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    fun addLocation() {
+    fun addLocation(hideDialog: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
+            // 1. Validate inputs
+            // 2. If inputs are invalid, update UiState to reflect that
+            // 3. If inputs are valid, add new place and close dialog
+
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 var isNameMissing = false
                 var isDescriptionMissing = false
@@ -141,6 +143,10 @@ class NewPlaceViewModel(
                     isReady = false
                 }
 
+                if (imageUri == null) {
+                    isReady = false
+                }
+
                 //TODO add option to use User's current location instead of writing in an address
 
                 if (!isReady) {
@@ -165,37 +171,20 @@ class NewPlaceViewModel(
                             hasNotification = false,
                             images = emptyList(),
                             sunEvents = emptyList()
-                        )
+                        ),
+                        // If imageUri is null we will never get to this code
+                        imageUri = imageUri!!,
+                        imageTimestamp = currentNewPlaceUiState.pickedDate,
+                        context = context
                     )
 
-                    Log.d(TAG, "In MyPageViewModel Uri is ${newPlaceUiState.value.imageUri}")
-                    newPlaceUiState.value.imageUri?.let {
-                        addImage(
-                            contentUri = it,
-                            placeId = newId,
-                            timestamp = newPlaceUiState.value.pickedDate
-                        ) //TODO make this the placeId that is generated for the new place
-                        Log.d(TAG, "saving image")
-                    }
+                    hideDialog()
                     currentNewPlaceUiState.copy()
                 }
             }
         }
     }
 
-    /**
-     * The function will add an image to the database by adding the path to the internal location where the image is stored
-     */
-    private suspend fun addImage(contentUri: Uri, placeId: Int, timestamp: LocalDate) {
-        Log.d(TAG, "contentUri: $contentUri, placeId is $placeId")
-        val succeeded: Boolean = placeRepository.saveImageToInternalStorage(
-            context = context,
-            contentUri = contentUri,
-            placeId = placeId,
-            timestamp = timestamp
-        )
-        Log.d(TAG, "is image added to internal storage: $succeeded")
-    }
 
     /**
      * Update if datepicker should be shown
