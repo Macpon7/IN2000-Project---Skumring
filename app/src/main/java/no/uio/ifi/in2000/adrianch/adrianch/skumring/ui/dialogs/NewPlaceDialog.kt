@@ -279,7 +279,7 @@ fun NewPlaceDialog(
                 // Button to add photo
                 val launcher =
                     rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-                        newPlaceUiState.imageUri = uri
+                        newPlaceViewModel.imageUri = uri
                         Log.d(TAG, "imageUri is $newPlaceUiState.imageUri")
                     }
 
