@@ -29,7 +29,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -51,10 +50,6 @@ fun NewPlaceDialog(
     hideDialog: () -> Unit,
     newPlaceViewModel: NewPlaceViewModel = viewModel(factory = NewPlaceViewModel.Factory)
 ) {
-    LaunchedEffect(Unit) {
-        newPlaceViewModel.resetNewPlaceUiState()
-    }
-
     val newPlaceUiState: NewPlaceUiState by newPlaceViewModel.newPlaceUiState.collectAsState()
 
     // TODO keep the change when the phone change from standing to lying
@@ -307,7 +302,7 @@ fun NewPlaceDialog(
 
                 // Button that is pressed when the location is added:
                 Button(
-                    onClick = { newPlaceViewModel.addLocation() },
+                    onClick = { newPlaceViewModel.addLocation(hideDialog = hideDialog) },
                     modifier = Modifier.padding(vertical = 8.dp),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
