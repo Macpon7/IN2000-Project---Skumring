@@ -127,8 +127,8 @@ class HomeViewModel(
                     )
 
                     val userPlace = placeRepository.getUserLocationPlace(
-                        lat = lat,
-                        long = long
+                        lat = location.lat,
+                        long = location.long
                     )
 
 
