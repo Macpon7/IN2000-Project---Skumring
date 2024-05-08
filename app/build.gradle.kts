@@ -148,5 +148,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.google.accompanist:accompanist-permissions:0.31.3-beta")
 
+    // For splash screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
 
 }
