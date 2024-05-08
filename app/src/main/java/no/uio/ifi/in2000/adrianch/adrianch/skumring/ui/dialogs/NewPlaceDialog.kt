@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -31,15 +32,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
-import java.time.format.DateTimeFormatter
 
 private const val TAG = "NewPlaceDialog"
 
@@ -116,27 +116,27 @@ fun NewPlaceDialog(
             )
         ) {
             Column(
-                modifier = Modifier.padding(all = 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.padding(all = 8.dp)
             ) {
                 Text(
                     text = stringResource(R.string.mypage_fill_in_fields),
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(
-                        bottom = 4.dp
-                    )
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
 
-                // String with name
+                // Input field for new place name
                 OutlinedTextField(
-                    modifier = Modifier.padding(all = 2.dp),
-                    value = newPlaceUiState.locationName,
+                    modifier = Modifier.fillMaxWidth(),
+                    value = newPlaceUiState.name,
                     // Take variable from newPlaceUiState
                     onValueChange = { newPlaceViewModel.updateNewLocationName(it) },
                     label = {
                         Text(
-                            text = stringResource(R.string.location_name),
+                            text = stringResource(R.string.new_place_location_name),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },
@@ -145,30 +145,21 @@ fun NewPlaceDialog(
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Info,
-                            contentDescription = stringResource(id = R.string.location_name),
+                            contentDescription = stringResource(id = R.string.new_place_location_name),
                         )
                     },
-                    supportingText = {
-                        if (newPlaceUiState.locationNameIsMissing) {
-                            Text(
-                                text = stringResource(R.string.error_location_name),
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    },
                     colors = outlinedTextFieldColors,
-                    isError = (newPlaceUiState.locationNameIsMissing)
+                    isError = (newPlaceUiState.nameError)
                 )
 
-                // Brukeren skal skrive inn addresse:
+                // input field for new place address
                 OutlinedTextField(
-                    modifier = Modifier.padding(all = 2.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     value = newPlaceUiState.address,
                     onValueChange = { newPlaceViewModel.updateNewLocationAddress(it) },
                     label = {
                         Text(
-                            text = stringResource(R.string.address),
+                            text = stringResource(R.string.new_place_address),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },
@@ -177,101 +168,37 @@ fun NewPlaceDialog(
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.LocationOn,
-                            contentDescription = stringResource(id = R.string.address),
+                            contentDescription = stringResource(id = R.string.new_place_address),
                         )
-                    },
-                    supportingText = {
-                        if (newPlaceUiState.addressIsMissing) {
-                            Text(
-                                text = stringResource(R.string.error_address),
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        } else if (newPlaceUiState.addressNoResults) {
-                            Text(
-                                text = stringResource(id = R.string.new_place_address_no_results),
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        } else if (newPlaceUiState.addressTooManyResults) {
-                            Text(
-                                text = stringResource(id = R.string.new_place_address_many_results),
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        }
                     },
                     colors = outlinedTextFieldColors,
-                    isError = newPlaceUiState.addressIsMissing
-                )
-                // Time skal lages made datepicker dialog
-                OutlinedTextField(
-                    value = newPlaceUiState.pickedDate.format(
-                        DateTimeFormatter.ISO_LOCAL_DATE
-                    ),
-                    onValueChange = { },
-                    modifier = Modifier
-                        .clickable(
-                            enabled = true,
-                            onClick = {
-                                newPlaceViewModel.showDatePicker()
-                            }
-                        )
-                        .padding(all = 2.dp),
-                    enabled = false,
-                    readOnly = true,
-                    supportingText = {},
-                    isError = newPlaceUiState.dateTextFieldError,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.choose_date),
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.DateRange,
-                            contentDescription = stringResource(id = R.string.time),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        // Make it look not disabled
-                        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        disabledIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+                    isError = newPlaceUiState.addressError
                 )
 
-                // String with description
+
+
+                // Input field for new place description
                 OutlinedTextField(
-                    modifier = Modifier.padding(all = 2.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     value = newPlaceUiState.description,
                     onValueChange = { newPlaceViewModel.updateNewLocationDescription(it) },
                     label = {
                         Text(
-                            text = stringResource(R.string.description),
+                            text = stringResource(R.string.new_place_description),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    singleLine = true,
+                    singleLine = false,
+                    maxLines = 3,
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Create,
-                            contentDescription = stringResource(id = R.string.description)
+                            contentDescription = stringResource(id = R.string.new_place_description)
                         )
                     },
-                    supportingText = {
-                        if (newPlaceUiState.descriptionIsMissing) {
-                            Text(
-                                text = stringResource(R.string.error_description),
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    },
                     colors = outlinedTextFieldColors,
-                    isError = newPlaceUiState.descriptionIsMissing,
+                    isError = newPlaceUiState.descriptionError,
                 )
 
                 // Button to add photo
@@ -298,6 +225,43 @@ fun NewPlaceDialog(
                     )
                 }
 
+                // Input field for photo timestamp
+                OutlinedTextField(
+                    value = newPlaceUiState.imageDateString,
+                    onValueChange = { },
+                    modifier = Modifier
+                        .clickable(
+                            enabled = true,
+                            onClick = {
+                                newPlaceViewModel.showDatePicker()
+                            }
+                        )
+                        .fillMaxWidth(),
+                    enabled = false,
+                    readOnly = true,
+                    isError = newPlaceUiState.dateTextFieldError,
+                    label = {
+                        Text(
+                            text = stringResource(R.string.new_place_image_date),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.DateRange,
+                            contentDescription = stringResource(id = R.string.time),
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        // Make it look not disabled
+                        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        disabledTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        disabledIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                )
+
                 // Button that is pressed when the location is added:
                 Button(
                     onClick = { newPlaceViewModel.addLocation(hideDialog = hideDialog) },
@@ -305,12 +269,12 @@ fun NewPlaceDialog(
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
-                        text = stringResource(R.string.add_location),
+                        text = stringResource(R.string.new_place_add_location),
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Icon(
                         imageVector = Icons.Outlined.Check,
-                        contentDescription = stringResource(id = R.string.add_location),
+                        contentDescription = stringResource(id = R.string.new_place_add_location),
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
