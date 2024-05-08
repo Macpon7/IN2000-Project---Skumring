@@ -532,7 +532,7 @@ fun BottomSheetContent(
             }
             //description string
             Text(
-                text = stringResource(R.string.description),
+                text = stringResource(R.string.new_place_description),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier

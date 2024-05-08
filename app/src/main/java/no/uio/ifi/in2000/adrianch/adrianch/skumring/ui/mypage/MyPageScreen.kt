@@ -127,7 +127,7 @@ fun MyPageScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(id = R.string.add_location)
+                    contentDescription = stringResource(id = R.string.new_place_add_location)
                 )
             }
         }

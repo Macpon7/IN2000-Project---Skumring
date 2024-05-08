@@ -98,13 +98,13 @@
     <!-- MyPageScreen -->
     <string name="no_location">You have no locations saved yet</string>
     <string name="new_location">New location added!</string>
-    <string name="mypage_add_photo">Add photo</string>
-    <string name="location_name">Location name</string>
-    <string name="address">Location address</string>
-    <string name="choose_date">Choose date</string>
-    <string name="description">Description</string>
+    <string name="new_place_add_photo">Add photo</string>
+    <string name="new_place_location_name">Location name</string>
+    <string name="new_place_address">Location address</string>
+    <string name="new_place_image_date">Choose date</string>
+    <string name="new_place_description">Description</string>
     <string name="add_photo">Add photo</string>
-    <string name="add_location">Add location</string>
+    <string name="new_place_add_location">Add location</string>
     <string name="cancel">Cancel</string>
     <string name="error_location_name">Write a name</string>
     <string name="error_address">Write an address</string>
