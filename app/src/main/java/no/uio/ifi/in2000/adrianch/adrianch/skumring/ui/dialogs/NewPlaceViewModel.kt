@@ -3,9 +3,6 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -21,46 +18,12 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 private const val TAG = "NewPlaceViewModel"
 
-data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
-    var locationName: String = "",
-    var locationNameIsMissing: Boolean = false,
 
-    var address: String = "",
-    var addressIsMissing: Boolean = false,
-    var addressNoResults: Boolean = false,
-    var addressTooManyResults: Boolean = false,
-
-    var datePickerState: DatePickerState = DatePickerState(
-        initialSelectedDateMillis = null,
-        initialDisplayedMonthMillis = null,
-        yearRange = DatePickerDefaults.YearRange,
-        initialDisplayMode = DisplayMode.Picker
-    ),
-
-    // This will not make an error since if it is not picked it will be the current date:
-    var pickedDate: LocalDate = LocalDate.now(),
-
-    var description: String = "",
-    var descriptionIsMissing: Boolean = false,
-
-    // Show the date picker when the user want to pick a date
-    var showDatePicker: Boolean = false,
-
-    // Show an error if the use pressed ok without picking a date
-    var datePickerError: Boolean = false,
-
-    // Show an error if user closes date picker without picking a date
-    var dateTextFieldError: Boolean = false,
-
-    // Check if something in the textfield is missing
-    var missingInfo: Boolean = false
-)
 class NewPlaceViewModel(
     private val placeRepository: PlaceRepository,
     private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl(),
@@ -84,17 +47,16 @@ class NewPlaceViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
                 currentNewPlaceUiState.copy(
-                    locationName = "",
-                    locationNameIsMissing = false,
+                    name = "",
+                    nameError = false,
                     address = "",
-                    addressIsMissing = false,
+                    addressError = false,
                     addressTooManyResults = false,
                     addressNoResults = false,
                     description = "",
-                    descriptionIsMissing = false,
+                    descriptionError = false,
                     // TODO add bitmap ?
-                    pickedDate = LocalDate.now(),
-                    missingInfo = false
+                    imageDate = null
                 )
             }
         }
@@ -117,7 +79,7 @@ class NewPlaceViewModel(
                 var isReady = true
 
                 // Check that input fields are good
-                if (currentNewPlaceUiState.locationName == "") {
+                if (currentNewPlaceUiState.name == "") {
                     isNameMissing = true
                     isReady = false
                 }
@@ -151,18 +113,19 @@ class NewPlaceViewModel(
 
                 if (!isReady) {
                     currentNewPlaceUiState.copy(
-                        locationNameIsMissing = isNameMissing,
-                        addressIsMissing = isAddressMissing,
-                        descriptionIsMissing = isDescriptionMissing,
+                        nameError = isNameMissing,
+                        addressError = isAddressMissing,
+                        descriptionError = isDescriptionMissing,
                         addressNoResults = addressNoResults,
-                        addressTooManyResults = addressTooManyResults
+                        addressTooManyResults = addressTooManyResults,
+                        missingInfo = true
                     )
                 } else {
                     Log.d(TAG, "Trying to add new custom place to DB")
                     val newId = placeRepository.addCustomPlace(
                         PlaceInfo(
                             id = 0,
-                            name = currentNewPlaceUiState.locationName,
+                            name = currentNewPlaceUiState.name,
                             description = currentNewPlaceUiState.description,
                             lat = addresses.first().lat,
                             long = addresses.first().long,
@@ -174,7 +137,7 @@ class NewPlaceViewModel(
                         ),
                         // If imageUri is null we will never get to this code
                         imageUri = imageUri!!,
-                        imageTimestamp = currentNewPlaceUiState.pickedDate,
+                        imageTimestamp = currentNewPlaceUiState.imageDate!!,
                         context = context
                     )
 
@@ -236,7 +199,7 @@ class NewPlaceViewModel(
                     currentNewPlaceUiState.copy(
                         datePickerError = false,
                         showDatePicker = !currentNewPlaceUiState.showDatePicker,
-                        pickedDate = date
+                        imageDate = date
                     )
                 }
             }
@@ -250,7 +213,7 @@ class NewPlaceViewModel(
     fun updateNewLocationName(locationName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _newPlaceUiState.update { currentNewPlaceUiState ->
-                currentNewPlaceUiState.copy(locationName = locationName)
+                currentNewPlaceUiState.copy(name = locationName)
             }
         }
     }
