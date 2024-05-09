@@ -4,6 +4,8 @@ import android.net.Uri
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.GeocodeLocation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import java.time.LocalDate
+import kotlin.reflect.KSuspendFunction1
+import kotlin.reflect.KSuspendFunction3
 
 sealed interface NewPlaceEvent{
     data class UpdateName(val newName: String): NewPlaceEvent
@@ -14,9 +16,8 @@ sealed interface NewPlaceEvent{
     data object SaveSelectedDate: NewPlaceEvent
     data object ResetUiState: NewPlaceEvent
     data class SaveNewPlace(
-        val getCoordinatesFromAddress: (address: String) -> List<GeocodeLocation>,
-        val addCustomPlace: (place: PlaceInfo, imageUri: Uri, imageTimestamp: LocalDate, context: Context) -> Unit,
-        val context: Context,
+        val getCoordinatesFromAddress: KSuspendFunction1<String, List<GeocodeLocation>>,
+        val addCustomPlace: KSuspendFunction3<PlaceInfo, Uri, LocalDate, Unit>,
         val hideDialog: () -> Unit
     ): NewPlaceEvent
 
