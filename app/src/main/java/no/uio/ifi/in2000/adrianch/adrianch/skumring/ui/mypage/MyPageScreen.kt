@@ -169,7 +169,11 @@ fun ContentMyPage(
     //When the user click AddLocationButton this is shown
     if (myPageUiState.showNewPlaceDialog) {
         NewPlaceDialog(
-            hideDialog = {myPageViewModel.hideNewPlaceDialog()},
+            hideDialog = { myPageViewModel.hideNewPlaceDialog() },
+            onEvent = { myPageViewModel.onNewPlaceDialogEvent(it) },
+            getCoordinatesFromAddress = myPageViewModel.getCoords,
+            addCustomPlace = myPageViewModel.addPlace,
+            uiStateFlow = myPageViewModel.newPlaceUiState
             )
     }
 
