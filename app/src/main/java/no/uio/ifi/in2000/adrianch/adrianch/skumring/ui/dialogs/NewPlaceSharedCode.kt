@@ -90,8 +90,7 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                         ),
                         // If imageUri is null we will never get to this code
                         uiStateFlow.value.imageUri!!,
-                        uiStateFlow.value.imageDate!!,
-                        event.context
+                        uiStateFlow.value.imageDate!!
                     )
                 }
             }
