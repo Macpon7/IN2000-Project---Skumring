@@ -93,7 +93,7 @@ fun NewPlaceDialog(
                     onEvent(NewPlaceEvent.SaveSelectedDate)
                 }) {
                     Text(
-                        text = stringResource(R.string.add_date),
+                        text = stringResource(R.string.ok),
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -131,7 +131,7 @@ fun NewPlaceDialog(
                 modifier = Modifier.padding(all = 8.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.mypage_fill_in_fields),
+                    text = stringResource(R.string.new_place_fill_in_fields),
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
@@ -290,13 +290,6 @@ fun NewPlaceDialog(
                         imageVector = Icons.Outlined.Check,
                         contentDescription = stringResource(id = R.string.new_place_add_location),
                         tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-
-                if (newPlaceUiState.missingInfo) {
-                    Text(
-                        text = stringResource(R.string.missing_fields),
-                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }
