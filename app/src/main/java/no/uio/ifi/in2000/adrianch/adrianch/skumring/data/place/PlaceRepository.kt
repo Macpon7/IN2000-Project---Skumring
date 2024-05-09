@@ -6,11 +6,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao
@@ -39,12 +37,12 @@ interface PlaceRepository {
     suspend fun getUserLocationPlace(lat: String, long: String): PlaceInfo
     suspend fun getFavourites(): List<PlaceInfo>
     suspend fun getCustomPlaces(): List<PlaceInfo>
-    suspend fun addCustomPlace(place: PlaceInfo, imageUri: Uri, imageTimestamp: LocalDate, context: Context)
+    suspend fun addCustomPlace(place: PlaceInfo, imageUri: Uri, imageTimestamp: LocalDate)
     suspend fun removeCustomPlace(placeId: Int)
     suspend fun makeFavourite(placeId: Int)
     suspend fun unmakeFavourite(placeId: Int)
     suspend fun getImages(placeId: Int): List<ImageDetails>
-    suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int, timestamp: LocalDate): Boolean
+    suspend fun saveImageToInternalStorage(contentUri: Uri, placeId: Int, timestamp: LocalDate)
 
 }
 class PlaceRepositoryImpl(
@@ -54,51 +52,47 @@ class PlaceRepositoryImpl(
     private val forecastDao: ForecastDao,
     private val imageDao: ImageDao,
     private val locationForecastDataSource: LocationForecastDataSource = LocationForecastDataSource(),
-    private val forecastRepository:ForecastRepository = ForecastRepositoryImpl()
+    private val forecastRepository:ForecastRepository = ForecastRepositoryImpl(),
+    private val context: Context
 ): PlaceRepository {
     init {
         // If we need to do anything on initialization of DB, this is the place to do it
     }
 
 
-    override suspend fun saveImageToInternalStorage(context: Context, contentUri: Uri, placeId: Int, timestamp: LocalDate): Boolean {
-        return withContext(Dispatchers.IO) {
-            var inputStream: InputStream? = null
-            var outputStream: FileOutputStream? = null
-            try {
-                val contentResolver: ContentResolver = context.contentResolver
-                inputStream = contentResolver.openInputStream(contentUri)
-                val bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
+    override suspend fun saveImageToInternalStorage(contentUri: Uri, placeId: Int, timestamp: LocalDate) {
+        var inputStream: InputStream? = null
+        var outputStream: FileOutputStream? = null
+        try {
+            val contentResolver: ContentResolver = context.contentResolver
+            inputStream = contentResolver.openInputStream(contentUri)
+            val bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
 
-                val fileDir = File(context.filesDir, "/placeImages/")
-                if (!fileDir.exists()) {
-                    fileDir.mkdir()
-                }
-
-                val fileName = "$placeId.jpg"
-                val file = File(fileDir, fileName)
-
-                outputStream = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-
-                // Insert the image details into the database
-                imageDao.insertImage(ImageEntity(
-                    placeId = placeId,
-                    imgPath = "/placeImages/$fileName",
-                    timestamp = timestamp))
-
-                Log.d("MyPage", "added to database")
-                Log.d("MyPage", "the new path is /placeImages/$fileName")
-
-                return@withContext true
-            } catch (e: IOException) {
-                Log.e(TAG, "Error saving image", e)
-                e.printStackTrace()
-                return@withContext false
-            } finally {
-                inputStream?.close()
-                outputStream?.close()
+            val fileDir = File(context.filesDir, "/placeImages/")
+            if (!fileDir.exists()) {
+                fileDir.mkdir()
             }
+
+            val fileName = "$placeId.jpg"
+            val file = File(fileDir, fileName)
+
+            outputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+
+            // Insert the image details into the database
+            imageDao.insertImage(ImageEntity(
+                placeId = placeId,
+                imgPath = "/placeImages/$fileName",
+                timestamp = timestamp))
+
+            Log.d("MyPage", "added to database")
+            Log.d("MyPage", "the new path is /placeImages/$fileName")
+        } catch (e: IOException) {
+            Log.e(TAG, "Error saving image", e)
+            e.printStackTrace()
+        } finally {
+            inputStream?.close()
+            outputStream?.close()
         }
     }
 
@@ -386,8 +380,7 @@ class PlaceRepositoryImpl(
     override suspend fun addCustomPlace(
         place: PlaceInfo,
         imageUri: Uri,
-        imageTimestamp: LocalDate,
-        context: Context
+        imageTimestamp: LocalDate
         ) {
         //input is PlaceInfo object
         val placeInfoEntity = PlaceInfoEntity(
@@ -406,7 +399,7 @@ class PlaceRepositoryImpl(
         //The newest custom place will always be the last in the list, here we fetch its ID and returns to the caller
         val newId = getCustomPlaces().last().id
 
-        saveImageToInternalStorage(context = context, contentUri = imageUri, placeId = newId, timestamp = imageTimestamp)
+        saveImageToInternalStorage(contentUri = imageUri, placeId = newId, timestamp = imageTimestamp)
     }
 
     /**
