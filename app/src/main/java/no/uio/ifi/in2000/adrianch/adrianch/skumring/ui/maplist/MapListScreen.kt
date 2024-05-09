@@ -61,6 +61,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -226,16 +227,28 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
         }
         if (mapListUiState.mapListToggle == MapListToggleState.LIST) {
             Surface(color = MaterialTheme.colorScheme.background) {
-                // Column for list view
-                Column(Modifier.verticalScroll(rememberScrollState())) {
-                    mapListUiState.places.forEach { place ->
-                        ListCard(
-                            place = place,
-                            onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
-                                navController.navigate("placeinfoscreen/${place.id}")
-                            },
-                            onFavouriteClick = { mapListViewModel.toggleFavourite(place) }
+
+                if (mapListUiState.places.isEmpty()) {
+                    Column (modifier = Modifier.fillMaxSize()) {
+                        Text(
+                            text = stringResource(R.string.no_location),
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
                         )
+                    }
+                } else {
+                    // Column for list view
+                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                        mapListUiState.places.forEach { place ->
+                            ListCard(
+                                place = place,
+                                onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
+                                    navController.navigate("placeinfoscreen/${place.id}")
+                                },
+                                onFavouriteClick = { mapListViewModel.toggleFavourite(place) }
+                            )
+                        }
                     }
                 }
             }
