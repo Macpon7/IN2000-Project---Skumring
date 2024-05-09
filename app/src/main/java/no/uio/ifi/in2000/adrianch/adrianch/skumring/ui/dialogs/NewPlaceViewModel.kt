@@ -137,8 +137,7 @@ class NewPlaceViewModel(
                         ),
                         // If imageUri is null we will never get to this code
                         imageUri = imageUri!!,
-                        imageTimestamp = currentNewPlaceUiState.imageDate!!,
-                        context = context
+                        imageTimestamp = currentNewPlaceUiState.imageDate!!
                     )
 
                     hideDialog()
