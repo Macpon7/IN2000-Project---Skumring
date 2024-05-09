@@ -95,6 +95,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherCondit
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceDialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
@@ -188,6 +189,17 @@ fun MapListScreen(
 @Composable
 fun MapListContent(navController: NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
+
+    if (mapListUiState.showNewPlaceDialog) {
+        NewPlaceDialog(
+            hideDialog = { mapListViewModel.hideNewPlaceDialog() },
+            onEvent = { mapListViewModel.onNewPlaceDialogEvent(it) },
+            getCoordinatesFromAddress = mapListViewModel.getCoordinatesFromAddress,
+            getCoordinatesFromLocation = mapListViewModel.getCoordinatesFromUserLocation,
+            addCustomPlace = mapListViewModel.addPlace,
+            uiStateFlow = mapListViewModel.newPlaceUiState
+        )
+    }
 
     ToggleButtonThemeSwitcher(
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
@@ -631,6 +643,7 @@ fun MapArea(
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
+            mapListViewModel.showNewPlaceDialog(lat = it.latitude().toString(), long = it.longitude().toString())
             true
         },
         compassSettings = CompassSettings {
