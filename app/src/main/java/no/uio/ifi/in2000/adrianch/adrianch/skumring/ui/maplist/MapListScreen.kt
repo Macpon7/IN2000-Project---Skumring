@@ -207,7 +207,8 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
                 BottomSheetContent(
                     place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
                     navController = navController,
-                    mapListViewModel = mapListViewModel
+                    toggleFavourite = mapListViewModel::toggleFavourite,
+                    onDismissRequest = mapListViewModel::hideBottomSheet
                 )
             }
         }
@@ -432,7 +433,8 @@ fun ToggleButtonThemeSwitcher(
 fun BottomSheetContent(
     place: PlaceInfo,
     navController: NavController,
-    mapListViewModel: MapListViewModel,
+    toggleFavourite: (PlaceInfo) -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     Column(
         modifier = Modifier.padding(top = 0.dp, bottom = 20.dp, start = 12.dp, end = 12.dp)
@@ -452,7 +454,7 @@ fun BottomSheetContent(
                 color = MaterialTheme.colorScheme.onPrimary
             )
             IconButton(onClick = {
-                mapListViewModel.toggleFavourite(place = place)
+                toggleFavourite(place)
             }
             ) {
                 if (place.isFavourite) {
@@ -563,8 +565,7 @@ fun BottomSheetContent(
             {
                 TextButton(
                     onClick = {
-                        mapListViewModel.hideBottomSheet()
-
+                        onDismissRequest()
                     },
                     contentPadding = PaddingValues(12.dp),
                 ) {
@@ -576,7 +577,7 @@ fun BottomSheetContent(
                 }
                 Button(
                     onClick = {
-                        mapListViewModel.hideBottomSheet()
+                        onDismissRequest()
                         navController.navigate("placeinfoscreen/${place.id}")
                     },
                     contentPadding = PaddingValues(12.dp),
@@ -723,7 +724,8 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
     val placeRepository = PlaceRepositoryImpl(
         placeInfoDao = placeInfoDao,
         forecastDao = forecastDao,
-        imageDao = imageDao
+        imageDao = imageDao,
+        context = context
     )
     SkumringTheme {
         Surface {
@@ -756,10 +758,8 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
                     )
                 ),
                 navController = navController,
-                mapListViewModel = MapListViewModel(
-                    context = context,
-                    placeRepository = placeRepository
-                )
+                onDismissRequest = {},
+                toggleFavourite = {}
             )
         }
     }
