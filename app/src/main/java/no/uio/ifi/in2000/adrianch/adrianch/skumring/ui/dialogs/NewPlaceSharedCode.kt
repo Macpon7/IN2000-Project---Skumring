@@ -97,19 +97,8 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
         }
 
         NewPlaceEvent.ResetUiState -> {
-            uiStateFlow.update { currentUiState ->
-                currentUiState.copy(
-                    name = "",
-                    nameError = false,
-                    address = "",
-                    addressError = false,
-                    addressTooManyResults = false,
-                    addressNoResults = false,
-                    description = "",
-                    descriptionError = false,
-                    // TODO add bitmap ?
-                    imageDate = null
-                )
+            uiStateFlow.update {
+                NewPlaceUiState()
             }
         }
 
