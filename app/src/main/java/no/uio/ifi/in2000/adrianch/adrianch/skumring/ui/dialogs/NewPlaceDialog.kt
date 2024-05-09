@@ -38,8 +38,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.flow.StateFlow
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.GeocodeLocation
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import java.time.LocalDate
+import kotlin.reflect.KSuspendFunction1
+import kotlin.reflect.KSuspendFunction3
 
 private const val TAG = "NewPlaceDialog"
 
@@ -47,9 +52,12 @@ private const val TAG = "NewPlaceDialog"
 @Composable
 fun NewPlaceDialog(
     hideDialog: () -> Unit,
-    newPlaceViewModel: NewPlaceViewModel = viewModel(factory = NewPlaceViewModel.Factory)
+    onEvent: (event: NewPlaceEvent) -> Unit,
+    getCoordinatesFromAddress: KSuspendFunction1<String, List<GeocodeLocation>>,
+    addCustomPlace: KSuspendFunction3<PlaceInfo, Uri, LocalDate, Unit>,
+    uiStateFlow: StateFlow<NewPlaceUiState>
 ) {
-    val newPlaceUiState: NewPlaceUiState by newPlaceViewModel.newPlaceUiState.collectAsState()
+    val newPlaceUiState: NewPlaceUiState by uiStateFlow.collectAsState()
 
     // TODO keep the change when the phone change from standing to lying
 
@@ -75,10 +83,10 @@ fun NewPlaceDialog(
 
     // Show when the user pick a date:
     if (newPlaceUiState.showDatePicker) {
-        DatePickerDialog(onDismissRequest = { newPlaceViewModel.dismissDatePicker() },
+        DatePickerDialog(onDismissRequest = { onEvent(NewPlaceEvent.HideDatePicker) },
             confirmButton = {
                 TextButton(onClick = {
-                    newPlaceViewModel.saveSelectedDate()
+                    onEvent(NewPlaceEvent.SaveSelectedDate)
                 }) {
                     Text(
                         text = stringResource(R.string.add_date),
@@ -89,7 +97,7 @@ fun NewPlaceDialog(
             },
             dismissButton = {
                 TextButton(onClick = {
-                    newPlaceViewModel.dismissDatePicker()
+                    onEvent(NewPlaceEvent.HideDatePicker)
                 }) {
                     Text(
                         text = stringResource(R.string.cancel),
@@ -106,7 +114,7 @@ fun NewPlaceDialog(
 
     //This is the dialog for adding a new place
     Dialog(onDismissRequest = {
-        newPlaceViewModel.resetNewPlaceUiState()
+        onEvent(NewPlaceEvent.ResetUiState)
         hideDialog()
     }) {
 
@@ -133,7 +141,7 @@ fun NewPlaceDialog(
                     modifier = Modifier.fillMaxWidth(),
                     value = newPlaceUiState.name,
                     // Take variable from newPlaceUiState
-                    onValueChange = { newPlaceViewModel.updateNewLocationName(it) },
+                    onValueChange = { onEvent(NewPlaceEvent.UpdateName(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.new_place_location_name),
@@ -156,7 +164,7 @@ fun NewPlaceDialog(
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = newPlaceUiState.address,
-                    onValueChange = { newPlaceViewModel.updateNewLocationAddress(it) },
+                    onValueChange = { onEvent(NewPlaceEvent.UpdateAddress(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.new_place_address),
@@ -181,7 +189,7 @@ fun NewPlaceDialog(
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = newPlaceUiState.description,
-                    onValueChange = { newPlaceViewModel.updateNewLocationDescription(it) },
+                    onValueChange = { onEvent(NewPlaceEvent.UpdateDescription(it)) },
                     label = {
                         Text(
                             text = stringResource(R.string.new_place_description),
@@ -204,7 +212,7 @@ fun NewPlaceDialog(
                 // Button to add photo
                 val launcher =
                     rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-                        newPlaceViewModel.imageUri = uri
+                        onEvent(NewPlaceEvent.UpdateImageUri(uri = uri))
                         Log.d(TAG, "imageUri is $newPlaceUiState.imageUri")
                     }
 
@@ -232,9 +240,7 @@ fun NewPlaceDialog(
                     modifier = Modifier
                         .clickable(
                             enabled = true,
-                            onClick = {
-                                newPlaceViewModel.showDatePicker()
-                            }
+                            onClick = { onEvent(NewPlaceEvent.ShowDatePicker) }
                         )
                         .fillMaxWidth(),
                     enabled = false,
@@ -264,7 +270,11 @@ fun NewPlaceDialog(
 
                 // Button that is pressed when the location is added:
                 Button(
-                    onClick = { newPlaceViewModel.addLocation(hideDialog = hideDialog) },
+                    onClick = { onEvent(NewPlaceEvent.SaveNewPlace(
+                        getCoordinatesFromAddress = getCoordinatesFromAddress,
+                        addCustomPlace = addCustomPlace,
+                        hideDialog = hideDialog
+                    )) },
                     modifier = Modifier.padding(vertical = 8.dp),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
