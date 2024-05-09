@@ -95,6 +95,7 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                 }
             }
         }
+
         NewPlaceEvent.ResetUiState -> {
             uiStateFlow.update { currentUiState ->
                 currentUiState.copy(
@@ -111,11 +112,13 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                 )
             }
         }
+
         NewPlaceEvent.HideDatePicker -> {
             uiStateFlow.update {currentUiState ->
                 currentUiState.copy(showDatePicker = false)
             }
         }
+
         NewPlaceEvent.SaveSelectedDate -> {
             uiStateFlow.update {currentUiState ->
                 // Get currently selected date
@@ -147,36 +150,43 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                 }
             }
         }
+
         NewPlaceEvent.SetDescriptionError -> {
             uiStateFlow.update {currentUiState ->
                 currentUiState.copy(descriptionError = true)
             }
         }
+
         NewPlaceEvent.SetImageDateError -> {
             uiStateFlow.update {currentUiState ->
                 currentUiState.copy(dateTextFieldError = true)
             }
         }
+
         NewPlaceEvent.SetNameError -> {
             uiStateFlow.update {currentUiState ->
                 currentUiState.copy(nameError = true)
             }
         }
+
         NewPlaceEvent.ShowDatePicker -> {
             uiStateFlow.update {currentUiState ->
                 currentUiState.copy(showDatePicker = true)
             }
         }
+
         is NewPlaceEvent.UpdateAddress -> {
             uiStateFlow.update { currentUiState ->
                 currentUiState.copy(address = event.newAddress)
             }
         }
+
         is NewPlaceEvent.UpdateDescription -> {
             uiStateFlow.update { currentUiState ->
                 currentUiState.copy(description = event.newDescription)
             }
         }
+
         is NewPlaceEvent.UpdateName -> {
             uiStateFlow.update { currentUiState ->
                 currentUiState.copy(name = event.newName)
@@ -216,9 +226,10 @@ fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
         isReady = false
     }
 
-    if (isReady) {
-        return true
+    return if (isReady) {
+        true
     } else {
+        // If we are not ready, update all the relevant errors
         uiStateFlow.update { currentUiState ->
             currentUiState.copy(
                 nameError = isNameMissing,
@@ -229,6 +240,6 @@ fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
                 missingInfo = true
             )
         }
-        return true
+        false
     }
 }
