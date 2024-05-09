@@ -45,9 +45,6 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     // Image URI and error state
     var imageUri: Uri? = null,
     var imageError: Boolean = false,
-
-    // Check to show errors
-    var missingInfo: Boolean = false
 )
 
 /**
@@ -66,12 +63,17 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
 
                 if (addresses.isEmpty()) {
                     uiStateFlow.update { currentUiState ->
-                        currentUiState.copy(addressNoResults = true)
+                        currentUiState.copy(
+                            addressError = true,
+                            addressNoResults = true
+                        )
                     }
 
                 } else if (addresses.size > 1) {
                     uiStateFlow.update { currentUiState ->
-                        currentUiState.copy(addressTooManyResults = true)
+                        currentUiState.copy(
+                            addressError = true,
+                            addressTooManyResults = true)
                     }
                 } else {
                     Log.d(TAG, "Trying to add new custom place to DB")
@@ -92,6 +94,8 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                         uiStateFlow.value.imageUri!!,
                         uiStateFlow.value.imageDate!!
                     )
+                    uiStateFlow.update { NewPlaceUiState() }
+                    event.hideDialog()
                 }
             }
         }
@@ -206,8 +210,8 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
 @OptIn(ExperimentalMaterial3Api::class)
 fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
     var isNameMissing = false
-    var isDescriptionMissing = false
     var isAddressMissing = false
+    var isDescriptionMissing = false
     var isDateMissing = false
     var isImageMissing = false
 
@@ -217,12 +221,12 @@ fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
         isNameMissing = true
         isReady = false
     }
-    if (uiStateFlow.value.description == "") {
-        isDescriptionMissing = true
-        isReady = false
-    }
     if (uiStateFlow.value.address == "") {
         isAddressMissing = true
+        isReady = false
+    }
+    if (uiStateFlow.value.description == "") {
+        isDescriptionMissing = true
         isReady = false
     }
     if (uiStateFlow.value.imageDate == null) {
@@ -235,6 +239,15 @@ fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
     }
 
     return if (isReady) {
+        uiStateFlow.update { currentUiState ->
+            currentUiState.copy(
+                nameError = false,
+                addressError = false,
+                descriptionError = false,
+                dateTextFieldError = false,
+                imageError = false
+            )
+        }
         true
     } else {
         // If we are not ready, update all the relevant errors
@@ -244,8 +257,7 @@ fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
                 addressError = isAddressMissing,
                 descriptionError = isDescriptionMissing,
                 dateTextFieldError = isDateMissing,
-                imageError = isImageMissing,
-                missingInfo = true
+                imageError = isImageMissing
             )
         }
         false

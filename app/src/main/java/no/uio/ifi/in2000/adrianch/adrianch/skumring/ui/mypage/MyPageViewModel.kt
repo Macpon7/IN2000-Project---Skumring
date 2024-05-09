@@ -74,7 +74,10 @@ class MyPageViewModel(
     fun hideNewPlaceDialog() {
         viewModelScope.launch(Dispatchers.IO) {
             _myPageUiState.update { currentMyPageUiState ->
-                currentMyPageUiState.copy(showNewPlaceDialog = false)
+                currentMyPageUiState.copy(
+                    showNewPlaceDialog = false,
+                    places = placeRepository.getCustomPlaces()
+                )
             }
         }
     }
