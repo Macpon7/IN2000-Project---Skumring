@@ -35,7 +35,7 @@ data class HomeUiState(
     var sunsetTime: String = "N/A",
     var sunsetDate: String = "N/A",
     var sunsetWeatherIcon: String? = null,
-    var weatherConditionsRating: WeatherConditionsRating = WeatherConditionsRating.POOR,
+    var weatherConditionsRating: WeatherConditionsRating? = null,
     var blueHour: String = "N/A",
     var goldenHour: String = "N/A",
     var placeName: String = "",
