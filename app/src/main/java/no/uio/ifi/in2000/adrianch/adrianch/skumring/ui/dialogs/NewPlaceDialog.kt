@@ -147,10 +147,20 @@ fun NewPlaceDialog(
                     // Take variable from newPlaceUiState
                     onValueChange = { onEvent(NewPlaceEvent.UpdateName(it)) },
                     label = {
-                        Text(
-                            text = stringResource(R.string.new_place_location_name),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        if (newPlaceUiState.name == "") {
+                            Text(
+                                text = "${stringResource(R.string.new_place_location_name)}*",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        } else {
+                            Text(
+                                text = stringResource(R.string.new_place_location_name),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    },
+                    supportingText = {
+                        Text(text = stringResource(id = R.string.new_place_required))
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     singleLine = true,
@@ -170,10 +180,21 @@ fun NewPlaceDialog(
                     value = newPlaceUiState.address,
                     onValueChange = { onEvent(NewPlaceEvent.UpdateAddress(it)) },
                     label = {
-                        Text(
-                            text = stringResource(R.string.new_place_address),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        if (newPlaceUiState.address == "") {
+                            Text(
+                                text = "${stringResource(R.string.new_place_address)}*",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        } else {
+                            Text(
+                                text = stringResource(R.string.new_place_address),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                    },
+                    supportingText = {
+                        Text(text = stringResource(id = R.string.new_place_required))
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     singleLine = true,
@@ -195,10 +216,21 @@ fun NewPlaceDialog(
                     value = newPlaceUiState.description,
                     onValueChange = { onEvent(NewPlaceEvent.UpdateDescription(it)) },
                     label = {
-                        Text(
-                            text = stringResource(R.string.new_place_description),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        if (newPlaceUiState.description == "") {
+                            Text(
+                                text = "${stringResource(R.string.new_place_description)}*",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        } else {
+                            Text(
+                                text = stringResource(R.string.new_place_description),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                    },
+                    supportingText = {
+                        Text(text = stringResource(id = R.string.new_place_required))
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     singleLine = false,
