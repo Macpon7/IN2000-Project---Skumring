@@ -4,14 +4,20 @@ import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Info
@@ -33,13 +39,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import coil.compose.AsyncImage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
@@ -136,8 +144,7 @@ fun NewPlaceDialog(
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .padding(bottom = 4.dp)
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                        .align(Alignment.CenterHorizontally)
                 )
 
                 // Input field for new place name
@@ -194,7 +201,13 @@ fun NewPlaceDialog(
 
                     },
                     supportingText = {
-                        Text(text = stringResource(id = R.string.new_place_required))
+                        if (newPlaceUiState.addressNoResults) {
+                            Text(text = stringResource(id = R.string.new_place_address_no_results))
+                        } else if (newPlaceUiState.addressTooManyResults) {
+                            Text(text = stringResource(id = R.string.new_place_address_many_results))
+                        } else {
+                            Text(text = stringResource(id = R.string.new_place_required))
+                        }
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     singleLine = true,
@@ -207,8 +220,6 @@ fun NewPlaceDialog(
                     colors = outlinedTextFieldColors,
                     isError = newPlaceUiState.addressError
                 )
-
-
 
                 // Input field for new place description
                 OutlinedTextField(
@@ -249,79 +260,153 @@ fun NewPlaceDialog(
                 val launcher =
                     rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
                         onEvent(NewPlaceEvent.UpdateImageUri(uri = uri))
-                        Log.d(TAG, "imageUri is $newPlaceUiState.imageUri")
+                        Log.d(TAG, "imageUri is ${newPlaceUiState.imageUri}")
                     }
 
-                Button(
-                    onClick = { launcher.launch("image/*") },
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
-                ) {
-                    Text(
-                        text = stringResource(R.string.add_photo),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.bodyMedium
+                // Text for adding image, will turn red if user tries to submit without adding an image
+                Text(
+                    text = if (newPlaceUiState.imageUri == null) {
+                        "${stringResource(id = R.string.new_place_add_photo)}*"
+                    } else {
+                        stringResource(id = R.string.new_place_add_photo)
+                    },
+                    style = MaterialTheme.typography.titleSmall,
+                    color = if (newPlaceUiState.imageError) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    }
                     )
-                    Icon(
-                        imageVector = Icons.Outlined.Add,
-                        contentDescription = stringResource(id = R.string.add_photo),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Row containing button for adding photo and date picker
+                Row {
+                    Card (
+                        modifier = Modifier
+                            .requiredSize(80.dp)
+                            .clickable(
+                                enabled = true,
+                                onClick = { launcher.launch("image/*") }
+                            ),
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = if (newPlaceUiState.imageError) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.secondaryContainer
+                            }
+                        ),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                    ) {
+                        if (newPlaceUiState.imageUri == null) {
+                            Box (
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Add,
+                                    contentDescription = stringResource(id = R.string.add_photo),
+                                    tint = if (newPlaceUiState.imageError) {
+                                        MaterialTheme.colorScheme.error
+                                    } else {
+                                        MaterialTheme.colorScheme.secondaryContainer
+                                    }
+                                )
+                            }
+                        } else {
+                            AsyncImage(
+                                model = newPlaceUiState.imageUri,
+                                contentDescription = "",
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+
+                    // Input field for photo timestamp
+                    OutlinedTextField(
+                        value = newPlaceUiState.imageDateString,
+                        onValueChange = { },
+                        modifier = Modifier
+                            .clickable(
+                                enabled = true,
+                                onClick = { onEvent(NewPlaceEvent.ShowDatePicker) }
+                            )
+                            .fillMaxWidth()
+                            .padding(start = 8.dp),
+                        enabled = false,
+                        readOnly = true,
+                        isError = newPlaceUiState.dateTextFieldError,
+                        label = {
+                            if (newPlaceUiState.imageDateString == "") {
+                                Text(
+                                    text = "${stringResource(R.string.new_place_image_date)}*",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(R.string.new_place_image_date),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                            }
+
+                        },
+                        supportingText = {
+                            if (newPlaceUiState.dateTextFieldError) {
+                                Text(
+                                    text = stringResource(id = R.string.new_place_required),
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(id = R.string.new_place_required),
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                            }
+
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.DateRange,
+                                contentDescription = stringResource(id = R.string.time)
+                            )
+                        },
+                        colors = if (newPlaceUiState.dateTextFieldError) {
+                                ExposedDropdownMenuDefaults.textFieldColors(
+                                    // Make it look not disabled
+                                    disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    disabledTextColor = MaterialTheme.colorScheme.error,
+                                    disabledIndicatorColor = MaterialTheme.colorScheme.error,
+                                    disabledLabelColor = MaterialTheme.colorScheme.error,
+                                    disabledLeadingIconColor = MaterialTheme.colorScheme.error
+                                )
+                            } else {
+                                ExposedDropdownMenuDefaults.textFieldColors(
+                                    // Make it look not disabled
+                                    disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    disabledTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    disabledIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    disabledLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    disabledLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
                     )
                 }
 
-                // Input field for photo timestamp
-                OutlinedTextField(
-                    value = newPlaceUiState.imageDateString,
-                    onValueChange = { },
-                    modifier = Modifier
-                        .clickable(
-                            enabled = true,
-                            onClick = { onEvent(NewPlaceEvent.ShowDatePicker) }
-                        )
-                        .fillMaxWidth(),
-                    enabled = false,
-                    readOnly = true,
-                    isError = newPlaceUiState.dateTextFieldError,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.new_place_image_date),
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.DateRange,
-                            contentDescription = stringResource(id = R.string.time),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        // Make it look not disabled
-                        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        disabledIndicatorColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                )
-
-                // Button that is pressed when the location is added:
+                // Button to save the new location
                 Button(
                     onClick = { onEvent(NewPlaceEvent.SaveNewPlace(
                         getCoordinatesFromAddress = getCoordinatesFromAddress,
                         addCustomPlace = addCustomPlace,
                         hideDialog = hideDialog
                     )) },
-                    modifier = Modifier.padding(vertical = 8.dp),
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .align(Alignment.CenterHorizontally),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
                         text = stringResource(R.string.new_place_add_location),
                         style = MaterialTheme.typography.bodyMedium
-                    )
-                    Icon(
-                        imageVector = Icons.Outlined.Check,
-                        contentDescription = stringResource(id = R.string.new_place_add_location),
-                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
