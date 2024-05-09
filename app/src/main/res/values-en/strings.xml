@@ -169,4 +169,5 @@
     <string name="double_arrow">double arrow icon</string>
     <string name="find_loaction">Find location</string>
     <string name="new_place_required">*required</string>
+    <string name="new_place_use_phone_location">Use phone\'s location</string>
 </resources>

@@ -29,6 +29,8 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     var description: String = "",
     var descriptionError: Boolean = false,
 
+    var usePhoneLocation: Boolean = false,
+
     // Date picker and text field
     var imageDate: LocalDate? = null,
     val imageDateString: String = "",
@@ -97,6 +99,14 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                     uiStateFlow.update { NewPlaceUiState() }
                     event.hideDialog()
                 }
+            }
+        }
+
+        is NewPlaceEvent.SetUseUserLocation -> {
+            uiStateFlow.update { currentUiState ->
+                currentUiState.copy(
+                    usePhoneLocation = event.usePhoneLocation
+                )
             }
         }
 

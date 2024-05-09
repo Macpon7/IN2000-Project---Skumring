@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Switch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Create
@@ -91,7 +93,10 @@ fun NewPlaceDialog(
         errorCursorColor = MaterialTheme.colorScheme.error,
         errorIndicatorColor = MaterialTheme.colorScheme.error,
         errorLeadingIconColor = MaterialTheme.colorScheme.error,
-    )
+
+        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
 
     // Show when the user pick a date:
     if (newPlaceUiState.showDatePicker) {
@@ -181,6 +186,21 @@ fun NewPlaceDialog(
                     isError = (newPlaceUiState.nameError)
                 )
 
+                Row (
+                    modifier = Modifier.fillMaxWidth().height(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        text = stringResource(id = R.string.new_place_use_phone_location),
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Switch(
+                        checked = newPlaceUiState.usePhoneLocation,
+                        onCheckedChange = {onEvent(NewPlaceEvent.SetUseUserLocation(it))})
+
+                }
+
                 // input field for new place address
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -217,6 +237,7 @@ fun NewPlaceDialog(
                             contentDescription = stringResource(id = R.string.new_place_address),
                         )
                     },
+                    enabled = !newPlaceUiState.usePhoneLocation,
                     colors = outlinedTextFieldColors,
                     isError = newPlaceUiState.addressError
                 )
@@ -442,7 +463,8 @@ fun PreviewNewPlaceDialogLightWithError() {
         addressError = true,
         imageError = true,
         descriptionError = true,
-        dateTextFieldError = true
+        dateTextFieldError = true,
+        usePhoneLocation = true
     ))
 
     SkumringTheme(useDarkTheme = false) {

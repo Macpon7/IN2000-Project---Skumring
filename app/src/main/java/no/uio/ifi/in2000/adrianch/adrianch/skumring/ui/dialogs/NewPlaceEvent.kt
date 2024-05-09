@@ -12,6 +12,7 @@ sealed interface NewPlaceEvent{
     data class UpdateDescription(val newDescription: String): NewPlaceEvent
     data class UpdateAddress(val newAddress: String): NewPlaceEvent
     data class UpdateImageUri(val uri: Uri?): NewPlaceEvent
+    data class SetUseUserLocation(val usePhoneLocation: Boolean): NewPlaceEvent
 
     data object SaveSelectedDate: NewPlaceEvent
     data object ResetUiState: NewPlaceEvent
