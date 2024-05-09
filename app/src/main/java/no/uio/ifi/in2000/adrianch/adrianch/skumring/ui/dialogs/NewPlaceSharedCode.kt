@@ -125,7 +125,6 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                     uiStateFlow.value.imageUri!!,
                     uiStateFlow.value.imageDate!!
                 )
-                uiStateFlow.update { NewPlaceUiState() }
                 event.hideDialog()
             }
         }

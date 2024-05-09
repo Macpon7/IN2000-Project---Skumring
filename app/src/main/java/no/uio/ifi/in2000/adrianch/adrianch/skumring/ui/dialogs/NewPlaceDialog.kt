@@ -134,7 +134,6 @@ fun NewPlaceDialog(
 
     //This is the dialog for adding a new place
     Dialog(onDismissRequest = {
-        onEvent(NewPlaceEvent.ResetUiState)
         hideDialog()
     }) {
 

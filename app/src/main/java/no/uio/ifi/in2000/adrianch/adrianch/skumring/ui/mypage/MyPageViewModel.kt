@@ -87,6 +87,7 @@ class MyPageViewModel(
                     places = placeRepository.getCustomPlaces()
                 )
             }
+            _newPlaceUiState.update { NewPlaceUiState() }
         }
     }
 
