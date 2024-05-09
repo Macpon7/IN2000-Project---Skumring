@@ -27,6 +27,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -36,12 +37,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.GeocodeLocation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 import java.time.LocalDate
 import kotlin.reflect.KSuspendFunction1
 import kotlin.reflect.KSuspendFunction3
@@ -298,5 +302,86 @@ fun NewPlaceDialog(
             }
         }
     }
+}
+
+@Preview(name = "Light mode, norsk")
+@Composable
+fun PreviewNewPlaceDialogLight() {
+    val previewFun = PreviewFunctions()
+    val testUiStateFlow = MutableStateFlow(NewPlaceUiState())
+
+    SkumringTheme(useDarkTheme = false) {
+        Surface {
+            NewPlaceDialog(
+                hideDialog = {},
+                onEvent = {},
+                getCoordinatesFromAddress = previewFun::getCoordinatesFromAddress,
+                addCustomPlace = previewFun::addCustomPlace,
+                uiStateFlow = testUiStateFlow
+            )
+        }
+    }
+}
+
+@Preview(name = "Light mode, norsk, error")
+@Composable
+fun PreviewNewPlaceDialogLightWithError() {
+    val previewFun = PreviewFunctions()
+    val testUiStateFlow = MutableStateFlow(NewPlaceUiState(
+        nameError = true,
+        addressError = true,
+        imageError = true,
+        descriptionError = true,
+        dateTextFieldError = true
+    ))
+
+    SkumringTheme(useDarkTheme = false) {
+        Surface {
+            NewPlaceDialog(
+                hideDialog = {},
+                onEvent = {},
+                getCoordinatesFromAddress = previewFun::getCoordinatesFromAddress,
+                addCustomPlace = previewFun::addCustomPlace,
+                uiStateFlow = testUiStateFlow
+            )
+        }
+    }
+}
+
+@Preview(name = "Dark mode, engelsk, errors",
+    locale = "en")
+@Composable
+fun PreviewNewPlaceDialogDark() {
+    val previewFun = PreviewFunctions()
+    val testUiStateFlow = MutableStateFlow(NewPlaceUiState(
+        nameError = true,
+        addressError = true,
+        imageError = true,
+        descriptionError = true,
+        dateTextFieldError = true
+    ))
+
+    SkumringTheme(useDarkTheme = true) {
+        Surface {
+            NewPlaceDialog(
+                hideDialog = {},
+                onEvent = {},
+                getCoordinatesFromAddress = previewFun::getCoordinatesFromAddress,
+                addCustomPlace = previewFun::addCustomPlace,
+                uiStateFlow = testUiStateFlow
+            )
+        }
+    }
+}
+
+class PreviewFunctions {
+    suspend fun addCustomPlace(place: PlaceInfo, imageUri: Uri, imageTimestamp: LocalDate) {
+
+    }
+
+    suspend fun getCoordinatesFromAddress(address: String): List<GeocodeLocation> {
+        return emptyList()
+    }
+
 
 }
