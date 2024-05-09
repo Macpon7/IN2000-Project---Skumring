@@ -62,7 +62,13 @@ class SunriseDataSource() {
             val response = fetchSunriseData(path)
             val sunsetTime: String = response.properties.sunset.time  //output: 2024-03-07T17:03+00:00
             val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME //Offset is in timezone 0, so add 2 hour in the line below (we are in summer time now)
-            val timeFormatted = LocalDateTime.parse(sunsetTime, formatter).plusHours(2)
+            // When the sun never sets (like in the north of Norway in summer) the response from API will be null
+            // We save these sunsets as midnight, jan 1 2000, so it's easy for us to detect in code if the sun will never set
+            val timeFormatted = if (sunsetTime == null) {
+                LocalDateTime.of(2000, 1, 1, 0, 0)
+            } else {
+                LocalDateTime.parse(sunsetTime, formatter).plusHours(2)
+            }
             Log.d(logTag, timeFormatted.toString())
 
             return timeFormatted
