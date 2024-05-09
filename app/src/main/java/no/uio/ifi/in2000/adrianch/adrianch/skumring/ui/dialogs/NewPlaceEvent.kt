@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs
 
-import android.content.Context
 import android.net.Uri
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.GeocodeLocation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
@@ -10,6 +9,7 @@ sealed interface NewPlaceEvent{
     data class UpdateName(val newName: String): NewPlaceEvent
     data class UpdateDescription(val newDescription: String): NewPlaceEvent
     data class UpdateAddress(val newAddress: String): NewPlaceEvent
+    data class UpdateImageUri(val uri: Uri?): NewPlaceEvent
 
     data object SaveSelectedDate: NewPlaceEvent
     data object ResetUiState: NewPlaceEvent
