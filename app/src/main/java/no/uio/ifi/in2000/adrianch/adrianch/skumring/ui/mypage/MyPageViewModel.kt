@@ -11,8 +11,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceEvent
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceUiState
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.onNewPlaceEvent
 
 private const val TAG = "MyPageViewModel"
 
@@ -33,15 +38,27 @@ data class MyPageUiState(
 )
 
 class MyPageViewModel(
-    private val placeRepository: PlaceRepository
+    private val placeRepository: PlaceRepository,
+    private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl()
 ) : ViewModel() {
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
+
+    private val _newPlaceUiState = MutableStateFlow(NewPlaceUiState())
+    val newPlaceUiState: StateFlow<NewPlaceUiState> = _newPlaceUiState
+
+    val getCoords = geocodingRepository::getCoordinatesFromAddress
+    val addPlace = placeRepository::addCustomPlace
 
     init {
         loadCustomPlaces()
     }
 
+    fun onNewPlaceDialogEvent(event: NewPlaceEvent) {
+        viewModelScope.launch(Dispatchers.IO) {
+            onNewPlaceEvent(event = event, uiStateFlow = _newPlaceUiState)
+        }
+    }
 
     /**
      *  The form for adding a location is added
