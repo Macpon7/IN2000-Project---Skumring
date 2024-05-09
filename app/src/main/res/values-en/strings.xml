@@ -101,7 +101,7 @@
     <string name="new_place_add_photo">Add photo</string>
     <string name="new_place_location_name">Name</string>
     <string name="new_place_address">Address</string>
-    <string name="new_place_image_date">Choose date</string>
+    <string name="new_place_image_date">Date of picture</string>
     <string name="new_place_description">Description</string>
     <string name="add_photo">Add photo</string>
     <string name="new_place_add_location">Add location</string>
