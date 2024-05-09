@@ -261,20 +261,30 @@ fun SunsetInfoCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(R.string.weather_condition),
+                        text = "${stringResource(R.string.weather_condition)} ",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimary,
                         textAlign = TextAlign.Center,
                     )
-                    Text(
-                        //text changing based on weather conditions, in different textbox because of change of color
-                        text = stringResource(id = homeUiState.weatherConditionsRating.stringResourceId),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                    )
+                    if (homeUiState.weatherConditionsRating == null) {
+                        Text(text = "N/A",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                    } else {
+                        Text(
+                            //text changing based on weather conditions, in different textbox because of change of color
+                            text = stringResource(id = homeUiState.weatherConditionsRating!!.stringResourceId),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+
                     //Clickable icon for showing more info about the weather conditions
                     Icon(
                         Icons.Default.Info,
@@ -286,10 +296,10 @@ fun SunsetInfoCard(
                             .padding(start = 5.dp, bottom = 10.dp)
                     )
                 }
-                if (homeUiState.sunsetWeatherIcon != null) {
+                if (homeUiState.sunsetWeatherIcon != null && homeUiState.weatherConditionsRating != null) {
                     WeatherIconCheck(
                         weatherCondition = homeUiState.sunsetWeatherIcon!!,
-                        weather = homeUiState.weatherConditionsRating
+                        weather = homeUiState.weatherConditionsRating!!
                     ) //shows the icon that fits the weather forecast
                 } else {
                     Icon( //if icon is null, "show image not found"
@@ -520,7 +530,8 @@ fun HorizontalInfoCardContent(
                             painter = painterResource(id = R.drawable.double_arrow),
                             contentDescription = stringResource(R.string.double_arrow),
                             tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.align(Alignment.CenterEnd)
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
                                 .size(25.dp)
                         )
                     }

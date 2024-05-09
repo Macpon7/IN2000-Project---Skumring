@@ -35,7 +35,7 @@ data class HomeUiState(
     var sunsetTime: String = "N/A",
     var sunsetDate: String = "N/A",
     var sunsetWeatherIcon: String? = null,
-    var weatherConditionsRating: WeatherConditionsRating = WeatherConditionsRating.POOR,
+    var weatherConditionsRating: WeatherConditionsRating? = null,
     var blueHour: String = "N/A",
     var goldenHour: String = "N/A",
     var placeName: String = "",
@@ -110,8 +110,8 @@ class HomeViewModel(
 
                 // Shorten the amount of decimal points, so we don't fetch new weather info unless
                 // the user has moved at least 111m from the currently saved position
-                val newLat = "%.3f".format(location.lat.toDouble())
-                val newLong = "%.3f".format(location.long.toDouble())
+                val newLat = "%.3f".format(location.lat.toDouble()).replace(",", ".")
+                val newLong = "%.3f".format(location.long.toDouble()).replace(",", ".")
                 Log.d(logTag + "LoadUserLoc", "Lat: $newLat, Long: $newLong")
 
                 // Only fetch place name and weather data if the user's current location is not
