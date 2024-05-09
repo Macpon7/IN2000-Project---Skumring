@@ -3,7 +3,9 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs
 import android.net.Uri
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.GeocodeLocation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
 import java.time.LocalDate
+import kotlin.reflect.KSuspendFunction0
 import kotlin.reflect.KSuspendFunction1
 import kotlin.reflect.KSuspendFunction3
 
@@ -18,6 +20,7 @@ sealed interface NewPlaceEvent{
     data object ResetUiState: NewPlaceEvent
     data class SaveNewPlace(
         val getCoordinatesFromAddress: KSuspendFunction1<String, List<GeocodeLocation>>,
+        val getCoordinatesFromLocation: KSuspendFunction0<UserLocation>,
         val addCustomPlace: KSuspendFunction3<PlaceInfo, Uri, LocalDate, Unit>,
         val hideDialog: () -> Unit
     ): NewPlaceEvent

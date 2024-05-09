@@ -171,7 +171,8 @@ fun ContentMyPage(
         NewPlaceDialog(
             hideDialog = { myPageViewModel.hideNewPlaceDialog() },
             onEvent = { myPageViewModel.onNewPlaceDialogEvent(it) },
-            getCoordinatesFromAddress = myPageViewModel.getCoords,
+            getCoordinatesFromAddress = myPageViewModel.getCoordsFromAddress,
+            getCoordinatesFromLocation = myPageViewModel.getCoordinatesFromUserLocation,
             addCustomPlace = myPageViewModel.addPlace,
             uiStateFlow = myPageViewModel.newPlaceUiState
             )

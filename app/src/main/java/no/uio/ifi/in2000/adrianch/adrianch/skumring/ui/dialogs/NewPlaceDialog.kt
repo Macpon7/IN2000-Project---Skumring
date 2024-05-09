@@ -55,8 +55,10 @@ import kotlinx.coroutines.flow.StateFlow
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.GeocodeLocation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 import java.time.LocalDate
+import kotlin.reflect.KSuspendFunction0
 import kotlin.reflect.KSuspendFunction1
 import kotlin.reflect.KSuspendFunction3
 
@@ -68,6 +70,7 @@ fun NewPlaceDialog(
     hideDialog: () -> Unit,
     onEvent: (event: NewPlaceEvent) -> Unit,
     getCoordinatesFromAddress: KSuspendFunction1<String, List<GeocodeLocation>>,
+    getCoordinatesFromLocation: KSuspendFunction0<UserLocation>,
     addCustomPlace: KSuspendFunction3<PlaceInfo, Uri, LocalDate, Unit>,
     uiStateFlow: StateFlow<NewPlaceUiState>
 ) {
@@ -417,6 +420,7 @@ fun NewPlaceDialog(
                 Button(
                     onClick = { onEvent(NewPlaceEvent.SaveNewPlace(
                         getCoordinatesFromAddress = getCoordinatesFromAddress,
+                        getCoordinatesFromLocation = getCoordinatesFromLocation,
                         addCustomPlace = addCustomPlace,
                         hideDialog = hideDialog
                     )) },
@@ -447,6 +451,7 @@ fun PreviewNewPlaceDialogLight() {
                 hideDialog = {},
                 onEvent = {},
                 getCoordinatesFromAddress = previewFun::getCoordinatesFromAddress,
+                getCoordinatesFromLocation = previewFun::getCoordinatesFromLocation,
                 addCustomPlace = previewFun::addCustomPlace,
                 uiStateFlow = testUiStateFlow
             )
@@ -473,6 +478,7 @@ fun PreviewNewPlaceDialogLightWithError() {
                 hideDialog = {},
                 onEvent = {},
                 getCoordinatesFromAddress = previewFun::getCoordinatesFromAddress,
+                getCoordinatesFromLocation = previewFun::getCoordinatesFromLocation,
                 addCustomPlace = previewFun::addCustomPlace,
                 uiStateFlow = testUiStateFlow
             )
@@ -499,6 +505,7 @@ fun PreviewNewPlaceDialogDark() {
                 hideDialog = {},
                 onEvent = {},
                 getCoordinatesFromAddress = previewFun::getCoordinatesFromAddress,
+                getCoordinatesFromLocation = previewFun::getCoordinatesFromLocation,
                 addCustomPlace = previewFun::addCustomPlace,
                 uiStateFlow = testUiStateFlow
             )
@@ -513,6 +520,14 @@ class PreviewFunctions {
 
     suspend fun getCoordinatesFromAddress(address: String): List<GeocodeLocation> {
         return emptyList()
+    }
+
+    suspend fun getCoordinatesFromLocation(): UserLocation {
+        return UserLocation(
+            lat = "",
+            long = "",
+            bearing = 0.0f
+        )
     }
 
 

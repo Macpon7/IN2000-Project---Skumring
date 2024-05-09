@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
+import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +15,8 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceUiState
@@ -39,15 +42,20 @@ data class MyPageUiState(
 
 class MyPageViewModel(
     private val placeRepository: PlaceRepository,
-    private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl()
+    private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl(),
+    context: Context
 ) : ViewModel() {
+    private val userLocationRepository: UserLocationRepository =
+        UserLocationRepositoryImpl(context = context)
+
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
 
     private val _newPlaceUiState = MutableStateFlow(NewPlaceUiState())
     val newPlaceUiState: StateFlow<NewPlaceUiState> = _newPlaceUiState
 
-    val getCoords = geocodingRepository::getCoordinatesFromAddress
+    val getCoordsFromAddress = geocodingRepository::getCoordinatesFromAddress
+    val getCoordinatesFromUserLocation = userLocationRepository::getUserLocation
     val addPlace = placeRepository::addCustomPlace
 
     init {
@@ -184,7 +192,8 @@ class MyPageViewModel(
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as ApplicationSkumring
 
                 return MyPageViewModel(
-                    placeRepository = application.dbRepository
+                    placeRepository = application.dbRepository,
+                    context = application.context
                 ) as T
             }
         }

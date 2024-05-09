@@ -60,45 +60,65 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
 
             // If all inputs are valid, we try to save the place
             if (inputsValid) {
-                // Get addresses from API
-                val addresses = event.getCoordinatesFromAddress(uiStateFlow.value.address)
+                val lat: String
+                val long: String
 
-                if (addresses.isEmpty()) {
-                    uiStateFlow.update { currentUiState ->
-                        currentUiState.copy(
-                            addressError = true,
-                            addressNoResults = true
-                        )
-                    }
+                // Get coordinates of place either from phone's location or from address search
+                if (uiStateFlow.value.usePhoneLocation) {
+                    Log.d(TAG, "Trying to get user location")
+                    val userLocation = event.getCoordinatesFromLocation()
 
-                } else if (addresses.size > 1) {
-                    uiStateFlow.update { currentUiState ->
-                        currentUiState.copy(
-                            addressError = true,
-                            addressTooManyResults = true)
-                    }
+                    lat = userLocation.lat
+                    long = userLocation.long
+
                 } else {
-                    Log.d(TAG, "Trying to add new custom place to DB")
-                    event.addCustomPlace(
-                        PlaceInfo(
-                            id = 0,
-                            name = uiStateFlow.value.name,
-                            description = uiStateFlow.value.description,
-                            lat = addresses.first().lat,
-                            long = addresses.first().long,
-                            isFavourite = false,
-                            isCustomPlace = true,
-                            hasNotification = false,
-                            images = emptyList(),
-                            sunEvents = emptyList()
-                        ),
-                        // If imageUri is null we will never get to this code
-                        uiStateFlow.value.imageUri!!,
-                        uiStateFlow.value.imageDate!!
-                    )
-                    uiStateFlow.update { NewPlaceUiState() }
-                    event.hideDialog()
+                    // Get coordinates from address
+                    // Get addresses from API
+                    val addresses = event.getCoordinatesFromAddress(uiStateFlow.value.address)
+
+                    if (addresses.isEmpty()) {
+                        uiStateFlow.update { currentUiState ->
+                            currentUiState.copy(
+                                addressError = true,
+                                addressNoResults = true
+                            )
+                        }
+                        return
+
+                    } else if (addresses.size > 1) {
+                        uiStateFlow.update { currentUiState ->
+                            currentUiState.copy(
+                                addressError = true,
+                                addressTooManyResults = true)
+                        }
+                        return
+                    }
+
+                    lat = addresses.first().lat
+                    long = addresses.first().long
                 }
+
+                // Add th new place to database
+                Log.d(TAG, "Trying to add new custom place to DB")
+                event.addCustomPlace(
+                    PlaceInfo(
+                        id = 0,
+                        name = uiStateFlow.value.name,
+                        description = uiStateFlow.value.description,
+                        lat = lat,
+                        long = long,
+                        isFavourite = false,
+                        isCustomPlace = true,
+                        hasNotification = false,
+                        images = emptyList(),
+                        sunEvents = emptyList()
+                    ),
+                    // If imageUri is null we will never get to this code
+                    uiStateFlow.value.imageUri!!,
+                    uiStateFlow.value.imageDate!!
+                )
+                uiStateFlow.update { NewPlaceUiState() }
+                event.hideDialog()
             }
         }
 
@@ -231,7 +251,7 @@ fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
         isNameMissing = true
         isReady = false
     }
-    if (uiStateFlow.value.address == "") {
+    if (uiStateFlow.value.address == "" && !uiStateFlow.value.usePhoneLocation) {
         isAddressMissing = true
         isReady = false
     }
@@ -249,6 +269,7 @@ fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
     }
 
     return if (isReady) {
+        Log.d(TAG, "Inputs are valid")
         uiStateFlow.update { currentUiState ->
             currentUiState.copy(
                 nameError = false,
@@ -260,6 +281,7 @@ fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
         }
         true
     } else {
+        Log.d(TAG, "Inputs are invalid")
         // If we are not ready, update all the relevant errors
         uiStateFlow.update { currentUiState ->
             currentUiState.copy(
