@@ -192,6 +192,25 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                 currentUiState.copy(name = event.newName)
             }
         }
+
+        // This is called when the user closes the gallery, uri can be null here
+        is NewPlaceEvent.UpdateImageUri -> {
+            if (event.uri == null) {
+                // Set error states
+                uiStateFlow.update { currentUiState ->
+                    currentUiState.copy(
+                        imageError = true
+                    )
+                }
+            } else {
+                // Save the image in the ui state
+                uiStateFlow.update {currentUiState ->
+                    currentUiState.copy(
+                        imageUri = event.uri
+                    )
+                }
+            }
+        }
     }
 }
 
