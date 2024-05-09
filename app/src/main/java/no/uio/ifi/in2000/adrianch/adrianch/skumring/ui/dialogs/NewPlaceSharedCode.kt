@@ -54,7 +54,7 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
  *
  */
 @OptIn(ExperimentalMaterial3Api::class)
-fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<NewPlaceUiState>) {
+suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<NewPlaceUiState>) {
     when (event) {
         is NewPlaceEvent.SaveNewPlace -> {
             val inputsValid = validateInput(uiStateFlow = uiStateFlow)
