@@ -189,61 +189,65 @@ fun NewPlaceDialog(
                     isError = (newPlaceUiState.nameError)
                 )
 
-                Row (
-                    modifier = Modifier.fillMaxWidth().height(20.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    Text(
-                        text = stringResource(id = R.string.new_place_use_phone_location),
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                    Switch(
-                        checked = newPlaceUiState.usePhoneLocation,
-                        onCheckedChange = {onEvent(NewPlaceEvent.SetUseUserLocation(it))})
+                if (newPlaceUiState.useMapLocation) {
 
-                }
-
-                // input field for new place address
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = newPlaceUiState.address,
-                    onValueChange = { onEvent(NewPlaceEvent.UpdateAddress(it)) },
-                    label = {
-                        if (newPlaceUiState.address == "") {
-                            Text(
-                                text = "${stringResource(R.string.new_place_address)}*",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        } else {
-                            Text(
-                                text = stringResource(R.string.new_place_address),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-
-                    },
-                    supportingText = {
-                        if (newPlaceUiState.addressNoResults) {
-                            Text(text = stringResource(id = R.string.new_place_address_no_results))
-                        } else if (newPlaceUiState.addressTooManyResults) {
-                            Text(text = stringResource(id = R.string.new_place_address_many_results))
-                        } else {
-                            Text(text = stringResource(id = R.string.new_place_required))
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    singleLine = true,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.LocationOn,
-                            contentDescription = stringResource(id = R.string.new_place_address),
+                } else {
+                    Row (
+                        modifier = Modifier.fillMaxWidth().height(20.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Text(
+                            text = stringResource(id = R.string.new_place_use_phone_location),
+                            style = MaterialTheme.typography.titleSmall
                         )
-                    },
-                    enabled = !newPlaceUiState.usePhoneLocation,
-                    colors = outlinedTextFieldColors,
-                    isError = newPlaceUiState.addressError
-                )
+                        Switch(
+                            checked = newPlaceUiState.usePhoneLocation,
+                            onCheckedChange = {onEvent(NewPlaceEvent.SetUseUserLocation(it))})
+
+                    }
+
+                    // input field for new place address
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = newPlaceUiState.address,
+                        onValueChange = { onEvent(NewPlaceEvent.UpdateAddress(it)) },
+                        label = {
+                            if (newPlaceUiState.address == "") {
+                                Text(
+                                    text = "${stringResource(R.string.new_place_address)}*",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(R.string.new_place_address),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+
+                        },
+                        supportingText = {
+                            if (newPlaceUiState.addressNoResults) {
+                                Text(text = stringResource(id = R.string.new_place_address_no_results))
+                            } else if (newPlaceUiState.addressTooManyResults) {
+                                Text(text = stringResource(id = R.string.new_place_address_many_results))
+                            } else {
+                                Text(text = stringResource(id = R.string.new_place_required))
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        singleLine = true,
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.LocationOn,
+                                contentDescription = stringResource(id = R.string.new_place_address),
+                            )
+                        },
+                        enabled = !newPlaceUiState.usePhoneLocation,
+                        colors = outlinedTextFieldColors,
+                        isError = newPlaceUiState.addressError
+                    )
+                }
 
                 // Input field for new place description
                 OutlinedTextField(

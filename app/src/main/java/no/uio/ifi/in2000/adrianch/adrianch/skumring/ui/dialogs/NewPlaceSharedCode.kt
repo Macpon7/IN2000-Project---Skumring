@@ -30,6 +30,10 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     var descriptionError: Boolean = false,
 
     var usePhoneLocation: Boolean = false,
+    val useMapLocation: Boolean = false,
+
+    val mapLat: String = "",
+    val mapLong: String = "",
 
     // Date picker and text field
     var imageDate: LocalDate? = null,
@@ -63,8 +67,12 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                 val lat: String
                 val long: String
 
-                // Get coordinates of place either from phone's location or from address search
-                if (uiStateFlow.value.usePhoneLocation) {
+                // If this dialog uses map location, get lat and long from uistate
+                if (uiStateFlow.value.useMapLocation) {
+                    lat = uiStateFlow.value.mapLat
+                    long = uiStateFlow.value.mapLong
+                // else, get coordinates of place either from phone's location or from address search
+                } else if (uiStateFlow.value.usePhoneLocation) {
                     Log.d(TAG, "Trying to get user location")
                     val userLocation = event.getCoordinatesFromLocation()
 
@@ -251,7 +259,7 @@ fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
         isNameMissing = true
         isReady = false
     }
-    if (uiStateFlow.value.address == "" && !uiStateFlow.value.usePhoneLocation) {
+    if (uiStateFlow.value.address == "" && !uiStateFlow.value.usePhoneLocation && !uiStateFlow.value.useMapLocation) {
         isAddressMissing = true
         isReady = false
     }
