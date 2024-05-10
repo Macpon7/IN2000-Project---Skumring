@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -984,7 +983,7 @@ fun PreviewSunEventInfoScreen() {
     val forecastDao = database.forecastDao()
     val placeInfoDao = database.placeInfoDao()
     val placeRepository = PlaceRepositoryImpl(
-        placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao
+        placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao, context = context
     )
     Surface {
         SunEventInfoContent(

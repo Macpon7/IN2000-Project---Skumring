@@ -98,19 +98,19 @@
     <!-- MyPageScreen -->
     <string name="no_location">You have no locations saved yet</string>
     <string name="new_location">New location added!</string>
-    <string name="mypage_add_photo">Add photo</string>
-    <string name="location_name">Location name</string>
-    <string name="address">Location address</string>
-    <string name="choose_date">Choose date</string>
-    <string name="description">Description</string>
+    <string name="new_place_add_photo">Add photo</string>
+    <string name="new_place_location_name">Name</string>
+    <string name="new_place_address">Address</string>
+    <string name="new_place_image_date">Date of picture</string>
+    <string name="new_place_description">Description</string>
     <string name="add_photo">Add photo</string>
-    <string name="add_location">Add location</string>
+    <string name="new_place_add_location">Add location</string>
     <string name="cancel">Cancel</string>
     <string name="error_location_name">Write a name</string>
     <string name="error_address">Write an address</string>
     <string name="error_description">Write a description</string>
-    <string name="missing_fields">Please fill in the missing fields</string>
-    <string name="mypage_fill_in_fields">Fill in the fields to add a new place</string>
+    <string name="new_place_missing_fields">Please fill in the missing fields</string>
+    <string name="new_place_fill_in_fields">Fill in the fields to add a new place</string>
 
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">"Weather conditions: "</string>
@@ -168,4 +168,7 @@
     <string name="delete_place_confirm_button">Delete</string>
     <string name="double_arrow">double arrow icon</string>
     <string name="find_loaction">Find location</string>
+    <string name="new_place_required">*required</string>
+    <string name="new_place_use_phone_location">Use phone\'s location</string>
+    <string name="new_place_pick_address">Pick the correct address:</string>
 </resources>

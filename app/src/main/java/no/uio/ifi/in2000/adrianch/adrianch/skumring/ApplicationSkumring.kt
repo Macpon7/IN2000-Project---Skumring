@@ -18,7 +18,8 @@ public class ApplicationSkumring: Application() {
         dbRepository = PlaceRepositoryImpl(
             placeInfoDao = db.placeInfoDao(),
             forecastDao = db.forecastDao(),
-            imageDao = db.imageDao()
+            imageDao = db.imageDao(),
+            context = context
         )
     }
 }
