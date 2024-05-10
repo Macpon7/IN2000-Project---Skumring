@@ -344,11 +344,16 @@ fun NewPlaceDialog(
                         ),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                     ) {
-                        if (newPlaceUiState.imageUri == null) {
-                            Box (
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
+                        Box (
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            AsyncImage(
+                                model = newPlaceUiState.imageUri,
+                                contentDescription = "",
+                                contentScale = ContentScale.Crop
+                            )
+                            if (!newPlaceUiState.useCustomImage) {
                                 Icon(
                                     imageVector = Icons.Outlined.Add,
                                     contentDescription = stringResource(id = R.string.add_photo),
@@ -359,22 +364,17 @@ fun NewPlaceDialog(
                                     }
                                 )
                             }
-                        } else {
-                            AsyncImage(
-                                model = newPlaceUiState.imageUri,
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop
-                            )
                         }
                     }
 
                     // Input field for photo timestamp
+                    // If we do not use custom image, this will look disabled
                     OutlinedTextField(
                         value = newPlaceUiState.imageDateString,
                         onValueChange = { },
                         modifier = Modifier
                             .clickable(
-                                enabled = true,
+                                enabled = newPlaceUiState.useCustomImage,
                                 onClick = { onEvent(NewPlaceEvent.ShowDatePicker) }
                             )
                             .fillMaxWidth()
@@ -416,7 +416,13 @@ fun NewPlaceDialog(
                                 contentDescription = stringResource(id = R.string.time)
                             )
                         },
-                        colors = if (newPlaceUiState.dateTextFieldError) {
+                        colors = if (!newPlaceUiState.useCustomImage) {
+                            ExposedDropdownMenuDefaults.textFieldColors(
+                                disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        } else {
+                            if (newPlaceUiState.dateTextFieldError) {
                                 ExposedDropdownMenuDefaults.textFieldColors(
                                     // Make it look not disabled
                                     disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -435,6 +441,7 @@ fun NewPlaceDialog(
                                     disabledLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             }
+                        }
                     )
                 }
 

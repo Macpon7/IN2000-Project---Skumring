@@ -8,6 +8,7 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.GeocodeLocation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import java.time.LocalDate
@@ -56,9 +57,10 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     var datePickerError: Boolean = false,
     var dateTextFieldError: Boolean = false,
 
-    // Image URI and error state
-    var imageUri: Uri? = null,
+    // Image URI, which we put a default image in, and variables for if the user has chosen their own image or not
+    var imageUri: Uri? = Uri.parse("android.resource://" + "no.uio.ifi.in2000.adrianch.adrianch.skumring" + "/" + R.drawable.default_place_image),
     var imageError: Boolean = false,
+    var useCustomImage: Boolean = false,
 )
 
 /**
@@ -119,6 +121,12 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
 
                 // Add the new place to database
                 Log.d(TAG, "Trying to add new custom place to DB")
+                val imageDate = if (!uiStateFlow.value.useCustomImage) {
+                    LocalDate.now()
+                } else {
+                    uiStateFlow.value.imageDate
+                }
+
                 event.addCustomPlace(
                     PlaceInfo(
                         id = 0,
@@ -134,7 +142,7 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                     ),
                     // If imageUri is null we will never get to this code
                     uiStateFlow.value.imageUri!!,
-                    uiStateFlow.value.imageDate!!
+                    imageDate!!
                 )
                 event.hideDialog()
             }
@@ -236,18 +244,12 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
 
         // This is called when the user closes the gallery, uri can be null here
         is NewPlaceEvent.UpdateImageUri -> {
-            if (event.uri == null) {
-                // Set error states
-                uiStateFlow.update { currentUiState ->
-                    currentUiState.copy(
-                        imageError = true
-                    )
-                }
-            } else {
+            if (event.uri != null) {
                 // Save the image in the ui state
                 uiStateFlow.update {currentUiState ->
                     currentUiState.copy(
-                        imageUri = event.uri
+                        imageUri = event.uri,
+                        useCustomImage = true
                     )
                 }
             }
@@ -336,7 +338,7 @@ fun validateInput(uiStateFlow: MutableStateFlow<NewPlaceUiState>): Boolean {
         isDescriptionMissing = true
         isReady = false
     }
-    if (uiStateFlow.value.imageDate == null) {
+    if (uiStateFlow.value.imageDate == null && uiStateFlow.value.useCustomImage) {
         isDateMissing = true
         isReady = false
     }
