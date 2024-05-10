@@ -20,11 +20,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.mapboxpins.PinInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceEvent
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceUiState
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.onNewPlaceEvent
 
 enum class MapListToggleState(val stateAsBool: Boolean) {
     MAP(stateAsBool = false),
@@ -42,6 +47,8 @@ data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     var userLong: String = "0",
     var userBearing: Float = 0.0f,
     var userLocUpdated: Boolean = false,
+
+    val showNewPlaceDialog: Boolean = false,
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -70,7 +77,8 @@ private const val logTag = "MapListViewModel"
 @SuppressLint("StaticFieldLeak")
 class MapListViewModel(
     private val context: Context,
-    private val placeRepository: PlaceRepository
+    private val placeRepository: PlaceRepository,
+    private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl()
 ) : ViewModel() {
 
     private val _mapListUiState = MutableStateFlow(MapListUiState())
@@ -79,7 +87,13 @@ class MapListViewModel(
     private val userLocationRepository: UserLocationRepository =
         UserLocationRepositoryImpl(context = context)
 
-    // TODO make this work instead of having the user press a button
+    private val _newPlaceUiState = MutableStateFlow(NewPlaceUiState(useMapLocation = true))
+    val newPlaceUiState: StateFlow<NewPlaceUiState> = _newPlaceUiState.asStateFlow()
+
+    val getCoordinatesFromAddress = geocodingRepository::getCoordinatesFromAddress
+    val getCoordinatesFromUserLocation = userLocationRepository::getUserLocation
+    val addPlace = placeRepository::addCustomPlace
+
     init {
         //loadPlaces()
     }
@@ -124,6 +138,40 @@ class MapListViewModel(
                     currentMapListUiState.copy(mapListToggle = MapListToggleState.MAP)
                 }
             }
+        }
+    }
+
+    fun onNewPlaceDialogEvent(event: NewPlaceEvent) {
+        viewModelScope.launch(Dispatchers.IO) {
+            onNewPlaceEvent(event = event, uiStateFlow = _newPlaceUiState)
+        }
+    }
+
+    /**
+     *  The form for adding a location is added
+     */
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun showNewPlaceDialog(lat: String, long: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _newPlaceUiState.update { currentNewPlaceUiState ->
+                currentNewPlaceUiState.copy(mapLat = lat, mapLong = long)
+            }
+            _mapListUiState.update { currentMapListUiState ->
+                currentMapListUiState.copy(showNewPlaceDialog = true)
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun hideNewPlaceDialog() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _mapListUiState.update { currentMapListUiState ->
+                currentMapListUiState.copy(
+                    showNewPlaceDialog = false,
+                    places = placeRepository.getAllPlaces()
+                )
+            }
+            _newPlaceUiState.update { NewPlaceUiState(useMapLocation = true) }
         }
     }
 

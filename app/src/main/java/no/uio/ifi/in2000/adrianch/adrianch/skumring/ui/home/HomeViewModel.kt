@@ -127,8 +127,8 @@ class HomeViewModel(
                     )
 
                     val userPlace = placeRepository.getUserLocationPlace(
-                        lat = lat,
-                        long = long
+                        lat = location.lat,
+                        long = location.long
                     )
 
 
@@ -159,6 +159,11 @@ class HomeViewModel(
             } catch (e: Exception) {
                 // Practically no way this should happen
                 Log.e(logTag, "Error updating user location", e)
+
+                // If we end up here, we set the lat and long to 0 so that the if check above will be true
+                lat = "0"
+                long = "0"
+
                 _homeUiState.update { currentHomeUiState ->
                     currentHomeUiState.copy(
                         showSnackbar = true,

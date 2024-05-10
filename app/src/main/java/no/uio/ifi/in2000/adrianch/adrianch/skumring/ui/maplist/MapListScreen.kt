@@ -96,6 +96,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherCondit
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceDialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
@@ -190,6 +191,17 @@ fun MapListScreen(
 fun MapListContent(navController: NavController, mapListViewModel: MapListViewModel) {
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
+    if (mapListUiState.showNewPlaceDialog) {
+        NewPlaceDialog(
+            hideDialog = { mapListViewModel.hideNewPlaceDialog() },
+            onEvent = { mapListViewModel.onNewPlaceDialogEvent(it) },
+            getCoordinatesFromAddress = mapListViewModel.getCoordinatesFromAddress,
+            getCoordinatesFromLocation = mapListViewModel.getCoordinatesFromUserLocation,
+            addCustomPlace = mapListViewModel.addPlace,
+            uiStateFlow = mapListViewModel.newPlaceUiState
+        )
+    }
+
     ToggleButtonThemeSwitcher(
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
         onClick = { mapListViewModel.toggleMapListState() }
@@ -208,7 +220,8 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
                 BottomSheetContent(
                     place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
                     navController = navController,
-                    mapListViewModel = mapListViewModel
+                    toggleFavourite = mapListViewModel::toggleFavourite,
+                    onDismissRequest = mapListViewModel::hideBottomSheet
                 )
             }
         }
@@ -445,7 +458,8 @@ fun ToggleButtonThemeSwitcher(
 fun BottomSheetContent(
     place: PlaceInfo,
     navController: NavController,
-    mapListViewModel: MapListViewModel,
+    toggleFavourite: (PlaceInfo) -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     Column(
         modifier = Modifier.padding(top = 0.dp, bottom = 20.dp, start = 12.dp, end = 12.dp)
@@ -465,7 +479,7 @@ fun BottomSheetContent(
                 color = MaterialTheme.colorScheme.onPrimary
             )
             IconButton(onClick = {
-                mapListViewModel.toggleFavourite(place = place)
+                toggleFavourite(place)
             }
             ) {
                 if (place.isFavourite) {
@@ -545,7 +559,7 @@ fun BottomSheetContent(
             }
             //description string
             Text(
-                text = stringResource(R.string.description),
+                text = stringResource(R.string.new_place_description),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier
@@ -576,8 +590,7 @@ fun BottomSheetContent(
             {
                 TextButton(
                     onClick = {
-                        mapListViewModel.hideBottomSheet()
-
+                        onDismissRequest()
                     },
                     contentPadding = PaddingValues(12.dp),
                 ) {
@@ -589,7 +602,7 @@ fun BottomSheetContent(
                 }
                 Button(
                     onClick = {
-                        mapListViewModel.hideBottomSheet()
+                        onDismissRequest()
                         navController.navigate("placeinfoscreen/${place.id}")
                     },
                     contentPadding = PaddingValues(12.dp),
@@ -643,6 +656,7 @@ fun MapArea(
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
+            mapListViewModel.showNewPlaceDialog(lat = it.latitude().toString(), long = it.longitude().toString())
             true
         },
         compassSettings = CompassSettings {
@@ -736,7 +750,8 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
     val placeRepository = PlaceRepositoryImpl(
         placeInfoDao = placeInfoDao,
         forecastDao = forecastDao,
-        imageDao = imageDao
+        imageDao = imageDao,
+        context = context
     )
     SkumringTheme {
         Surface {
@@ -769,10 +784,8 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
                     )
                 ),
                 navController = navController,
-                mapListViewModel = MapListViewModel(
-                    context = context,
-                    placeRepository = placeRepository
-                )
+                onDismissRequest = {},
+                toggleFavourite = {}
             )
         }
     }

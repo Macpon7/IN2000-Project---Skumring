@@ -104,20 +104,20 @@
     <!-- MyPageScreen -->
     <string name="no_location">Ingen lokasjon lagret</string>
     <string name="new_location">Ny plassering lagt til!</string>
-    <string name="mypage_add_photo">Legg til bilde</string>
-    <string name="location_name">Stedets navn</string>
-    <string name="address">Stedets addresse</string>
-    <string name="choose_date">Velg dato</string>
-    <string name="description">Beskrivelse</string>
+    <string name="new_place_add_photo">Legg til bilde</string>
+    <string name="new_place_location_name">Navn</string>
+    <string name="new_place_address">Adresse</string>
+    <string name="new_place_image_date">Dato for bilde</string>
+    <string name="new_place_description">Beskrivelse</string>
     <string name="add_photo">Legg til bilde</string>
-    <string name="add_location">Legg til sted</string>
-    <string name="add_date" translatable="false">OK</string>
+    <string name="new_place_add_location">Legg til sted</string>
+    <string name="ok" translatable="false">OK</string>
     <string name="cancel">Avbryt</string>
     <string name="error_location_name">Skriv et navn</string>
     <string name="error_address">Skriv inn en addresse</string>
     <string name="error_description">Skriv en beskrivelse</string>
-    <string name="missing_fields">Skriv inn de manglende feltene</string>
-    <string name="mypage_fill_in_fields">Fyll inn felt for å legge til et nytt sted</string>
+    <string name="new_place_missing_fields">Skriv inn de manglende feltene</string>
+    <string name="new_place_fill_in_fields">Fyll inn felt for å legge til et nytt sted</string>
 
     <!--WeatherConditionsPopUp-->
     <string name="weather_conditions_excellent_explanation">Det bør være noen skyer i midten til høye nivåer, lav fuktighet og utmerket sikt!</string>
@@ -178,4 +178,7 @@
     <string name="delete_place_confirm_button">Slett</string>
     <string name="double_arrow">dobbelt pil ikon</string>
     <string name="find_loaction">"Finn lokasjon "</string>
+    <string name="new_place_required">*påkrevd</string>
+    <string name="new_place_use_phone_location">Bruk telefonens posisjon</string>
+    <string name="new_place_pick_address">Velg riktig adresse:</string>
 </resources>
