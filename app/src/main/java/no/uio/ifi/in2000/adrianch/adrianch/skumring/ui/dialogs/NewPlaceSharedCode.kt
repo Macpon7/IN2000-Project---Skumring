@@ -8,6 +8,7 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.GeocodeLocation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -23,12 +24,19 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
     var address: String = "",
     var addressError: Boolean = false,
-    var addressNoResults: Boolean = false,
-    var addressTooManyResults: Boolean = false,
 
     var description: String = "",
     var descriptionError: Boolean = false,
 
+    // Handling address results from forward geocoding
+    var addressNoResults: Boolean = false,
+    var addressTooManyResults: Boolean = false,
+    var addressResults: List<GeocodeLocation> = emptyList(),
+    var selectedAddress: String = "",
+    var showAddressDialog: Boolean = false,
+    var addressDialogError: Boolean = false,
+
+    // Variables for using phone's location or getting the coordinates from long pressing on the map
     var usePhoneLocation: Boolean = false,
     val useMapLocation: Boolean = false,
 
@@ -97,7 +105,10 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                         uiStateFlow.update { currentUiState ->
                             currentUiState.copy(
                                 addressError = true,
-                                addressTooManyResults = true)
+                                addressTooManyResults = true,
+                                addressResults = addresses,
+                                showAddressDialog = true
+                            )
                         }
                         return
                     }
@@ -106,7 +117,7 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                     long = addresses.first().long
                 }
 
-                // Add th new place to database
+                // Add the new place to database
                 Log.d(TAG, "Trying to add new custom place to DB")
                 event.addCustomPlace(
                     PlaceInfo(
@@ -239,6 +250,65 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                         imageUri = event.uri
                     )
                 }
+            }
+        }
+
+        is NewPlaceEvent.SetSelectedAddress -> {
+            uiStateFlow.update { currentUiState ->
+                currentUiState.copy(selectedAddress = event.address)
+            }
+        }
+
+        is NewPlaceEvent.ConfirmSelectedAddress -> {
+            // if user hasn't selected an address, set error and do not close dialog
+            if (uiStateFlow.value.selectedAddress == "") {
+                uiStateFlow.update { currentUiState ->
+                    currentUiState.copy(addressDialogError = true)
+                }
+            } else {
+                // If the user has selected an address, save the new place and reset NewPlaceDialog
+                uiStateFlow.update { currentUiState ->
+                    currentUiState.copy(
+                        addressError = false,
+                        addressTooManyResults = false,
+                        showAddressDialog = false
+                    )
+                }
+
+                val selectedAddress = uiStateFlow.value.addressResults.find { it.placeName == uiStateFlow.value.selectedAddress }
+
+                // Add the new place to database
+                Log.d(TAG, "Trying to add new custom place to DB")
+                event.addCustomPlace(
+                    PlaceInfo(
+                        id = 0,
+                        name = uiStateFlow.value.name,
+                        description = uiStateFlow.value.description,
+                        lat = selectedAddress!!.lat,
+                        long = selectedAddress.long,
+                        isFavourite = false,
+                        isCustomPlace = true,
+                        hasNotification = false,
+                        images = emptyList(),
+                        sunEvents = emptyList()
+                    ),
+                    // If imageUri is null we will never get to this code
+                    uiStateFlow.value.imageUri!!,
+                    uiStateFlow.value.imageDate!!
+                )
+                event.hideDialog()
+            }
+        }
+
+        NewPlaceEvent.ShowAddressesDialog -> {
+            uiStateFlow.update { currentUiState ->
+                currentUiState.copy(showAddressDialog = true)
+            }
+        }
+
+        NewPlaceEvent.HideAddressDialog -> {
+            uiStateFlow.update { currentUiState ->
+                currentUiState.copy(showAddressDialog = false)
             }
         }
     }

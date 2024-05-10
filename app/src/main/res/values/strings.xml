@@ -180,4 +180,5 @@
     <string name="find_loaction">"Finn lokasjon "</string>
     <string name="new_place_required">*påkrevd</string>
     <string name="new_place_use_phone_location">Bruk telefonens posisjon</string>
+    <string name="new_place_pick_address">Velg riktig adresse:</string>
 </resources>

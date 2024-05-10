@@ -16,7 +16,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.RadioButton
 import androidx.compose.material.Switch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -34,6 +38,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -45,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -132,6 +138,16 @@ fun NewPlaceDialog(
         }
     }
 
+    // Show when there are multiple address results from forward geocoding
+    if (newPlaceUiState.showAddressDialog) {
+        MultipleAddressesDialog(
+            onEvent = onEvent,
+            addCustomPlace = addCustomPlace,
+            hideDialog = hideDialog,
+            uiState = newPlaceUiState
+        )
+    }
+
     //This is the dialog for adding a new place
     Dialog(onDismissRequest = {
         hideDialog()
@@ -189,10 +205,13 @@ fun NewPlaceDialog(
                 )
 
                 if (newPlaceUiState.useMapLocation) {
-
+                    // If we are getting the coordinates from long pressing the map,
+                    // we don't want to show the address field at all
                 } else {
                     Row (
-                        modifier = Modifier.fillMaxWidth().height(20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(20.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ){
@@ -442,6 +461,97 @@ fun NewPlaceDialog(
     }
 }
 
+/**
+ * This dialog will appear if the user's address string returns multiple values,
+ * so the user can select which address is the correct one for the new place
+ */
+@Composable
+fun MultipleAddressesDialog (
+    onEvent: (event: NewPlaceEvent) -> Unit,
+    addCustomPlace: KSuspendFunction3<PlaceInfo, Uri, LocalDate, Unit>,
+    hideDialog: () -> Unit,
+    uiState: NewPlaceUiState
+) {
+    val buttonColors = ButtonDefaults.outlinedButtonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary
+    )
+
+    Dialog(onDismissRequest = { onEvent(NewPlaceEvent.HideAddressDialog) }) {
+        Card (
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        ) {
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.new_place_pick_address),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.titleMedium
+                    )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Column containing the address options:
+                Column (modifier = Modifier.selectableGroup()) {
+                    uiState.addressResults.forEach { result ->
+                        Row (
+                            modifier = Modifier
+                                .fillMaxWidth(0.9f)
+                                .selectable(
+                                    selected = (result.placeName == uiState.selectedAddress),
+                                    onClick = { onEvent(NewPlaceEvent.SetSelectedAddress(result.placeName)) },
+                                    role = Role.RadioButton
+                                )
+                                .padding(bottom = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (result.placeName == uiState.selectedAddress),
+                                onClick = null // null recommended for accessibility with screenreaders
+                            )
+                            Text(
+                                text = result.placeName,
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(start = 16.dp)
+                                )
+                        }
+                    }
+                }
+                Row (
+                    modifier = Modifier.padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    OutlinedButton(
+                        onClick = { onEvent(NewPlaceEvent.HideAddressDialog) },
+                        colors = buttonColors
+                    ) {
+                        Text(text = stringResource(id = R.string.cancel))
+                    }
+                    Spacer(modifier = Modifier.width(20.dp))
+
+                    OutlinedButton(
+                        onClick = { onEvent(
+                            NewPlaceEvent.ConfirmSelectedAddress(
+                                addCustomPlace = addCustomPlace,
+                                hideDialog = hideDialog
+                            )
+                        ) },
+                        colors = buttonColors
+                    ) {
+                        Text(text = stringResource(id = R.string.ok))
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Preview(name = "Light mode, norsk")
 @Composable
 fun PreviewNewPlaceDialogLight() {
@@ -457,6 +567,34 @@ fun PreviewNewPlaceDialogLight() {
                 getCoordinatesFromLocation = previewFun::getCoordinatesFromLocation,
                 addCustomPlace = previewFun::addCustomPlace,
                 uiStateFlow = testUiStateFlow
+            )
+        }
+    }
+}
+
+@Preview(name = "Multiple addresses, Light mode")
+@Composable
+fun PreviewMultipleAddressesLight() {
+    val previewFun = PreviewFunctions()
+    val testUiStateFlow = MutableStateFlow(NewPlaceUiState(
+        addressResults = listOf(
+            GeocodeLocation(lat = "", long = "", placeName = "Alternativ 1"),
+            GeocodeLocation(lat = "", long = "", placeName = "Alternativ 2"),
+            GeocodeLocation(lat = "", long = "", placeName = "Alternativ 3"),
+            GeocodeLocation(lat = "", long = "", placeName = "Alternativ 4"),
+            GeocodeLocation(lat = "", long = "", placeName = "Alternativ 5"),
+
+        )
+    ))
+    val previewUiState by testUiStateFlow.collectAsState()
+
+    SkumringTheme (useDarkTheme = false){
+        Surface {
+            MultipleAddressesDialog(
+                onEvent = {},
+                addCustomPlace = previewFun::addCustomPlace,
+                hideDialog = {},
+                uiState = previewUiState
             )
         }
     }

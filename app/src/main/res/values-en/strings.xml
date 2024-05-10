@@ -170,4 +170,5 @@
     <string name="find_loaction">Find location</string>
     <string name="new_place_required">*required</string>
     <string name="new_place_use_phone_location">Use phone\'s location</string>
+    <string name="new_place_pick_address">Pick the correct address:</string>
 </resources>
