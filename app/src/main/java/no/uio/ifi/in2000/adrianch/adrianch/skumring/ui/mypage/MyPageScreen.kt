@@ -128,13 +128,13 @@ fun MyPageScreen(
                 },
                 modifier = Modifier
                     .padding(end = 16.dp),
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                containerColor = MaterialTheme.colorScheme.primary
 
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = stringResource(id = R.string.new_place_add_location),
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
