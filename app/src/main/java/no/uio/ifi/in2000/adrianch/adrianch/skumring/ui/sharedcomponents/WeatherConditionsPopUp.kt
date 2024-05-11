@@ -71,13 +71,13 @@ fun WeatherIconPopUp(
                         Text(
                             text = stringResource(R.string.conditions_excellent),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
                         Divider(
                             modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 5.dp),
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
                             thickness = 1.dp
                         )
                         Text(
@@ -99,7 +99,7 @@ fun WeatherIconPopUp(
                         )
                         Divider(
                             modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 5.dp),
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
                             thickness = 1.dp
                         )
                         Text(
@@ -122,7 +122,7 @@ fun WeatherIconPopUp(
                         )
                         Divider(
                             modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 5.dp),
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
                             thickness = 1.dp
                         )
                         Text(
@@ -141,7 +141,7 @@ fun WeatherIconPopUp(
                         onClick = onClose
                     ) {
                         Text(
-                            stringResource(id = R.string.weather_conditions_popUp_dismiss),
+                            stringResource(id =  R.string.close),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold
