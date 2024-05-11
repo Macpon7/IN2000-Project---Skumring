@@ -69,6 +69,9 @@ fun SkumringBottomBar(
                colors = NavigationBarItemDefaults.colors(
                  unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                    selectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                   selectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                   indicatorColor = MaterialTheme.colorScheme.inversePrimary,
+
                 ),
             )
         }
