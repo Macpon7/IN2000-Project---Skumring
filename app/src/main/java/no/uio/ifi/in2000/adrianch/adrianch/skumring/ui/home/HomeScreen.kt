@@ -517,14 +517,14 @@ fun HorizontalInfoCardContent(
                     Text(
                         text = stringResource(R.string.weather_condition) + " ",
                         style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         //text changing based on weather conditions, in different textbox because of change of color
                         text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold
                     )
                     Box(
