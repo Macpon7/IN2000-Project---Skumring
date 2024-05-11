@@ -2,13 +2,6 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme
 import androidx.compose.ui.graphics.Color
 
 //DARKTHEME
-/**
- * Darktheme colors sorted after the screens that use the colors
- * if the color is used in another screen as well it is commented out
- */
-
-
-//HOMESCREEN COLORS
 val inverseSurfaceDark = Color(0xFF151F38) //Sunset gradient colors
 val inverseOnSurfaceDark = Color(0xFF1F4A6C) //Sunset gradient colors
 val inversePrimaryDark = Color(0xFF45455E) //Sunset gradient colors
@@ -29,8 +22,6 @@ val surfaceVariantDark = Color(0xFF1E1E1E)
 val onSurfaceVariantDark = Color(0xFFC5C6D0)
 val backgroundDark = Color(0xFF121318)
 val onSurfaceDark = Color(0xFFE2E2E9)
-
-//ADDITIONAL COLORS NOT USED
 val errorDark = Color(0xFFFFB4AB)
 val onErrorDark = Color(0xFF690005)
 val errorContainerDark = Color(0xFF93000A)
@@ -43,18 +34,10 @@ val scrimDark = Color(0xFF1E1F25)
 
 
 
-
 //LIGHT THEME
-/**
- * Light theme colors sorted after the screens that use the colors
- * if the color is used in another screen as well it is commented out
- */
-
-//HOMESCREEN COLORS //fornøyd!
 val inverseSurfaceLight = Color(0xFF0062A1)//Sunset gradient colors
 val inverseOnSurfaceLight = Color(0xFFC3E8FF)//Sunset gradient colors
 val inversePrimaryLight = Color(0xFFD8E2FF)//Sunset gradient colors
-
 
 val primaryLight = Color(0xFF001A42) // original: 0xFF455E91
 val onPrimaryLight = Color(0xFFFFFFFF)
