@@ -590,7 +590,7 @@ fun BottomSheetContent(
                 ) {
                     Text(
                         text = stringResource(R.string.close),
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
@@ -601,12 +601,12 @@ fun BottomSheetContent(
                     },
                     contentPadding = PaddingValues(12.dp),
                     modifier = Modifier.padding(start = 15.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
 
                     ) {
                     Text(
                         text = stringResource(R.string.home_more_details_button),
-                        color = MaterialTheme.colorScheme.onSecondary,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.bodyLarge,
 
                         )
