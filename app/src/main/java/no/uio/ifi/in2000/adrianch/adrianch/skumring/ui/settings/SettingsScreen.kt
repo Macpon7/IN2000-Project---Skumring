@@ -141,7 +141,7 @@ fun ChooseTheme(
             label = {
                 Text(
                     text = stringResource(R.string.choose_theme),
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.bodyMedium,
@@ -153,8 +153,8 @@ fun ChooseTheme(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = MaterialTheme.colorScheme.onSecondary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
             ),
         )
         ExposedDropdownMenu(
@@ -168,7 +168,7 @@ fun ChooseTheme(
                     Text(
                         text = stringResource(R.string.follow_system),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
                 onClick = {
@@ -183,7 +183,7 @@ fun ChooseTheme(
                     Text(
                         text = stringResource(R.string.light_mode),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
                 onClick = {
@@ -198,7 +198,7 @@ fun ChooseTheme(
                     Text(
                         text = stringResource(R.string.dark_mode),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
                 onClick = {
@@ -249,7 +249,7 @@ fun ChooseLanguage(
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             trailingIcon = {
@@ -258,8 +258,8 @@ fun ChooseLanguage(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = MaterialTheme.colorScheme.onSecondary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
             ),
         )
         ExposedDropdownMenu(
@@ -272,7 +272,7 @@ fun ChooseLanguage(
                     Text(
                         text = stringResource(R.string.follow_system),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
                 onClick = {
@@ -287,7 +287,7 @@ fun ChooseLanguage(
                     Text(
                         text = stringResource(R.string.english),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
                 onClick = {
@@ -302,7 +302,7 @@ fun ChooseLanguage(
                     Text(
                         text = stringResource(R.string.norwegian),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
                 onClick = {
@@ -351,7 +351,7 @@ fun ChooseStartLocation(
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp),
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             trailingIcon = {
@@ -360,8 +360,8 @@ fun ChooseStartLocation(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor = MaterialTheme.colorScheme.onSecondary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.onSecondary
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
             )
         )
         ExposedDropdownMenu(
@@ -374,7 +374,7 @@ fun ChooseStartLocation(
                     Text(
                         text = stringResource(R.string.costum_location),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
                 onClick = {
@@ -391,7 +391,7 @@ fun ChooseStartLocation(
                     Text(
                         text = stringResource(R.string.phones_location),
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
                 onClick = {
