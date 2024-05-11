@@ -20,8 +20,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Create
@@ -221,8 +223,14 @@ fun NewPlaceDialog(
                         )
                         Switch(
                             checked = newPlaceUiState.usePhoneLocation,
-                            onCheckedChange = {onEvent(NewPlaceEvent.SetUseUserLocation(it))})
-
+                            onCheckedChange = {onEvent(NewPlaceEvent.SetUseUserLocation(it))},
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                                checkedTrackColor = MaterialTheme.colorScheme.onPrimary,
+                                uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                            )
+                        )
                     }
 
                     // input field for new place address
@@ -460,7 +468,8 @@ fun NewPlaceDialog(
                 ) {
                     Text(
                         text = stringResource(R.string.new_place_add_location),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
