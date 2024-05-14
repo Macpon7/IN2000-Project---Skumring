@@ -198,4 +198,5 @@
     <string name="placeinfoscreen_instructions_skumring">Click on the cards for more information about the place and distance from your location</string>
     <string name="mypagescreen_instructions_skumring">Add your own places and change settings on my page</string>
     <string name="lastdialog_instructions_skumring">We hope you like our app!</string>
+    <string name="UserInstructionsDialog_next_button">Next</string>
 </resources>
