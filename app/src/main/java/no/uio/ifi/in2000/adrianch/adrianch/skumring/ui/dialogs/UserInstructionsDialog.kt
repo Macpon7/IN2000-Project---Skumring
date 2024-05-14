@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -129,7 +131,6 @@ fun FirstScreenInstructions() {
             text = stringResource(R.string.firstscreen_instructions_welcome_skumring),
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onPrimary,
-            textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 35.dp, bottom = 35.dp)
         )
         Icon( //TODO change this
@@ -143,7 +144,7 @@ fun FirstScreenInstructions() {
             text = stringResource(R.string.firstscreen_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.Center,
             modifier = Modifier.padding( bottom = 35.dp)
         )
         Text(
@@ -151,7 +152,7 @@ fun FirstScreenInstructions() {
             stringResource(R.string.firstscreen_moreinfo_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
-            textAlign = TextAlign.Start
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -164,15 +165,17 @@ fun HomeScreenInstructions() {
     val currentLocale = LocalContext.current.resources.configuration.locale
     val isEnglish = currentLocale.language == "en"
     val isNorwegian = currentLocale.language == "no"
-
-        Text(
-            text = stringResource(R.string.homescreen_instructions_skumring),
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 20.dp)
-        )
+Box(modifier = Modifier
+    .fillMaxWidth()
+    .heightIn(min = 120.dp)) {
+    Text(
+        text = stringResource(R.string.homescreen_instructions_skumring),
+        style = MaterialTheme.typography.titleLarge,
+        color = MaterialTheme.colorScheme.onPrimary,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(top = 15.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+    )
+}
     Row (
         modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Top
@@ -235,13 +238,17 @@ fun HomeScreenInstructionsFavourite() {
     val isEnglish = currentLocale.language == "en"
     val isNorwegian = currentLocale.language == "no"
 
-    Text(
-        text =  stringResource(R.string.homescreen_favourite_instructions_skumring),
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onPrimary,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
-    )
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .heightIn(min = 120.dp)) {
+        Text(
+            text = stringResource(R.string.homescreen_favourite_instructions_skumring),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 15.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+        )
+    }
     Row( modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     )
@@ -281,13 +288,17 @@ fun MapListInstructions() {
     val isEnglish = currentLocale.language == "en"
     val isNorwegian = currentLocale.language == "no"
 
-    Text(
-        text = stringResource(R.string.maplistscreen_instructions_skumring),
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onPrimary,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
-    )
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .heightIn(min = 120.dp)) {
+        Text(
+            text = stringResource(R.string.maplistscreen_instructions_skumring),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+        )
+    }
     Row( modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     )
@@ -342,13 +353,17 @@ fun MapListInstructionsPopUp() {
     val isEnglish = currentLocale.language == "en"
     val isNorwegian = currentLocale.language == "no"
 
-    Text(
-        text = stringResource(R.string.maplistscreen_popup_instructions_skumring),
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onPrimary,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
-    )
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .heightIn(min = 120.dp)) {
+        Text(
+            text = stringResource(R.string.maplistscreen_popup_instructions_skumring),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+        )
+    }
     Row( modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     )
@@ -406,13 +421,17 @@ fun PlaceInfoInstructions() {
     val isEnglish = currentLocale.language == "en"
     val isNorwegian = currentLocale.language == "no"
 
-    Text(
-        text = stringResource(R.string.placeinfoscreen_instructions_skumring),
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onPrimary,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
-    )
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .heightIn(min = 120.dp)) {
+        Text(
+            text = stringResource(R.string.placeinfoscreen_instructions_skumring),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+        )
+    }
     Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     )
@@ -467,13 +486,17 @@ fun NewPlaceDialogInstructions() {
     val isEnglish = currentLocale.language == "en"
     val isNorwegian = currentLocale.language == "no"
 
-    Text(
-        text = stringResource(R.string.mypagescreen_instructions_skumring),
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onPrimary,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
-    )
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .heightIn(min = 120.dp)) {
+        Text(
+            text = stringResource(R.string.mypagescreen_instructions_skumring),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+        )
+    }
     Row ( modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ){
