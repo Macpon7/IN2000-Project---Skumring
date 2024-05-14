@@ -191,7 +191,7 @@
     <string name="firstscreen_instructions_welcome_skumring">Welcome to Skumring!</string>
     <string name="firstscreen_instructions_skumring">The app for those who want to find  and save places to take pictures of sunsets!</string>
     <string name="firstscreen_moreinfo_instructions_skumring">Get an introduction to the app by clicking next!</string>
-    <string name="homescreen_instructions_skumring">The first thing you encounter is the home screen, here you can see the weather forecast for the sunset at your location today</string>
+    <string name="homescreen_instructions_skumring">The homescreen shows the weather forecast for the sunset at your location today</string>
     <string name="homescreen_favourite_instructions_skumring">Add your favorite places and get them on your home screen!</string>
     <string name="maplistscreen_instructions_skumring">You can see your location and nice places for sunset nearby on the map screen</string>
     <string name="maplistscreen_popup_instructions_skumring">Push the pins for more information</string>
