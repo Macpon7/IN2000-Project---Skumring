@@ -6,11 +6,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -23,7 +21,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,7 +32,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 
@@ -47,34 +43,36 @@ closeDialog: () -> Unit
     var currentScreen by remember { mutableIntStateOf(0) }
     val totalScreens = 8
 
-    Dialog(onDismissRequest = {
-        closeDialog()
-    }) {
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
+    Card(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(5.dp)
+               // .fillMaxWidth()
         ) {
-            Column(
-                modifier = Modifier.padding(5.dp)
-                    .fillMaxWidth()
-            ) {
-                when (currentScreen) {
-                    0 -> FirstScreenInstructions()
-                    1 -> HomeScreenInstructions()
-                    2 -> HomeScreenInstructionsFavourite()
-                    3 -> MapListInstructions()
-                    4 -> MapListInstructionsPopUp()
-                    5 -> PlaceInfoInstructions()
-                    6 -> NewPlaceDialogInstructions()
-                    7 -> LastScreenInstructions()
-                }
+            when (currentScreen) {
+                0 -> FirstScreenInstructions()
+                1 -> HomeScreenInstructions()
+                2 -> HomeScreenInstructionsFavourite()
+                3 -> MapListInstructions()
+                4 -> MapListInstructionsPopUp()
+                5 -> PlaceInfoInstructions()
+                6 -> NewPlaceDialogInstructions()
+                7 -> LastScreenInstructions()
             }
+        }
+
             Row(
+                verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
-                    .padding(end = 10.dp, top = 10.dp)
-                    .fillMaxWidth()
+                    .padding(end = 15.dp, top = 10.dp, bottom = 20.dp)
+                    .fillMaxSize()
             )
             {
                 TextButton(
@@ -86,7 +84,7 @@ closeDialog: () -> Unit
                     Text(
                         text = stringResource(R.string.close),
                         color = MaterialTheme.colorScheme.onTertiary,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 }
                 Button(
@@ -109,50 +107,55 @@ closeDialog: () -> Unit
                     Text(
                         text = stringResource(id = R.string.UserInstructionsDialog_next_button),
                         color = MaterialTheme.colorScheme.onTertiary,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.titleLarge
                     )
                 }
 
             }
         }
     }
-}
+
 
 
 
 @Composable
 fun FirstScreenInstructions() {
-        Column (modifier = Modifier.padding(start = 5.dp)) {
-            Text(
-                text = stringResource(R.string.firstscreen_instructions_welcome_skumring),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimary,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(top = 35.dp)
-            )
-            Icon( //TODO change this
-                painterResource(id = R.drawable.sunsetsymbol),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-            Text(
-                text = stringResource(R.string.firstscreen_instructions_skumring),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimary,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(top = 20.dp)
-            )
-            Text(
-                text =
-                stringResource(R.string.firstscreen_moreinfo_instructions_skumring),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimary,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(top = 20.dp)
-            )
-        }
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = stringResource(R.string.firstscreen_instructions_welcome_skumring),
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 35.dp, bottom = 35.dp)
+        )
+        Icon( //TODO change this
+            painterResource(id = R.drawable.sunsetsymbol),
+            contentDescription = "HomeScreenInstructions",
+            tint = Color.Unspecified,
+            modifier = Modifier
+                .padding(bottom = 50.dp)
+        )
+        Text(
+            text = stringResource(R.string.firstscreen_instructions_skumring),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.padding( bottom = 35.dp)
+        )
+        Text(
+            text =
+            stringResource(R.string.firstscreen_moreinfo_instructions_skumring),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Start
+        )
     }
+}
+
 
 
 
@@ -162,13 +165,14 @@ fun HomeScreenInstructions() {
     val isEnglish = currentLocale.language == "en"
     val isNorwegian = currentLocale.language == "no"
 
-    Text(
-        text = stringResource(R.string.homescreen_instructions_skumring),
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onPrimary,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 20.dp)
-    )
+        Text(
+            text = stringResource(R.string.homescreen_instructions_skumring),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 20.dp)
+        )
     Row (
         modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Top
@@ -176,14 +180,14 @@ fun HomeScreenInstructions() {
         Column (modifier = Modifier.weight(1f).padding(end = 2.dp))  {
             Text(
                 text = "1." + stringResource(R.string.homescreen_instructions_1),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
                 text = "2." + stringResource(R.string.homescreen_instructions_2),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
@@ -191,14 +195,14 @@ fun HomeScreenInstructions() {
             Text(
                 text =
                 "3." + stringResource(R.string.homescreen_instructions_3),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "4." + stringResource(R.string.homescreen_instructions_4),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
@@ -233,7 +237,7 @@ fun HomeScreenInstructionsFavourite() {
 
     Text(
         text =  stringResource(R.string.homescreen_favourite_instructions_skumring),
-        style = MaterialTheme.typography.titleMedium,
+        style = MaterialTheme.typography.titleLarge,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
@@ -245,7 +249,7 @@ fun HomeScreenInstructionsFavourite() {
         Column (modifier = Modifier.weight(1f)) {
             Text(
                 text = "1." + stringResource(R.string.homescreen_favourite_instruction),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
@@ -279,7 +283,7 @@ fun MapListInstructions() {
 
     Text(
         text = stringResource(R.string.maplistscreen_instructions_skumring),
-        style = MaterialTheme.typography.titleMedium,
+        style = MaterialTheme.typography.titleLarge,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
@@ -292,21 +296,21 @@ fun MapListInstructions() {
             Text(
                 text = "1." + stringResource(R.string.maplistscreen_instructions_1)
                 ,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
                 text = "2." + stringResource(R.string.maplistscreen_instructions_2),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "3." + stringResource(R.string.maplistscreen_instructions_3),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
@@ -340,7 +344,7 @@ fun MapListInstructionsPopUp() {
 
     Text(
         text = stringResource(R.string.maplistscreen_popup_instructions_skumring),
-        style = MaterialTheme.typography.titleMedium,
+        style = MaterialTheme.typography.titleLarge,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
@@ -353,21 +357,21 @@ fun MapListInstructionsPopUp() {
             Text(
                 text = "1." + stringResource(R.string.maplist_popup_instructions_1)
                 ,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
                 text = "2." + stringResource(R.string.maplist_popup_instructions_2),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "3." + stringResource(R.string.maplist_popup_instructions_3),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
@@ -404,7 +408,7 @@ fun PlaceInfoInstructions() {
 
     Text(
         text = stringResource(R.string.placeinfoscreen_instructions_skumring),
-        style = MaterialTheme.typography.titleMedium,
+        style = MaterialTheme.typography.titleLarge,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
@@ -416,21 +420,21 @@ fun PlaceInfoInstructions() {
         Column (modifier = Modifier.weight(1f)) {
             Text(
                 text = "1." + stringResource(R.string.placeinfoscreen_instructions_1),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
                 text = "2." + stringResource(R.string.placeinfoscreen_instructions_2),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "3." + stringResource(R.string.placeinfoscreen_instructions_3),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
@@ -465,7 +469,7 @@ fun NewPlaceDialogInstructions() {
 
     Text(
         text = stringResource(R.string.mypagescreen_instructions_skumring),
-        style = MaterialTheme.typography.titleMedium,
+        style = MaterialTheme.typography.titleLarge,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
@@ -476,21 +480,21 @@ fun NewPlaceDialogInstructions() {
         Column (modifier = Modifier.weight(1f)) {
             Text(
                 text = "1." + stringResource(R.string.newplacedialog_instructions_1),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
                 text = "2." + stringResource(R.string.newplacedialog_instructions_2),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "3." + stringResource(R.string.newplacedialog_instructions_3),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
@@ -522,7 +526,7 @@ fun LastScreenInstructions() {
     Column (modifier = Modifier.padding(start = 5.dp)) {
         Text(
             text = stringResource(R.string.lastdialog_instructions_skumring),
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Start,
             modifier = Modifier.padding(top = 35.dp)
