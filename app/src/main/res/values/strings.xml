@@ -159,6 +159,7 @@
     <string name="placeinfoscreen_instructions_1">Se ditt lagrede bilde og les din egen beskrivelse av stedet</string>
     <string name="placeinfoscreen_instructions_2">Se avstand fra din posisjon</string>
     <string name="placeinfoscreen_instructions_3">Scroll ned for flerdagsvarsel</string>
+
     <string name="newplacedialog_instructions_1">PS! Få samme “popup” på kartet ved å trykke lenge på stedet du ønsker å legge til bilde</string>
     <string name="newplacedialog_instructions_2">Innstillinger</string>
     <string name="newplacedialog_instructions_3">Velg å bruke telefonens posisjon</string>
