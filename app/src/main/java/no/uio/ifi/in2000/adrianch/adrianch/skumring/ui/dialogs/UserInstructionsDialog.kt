@@ -166,12 +166,35 @@ fun HomeScreenInstructions() {
                 modifier = Modifier.padding(top = 20.dp)
             )
         }
-        Icon(
-            painterResource(id = R.drawable.homescreeninstructions_norwegian),
-            contentDescription = "HomeScreenInstructions",
-            tint = Color.Unspecified,
-            modifier = Modifier.padding(start = 5.dp)
-        )
+        if(isEnglish && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.homescreen_dark_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.homescreeninstructions_norwegian),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isEnglish && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.homescreen_light_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.homescreen_light_no),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        }
     }
 }
 
@@ -201,12 +224,35 @@ fun HomeScreenInstructionsFavourite() {
             )
 
         }
-        Icon(
-            painterResource(id = R.drawable.homescreeninstructions_favourite_norwegian),
-            contentDescription = "HomeScreenInstructions",
-            tint = Color.Unspecified,
-            modifier = Modifier.padding(start = 5.dp)
-        )
+        if(isEnglish && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.homescreen_favourite_dark_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.homescreeninstructions_favourite_norwegian),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isEnglish && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.homescreen_favourite_light_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.homescreen_favourite_light_no),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        }
     }
 }
 
@@ -273,7 +319,7 @@ fun MapListInstructions() {
             )
         } else if (isNorwegian && !isSystemInDarkTheme()) {
             Icon(
-                painterResource(id = R.drawable.maplist_popup_light_en),
+                painterResource(id = R.drawable.maplistscreen_light_en), //TODO maplistScreen light no
                 contentDescription = "HomeScreenInstructions",
                 tint = Color.Unspecified,
                 modifier = Modifier.padding(start = 5.dp)
@@ -518,6 +564,7 @@ fun LastScreenInstructions() {
         )
     }
 }
+
 
 
 @Preview
