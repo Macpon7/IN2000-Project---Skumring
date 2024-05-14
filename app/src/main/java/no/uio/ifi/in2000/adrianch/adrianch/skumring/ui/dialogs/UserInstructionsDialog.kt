@@ -47,98 +47,77 @@ closeDialog: () -> Unit
     var currentScreen by remember { mutableIntStateOf(0) }
     val totalScreens = 8
 
+    Dialog(onDismissRequest = {
+        closeDialog()
+    }) {
         Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             )
         ) {
             Column(
                 modifier = Modifier.padding(5.dp)
-
+                    .fillMaxWidth()
             ) {
                 when (currentScreen) {
-                    0 -> {
-                        HomeScreenInstructions()
-
-                    }
-
-                    1 -> {
-                        FirstScreenInstructions()
-                    }
-
-                    2 -> {
-                        HomeScreenInstructionsFavourite()
-                    }
-
-                    3 -> {
-                        MapListInstructions()
-                    }
-
-                    4 -> {
-                        MapListInstructionsPopUp()
-                    }
-
-                    5 -> {
-                        PlaceInfoInstructions()
-                    }
-
-                    6 -> {
-                        NewPlaceDialogInstructions()
-                    }
-                    7 -> {
-                        LastScreenInstructions()
-                    }
+                    0 -> FirstScreenInstructions()
+                    1 -> HomeScreenInstructions()
+                    2 -> HomeScreenInstructionsFavourite()
+                    3 -> MapListInstructions()
+                    4 -> MapListInstructionsPopUp()
+                    5 -> PlaceInfoInstructions()
+                    6 -> NewPlaceDialogInstructions()
+                    7 -> LastScreenInstructions()
                 }
             }
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier
-                        .padding(end = 10.dp, top = 10.dp)
-                        .fillMaxWidth()
-                )
-                {
-                    TextButton(
-                        onClick = {
-                            closeDialog()
-                        },
-                        contentPadding = PaddingValues(10.dp),
-                    ) {
-                        Text(
-                            text = stringResource(R.string.close),
-                            color = MaterialTheme.colorScheme.onTertiary,
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    }
-                    Button(
-                        onClick = {
-                            currentScreen++
-                            if (currentScreen >= totalScreens) {
-                                currentScreen = 0
-                                closeDialog()
-                            }
-                        },
-                        contentPadding = PaddingValues(
-                            top = 8.dp,
-                            bottom = 10.dp,
-                            start = 20.dp,
-                            end = 20.dp
-                        ),
-                        modifier = Modifier.padding(start = 15.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-                        ) {
-                        Text(
-                            text = stringResource(id = R.string.UserInstructionsDialog_next_button),
-                            color = MaterialTheme.colorScheme.onTertiary,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
-
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .padding(end = 10.dp, top = 10.dp)
+                    .fillMaxWidth()
+            )
+            {
+                TextButton(
+                    onClick = {
+                        closeDialog()
+                    },
+                    contentPadding = PaddingValues(10.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.close),
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
                 }
+                Button(
+                    onClick = {
+                        currentScreen++
+                        if (currentScreen >= totalScreens) {
+                            currentScreen = 0
+                            closeDialog()
+                        }
+                    },
+                    contentPadding = PaddingValues(
+                        top = 8.dp,
+                        bottom = 10.dp,
+                        start = 20.dp,
+                        end = 20.dp
+                    ),
+                    modifier = Modifier.padding(start = 15.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.UserInstructionsDialog_next_button),
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+
             }
         }
+    }
+}
+
 
 
 @Composable
@@ -184,17 +163,17 @@ fun HomeScreenInstructions() {
     val isNorwegian = currentLocale.language == "no"
 
     Text(
-        text = stringResource(R.string.homescreen_favourite_instructions_skumring),
+        text = stringResource(R.string.homescreen_instructions_skumring),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
-        modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+        modifier = Modifier.padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 20.dp)
     )
     Row (
         modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Top
     ){
-        Column (modifier = Modifier.weight(2f))  {
+        Column (modifier = Modifier.weight(1f).padding(end = 2.dp))  {
             Text(
                 text = "1." + stringResource(R.string.homescreen_instructions_1),
                 style = MaterialTheme.typography.bodySmall,
@@ -230,8 +209,7 @@ fun HomeScreenInstructions() {
                 .weight(2f),
 
         ) {
-
-            val iconResourceId = when {
+            val instructionPictures = when {
                 isEnglish && isSystemInDarkTheme() -> R.drawable.homescreen_dark_en
                 isNorwegian && isSystemInDarkTheme() -> R.drawable.homescreeninstructions_norwegian
                 isEnglish && !isSystemInDarkTheme() -> R.drawable.homescreen_light_en
@@ -239,7 +217,7 @@ fun HomeScreenInstructions() {
                 else -> R.drawable.image_not_found
             }
             Icon(
-                painterResource(id = iconResourceId),
+                painterResource(id = instructionPictures),
                 contentDescription = "HomeScreenInstructions",
                 tint = Color.Unspecified
             )
@@ -277,7 +255,7 @@ fun HomeScreenInstructionsFavourite() {
             modifier = Modifier
                 .weight(2f),
             ) {
-            val iconResourceId = when {
+            val instructionPictures = when {
                 isEnglish && isSystemInDarkTheme() -> R.drawable.homescreen_favourite_dark_en
                 isNorwegian && isSystemInDarkTheme() -> R.drawable.homescreeninstructions_favourite_norwegian
                 isEnglish && !isSystemInDarkTheme() -> R.drawable.homescreen_favourite_light_en
@@ -285,7 +263,7 @@ fun HomeScreenInstructionsFavourite() {
                 else -> R.drawable.image_not_found
             }
             Icon(
-                painterResource(id = iconResourceId),
+                painterResource(id = instructionPictures),
                 contentDescription = "HomeScreenFavouriteInstructions",
                 tint = Color.Unspecified
             )
@@ -306,10 +284,11 @@ fun MapListInstructions() {
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
     )
-    Row(
+    Row( modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
     )
     {
-        Column (modifier = Modifier.padding(start = 5.dp)) {
+        Column (modifier = Modifier.weight(1f)) {
             Text(
                 text = "1." + stringResource(R.string.maplistscreen_instructions_1)
                 ,
@@ -333,33 +312,21 @@ fun MapListInstructions() {
                 modifier = Modifier.padding(top = 20.dp)
             )
         }
-        if(isEnglish && isSystemInDarkTheme()) {
+        Box(
+            modifier = Modifier
+                .weight(2f),
+        ) {
+            val instructionPictures = when {
+                isEnglish && isSystemInDarkTheme() -> R.drawable.maplistscreen_dark_en
+                isNorwegian && isSystemInDarkTheme() -> R.drawable.maplistinstructions_norwegian
+                isEnglish && !isSystemInDarkTheme() -> R.drawable.maplistscreen_light_en
+                isNorwegian && !isSystemInDarkTheme() -> R.drawable.maplistscreen_light_en //TODO Maplistscreen light no
+                else -> R.drawable.image_not_found
+            }
             Icon(
-                painterResource(id = R.drawable.maplistscreen_dark_en),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isNorwegian && isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.maplistinstructions_norwegian),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isEnglish && !isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.maplistscreen_light_en),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isNorwegian && !isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.maplistscreen_light_en), //TODO maplistScreen light no
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
+                painterResource(id = instructionPictures),
+                contentDescription = "MapListScreen instructions",
+                tint = Color.Unspecified
             )
         }
     }
@@ -378,10 +345,11 @@ fun MapListInstructionsPopUp() {
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
     )
-    Row(
+    Row( modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
     )
     {
-        Column (modifier = Modifier.padding(start = 5.dp)) {
+        Column (modifier = Modifier.weight(1f)) {
             Text(
                 text = "1." + stringResource(R.string.maplist_popup_instructions_1)
                 ,
@@ -405,35 +373,24 @@ fun MapListInstructionsPopUp() {
                 modifier = Modifier.padding(top = 20.dp)
             )
         }
-        if(isEnglish && isSystemInDarkTheme()) {
+        Box(
+            modifier = Modifier
+                .weight(2f),
+        ) {
+            val instructionPictures = when {
+                isEnglish && isSystemInDarkTheme() -> R.drawable.maplistscreen_dark_en  //TODO find dark english popup
+                isNorwegian && isSystemInDarkTheme() -> R.drawable.maplistpopupinstructions_norwegian
+                isEnglish && !isSystemInDarkTheme() -> R.drawable.maplist_popup_light_en
+                isNorwegian && !isSystemInDarkTheme() -> R.drawable.maplist_popup_light_en   //TODO find norwegian picture
+                else -> R.drawable.image_not_found
+            }
             Icon(
-                painterResource(id = R.drawable.maplistscreen_dark_en), //TODO find dark english popup
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isNorwegian && isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.maplistpopupinstructions_norwegian),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isEnglish && !isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.maplist_popup_light_en),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isNorwegian && !isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.maplist_popup_light_en), //TODO find norwegian picture
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
+                painterResource(id = instructionPictures),
+                contentDescription = "MapListScreen popup instructions",
+                tint = Color.Unspecified
             )
         }
+
     }
 }
 
@@ -452,10 +409,11 @@ fun PlaceInfoInstructions() {
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
     )
-    Row(
+    Row(modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
     )
     {
-        Column (modifier = Modifier.padding(start = 5.dp)) {
+        Column (modifier = Modifier.weight(1f)) {
             Text(
                 text = "1." + stringResource(R.string.placeinfoscreen_instructions_1),
                 style = MaterialTheme.typography.bodySmall,
@@ -478,33 +436,21 @@ fun PlaceInfoInstructions() {
                 modifier = Modifier.padding(top = 20.dp)
             )
         }
-        if(isEnglish && isSystemInDarkTheme()) {
+        Box(
+            modifier = Modifier
+                .weight(2f),
+        ) {
+            val instructionPictures = when {
+                isEnglish && isSystemInDarkTheme() -> R.drawable.placeinfoscreen_dark_en
+                isNorwegian && isSystemInDarkTheme() -> R.drawable.placeinfoscreeninstructions_norwegian
+                isEnglish && !isSystemInDarkTheme() -> R.drawable.placeinfoscreen_light_en
+                isNorwegian && !isSystemInDarkTheme() -> R.drawable.placeinfoscreen_light_no
+                else -> R.drawable.image_not_found
+            }
             Icon(
-                painterResource(id = R.drawable.placeinfoscreen_dark_en),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isNorwegian && isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.placeinfoscreeninstructions_norwegian),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isEnglish && !isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.placeinfoscreen_light_en),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isNorwegian && !isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.placeinfoscreen_light_no),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
+                painterResource(id = instructionPictures),
+                contentDescription = "Placeinfoscreen instructions",
+                tint = Color.Unspecified
             )
         }
     }
@@ -524,8 +470,10 @@ fun NewPlaceDialogInstructions() {
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
     )
-    Row{
-        Column (modifier = Modifier.padding(start = 5.dp)) {
+    Row ( modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
+    ){
+        Column (modifier = Modifier.weight(1f)) {
             Text(
                 text = "1." + stringResource(R.string.newplacedialog_instructions_1),
                 style = MaterialTheme.typography.bodySmall,
@@ -548,37 +496,23 @@ fun NewPlaceDialogInstructions() {
                 modifier = Modifier.padding(top = 20.dp)
             )
         }
-
-        if(isEnglish && isSystemInDarkTheme()) {
-        Icon(
-            painterResource(id = R.drawable.newplacedialog_dark_en),
-            contentDescription = "HomeScreenInstructions",
-            tint = Color.Unspecified,
-            modifier = Modifier.padding(start = 5.dp)
-        )
-    } else if (isNorwegian && isSystemInDarkTheme()) {
+        Box(
+            modifier = Modifier
+                .weight(2f),
+        ) {
+            val instructionPictures = when {
+                isEnglish && isSystemInDarkTheme() -> R.drawable.newplacedialog_dark_en
+                isNorwegian && isSystemInDarkTheme() -> R.drawable.newplacedialoginstructions_norwegian
+                isEnglish && !isSystemInDarkTheme() -> R.drawable.newplacedialog_light_en
+                isNorwegian && !isSystemInDarkTheme() -> R.drawable.newplacedialog_light_no
+                else -> R.drawable.image_not_found
+            }
             Icon(
-                painterResource(id = R.drawable.newplacedialoginstructions_norwegian),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isEnglish && !isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.newplacedialog_light_en),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
-            )
-        } else if (isNorwegian && !isSystemInDarkTheme()) {
-            Icon(
-                painterResource(id = R.drawable.newplacedialog_light_no),
-                contentDescription = "HomeScreenInstructions",
-                tint = Color.Unspecified,
-                modifier = Modifier.padding(start = 5.dp)
+                painterResource(id = instructionPictures),
+                contentDescription = "NewPlaceDialog instructions",
+                tint = Color.Unspecified
             )
         }
-
     }
 }
 
