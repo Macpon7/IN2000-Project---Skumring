@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -27,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -54,8 +57,7 @@ closeDialog: () -> Unit
         )
     ) {
         Column(
-            modifier = Modifier.padding(5.dp)
-               // .fillMaxWidth()
+            modifier = Modifier.padding(10.dp)
         ) {
             when (currentScreen) {
                 0 -> FirstScreenInstructions()
@@ -68,7 +70,6 @@ closeDialog: () -> Unit
                 7 -> LastScreenInstructions()
             }
         }
-
             Row(
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.End,
@@ -134,25 +135,28 @@ fun FirstScreenInstructions() {
             modifier = Modifier.padding(top = 35.dp, bottom = 35.dp)
         )
         Icon( //TODO change this
-            painterResource(id = R.drawable.sunsetsymbol),
+            painterResource(id = R.drawable.icon),
             contentDescription = "HomeScreenInstructions",
             tint = Color.Unspecified,
             modifier = Modifier
-                .padding(bottom = 50.dp)
+                .clip(shape = RoundedCornerShape(30.dp))
+                .size(180.dp)
+
         )
         Text(
             text = stringResource(R.string.firstscreen_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding( bottom = 35.dp)
+            modifier = Modifier.padding(top = 30.dp)
         )
         Text(
             text =
             stringResource(R.string.firstscreen_moreinfo_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 65.dp)
         )
     }
 }
@@ -246,7 +250,7 @@ fun HomeScreenInstructionsFavourite() {
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 15.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+            modifier = Modifier.padding(top = 25.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
     }
     Row( modifier = Modifier.fillMaxWidth(),
@@ -296,7 +300,7 @@ fun MapListInstructions() {
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+            modifier = Modifier.padding(top = 15.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
     }
     Row( modifier = Modifier.fillMaxWidth(),
@@ -361,7 +365,7 @@ fun MapListInstructionsPopUp() {
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+            modifier = Modifier.padding(top = 25.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
     }
     Row( modifier = Modifier.fillMaxWidth(),
@@ -429,7 +433,7 @@ fun PlaceInfoInstructions() {
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+            modifier = Modifier.padding(top = 15.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
     }
     Row(modifier = Modifier.fillMaxWidth(),
@@ -494,7 +498,7 @@ fun NewPlaceDialogInstructions() {
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
+            modifier = Modifier.padding(top = 25.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
     }
     Row ( modifier = Modifier.fillMaxWidth(),
@@ -545,20 +549,25 @@ fun NewPlaceDialogInstructions() {
 
 @Composable
 fun LastScreenInstructions() {
-
-    Column (modifier = Modifier.padding(start = 5.dp)) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Text(
             text = stringResource(R.string.lastdialog_instructions_skumring),
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onPrimary,
-            textAlign = TextAlign.Start,
-            modifier = Modifier.padding(top = 35.dp)
+            modifier = Modifier.padding(top = 35.dp, bottom = 35.dp)
         )
         Icon( //TODO change this
-            painterResource(id = R.drawable.sunsetsymbol),
+            painterResource(id = R.drawable.icon),
             contentDescription = "HomeScreenInstructions",
             tint = Color.Unspecified,
-            modifier = Modifier.padding(start = 5.dp)
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(30.dp))
+                .size(180.dp)
+
         )
     }
 }
