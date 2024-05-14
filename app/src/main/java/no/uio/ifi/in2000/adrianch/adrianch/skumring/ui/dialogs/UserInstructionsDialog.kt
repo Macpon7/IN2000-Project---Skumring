@@ -163,7 +163,7 @@ fun FirstScreenInstructions() {
 fun HomeScreenInstructions() {
     val currentLocale = LocalContext.current.resources.configuration.locale
     val isEnglish = currentLocale.language == "en"
-    val isNorwegian = currentLocale.language == "no"
+    val isNorwegian = currentLocale.language in setOf("nb", "nn")
 Box(modifier = Modifier
     .fillMaxWidth()
     .heightIn(min = 120.dp)) {
@@ -235,7 +235,7 @@ Box(modifier = Modifier
 fun HomeScreenInstructionsFavourite() {
     val currentLocale = LocalContext.current.resources.configuration.locale
     val isEnglish = currentLocale.language == "en"
-    val isNorwegian = currentLocale.language == "no"
+    val isNorwegian = currentLocale.language in setOf("nb", "nn")
 
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -285,7 +285,7 @@ fun HomeScreenInstructionsFavourite() {
 fun MapListInstructions() {
     val currentLocale = LocalContext.current.resources.configuration.locale
     val isEnglish = currentLocale.language == "en"
-    val isNorwegian = currentLocale.language == "no"
+    val isNorwegian = currentLocale.language in setOf("nb", "nn")
 
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -350,7 +350,7 @@ fun MapListInstructions() {
 fun MapListInstructionsPopUp() {
     val currentLocale = LocalContext.current.resources.configuration.locale
     val isEnglish = currentLocale.language == "en"
-    val isNorwegian = currentLocale.language == "no"
+    val isNorwegian = currentLocale.language in setOf("nb", "nn")
 
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -418,7 +418,7 @@ fun MapListInstructionsPopUp() {
 fun PlaceInfoInstructions() {
     val currentLocale = LocalContext.current.resources.configuration.locale
     val isEnglish = currentLocale.language == "en"
-    val isNorwegian = currentLocale.language == "no"
+    val isNorwegian = currentLocale.language in setOf("nb", "nn")
 
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -483,7 +483,7 @@ fun PlaceInfoInstructions() {
 fun NewPlaceDialogInstructions() {
     val currentLocale = LocalContext.current.resources.configuration.locale
     val isEnglish = currentLocale.language == "en"
-    val isNorwegian = currentLocale.language == "no"
+    val isNorwegian = currentLocale.language in setOf("nb", "nn")
 
     Box(modifier = Modifier
         .fillMaxWidth()
