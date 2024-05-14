@@ -83,6 +83,41 @@ closeDialog: () -> Unit
     }
 }
 
+@Composable
+fun FirstScreenInstructions() {
+        Column (modifier = Modifier.padding(start = 5.dp)) {
+            Text(
+                text = stringResource(R.string.firstscreen_instructions_welcome_skumring),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimary,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(top = 35.dp)
+            )
+            Icon( //TODO change this
+                painterResource(id = R.drawable.sunsetsymbol),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+            Text(
+                text = stringResource(R.string.firstscreen_instructions_skumring),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimary,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(top = 20.dp)
+            )
+            Text(
+                text =
+                stringResource(R.string.firstscreen_moreinfo_instructions_skumring),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimary,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.padding(top = 20.dp)
+            )
+        }
+    }
+
+
 
 @Composable
 fun HomeScreenInstructions() {
@@ -91,7 +126,7 @@ fun HomeScreenInstructions() {
     val isNorwegian = currentLocale.language == "no"
 
     Text(
-        text = "Det første du møter er hjemskjermen, her ser du værvarselet for solnedgang på din lokasjon i dag",
+        text = "1." + stringResource(R.string.homescreen_favourite_instructions_skumring),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -102,14 +137,14 @@ fun HomeScreenInstructions() {
     {
         Column (modifier = Modifier.padding(start = 5.dp)) {
             Text(
-                text = "1.Tid for solnedgang",
+                text = "1." + stringResource(R.string.homescreen_instructions_1),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
-                text = "2. Mer informasjon om \n" + "værforholdene",
+                text = "2." + stringResource(R.string.homescreen_instructions_2),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
@@ -117,14 +152,14 @@ fun HomeScreenInstructions() {
             )
             Text(
                 text =
-                "3. Temperaturen ved \n"+"solnedgang",
+                "3." + stringResource(R.string.homescreen_instructions_3),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
-                text = "4. Tid for gylne \n"+"-og blåtime",
+                text = "4." + stringResource(R.string.homescreen_instructions_4),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
@@ -147,7 +182,7 @@ fun HomeScreenInstructionsFavourite() {
     val isNorwegian = currentLocale.language == "no"
 
     Text(
-        text = "Legg til dine favorittsteder og få de opp på hjemskjermen!",
+        text =  stringResource(R.string.homescreen_favourite_instructions_skumring),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -158,8 +193,7 @@ fun HomeScreenInstructionsFavourite() {
     {
         Column (modifier = Modifier.padding(start = 5.dp)) {
             Text(
-                text = "1.Alle kort kan trykkes for \n" +
-                        "mer informasjon",
+                text = "1." + stringResource(R.string.homescreen_favourite_instruction),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
@@ -183,7 +217,7 @@ fun MapListInstructions() {
     val isNorwegian = currentLocale.language == "no"
 
     Text(
-        text = "På kartskjermen kan du se din posisjon og fine steder for solnedgang i nærheten ",
+        text = stringResource(R.string.maplistscreen_instructions_skumring),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -194,7 +228,7 @@ fun MapListInstructions() {
     {
         Column (modifier = Modifier.padding(start = 5.dp)) {
             Text(
-                text = "1. Trykk for liste istedenfor kart"
+                text = "1." + stringResource(R.string.maplistscreen_instructions_1)
                 ,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
@@ -202,27 +236,49 @@ fun MapListInstructions() {
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
-                text = "2. Blå runding viser din posisjon",
+                text = "2." + stringResource(R.string.maplistscreen_instructions_2),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
-                text =
-                "3. Røde pins viser lagrede steder",
+                text = "3." + stringResource(R.string.maplistscreen_instructions_3),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
         }
-        Icon(
-            painterResource(id = R.drawable.maplistinstructions_norwegian),
-            contentDescription = "HomeScreenInstructions",
-            tint = Color.Unspecified,
-            modifier = Modifier.padding(start = 5.dp)
-        )
+        if(isEnglish && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.maplistscreen_dark_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.maplistinstructions_norwegian),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isEnglish && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.maplistscreen_light_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.maplist_popup_light_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        }
     }
 }
 
@@ -233,7 +289,7 @@ fun MapListInstructionsPopUp() {
     val isNorwegian = currentLocale.language == "no"
 
     Text(
-        text = "Trykk på pinsene for mer informasjon",
+        text = stringResource(R.string.maplistscreen_popup_instructions_skumring),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -244,7 +300,7 @@ fun MapListInstructionsPopUp() {
     {
         Column (modifier = Modifier.padding(start = 5.dp)) {
             Text(
-                text = "1. Ved å trykke på pinsene \n" + "kan du få informasjon om \n" + "værforhold i dag"
+                text = "1." + stringResource(R.string.maplist_popup_instructions_1)
                 ,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
@@ -252,27 +308,49 @@ fun MapListInstructionsPopUp() {
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
-                text = "2. Legg til som favoritt",
+                text = "2." + stringResource(R.string.maplist_popup_instructions_2),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
-                text =
-                "3. Lyst på mer informasjon \n" + "om stedet? Trykk deg videre!",
+                text = "3." + stringResource(R.string.maplist_popup_instructions_3),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
         }
-        Icon(
-            painterResource(id = R.drawable.maplistpopupinstructions_norwegian),
-            contentDescription = "HomeScreenInstructions",
-            tint = Color.Unspecified,
-            modifier = Modifier.padding(start = 5.dp)
-        )
+        if(isEnglish && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.maplistscreen_dark_en), //TODO find dark english popup
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.maplistpopupinstructions_norwegian),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isEnglish && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.maplist_popup_light_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.maplist_popup_light_en), //TODO find norwegian picture
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        }
     }
 }
 
@@ -285,7 +363,7 @@ fun PlaceInfoInstructions() {
     val isNorwegian = currentLocale.language == "no"
 
     Text(
-        text = "Trykk på kortene for mer informasjon om stedet og distanse fra din posisjon ",
+        text = stringResource(R.string.placeinfoscreen_instructions_skumring),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -296,34 +374,56 @@ fun PlaceInfoInstructions() {
     {
         Column (modifier = Modifier.padding(start = 5.dp)) {
             Text(
-                text = "1. Se ditt lagrede bilde \n og les din egen beskrivelse \nav stedet",
+                text = "1." + stringResource(R.string.placeinfoscreen_instructions_1),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
-                text = "2. Se avstand fra din \n posisjon",
+                text = "2." + stringResource(R.string.placeinfoscreen_instructions_2),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
-                text =
-                "3. Scroll ned for \n flerdagersvarsel",
+                text = "3." + stringResource(R.string.placeinfoscreen_instructions_3),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
         }
-        Icon(
-            painterResource(id = R.drawable.placeinfoscreeninstructions_norwegian),
-            contentDescription = "HomeScreenInstructions",
-            tint = Color.Unspecified,
-            modifier = Modifier.padding(start = 5.dp)
-        )
+        if(isEnglish && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.placeinfoscreen_dark_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.placeinfoscreeninstructions_norwegian),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isEnglish && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.placeinfoscreen_light_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.placeinfoscreen_light_no),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        }
     }
 }
 
@@ -335,7 +435,7 @@ fun NewPlaceDialogInstructions() {
     val isNorwegian = currentLocale.language == "no"
 
     Text(
-        text = "På “min side” kan du legge til dine steder og endre på innstillinger",
+        text = stringResource(R.string.mypagescreen_instructions_skumring),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -344,22 +444,21 @@ fun NewPlaceDialogInstructions() {
     Row{
         Column (modifier = Modifier.padding(start = 5.dp)) {
             Text(
-                text = "1. PS! Få samme “popup” \n på kartet ved å trykke lenge \n på stedet du ønsker å \n legge til bilde\n",
+                text = "1." + stringResource(R.string.newplacedialog_instructions_1),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
-                text = "2. Instillinger",
+                text = "2." + stringResource(R.string.newplacedialog_instructions_2),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
-                text =
-                "3. Velg å bruke telefonens \n posisjon",
+                text = "3." + stringResource(R.string.newplacedialog_instructions_3),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Start,
@@ -397,6 +496,26 @@ fun NewPlaceDialogInstructions() {
             )
         }
 
+    }
+}
+
+@Composable
+fun LastScreenInstructions() {
+
+    Column (modifier = Modifier.padding(start = 5.dp)) {
+        Text(
+            text = stringResource(R.string.lastdialog_instructions_skumring),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.padding(top = 35.dp)
+        )
+        Icon( //TODO change this
+            painterResource(id = R.drawable.sunsetsymbol),
+            contentDescription = "HomeScreenInstructions",
+            tint = Color.Unspecified,
+            modifier = Modifier.padding(start = 5.dp)
+        )
     }
 }
 
