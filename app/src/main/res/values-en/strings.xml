@@ -178,7 +178,7 @@
     <string name="homescreen_favourite_instruction">All cards can be clicked for more information</string>
     <string name="maplistscreen_instructions_1">Click for list view instead of map view</string>
     <string name="maplistscreen_instructions_2">Blue circle marks your location</string>
-    <string name="maplistscreen_instructions_3">Red pins shows saved locations</string>
+    <string name="maplistscreen_instructions_3">Red pin shows saved locations</string>
     <string name="maplist_popup_instructions_1">Get information about weather conditions today by tapping the pins</string>
     <string name="maplist_popup_instructions_2">Add as favourite</string>
     <string name="maplist_popup_instructions_3">For more information about the place, click the button!</string>
@@ -193,7 +193,7 @@
     <string name="firstscreen_moreinfo_instructions_skumring">Get an introduction to the app by clicking next!</string>
     <string name="homescreen_instructions_skumring">The homescreen shows the weather forecast for the sunset at your location today</string>
     <string name="homescreen_favourite_instructions_skumring">Add your favorite places and get them on your home screen!</string>
-    <string name="maplistscreen_instructions_skumring">You can see your location and nice places for sunset nearby on the map screen</string>
+    <string name="maplistscreen_instructions_skumring">You can see your location and nice places for sunset photography on the map screen</string>
     <string name="maplistscreen_popup_instructions_skumring">Push the pins for more information</string>
     <string name="placeinfoscreen_instructions_skumring">Click on the cards for more information about the place and distance from your location</string>
     <string name="mypagescreen_instructions_skumring">Add your own places and change settings on my page</string>
