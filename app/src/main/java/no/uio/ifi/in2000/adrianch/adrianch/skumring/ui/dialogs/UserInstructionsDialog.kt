@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,17 +13,21 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
+
 
 @Composable
 fun UserInstructionsDialog (
@@ -81,6 +86,10 @@ closeDialog: () -> Unit
 
 @Composable
 fun HomeScreenInstructions() {
+    val currentLocale = LocalContext.current.resources.configuration.locale
+    val isEnglish = currentLocale.language == "en"
+    val isNorwegian = currentLocale.language == "no"
+
     Text(
         text = "Det første du møter er hjemskjermen, her ser du værvarselet for solnedgang på din lokasjon i dag",
         style = MaterialTheme.typography.titleMedium,
@@ -133,6 +142,10 @@ fun HomeScreenInstructions() {
 
 @Composable
 fun HomeScreenInstructionsFavourite() {
+    val currentLocale = LocalContext.current.resources.configuration.locale
+    val isEnglish = currentLocale.language == "en"
+    val isNorwegian = currentLocale.language == "no"
+
     Text(
         text = "Legg til dine favorittsteder og få de opp på hjemskjermen!",
         style = MaterialTheme.typography.titleMedium,
@@ -165,6 +178,10 @@ fun HomeScreenInstructionsFavourite() {
 
 @Composable
 fun MapListInstructions() {
+    val currentLocale = LocalContext.current.resources.configuration.locale
+    val isEnglish = currentLocale.language == "en"
+    val isNorwegian = currentLocale.language == "no"
+
     Text(
         text = "På kartskjermen kan du se din posisjon og fine steder for solnedgang i nærheten ",
         style = MaterialTheme.typography.titleMedium,
@@ -211,6 +228,10 @@ fun MapListInstructions() {
 
 @Composable
 fun MapListInstructionsPopUp() {
+    val currentLocale = LocalContext.current.resources.configuration.locale
+    val isEnglish = currentLocale.language == "en"
+    val isNorwegian = currentLocale.language == "no"
+
     Text(
         text = "Trykk på pinsene for mer informasjon",
         style = MaterialTheme.typography.titleMedium,
@@ -259,6 +280,10 @@ fun MapListInstructionsPopUp() {
 
 @Composable
 fun PlaceInfoInstructions() {
+    val currentLocale = LocalContext.current.resources.configuration.locale
+    val isEnglish = currentLocale.language == "en"
+    val isNorwegian = currentLocale.language == "no"
+
     Text(
         text = "Trykk på kortene for mer informasjon om stedet og distanse fra din posisjon ",
         style = MaterialTheme.typography.titleMedium,
@@ -305,6 +330,10 @@ fun PlaceInfoInstructions() {
 
 @Composable
 fun NewPlaceDialogInstructions() {
+    val currentLocale = LocalContext.current.resources.configuration.locale
+    val isEnglish = currentLocale.language == "en"
+    val isNorwegian = currentLocale.language == "no"
+
     Text(
         text = "På “min side” kan du legge til dine steder og endre på innstillinger",
         style = MaterialTheme.typography.titleMedium,
@@ -312,9 +341,7 @@ fun NewPlaceDialogInstructions() {
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
     )
-    Row(
-    )
-    {
+    Row{
         Column (modifier = Modifier.padding(start = 5.dp)) {
             Text(
                 text = "1. PS! Få samme “popup” \n på kartet ved å trykke lenge \n på stedet du ønsker å \n legge til bilde\n",
@@ -339,12 +366,37 @@ fun NewPlaceDialogInstructions() {
                 modifier = Modifier.padding(top = 20.dp)
             )
         }
+
+        if(isEnglish && isSystemInDarkTheme()) {
         Icon(
-            painterResource(id = R.drawable.newplacedialoginstructions_norwegian),
+            painterResource(id = R.drawable.newplacedialog_dark_en),
             contentDescription = "HomeScreenInstructions",
             tint = Color.Unspecified,
             modifier = Modifier.padding(start = 5.dp)
         )
+    } else if (isNorwegian && isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.newplacedialoginstructions_norwegian),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isEnglish && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.newplacedialog_light_en),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        } else if (isNorwegian && !isSystemInDarkTheme()) {
+            Icon(
+                painterResource(id = R.drawable.newplacedialog_light_no),
+                contentDescription = "HomeScreenInstructions",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        }
+
     }
 }
 
@@ -353,6 +405,10 @@ fun NewPlaceDialogInstructions() {
 @Composable
 fun UserInstructionsDialogTest(
 ) {
-    val closeDialog: () -> Unit = {}
-    UserInstructionsDialog(closeDialog)
+    SkumringTheme(useDarkTheme = false) {
+        Surface {
+            val closeDialog: () -> Unit = {}
+            UserInstructionsDialog(closeDialog)
+        }
+    }
 }
