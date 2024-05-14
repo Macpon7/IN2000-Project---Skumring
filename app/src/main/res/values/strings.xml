@@ -144,6 +144,36 @@
     <string name="weather_icon_fog">Værikon tåke</string>
     <string name="weather_icon_not_found">Værikon ikke funnet</string>
 
+    <!-- UserInstructionsDialog -->
+    <string name="homescreen_instructions_1">Tid for solnedgang</string>
+    <string name="homescreen_instructions_2">Mer informasjon om værforholdene</string>
+    <string name="homescreen_instructions_3">Temperaturen ved solnedgang</string>
+    <string name="homescreen_instructions_4">Tid for gyllen og blåtime</string>
+    <string name="homescreen_favourite_instruction">Alle kort kan trykkes for mer informasjon</string>
+    <string name="maplistscreen_instructions_1">Trykk for liste istedenfor kart</string>
+    <string name="maplistscreen_instructions_2">Blå runding viser din posisjon</string>
+    <string name="maplistscreen_instructions_3">Røde pins viser lagrede stede</string>
+    <string name="maplist_popup_instructions_1">Ved å trykke på pinsene kan du få informasjon om værforhold i dag</string>
+    <string name="maplist_popup_instructions_2">Legg til som favoritt</string>
+    <string name="maplist_popup_instructions_3">Lyst på mer informasjon om stedet? Trykk deg videre!</string>
+    <string name="placeinfoscreen_instructions_1">Se ditt lagrede bilde og les din egen beskrivelse av stedet</string>
+    <string name="placeinfoscreen_instructions_2">Se avstand fra din posisjon</string>
+    <string name="placeinfoscreen_instructions_3">Scroll ned for flerdagsvarsel</string>
+    <string name="newplacedialog_instructions_1">PS! Få samme “popup” på kartet ved å trykke lenge på stedet du ønsker å legge til bilde</string>
+    <string name="newplacedialog_instructions_2">Innstillinger</string>
+    <string name="newplacedialog_instructions_3">Velg å bruke telefonens posisjon</string>
+
+    <string name="firstscreen_instructions_welcome_skumring">Velkommen til Skumring!</string>
+    <string name="firstscreen_instructions_skumring">Appen for deg som ønsker å finne og lagre steder å ta bilde av solnedganger!</string>
+    <string name="firstscreen_moreinfo_instructions_skumring">For en innføring i appen, trykk deg videre!</string>
+    <string name="homescreen_instructions_skumring">Det første du møter er hjemskjermen, her ser du værvarselet for solnedgang på din lokasjon i dag</string>
+    <string name="homescreen_favourite_instructions_skumring">Legg til dine favoritter og få de opp på hjemskjermen!</string>
+    <string name="maplistscreen_instructions_skumring">På kartskjermen kan du se din posisjon og fine steder for solnedgang i nærheten</string>
+    <string name="maplistscreen_popup_instructions_skumring">Trykk på pinsene for mer informasjon</string>
+    <string name="placeinfoscreen_instructions_skumring">Trykk på kortene for mer informasjon om stedet og distanse fra din posisjon</string>
+    <string name="mypagescreen_instructions_skumring">På \"min side\" kan du legge til dine steder og endre på innstillinger</string>
+    <string name="lastdialog_instructions_skumring">Håper du liker appen!</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
@@ -181,4 +211,5 @@
     <string name="new_place_required">*påkrevd</string>
     <string name="new_place_use_phone_location">Bruk telefonens posisjon</string>
     <string name="new_place_pick_address">Velg riktig adresse:</string>
+
 </resources>

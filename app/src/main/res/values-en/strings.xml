@@ -171,4 +171,31 @@
     <string name="new_place_required">*required</string>
     <string name="new_place_use_phone_location">Use phone\'s location</string>
     <string name="new_place_pick_address">Pick the correct address:</string>
+    <string name="homescreen_instructions_1">Sunset time</string>
+    <string name="homescreen_instructions_2">More information about weather conditions</string>
+    <string name="homescreen_instructions_3">Temperature at sunset</string>
+    <string name="homescreen_instructions_4">Time for blue and golden hour</string>
+    <string name="homescreen_favourite_instruction">All cards can be clicked for more information</string>
+    <string name="maplistscreen_instructions_1">Click for list view instead of map view</string>
+    <string name="maplistscreen_instructions_2">Blue circle marks your location</string>
+    <string name="maplistscreen_instructions_3">Red pins shows saved locations</string>
+    <string name="maplist_popup_instructions_1">Get information about weather conditions today by tapping the pins</string>
+    <string name="maplist_popup_instructions_2">Add as favourite</string>
+    <string name="maplist_popup_instructions_3">For more information about the place, click the button!</string>
+    <string name="placeinfoscreen_instructions_1">View your saved photo and  read your own description of the place</string>
+    <string name="placeinfoscreen_instructions_2">See distance from your location</string>
+    <string name="placeinfoscreen_instructions_3">Scroll down for next days forecast</string>
+    <string name="newplacedialog_instructions_1">PS! Get the same \"pop-up\" on the map by long-press  on the place you want to add photo</string>
+    <string name="newplacedialog_instructions_2">Settings</string>
+    <string name="newplacedialog_instructions_3">Choose between phone\'s location and writing the location</string>
+    <string name="firstscreen_instructions_welcome_skumring">Welcome to Skumring!</string>
+    <string name="firstscreen_instructions_skumring">The app for those who want to find  and save places to take pictures of sunsets!</string>
+    <string name="firstscreen_moreinfo_instructions_skumring">Get an introduction to the app by clicking next!</string>
+    <string name="homescreen_instructions_skumring">The first thing you encounter is the home screen, The first thing you encounter is the home screen, here you can see the weather forecast for the sunset at your location today</string>
+    <string name="homescreen_favourite_instructions_skumring">Add your favorite places and get them on your home screen!</string>
+    <string name="maplistscreen_instructions_skumring">You can see your location and nice places for sunset nearby on the map screen</string>
+    <string name="maplistscreen_popup_instructions_skumring">Push the pins for more information</string>
+    <string name="placeinfoscreen_instructions_skumring">Click on the cards for more information about the place and distance from your location</string>
+    <string name="mypagescreen_instructions_skumring">Add your own places and change settings on my page</string>
+    <string name="lastdialog_instructions_skumring">We hope you like our app!</string>
 </resources>
