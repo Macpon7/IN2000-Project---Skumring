@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -118,9 +117,6 @@ closeDialog: () -> Unit
         }
     }
 
-
-
-
 @Composable
 fun FirstScreenInstructions() {
     Column(
@@ -134,14 +130,13 @@ fun FirstScreenInstructions() {
             color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.padding(top = 35.dp, bottom = 35.dp)
         )
-        Icon( //TODO change this
+        Icon(
             painterResource(id = R.drawable.icon),
             contentDescription = "HomeScreenInstructions",
             tint = Color.Unspecified,
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(30.dp))
                 .size(180.dp)
-
         )
         Text(
             text = stringResource(R.string.firstscreen_instructions_skumring),
@@ -222,7 +217,7 @@ Box(modifier = Modifier
         ) {
             val instructionPictures = when {
                 isEnglish && isSystemInDarkTheme() -> R.drawable.homescreen_dark_en
-                isNorwegian && isSystemInDarkTheme() -> R.drawable.homescreeninstructions_norwegian
+                isNorwegian && isSystemInDarkTheme() -> R.drawable.homescreen_dark_no
                 isEnglish && !isSystemInDarkTheme() -> R.drawable.homescreen_light_en
                 isNorwegian && !isSystemInDarkTheme() -> R.drawable.homescreen_light_no
                 else -> R.drawable.image_not_found
@@ -272,9 +267,9 @@ fun HomeScreenInstructionsFavourite() {
             ) {
             val instructionPictures = when {
                 isEnglish && isSystemInDarkTheme() -> R.drawable.homescreen_favourite_dark_en
-                isNorwegian && isSystemInDarkTheme() -> R.drawable.homescreeninstructions_favourite_norwegian
+                isNorwegian && isSystemInDarkTheme() -> R.drawable.homescreen_favourite_dark_no
                 isEnglish && !isSystemInDarkTheme() -> R.drawable.homescreen_favourite_light_en
-                isNorwegian && !isSystemInDarkTheme() -> R.drawable.homescreen_favourite_light_en
+                isNorwegian && !isSystemInDarkTheme() -> R.drawable.homescreen_favourite_light_no
                 else -> R.drawable.image_not_found
             }
             Icon(
@@ -337,9 +332,9 @@ fun MapListInstructions() {
         ) {
             val instructionPictures = when {
                 isEnglish && isSystemInDarkTheme() -> R.drawable.maplistscreen_dark_en
-                isNorwegian && isSystemInDarkTheme() -> R.drawable.maplistinstructions_norwegian
+                isNorwegian && isSystemInDarkTheme() -> R.drawable.maplistscreen_dark_no
                 isEnglish && !isSystemInDarkTheme() -> R.drawable.maplistscreen_light_en
-                isNorwegian && !isSystemInDarkTheme() -> R.drawable.maplistscreen_light_en //TODO Maplistscreen light no
+                isNorwegian && !isSystemInDarkTheme() -> R.drawable.maplistscreen_light_no
                 else -> R.drawable.image_not_found
             }
             Icon(
@@ -401,10 +396,10 @@ fun MapListInstructionsPopUp() {
                 .weight(2f),
         ) {
             val instructionPictures = when {
-                isEnglish && isSystemInDarkTheme() -> R.drawable.maplistscreen_dark_en  //TODO find dark english popup
-                isNorwegian && isSystemInDarkTheme() -> R.drawable.maplistpopupinstructions_norwegian
+                isEnglish && isSystemInDarkTheme() -> R.drawable.maplistpopup_dark_en
+                isNorwegian && isSystemInDarkTheme() -> R.drawable.maplistpopup_dark_no
                 isEnglish && !isSystemInDarkTheme() -> R.drawable.maplist_popup_light_en
-                isNorwegian && !isSystemInDarkTheme() -> R.drawable.maplist_popup_light_en   //TODO find norwegian picture
+                isNorwegian && !isSystemInDarkTheme() -> R.drawable.mapscreen_popup_light_no
                 else -> R.drawable.image_not_found
             }
             Icon(
@@ -469,7 +464,7 @@ fun PlaceInfoInstructions() {
         ) {
             val instructionPictures = when {
                 isEnglish && isSystemInDarkTheme() -> R.drawable.placeinfoscreen_dark_en
-                isNorwegian && isSystemInDarkTheme() -> R.drawable.placeinfoscreeninstructions_norwegian
+                isNorwegian && isSystemInDarkTheme() -> R.drawable.placeinfoscreen_dark_no
                 isEnglish && !isSystemInDarkTheme() -> R.drawable.placeinfoscreen_light_en
                 isNorwegian && !isSystemInDarkTheme() -> R.drawable.placeinfoscreen_light_no
                 else -> R.drawable.image_not_found
@@ -533,7 +528,7 @@ fun NewPlaceDialogInstructions() {
         ) {
             val instructionPictures = when {
                 isEnglish && isSystemInDarkTheme() -> R.drawable.newplacedialog_dark_en
-                isNorwegian && isSystemInDarkTheme() -> R.drawable.newplacedialoginstructions_norwegian
+                isNorwegian && isSystemInDarkTheme() -> R.drawable.newplacedialog_dark_no
                 isEnglish && !isSystemInDarkTheme() -> R.drawable.newplacedialog_light_en
                 isNorwegian && !isSystemInDarkTheme() -> R.drawable.newplacedialog_light_no
                 else -> R.drawable.image_not_found
@@ -578,7 +573,7 @@ fun LastScreenInstructions() {
 @Composable
 fun UserInstructionsDialogTest(
 ) {
-    SkumringTheme(useDarkTheme = false) {
+    SkumringTheme(useDarkTheme = true) {
         Surface {
             val closeDialog: () -> Unit = {}
             UserInstructionsDialog(closeDialog)
