@@ -175,6 +175,8 @@
     <string name="mypagescreen_instructions_skumring">På \"min side\" kan du legge til dine steder og endre på innstillinger</string>
     <string name="lastdialog_instructions_skumring">Håper du liker appen!</string>
 
+    <string name="UserInstructionsDialog_next_button">Neste</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
@@ -212,6 +214,6 @@
     <string name="new_place_required">*påkrevd</string>
     <string name="new_place_use_phone_location">Bruk telefonens posisjon</string>
     <string name="new_place_pick_address">Velg riktig adresse:</string>
-    <string name="UserInstructionsDialog_next_button">Neste</string>
+
 
 </resources>
