@@ -9,6 +9,7 @@ import android.util.Log
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao

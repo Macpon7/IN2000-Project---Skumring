@@ -92,9 +92,16 @@ class HomeViewModel(
     private fun loadFavourites() {
         viewModelScope.launch(Dispatchers.IO) {
             _homeUiState.update { currentHomeUiState ->
-                val favourites = placeRepository.getFavourites()
+                try {
+                    val favourites = placeRepository.getFavourites()
 
-                currentHomeUiState.copy(favoritePlaces = favourites)
+                    currentHomeUiState.copy(favoritePlaces = favourites)
+                } catch (e: Exception) {
+                    currentHomeUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.resources.getString(R.string.error_message_getting_favourites)
+                    )
+                }
             }
         }
     }
