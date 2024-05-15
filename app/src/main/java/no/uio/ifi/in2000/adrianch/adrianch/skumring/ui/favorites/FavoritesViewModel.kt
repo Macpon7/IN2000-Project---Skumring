@@ -50,7 +50,7 @@ class FavoritesViewModel(
                 try {
                     val placeSummaryList = placeRepository.getFavourites()
                     currentfavoritesUiState.copy(places = placeSummaryList)
-                }  catch (e: InternetException) {
+                } catch (e: InternetException) {
                     currentfavoritesUiState.copy(
                         showSnackbar = true,
                         errorMessage = context.resources.getString(R.string.error_message_no_forecast)
