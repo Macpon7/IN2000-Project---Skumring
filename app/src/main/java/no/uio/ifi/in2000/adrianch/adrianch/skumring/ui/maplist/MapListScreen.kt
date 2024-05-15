@@ -96,6 +96,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherCondit
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.DeletePlaceDialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceDialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
@@ -203,6 +204,13 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
         )
     }
 
+    if (mapListUiState.showDeleteDialog) {
+        DeletePlaceDialog(
+            onDismissRequest = {mapListViewModel.hideDeleteDialog()},
+            onConfirmClick = {mapListViewModel.deleteCustomPlace()}
+        )
+    }
+
     ToggleButtonThemeSwitcher(
         mapTheme = mapListUiState.mapListToggle.stateAsBool,
         onClick = { mapListViewModel.toggleMapListState() }
@@ -247,7 +255,8 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
                                 onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                                     navController.navigate("placeinfoscreen/${place.id}")
                                 },
-                                onFavouriteClick = { mapListViewModel.toggleFavourite(place) }
+                                onFavouriteClick = { mapListViewModel.toggleFavourite(place) },
+                                onDeleteClick = { mapListViewModel.showDeleteDialog(placeId = place.id) }
                             )
                         }
                     }

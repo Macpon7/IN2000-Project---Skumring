@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.DeletePlaceDialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
@@ -111,7 +112,7 @@ fun FavoritesScreen(
         ) {
             FavoriteListContent(
                 navController = navController,
-                favoriteViewModel = favoritesViewModel,
+                favoritesViewModel = favoritesViewModel,
                 favoritesUiState = favoritesUiState
             )
         }
@@ -124,9 +125,16 @@ fun FavoritesScreen(
 @Composable
 fun FavoriteListContent(
     navController: NavController,
-    favoriteViewModel: FavoritesViewModel,
+    favoritesViewModel: FavoritesViewModel,
     favoritesUiState: FavoritesUiState
 ) {
+    if (favoritesUiState.showDeleteDialog) {
+        DeletePlaceDialog(
+            onDismissRequest = {favoritesViewModel.hideDeleteDialog()},
+            onConfirmClick = {favoritesViewModel.deleteCustomPlace()}
+        )
+    }
+
     Column(Modifier.verticalScroll(rememberScrollState())) {
         if (favoritesUiState.places.isEmpty()) {
             Text(
@@ -143,7 +151,10 @@ fun FavoriteListContent(
                         navController.navigate("placeinfoscreen/${place.id}")
                     },
                     onFavouriteClick = {
-                        favoriteViewModel.toggleFavourite(place = place)
+                        favoritesViewModel.toggleFavourite(place = place)
+                    },
+                    onDeleteClick = {
+                        favoritesViewModel.showDeleteDialog(placeId = place.id)
                     }
                 )
             }
