@@ -171,4 +171,5 @@
     <string name="new_place_required">*required</string>
     <string name="new_place_use_phone_location">Use phone\'s location</string>
     <string name="new_place_pick_address">Pick the correct address:</string>
+    <string name="error_message_getting_favourites">Error while getting favourites</string>
 </resources>
