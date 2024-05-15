@@ -178,9 +178,9 @@ class MapListViewModel(
             _mapListUiState.update { currentMapListUiState ->
                 currentMapListUiState.copy(
                     showNewPlaceDialog = false,
-                    places = placeRepository.getAllPlaces()
                 )
             }
+            loadPlaces()
             _newPlaceUiState.update { NewPlaceUiState(useMapLocation = true) }
         }
     }
