@@ -20,7 +20,8 @@ class GeoCodingDataSourceTest {
     )
 
     /*
-    Testing that a response gets converted correctly to our custom object
+    Testing that a response gets converted correctly to our custom object and gets
+    the city correct.
      */
     @Test
     fun checkGeocodeCity() {
