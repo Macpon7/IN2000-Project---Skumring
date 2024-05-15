@@ -281,6 +281,12 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
 
                 // Add the new place to database
                 Log.d(TAG, "Trying to add new custom place to DB")
+                val imageDate = if (!uiStateFlow.value.useCustomImage) {
+                    LocalDate.now()
+                } else {
+                    uiStateFlow.value.imageDate
+                }
+
                 event.addCustomPlace(
                     PlaceInfo(
                         id = 0,
@@ -296,7 +302,7 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                     ),
                     // If imageUri is null we will never get to this code
                     uiStateFlow.value.imageUri!!,
-                    uiStateFlow.value.imageDate!!
+                    imageDate!!
                 )
                 event.hideDialog()
             }
