@@ -70,8 +70,31 @@ class FavoritesViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             if (place.isFavourite) {
                 placeRepository.unmakeFavourite(placeId = place.id)
+                _favoritesUiState.update { currentFavouritesUiState ->
+                    currentFavouritesUiState.copy(
+                        places = currentFavouritesUiState.places.map {
+                            if (it.id == place.id) {
+                                it.copy(isFavourite = false)
+                            } else {
+                                it.copy()
+                            }
+                        }
+                    )
+                }
             } else {
                 placeRepository.makeFavourite(placeId = place.id)
+                _favoritesUiState.update { currentFavouritesUiState ->
+                    currentFavouritesUiState.copy(
+                        places = currentFavouritesUiState.places.map {
+                            if (it.id == place.id) {
+                                it.copy(isFavourite = true)
+                            } else {
+                                it.copy()
+                            }
+                        }
+                    )
+                }
+
             }
         }
     }
