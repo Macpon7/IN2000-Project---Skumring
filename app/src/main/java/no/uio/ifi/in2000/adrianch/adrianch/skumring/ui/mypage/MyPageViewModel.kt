@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
@@ -43,7 +44,7 @@ data class MyPageUiState(
 class MyPageViewModel(
     private val placeRepository: PlaceRepository,
     private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl(),
-    context: Context
+    private val context: Context
 ) : ViewModel() {
     private val userLocationRepository: UserLocationRepository =
         UserLocationRepositoryImpl(context = context)
@@ -64,7 +65,16 @@ class MyPageViewModel(
 
     fun onNewPlaceDialogEvent(event: NewPlaceEvent) {
         viewModelScope.launch(Dispatchers.IO) {
-            onNewPlaceEvent(event = event, uiStateFlow = _newPlaceUiState)
+            try {
+                onNewPlaceEvent(event = event, uiStateFlow = _newPlaceUiState)
+            } catch (e: Exception) {
+                _myPageUiState.update { currentMyPageUiState ->
+                    currentMyPageUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.getString(R.string.error_message_new_place_dialog)
+                    )
+                }
+            }
         }
     }
 
@@ -102,7 +112,7 @@ class MyPageViewModel(
                 } catch (e: Exception) {
                     currentMyPageUiState.copy(
                         showSnackbar = true,
-                        errorMessage = e.message ?: "Unknown error while loading custom places!"
+                        errorMessage = context.getString(R.string.error_message_getting_custom_places)
                     )
                 }
             }
@@ -146,7 +156,7 @@ class MyPageViewModel(
             currentMyPageUiState.copy(showSnackbar = false)
         }
         viewModelScope.launch(Dispatchers.IO) {
-            // TODO: Add what gets updated when the API fails
+            loadCustomPlaces()
         }
     }
 
