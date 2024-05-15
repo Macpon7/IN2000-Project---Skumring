@@ -24,7 +24,6 @@ class MainViewModel: ViewModel() {
 
     fun loadSplashScreen() {
         viewModelScope.launch(Dispatchers.IO) {
-            delay(timeMillis = 1000L)
             _mainScreenUiState.update {currentnewMainScreenUiState ->
                 currentnewMainScreenUiState.copy(
                     splashScreenReady = false
