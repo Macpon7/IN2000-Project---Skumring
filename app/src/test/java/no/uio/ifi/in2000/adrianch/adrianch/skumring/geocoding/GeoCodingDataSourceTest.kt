@@ -3,7 +3,6 @@ import com.google.gson.Gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingDataSource
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.geocoding.ReverseGeocoding
 import org.junit.Test
-import java.time.format.DateTimeFormatter
 
 class GeoCodingDataSourceTest {
 
@@ -20,4 +19,15 @@ class GeoCodingDataSourceTest {
         ReverseGeocoding::class.java
     )
 
+    /*
+    Testing that a response gets converted correctly to our custom object
+     */
+    @Test
+    fun checkGeocodeCity() {
+        val expected = "Oslo"
+        val response = source.convertReverseGeocodingResponse(ojdReverseResponseData)
+        val result = response.placeName
+
+        assert(expected == result)
+    }
 }
