@@ -140,7 +140,11 @@ class PlaceRepositoryImpl(
             // If there is no data in the DB for this placeId, we need to fetch data from APIs
 
             // Fetch data from API, using code taken from oldPlaceInfoRepo
-            val sunEventsList = fetchNewForecastData(lat = lat, long = long)
+            val sunEventsList = try {
+                fetchNewForecastData(lat = lat, long = long)
+            } catch (e: Exception) {
+                throw Exception("Error fetching new forecast data", e)
+            }
 
             // Save sun event list to DB with correct placeId
             upsertForecastData(sunEvents = sunEventsList, placeId = placeId)
@@ -151,7 +155,11 @@ class PlaceRepositoryImpl(
             // If there is data, but it is older than one hour, also fetch new data
 
             // Fetch data from API
-            val sunEvents = fetchNewForecastData(lat = lat, long = long)
+            val sunEvents = try {
+                fetchNewForecastData(lat = lat, long = long)
+            } catch (e: Exception) {
+                throw Exception("Error fetching new forecast data", e)
+            }
 
             // Update Forecast objects in the DB
             upsertForecastData(
@@ -334,24 +342,28 @@ class PlaceRepositoryImpl(
             return emptyList()
         }
 
-        return placesFromDb.map {
-            // TODO get images from DB and convert to List<ImageDetails>
-            PlaceInfo(
-                id = it.id,
-                name = it.name,
-                description = it.description,
-                lat = it.latitude,
-                long = it.longitude,
-                isFavourite = it.isFavourite,
-                isCustomPlace = it.isCustomPlace,
-                hasNotification = false,
-                images = getImages(it.id),
-                sunEvents = getForecastData(
-                    placeId = it.id,
+        try {
+            return placesFromDb.map {
+                // TODO get images from DB and convert to List<ImageDetails>
+                PlaceInfo(
+                    id = it.id,
+                    name = it.name,
+                    description = it.description,
                     lat = it.latitude,
-                    long = it.longitude
+                    long = it.longitude,
+                    isFavourite = it.isFavourite,
+                    isCustomPlace = it.isCustomPlace,
+                    hasNotification = false,
+                    images = getImages(it.id),
+                    sunEvents = getForecastData(
+                        placeId = it.id,
+                        lat = it.latitude,
+                        long = it.longitude
+                    )
                 )
-            )
+            }
+        } catch (e: Exception) {
+            throw Exception(R.string.error_message_getting_favourites.toString(), e)
         }
     }
 
