@@ -29,7 +29,6 @@
     <string name="list_title">Fine steder i dag</string>
     <string name="home_more_details_button">Mer informasjon</string>
     <string name="home_favourite_places">Favorittsteder</string>
-    <string name="no_favourites">Ingen favoritter!</string>
     <string name="error_sunset">Feil med å få data</string>
     <string name="error_place_info">Feil med å laste inn stedsinfo</string>
 
@@ -60,7 +59,7 @@
     <string name="search_hint">Søk</string>
 
     <!-- FavoritesScreen -->
-    <string name="no_places">Ingen steder lagret enda</string>
+    <string name="no_places">Ingen steder</string>
     <string name="favourites">Favoritter</string>
 
     <!-- PlaceInfoScreen -->
@@ -102,8 +101,6 @@
     <string name="drive">Kjøre</string>
 
     <!-- MyPageScreen -->
-    <string name="no_location">Ingen lokasjon lagret</string>
-    <string name="new_location">Ny plassering lagt til!</string>
     <string name="new_place_add_photo">Legg til bilde</string>
     <string name="new_place_location_name">Navn</string>
     <string name="new_place_address">Adresse</string>
