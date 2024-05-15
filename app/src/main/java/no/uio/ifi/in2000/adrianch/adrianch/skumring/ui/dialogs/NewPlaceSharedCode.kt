@@ -61,6 +61,10 @@ data class NewPlaceUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     var imageUri: Uri? = Uri.parse("android.resource://" + "no.uio.ifi.in2000.adrianch.adrianch.skumring" + "/" + R.drawable.default_place_image),
     var imageError: Boolean = false,
     var useCustomImage: Boolean = false,
+
+    // Boolean for if the button to add the new place has been pressed
+    // This is used to avoid users spamming the button and our code executing lots of times
+    var addPlacePressed: Boolean = false
 )
 
 /**
@@ -74,6 +78,10 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
 
             // If all inputs are valid, we try to save the place
             if (inputsValid) {
+                // Make the button inactive so it can't be spammed
+                uiStateFlow.update { currentUiState ->
+                    currentUiState.copy(addPlacePressed = true)
+                }
                 val lat: String
                 val long: String
 
@@ -98,7 +106,8 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                         uiStateFlow.update { currentUiState ->
                             currentUiState.copy(
                                 addressError = true,
-                                addressNoResults = true
+                                addressNoResults = true,
+                                addPlacePressed = false
                             )
                         }
                         return
@@ -281,6 +290,12 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
 
                 // Add the new place to database
                 Log.d(TAG, "Trying to add new custom place to DB")
+                val imageDate = if (!uiStateFlow.value.useCustomImage) {
+                    LocalDate.now()
+                } else {
+                    uiStateFlow.value.imageDate
+                }
+
                 event.addCustomPlace(
                     PlaceInfo(
                         id = 0,
@@ -296,7 +311,7 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                     ),
                     // If imageUri is null we will never get to this code
                     uiStateFlow.value.imageUri!!,
-                    uiStateFlow.value.imageDate!!
+                    imageDate!!
                 )
                 event.hideDialog()
             }
@@ -310,7 +325,7 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
 
         NewPlaceEvent.HideAddressDialog -> {
             uiStateFlow.update { currentUiState ->
-                currentUiState.copy(showAddressDialog = false)
+                currentUiState.copy(showAddressDialog = false, addPlacePressed = false)
             }
         }
     }

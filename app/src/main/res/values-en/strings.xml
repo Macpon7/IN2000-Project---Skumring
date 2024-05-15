@@ -15,7 +15,7 @@
     <!-- ErrorMessages: -->
     <string name="error_message_no_error">No error</string>
 
-    <string name="error_message_loadUserLocation">Error updating user location</string>
+    <string name="error_message_loadUserLocation">Cannot get user position</string>
     <string name="error_message_getting_sunset">Error getting sunset data</string>
     <string name="error_message_loading_list">Error loading list</string>
     <string name="error_message_getting_places_from_database">Error getting places from database</string>
@@ -171,4 +171,9 @@
     <string name="new_place_required">*required</string>
     <string name="new_place_use_phone_location">Use phone\'s location</string>
     <string name="new_place_pick_address">Pick the correct address:</string>
+    <string name="error_message_getting_favourites">Error while getting favourites</string>
+    <string name="error_message_getting_custom_places">Error while getting your custom places</string>
+    <string name="error_message_new_place_dialog">Error adding a new place</string>
+    <string name="error_message_fetching_directions">Error fetching distance from place</string>
+    <string name="error_message_no_forecast">Cannot fetch weather data without internet</string>
 </resources>

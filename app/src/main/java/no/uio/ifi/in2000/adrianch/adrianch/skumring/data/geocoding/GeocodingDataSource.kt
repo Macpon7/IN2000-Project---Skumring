@@ -42,9 +42,9 @@ class GeocodingDataSource {
         val placeName: String = try {
             response.features[0].properties.context.place.name
         } catch (e: Exception) {
-            Log.d(logTag, "Error: Placename not found", e)
+            Log.e(logTag, "Error: Placename not found. Response is empty")
             // Returns empty string if user is in area without a place name
-            ""
+            throw Exception("Response from reverse geocoding is empty", e)
         }
 
         val lat = response.features[0].geometry.coordinates[1].toString()

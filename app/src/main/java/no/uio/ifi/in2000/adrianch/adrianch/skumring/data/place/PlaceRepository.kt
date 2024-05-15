@@ -18,6 +18,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoEntit
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.LocationForecastDataSource
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.InternetException
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.ImageDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
@@ -140,7 +141,11 @@ class PlaceRepositoryImpl(
             // If there is no data in the DB for this placeId, we need to fetch data from APIs
 
             // Fetch data from API, using code taken from oldPlaceInfoRepo
-            val sunEventsList = fetchNewForecastData(lat = lat, long = long)
+            val sunEventsList = try {
+                fetchNewForecastData(lat = lat, long = long)
+            } catch (e: Exception) {
+                throw Exception("Error fetching new forecast data", e)
+            }
 
             // Save sun event list to DB with correct placeId
             upsertForecastData(sunEvents = sunEventsList, placeId = placeId)
@@ -151,7 +156,11 @@ class PlaceRepositoryImpl(
             // If there is data, but it is older than one hour, also fetch new data
 
             // Fetch data from API
-            val sunEvents = fetchNewForecastData(lat = lat, long = long)
+            val sunEvents = try {
+                fetchNewForecastData(lat = lat, long = long)
+            } catch (e: Exception) {
+                throw Exception("Error fetching new forecast data", e)
+            }
 
             // Update Forecast objects in the DB
             upsertForecastData(
@@ -188,7 +197,11 @@ class PlaceRepositoryImpl(
      */
     private suspend fun fetchNewForecastData (lat: String, long: String): List<SunEvent> {
         // Get the forecasted weather at this place
-        val fullForecast = locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
+        val fullForecast = try {
+            locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
+        } catch (e: Exception) {
+            throw InternetException("Could not fetch forecast data from MET", e)
+        }
 
         // Group all the forecast data by date
         var forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }.toSortedMap()
@@ -197,11 +210,15 @@ class PlaceRepositoryImpl(
         forecastGroupedByDate = forecastGroupedByDate.headMap(forecastGroupedByDate.keys.elementAt(3))
 
         // Send our map to a function which will return a list of SunEvent objects
-        return forecastRepository.makeSunEvents(
-            forecastGroupedByDate = forecastGroupedByDate,
-            lat = lat,
-            long = long
-        )
+        return try {
+            forecastRepository.makeSunEvents(
+                forecastGroupedByDate = forecastGroupedByDate,
+                lat = lat,
+                long = long
+            )
+        } catch (e: Exception) {
+            throw InternetException("Could not fetch sunrise data from MET", e)
+        }
     }
 
     private suspend fun upsertForecastData(
@@ -321,38 +338,44 @@ class PlaceRepositoryImpl(
     override suspend fun getFavourites(): List<PlaceInfo> {
         val placesFromDb = placeInfoDao.getFavourites()
 
-        // Id there are noe favourites, return an empty list
+        // Id there are no favourites, return an empty list
         if (placesFromDb.isEmpty()) {
             return emptyList()
         }
 
-        return placesFromDb.map {
-            // TODO get images from DB and convert to List<ImageDetails>
-            PlaceInfo(
-                id = it.id,
-                name = it.name,
-                description = it.description,
-                lat = it.latitude,
-                long = it.longitude,
-                isFavourite = it.isFavourite,
-                isCustomPlace = it.isCustomPlace,
-                hasNotification = false,
-                images = getImages(it.id),
-                sunEvents = getForecastData(
-                    placeId = it.id,
+        try {
+            return placesFromDb.map {
+                // TODO get images from DB and convert to List<ImageDetails>
+                PlaceInfo(
+                    id = it.id,
+                    name = it.name,
+                    description = it.description,
                     lat = it.latitude,
-                    long = it.longitude
+                    long = it.longitude,
+                    isFavourite = it.isFavourite,
+                    isCustomPlace = it.isCustomPlace,
+                    hasNotification = false,
+                    images = getImages(it.id),
+                    sunEvents = getForecastData(
+                        placeId = it.id,
+                        lat = it.latitude,
+                        long = it.longitude
+                    )
                 )
-            )
+            }
+        } catch (e: Exception) {
+            throw e
         }
     }
 
     override suspend fun getCustomPlaces(): List<PlaceInfo> {
         val entities = placeInfoDao.getCustomPlaces()
-        return if (entities.isEmpty()) {
-            emptyList()
-        } else {
-            entities.map {
+        if (entities.isEmpty()) {
+            return emptyList()
+        }
+
+        try {
+            return entities.map {
                 PlaceInfo(
                     id = it.id,
                     name = it.name,
@@ -370,6 +393,8 @@ class PlaceRepositoryImpl(
                     )
                 )
             }
+        } catch (e: Exception) {
+            throw e
         }
     }
 
@@ -382,6 +407,15 @@ class PlaceRepositoryImpl(
         imageUri: Uri,
         imageTimestamp: LocalDate
         ) {
+
+        // Check that we have an internet connection by making a request to locationforecast
+        try {
+            val testForecast = locationForecastDataSource.fetchWeatherData(lat = place.lat, long = place.long)
+        } catch (e: Exception) {
+            throw InternetException("Could not get weather data when adding new place to DB", e)
+        }
+
+
         //input is PlaceInfo object
         val placeInfoEntity = PlaceInfoEntity(
             name = place.name,

@@ -462,6 +462,7 @@ fun NewPlaceDialog(
                         addCustomPlace = addCustomPlace,
                         hideDialog = hideDialog
                     )) },
+                    enabled = !newPlaceUiState.addPlacePressed,
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                         .align(Alignment.CenterHorizontally),

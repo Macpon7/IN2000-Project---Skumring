@@ -141,9 +141,20 @@ class MapListViewModel(
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     fun onNewPlaceDialogEvent(event: NewPlaceEvent) {
         viewModelScope.launch(Dispatchers.IO) {
-            onNewPlaceEvent(event = event, uiStateFlow = _newPlaceUiState)
+            try {
+                onNewPlaceEvent(event = event, uiStateFlow = _newPlaceUiState)
+            } catch (e: Exception) {
+                hideNewPlaceDialog()
+                _mapListUiState.update { currentMapListUiState ->
+                    currentMapListUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.getString(R.string.error_message_new_place_dialog)
+                    )
+                }
+            }
         }
     }
 
@@ -168,9 +179,9 @@ class MapListViewModel(
             _mapListUiState.update { currentMapListUiState ->
                 currentMapListUiState.copy(
                     showNewPlaceDialog = false,
-                    places = placeRepository.getAllPlaces()
                 )
             }
+            loadPlaces()
             _newPlaceUiState.update { NewPlaceUiState(useMapLocation = true) }
         }
     }

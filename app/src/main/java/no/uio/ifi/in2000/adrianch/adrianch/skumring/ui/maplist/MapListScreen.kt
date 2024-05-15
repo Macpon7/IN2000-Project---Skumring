@@ -140,6 +140,7 @@ fun MapListScreen(
     // Check if there is an error, if so show a snackbar:
     if (mapListUiState.showSnackbar) {
         LaunchedEffect(mapListUiState.snackbarHostState) {
+            Log.d(logTag, "Showing snackbar")
             val result = mapListUiState.snackbarHostState.showSnackbar(
                 message = mapListUiState.errorMessage,
                 withDismissAction = true,

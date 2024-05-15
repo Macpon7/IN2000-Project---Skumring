@@ -22,6 +22,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.InternetException
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.Theme
@@ -92,9 +93,22 @@ class HomeViewModel(
     private fun loadFavourites() {
         viewModelScope.launch(Dispatchers.IO) {
             _homeUiState.update { currentHomeUiState ->
-                val favourites = placeRepository.getFavourites()
+                try {
+                    val favourites = placeRepository.getFavourites()
 
-                currentHomeUiState.copy(favoritePlaces = favourites)
+                    currentHomeUiState.copy(favoritePlaces = favourites)
+                } catch (e: InternetException) {
+                    currentHomeUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.getString(R.string.error_message_no_forecast)
+
+                        )
+                } catch (e: Exception) {
+                    currentHomeUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.resources.getString(R.string.error_message_getting_favourites)
+                    )
+                }
             }
         }
     }
