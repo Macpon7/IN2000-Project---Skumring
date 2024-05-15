@@ -19,6 +19,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.PlaceInfoEntit
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.ForecastRepositoryImpl
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.forecast.LocationForecastDataSource
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.InternetException
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.ImageDetails
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
@@ -403,6 +404,15 @@ class PlaceRepositoryImpl(
         imageUri: Uri,
         imageTimestamp: LocalDate
         ) {
+
+        // Check that we have an internet connection by making a request to locationforecast
+        try {
+            val testForecast = locationForecastDataSource.fetchWeatherData(lat = place.lat, long = place.long)
+        } catch (e: Exception) {
+            throw InternetException("Could not get weather data when adding new place to DB", e)
+        }
+
+
         //input is PlaceInfo object
         val placeInfoEntity = PlaceInfoEntity(
             name = place.name,
