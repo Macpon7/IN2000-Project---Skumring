@@ -39,7 +39,10 @@ import androidx.compose.ui.unit.dp
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 
-
+/**
+ * A dialog that shows the user the user how to use the app the first time the user
+ * installs it
+ */
 @Composable
 fun UserInstructionsDialog (
 closeDialog: () -> Unit
@@ -58,6 +61,7 @@ closeDialog: () -> Unit
         Column(
             modifier = Modifier.padding(10.dp)
         ) {
+            //goes through each screen
             when (currentScreen) {
                 0 -> FirstScreenInstructions()
                 1 -> HomeScreenInstructions()
@@ -89,6 +93,7 @@ closeDialog: () -> Unit
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
+                //button for clicking next
                 Button(
                     onClick = {
                         currentScreen++
@@ -117,6 +122,9 @@ closeDialog: () -> Unit
         }
     }
 
+/**
+ * First screen in the dialog
+ */
 @Composable
 fun FirstScreenInstructions() {
     Column(
@@ -132,7 +140,7 @@ fun FirstScreenInstructions() {
         )
         Icon(
             painterResource(id = R.drawable.icon),
-            contentDescription = "HomeScreenInstructions",
+            contentDescription = stringResource(R.string.app_icon),
             tint = Color.Unspecified,
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(30.dp))
@@ -157,7 +165,9 @@ fun FirstScreenInstructions() {
 }
 
 
-
+/**
+ * Description of homescreen
+ */
 
 @Composable
 fun HomeScreenInstructions() {
@@ -179,7 +189,9 @@ Box(modifier = Modifier
         modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Top
     ){
-        Column (modifier = Modifier.weight(1f).padding(end = 2.dp))  {
+        Column (modifier = Modifier
+            .weight(1f)
+            .padding(end = 2.dp))  {
             Text(
                 text = "1." + stringResource(R.string.homescreen_instructions_1),
                 style = MaterialTheme.typography.bodyMedium,
@@ -224,13 +236,16 @@ Box(modifier = Modifier
             }
             Icon(
                 painterResource(id = instructionPictures),
-                contentDescription = "HomeScreenInstructions",
+                contentDescription = stringResource(id = R.string.homescreen_instructions_screen),
                 tint = Color.Unspecified
             )
         }
     }
 }
 
+/**
+ * Description of favourite function on homescreen
+ */
 @Composable
 fun HomeScreenInstructionsFavourite() {
     val currentLocale = LocalContext.current.resources.configuration.locale
@@ -274,13 +289,16 @@ fun HomeScreenInstructionsFavourite() {
             }
             Icon(
                 painterResource(id = instructionPictures),
-                contentDescription = "HomeScreenFavouriteInstructions",
+                contentDescription = stringResource(id = R.string.homescreen_favourite_instructions_picture),
                 tint = Color.Unspecified
             )
         }
     }
 }
 
+/**
+ * Description of maplistscreen, specifically how the map works
+ */
 @Composable
 fun MapListInstructions() {
     val currentLocale = LocalContext.current.resources.configuration.locale
@@ -339,12 +357,16 @@ fun MapListInstructions() {
             }
             Icon(
                 painterResource(id = instructionPictures),
-                contentDescription = "MapListScreen instructions",
+                contentDescription = stringResource(id = R.string.maplistscreen_instructions_picture),
                 tint = Color.Unspecified
             )
         }
     }
 }
+
+/**
+ * Description of the maplist bottomsheet
+ */
 
 @Composable
 fun MapListInstructionsPopUp() {
@@ -404,7 +426,7 @@ fun MapListInstructionsPopUp() {
             }
             Icon(
                 painterResource(id = instructionPictures),
-                contentDescription = "MapListScreen popup instructions",
+                contentDescription = stringResource(id = R.string.maplistscreen_popup_instructions_picture),
                 tint = Color.Unspecified
             )
         }
@@ -412,6 +434,9 @@ fun MapListInstructionsPopUp() {
     }
 }
 
+/**
+ * Descrpition of placeinfoscreen
+ */
 
 
 @Composable
@@ -471,13 +496,16 @@ fun PlaceInfoInstructions() {
             }
             Icon(
                 painterResource(id = instructionPictures),
-                contentDescription = "Placeinfoscreen instructions",
+                contentDescription = stringResource(id = R.string.placeinfoscreen_instructions_picture),
                 tint = Color.Unspecified
             )
         }
     }
 }
 
+/**
+ * description of NewPlaceDialog and Settings
+ */
 
 @Composable
 fun NewPlaceDialogInstructions() {
@@ -535,12 +563,16 @@ fun NewPlaceDialogInstructions() {
             }
             Icon(
                 painterResource(id = instructionPictures),
-                contentDescription = "NewPlaceDialog instructions",
+                contentDescription = stringResource(id = R.string.newplacedialog_instructions_picture),
                 tint = Color.Unspecified
             )
         }
     }
 }
+
+/**
+ * Last screen of the slide, ends the slideshow
+ */
 
 @Composable
 fun LastScreenInstructions() {
@@ -555,9 +587,9 @@ fun LastScreenInstructions() {
             color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.padding(top = 35.dp, bottom = 35.dp)
         )
-        Icon( //TODO change this
+        Icon(
             painterResource(id = R.drawable.icon),
-            contentDescription = "HomeScreenInstructions",
+            contentDescription = stringResource(R.string.app_icon),
             tint = Color.Unspecified,
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(30.dp))
