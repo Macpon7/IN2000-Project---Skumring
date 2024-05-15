@@ -1,3 +1,5 @@
+
+@file:Suppress("DEPRECATION")
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs
 
 import androidx.compose.foundation.isSystemInDarkTheme
