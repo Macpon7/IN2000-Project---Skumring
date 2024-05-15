@@ -2,7 +2,6 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +16,7 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.InternetException
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 
 data class FavoritesUiState(
@@ -50,11 +50,16 @@ class FavoritesViewModel(
                 try {
                     val placeSummaryList = placeRepository.getFavourites()
                     currentfavoritesUiState.copy(places = placeSummaryList)
-                } catch (e: Exception) {
-                    Log.e(logTag, "Error getting favourites", e)
+                }  catch (e: InternetException) {
                     currentfavoritesUiState.copy(
                         showSnackbar = true,
-                        errorMessage = context.getString(R.string.error_message_getting_favourites)
+                        errorMessage = context.resources.getString(R.string.error_message_no_forecast)
+
+                    )
+                } catch (e: Exception) {
+                    currentfavoritesUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.resources.getString(R.string.error_message_getting_favourites)
                     )
                 }
             }

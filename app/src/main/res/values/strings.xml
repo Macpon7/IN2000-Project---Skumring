@@ -15,7 +15,7 @@
     <!-- ErrorMessages: -->
     <string name="error_message_no_error">Ingen feil</string>
 
-    <string name="error_message_loadUserLocation">Feil med å oppdatere brukerlokasjon</string>
+    <string name="error_message_loadUserLocation">Kan ikke hente posisjon</string>
     <string name="error_message_getting_sunset">Feil med å laste ned data om solnedgang</string>
     <string name="error_message_loading_list">Feil med å laste inn liste</string>
     <string name="error_message_getting_places_from_database">Feil med å laste inn steder fra databasen</string>
@@ -185,5 +185,5 @@
     <string name="error_message_getting_custom_places">Feil med å laste inn dine steder</string>
     <string name="error_message_new_place_dialog">Feil med å legge til nytt sted</string>
     <string name="error_message_fetching_directions">Feil med å hente avstand fra stedet</string>
-    <string name="error_message_no_forecast">Kunne ikke hente værdata</string>
+    <string name="error_message_no_forecast">Kan ikke hente værdata uten internett</string>
 </resources>
