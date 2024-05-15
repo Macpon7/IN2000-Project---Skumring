@@ -225,10 +225,11 @@ fun NewPlaceDialog(
                             checked = newPlaceUiState.usePhoneLocation,
                             onCheckedChange = {onEvent(NewPlaceEvent.SetUseUserLocation(it))},
                             colors = SwitchDefaults.colors(
-                                checkedThumbColor = MaterialTheme.colorScheme.primary,
-                                checkedTrackColor = MaterialTheme.colorScheme.onPrimary,
-                                uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
-                                uncheckedTrackColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                checkedThumbColor = MaterialTheme.colorScheme.secondary,
+                                checkedTrackColor = MaterialTheme.colorScheme.outlineVariant,
+
+                                uncheckedThumbColor = MaterialTheme.colorScheme.onErrorContainer,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.errorContainer,
                             )
                         )
                     }
