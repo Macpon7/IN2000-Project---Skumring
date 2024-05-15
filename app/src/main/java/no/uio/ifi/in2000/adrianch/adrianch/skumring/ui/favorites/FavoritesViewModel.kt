@@ -51,10 +51,10 @@ class FavoritesViewModel(
                     val placeSummaryList = placeRepository.getFavourites()
                     currentfavoritesUiState.copy(places = placeSummaryList)
                 } catch (e: Exception) {
-                    Log.e(logTag, "Error loading list", e)
+                    Log.e(logTag, "Error getting favourites", e)
                     currentfavoritesUiState.copy(
                         showSnackbar = true,
-                        errorMessage = context.getString(R.string.error_message_loading_list)
+                        errorMessage = context.getString(R.string.error_message_getting_favourites)
                     )
                 }
             }
