@@ -238,7 +238,10 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
             Surface(color = MaterialTheme.colorScheme.background) {
 
                 if (mapListUiState.places.isEmpty()) {
-                    Column (modifier = Modifier.fillMaxSize()) {
+                    Column (modifier = Modifier
+                        .padding(top = 12.dp)
+                        .fillMaxSize()
+                    ) {
                         Text(
                             text = stringResource(R.string.no_places),
                             style = MaterialTheme.typography.titleLarge,
@@ -248,7 +251,10 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
                     }
                 } else {
                     // Column for list view
-                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    Column(modifier = Modifier
+                        .padding(top = 12.dp)
+                        .verticalScroll(rememberScrollState())
+                    ) {
                         mapListUiState.places.forEach { place ->
                             ListCard(
                                 place = place,
@@ -258,6 +264,7 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
                                 onFavouriteClick = { mapListViewModel.toggleFavourite(place) },
                                 onDeleteClick = { mapListViewModel.showDeleteDialog(placeId = place.id) }
                             )
+                            Spacer(modifier = Modifier.height(12.dp))
                         }
                     }
                 }
