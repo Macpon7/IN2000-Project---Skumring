@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
@@ -199,14 +200,14 @@ fun PlaceInfoContent(
             )
 
             //space between the cards
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Shows the sunsets for tomorrow and the following day
             placeInfoUiState.placeInfo.sunEvents.subList(1, 3).forEach {
                 SunEventInfoCard(it)
 
                 //space between the cards
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -767,21 +768,27 @@ fun SunEventInfoCard(
                         .fillMaxWidth()
                         .padding(start = 0.dp, end = 0.dp)
                 ) {
-                    Text(
-                        text = if (expandedState) stringResource(R.string.placeInfo_less_details_button) else stringResource(
-                            R.string.placeInfo_more_details_button
-                        ),
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        style = typography.titleMedium
-                    )
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = stringResource(R.string.dropdown_arrow_icon),
-                        tint = MaterialTheme.colorScheme.primaryContainer,
-                        modifier = Modifier
-                            .rotate(rotationState)
-                            .padding(start = 7.dp)
-                    )
+                    Row (
+                        modifier = Modifier.width(130.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (expandedState) stringResource(R.string.placeInfo_less_details_button) else stringResource(
+                                R.string.placeInfo_more_details_button
+                            ),
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            style = typography.titleMedium
+                        )
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = stringResource(R.string.dropdown_arrow_icon),
+                            tint = MaterialTheme.colorScheme.primaryContainer,
+                            modifier = Modifier
+                                .rotate(rotationState)
+                                .padding(start = 7.dp)
+                        )
+                    }
                 }
             }
             //if button clicked, show the rest of the information
