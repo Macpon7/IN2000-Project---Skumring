@@ -122,18 +122,28 @@ class PlaceInfoViewModel(
 
     fun loadTimeDistance() {
         viewModelScope.launch(Dispatchers.IO) {
-            val userLoc: UserLocation = userLocationRepository.getUserLocation()
-            val timePlaceList = directionsRepository.getAllTravelDurationDistance(
-                fromLat = userLoc.lat,
-                fromLong = userLoc.long,
-                toLat = _placeInfoUiState.value.placeInfo.lat,
-                toLong = _placeInfoUiState.value.placeInfo.long
-            )
-            Log.d(logTag, timePlaceList.toString())
-            _placeInfoUiState.update { currentPlaceInfoUiState ->
-                currentPlaceInfoUiState.copy(
-                    mapTimeDistance = timePlaceList
+            try {
+                val userLoc: UserLocation = userLocationRepository.getUserLocation()
+                val timePlaceList = directionsRepository.getAllTravelDurationDistance(
+                    fromLat = userLoc.lat,
+                    fromLong = userLoc.long,
+                    toLat = _placeInfoUiState.value.placeInfo.lat,
+                    toLong = _placeInfoUiState.value.placeInfo.long
                 )
+                Log.d(logTag, timePlaceList.toString())
+                _placeInfoUiState.update { currentPlaceInfoUiState ->
+                    currentPlaceInfoUiState.copy(
+                        mapTimeDistance = timePlaceList
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e(logTag, "Error occured while getting distances")
+                _placeInfoUiState.update { currentPlaceInfoUiState ->
+                    currentPlaceInfoUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.getString(R.string.error_message_fetching_directions)
+                    )
+                }
             }
         }
     }
