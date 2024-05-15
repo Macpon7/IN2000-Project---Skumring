@@ -406,7 +406,13 @@ fun SunsetInfoCard(
 @Composable
 fun HorizontalInfoCardRow(homeUiState: HomeUiState, navHostController: NavHostController) {
     if (homeUiState.favoritePlaces.isEmpty()) {
-        Text(text = stringResource(R.string.no_favourites))
+        Text(
+            text = stringResource(R.string.no_places),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
     } else {
         LazyRow {
             items(homeUiState.favoritePlaces) { place ->
