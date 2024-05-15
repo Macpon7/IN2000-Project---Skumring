@@ -177,6 +177,13 @@
 
     <string name="UserInstructionsDialog_next_button">Neste</string>
 
+    <string name="homescreen_instructions_screen">hjemskjerm instruksjonsbilde</string>
+    <string name="homescreen_favourite_instructions_picture">hjemskjerm favoritt instruksjonsbilde</string>
+    <string name="maplistscreen_instructions_picture">kartskjerm instruksjonsbilde</string>
+    <string name="maplistscreen_popup_instructions_picture">karstkjerm popup instruksjonsbilde</string>
+    <string name="placeinfoscreen_instructions_picture">placeinfoscreen instruksjonsbilde</string>
+    <string name="newplacedialog_instructions_picture">nyttsted instruksjonsbilde</string>
+
     <!-- Common strings used across multiple screens -->
     <string name="weather_condition">Værforhold:</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
@@ -214,6 +221,5 @@
     <string name="new_place_required">*påkrevd</string>
     <string name="new_place_use_phone_location">Bruk telefonens posisjon</string>
     <string name="new_place_pick_address">Velg riktig adresse:</string>
-
-
+    <string name="app_icon">app ikonet</string>
 </resources>

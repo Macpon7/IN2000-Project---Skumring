@@ -199,4 +199,11 @@
     <string name="mypagescreen_instructions_skumring">Add your own places and change settings on my page</string>
     <string name="lastdialog_instructions_skumring">We hope you like our app!</string>
     <string name="UserInstructionsDialog_next_button">Next</string>
+    <string name="app_icon">app icon</string>
+    <string name="homescreen_instructions_screen">homescreen instructions picture</string>
+    <string name="homescreen_favourite_instructions_picture">homescreen favourite instructions picture</string>
+    <string name="maplistscreen_instructions_picture">maplistscreen instructions picture</string>
+    <string name="maplistscreen_popup_instructions_picture">maplistscreen popup instructions picture</string>
+    <string name="placeinfoscreen_instructions_picture">placeinfoscreen instructions picture</string>
+    <string name="newplacedialog_instructions_picture">new place dialog instructions picture</string>
 </resources>
