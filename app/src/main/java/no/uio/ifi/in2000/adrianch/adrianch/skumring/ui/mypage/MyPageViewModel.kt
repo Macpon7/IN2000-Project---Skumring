@@ -18,6 +18,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.geocoding.GeocodingRepo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.userlocation.UserLocationRepositoryImpl
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.InternetException
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceUiState
@@ -67,7 +68,17 @@ class MyPageViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 onNewPlaceEvent(event = event, uiStateFlow = _newPlaceUiState)
-            } catch (e: Exception) {
+            } //If an exception occurs, hide the dialog and display the relevant message
+            catch (e: InternetException) {
+                hideNewPlaceDialog()
+                _myPageUiState.update { currentMyPageUiState ->
+                    currentMyPageUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.getString(R.string.error_message_no_forecast)
+                    )
+                }
+            }
+            catch (e: Exception) {
                 // If an exception occurs, hide the dialog and show a snackbar
                 hideNewPlaceDialog()
                 _myPageUiState.update { currentMyPageUiState ->
