@@ -145,7 +145,7 @@
     <string name="weather_icon_not_found">Værikon ikke funnet</string>
 
     <!-- Common strings used across multiple screens -->
-    <string name="weather_condition">Værforhold:</string>
+    <string name="weather_condition">"Værforhold: "</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
     <string name="golden_hour">Gylne time</string>
     <string name="blue_hour">Blåtime</string>

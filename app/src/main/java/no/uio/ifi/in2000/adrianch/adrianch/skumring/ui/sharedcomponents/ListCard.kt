@@ -62,7 +62,6 @@ fun ListCard(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 12.dp)
                     .clickable(onClick = onItemClick) //Click to infoscreen
             ) {
 
@@ -73,119 +72,95 @@ fun ListCard(
                         .background(Color.LightGray)
                         .fillMaxWidth()
                 ) {
-                    if (place.isCustomPlace) {
-                        //this is for fetching/getting images that are uploaded into internal storage
-                        val context = LocalContext.current
-                        val imageFile = File(context.filesDir, place.images[0].path)
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(imageFile)
-                                .build(),
-                            contentDescription = null,
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        AsyncImage(
-                            model = "file:///android_asset/presetImages/${place.images[0].path}",
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxSize()
-                        )
+                    if (place.images.isNotEmpty()) {
+                        if (place.isCustomPlace) {
+                            //this is for fetching/getting images that are uploaded into internal storage
+                            val context = LocalContext.current
+                            val imageFile = File(context.filesDir, place.images[0].path)
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(imageFile)
+                                    .build(),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            AsyncImage(
+                                model = "file:///android_asset/presetImages/${place.images[0].path}",
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
+                        }
                     }
                 }
-                Box( //Box for content description
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                ) {
-                    Column (
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 15.dp, end = 8.dp)
-                        )
-                        {
-                            Text(
-                                text = place.name,
-                                modifier = Modifier
-                                    .padding(vertical = 2.dp),
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                style = MaterialTheme.typography.headlineSmall,
-                            )
-                            Row {
-                                if (place.isCustomPlace) {
-                                    IconButton(onClick = onDeleteClick) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Delete,
-                                            contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer)
-                                    }
-                                }
-                                IconButton(onClick = onFavouriteClick) {
-                                    if (place.isFavourite) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Favorite,
-                                            contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-                                    } else {
-                                        Icon(
-                                            imageVector = Icons.Filled.FavoriteBorder,
-                                            contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-
-                                    }
-                                }
+                        .padding(start = 15.dp, end = 8.dp)
+                )
+                {
+                    Text(
+                        text = place.name,
+                        modifier = Modifier
+                            .padding(vertical = 2.dp),
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                    Row {
+                        if (place.isCustomPlace) {
+                            IconButton(onClick = onDeleteClick) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Delete,
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer)
                             }
                         }
-                        Row(
-                            //For displaying weather conditions and information popup
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End,
-                            modifier = Modifier.padding(
-                                start = 15.dp,
-                                end = 12.dp,
-                                bottom = 5.dp
-                            )
-                                . fillMaxWidth()
-                        ) {//Conditions at sunset
-                            Text(
-                                text = stringResource(R.string.weather_condition),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                                //text changing based on weather conditions, in different textbox because of change of color
-                                text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 8.dp, vertical = 20.dp)
-                            ) {
+                        IconButton(onClick = onFavouriteClick) {
+                            if (place.isFavourite) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.double_arrow),
-                                    contentDescription = stringResource(R.string.double_arrow),
-                                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    modifier = Modifier.align(Alignment.CenterEnd)
-                                        .size(30.dp)
+                                    imageVector = Icons.Filled.Favorite,
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Filled.FavoriteBorder,
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+
                             }
                         }
                     }
+                }
+                Row(
+                    //For displaying weather conditions and information popup
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier
+                        .padding(start = 15.dp, end = 12.dp, bottom = 8.dp)
+                        .fillMaxWidth()
+                ) {//Conditions at sunset
+                    Text(
+                        text = stringResource(R.string.weather_condition),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        //text changing based on weather conditions, in different textbox because of change of color
+                        text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+
+                    )
                 }
             }
         } else {
@@ -327,7 +302,7 @@ fun ListCardPreview() {
             lat = "",
             long = "",
             isFavourite = false,
-            isCustomPlace = false,
+            isCustomPlace = true,
             hasNotification = false,
             images = emptyList(),
             sunEvents = listOf(
