@@ -122,10 +122,16 @@ class MyPageViewModel(
             _myPageUiState.update { currentMyPageUiState ->
                 try {
                     currentMyPageUiState.copy(places = placeRepository.getCustomPlaces())
+                } catch (e: InternetException) {
+                    currentMyPageUiState.copy(
+                        showSnackbar = true,
+                        errorMessage = context.resources.getString(R.string.error_message_no_forecast)
+
+                    )
                 } catch (e: Exception) {
                     currentMyPageUiState.copy(
                         showSnackbar = true,
-                        errorMessage = context.getString(R.string.error_message_getting_custom_places)
+                        errorMessage = context.resources.getString(R.string.error_message_getting_favourites)
                     )
                 }
             }

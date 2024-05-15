@@ -370,10 +370,12 @@ class PlaceRepositoryImpl(
 
     override suspend fun getCustomPlaces(): List<PlaceInfo> {
         val entities = placeInfoDao.getCustomPlaces()
-        return if (entities.isEmpty()) {
-            emptyList()
-        } else {
-            entities.map {
+        if (entities.isEmpty()) {
+            return emptyList()
+        }
+
+        try {
+            return entities.map {
                 PlaceInfo(
                     id = it.id,
                     name = it.name,
@@ -391,6 +393,8 @@ class PlaceRepositoryImpl(
                     )
                 )
             }
+        } catch (e: Exception) {
+            throw e
         }
     }
 
