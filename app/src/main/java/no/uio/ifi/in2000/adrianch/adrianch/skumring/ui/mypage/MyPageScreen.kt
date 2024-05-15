@@ -181,7 +181,7 @@ fun ContentMyPage(
     Column(Modifier.verticalScroll(rememberScrollState())) {
         if (myPageUiState.places.isEmpty()) {
             Text(
-                text = stringResource(R.string.no_location),
+                text = stringResource(R.string.no_places),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()

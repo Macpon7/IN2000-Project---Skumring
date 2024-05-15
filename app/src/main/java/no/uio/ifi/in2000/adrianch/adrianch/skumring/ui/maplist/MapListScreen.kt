@@ -240,7 +240,7 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
                 if (mapListUiState.places.isEmpty()) {
                     Column (modifier = Modifier.fillMaxSize()) {
                         Text(
-                            text = stringResource(R.string.no_location),
+                            text = stringResource(R.string.no_places),
                             style = MaterialTheme.typography.titleLarge,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
