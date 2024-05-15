@@ -68,6 +68,8 @@ class MyPageViewModel(
             try {
                 onNewPlaceEvent(event = event, uiStateFlow = _newPlaceUiState)
             } catch (e: Exception) {
+                // If an exception occurs, hide the dialog and show a snackbar
+                hideNewPlaceDialog()
                 _myPageUiState.update { currentMyPageUiState ->
                     currentMyPageUiState.copy(
                         showSnackbar = true,
@@ -94,9 +96,9 @@ class MyPageViewModel(
             _myPageUiState.update { currentMyPageUiState ->
                 currentMyPageUiState.copy(
                     showNewPlaceDialog = false,
-                    places = placeRepository.getCustomPlaces()
                 )
             }
+            loadCustomPlaces()
             _newPlaceUiState.update { NewPlaceUiState() }
         }
     }
