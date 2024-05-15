@@ -70,18 +70,21 @@ class PlaceInfoViewModel(
     private val userLocationRepository: UserLocationRepository =
         UserLocationRepositoryImpl(context = context)
 
-    private val blueHourIconLightMode = R.drawable.bluesunlightmode
-    private val blueHourIconDarkMode = R.drawable.bluesundarkmode
-
-    fun addFavourite(placeId: Int) {
+    fun toggleFavourite() {
         viewModelScope.launch(Dispatchers.IO) {
-            placeRepository.makeFavourite(placeId)
-        }
-    }
-
-    fun removeFavourite(placeId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            placeRepository.unmakeFavourite(placeId)
+            _placeInfoUiState.update { currentPlaceInfoUiState ->
+                if (currentPlaceInfoUiState.placeInfo.isFavourite) {
+                    placeRepository.unmakeFavourite(currentPlaceInfoUiState.placeInfo.id)
+                    currentPlaceInfoUiState.copy(
+                        placeInfo = currentPlaceInfoUiState.placeInfo.copy(isFavourite = false)
+                    )
+                } else {
+                    placeRepository.makeFavourite(currentPlaceInfoUiState.placeInfo.id)
+                    currentPlaceInfoUiState.copy(
+                        placeInfo = currentPlaceInfoUiState.placeInfo.copy(isFavourite = true)
+                    )
+                }
+            }
         }
     }
 
@@ -174,14 +177,6 @@ class PlaceInfoViewModel(
                     context = application.context
                 ) as T
             }
-        }
-    }
-
-    fun updateBlueHourIcon(): Int {
-        return when (getCurrentSystemTheme(context)) {
-            Theme.DARK_MODE -> blueHourIconDarkMode
-            Theme.LIGHT_MODE -> blueHourIconLightMode
-            else -> blueHourIconDarkMode
         }
     }
 
