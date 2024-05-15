@@ -463,7 +463,10 @@ fun BottomSheetContent(
     onDismissRequest: () -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(top = 0.dp, bottom = 20.dp, start = 12.dp, end = 12.dp)
+        modifier = Modifier
+            .padding(start = 12.dp, end = 12.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //name of place and favourite button
         Row(
@@ -479,148 +482,133 @@ fun BottomSheetContent(
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onPrimary
             )
-            IconButton(onClick = {
-                toggleFavourite(place)
-            }
+            IconButton(
+                onClick = { toggleFavourite(place) }
             ) {
-                if (place.isFavourite) {
-                    Icon(
-                        imageVector = Icons.Filled.Favorite,
-                        contentDescription = stringResource(id = R.string.favourite_icon),
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(60.dp)
+                Icon(
+                    imageVector = if (place.isFavourite) {
+                        Icons.Filled.Favorite
+                    } else {
+                        Icons.Filled.FavoriteBorder
+                    },
+                    contentDescription = stringResource(id = R.string.favourite_icon),
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(60.dp)
 
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Filled.FavoriteBorder,
-                        contentDescription = stringResource(R.string.favourite_icon),
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(60.dp)
-                    )
-
-                }
-            }
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
-        )
-        {
-            //sunset today string
-            Text(
-                text = stringResource(id = R.string.home_sunset),
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-            )
-            Divider(
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                thickness = 1.dp,
-                modifier = Modifier.padding(start = 80.dp, end = 80.dp)
-            )
-            //time for sunset
-            Text(
-                text = stringResource(R.string.time) + ": ${
-                    place.sunEvents[0].time.format(
-                        DateTimeFormatter.ofPattern("HH':'mm")
-                    )
-                }",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.padding(top = 10.dp)
-            )
-            //temerature at sunset
-            Text(
-                text = stringResource(R.string.temp_at_sunset) + ": ${place.sunEvents[0].tempAtEvent} °C",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-            )
-            //Conditions at sunset
-            Text(
-                text = stringResource(R.string.weather_condition) + stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-            )
-            //Weather icon
-            Box(
-                modifier = Modifier
-                    .size(70.dp)
-                    .padding(bottom = 10.dp)
-            ) {
-                WeatherIconCheck(
-                    weatherCondition = place.sunEvents[0].weatherIcon,
-                    weather = place.sunEvents[0].conditions.weatherRating
                 )
             }
-            //description string
-            Text(
-                text = stringResource(R.string.new_place_description),
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+        }
+        //sunset today string
+        Text(
+            text = stringResource(id = R.string.home_sunset),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+        )
+        Divider(
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            thickness = 1.dp,
+            modifier = Modifier.padding(start = 80.dp, end = 80.dp)
+        )
+        //time for sunset
+        Text(
+            text = stringResource(R.string.time) + ": ${
+                place.sunEvents[0].time.format(
+                    DateTimeFormatter.ofPattern("HH':'mm")
+                )
+            }",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.padding(top = 10.dp)
+        )
+        //temerature at sunset
+        Text(
+            text = stringResource(R.string.temp_at_sunset) + ": ${place.sunEvents[0].tempAtEvent} °C",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier
+                .padding(bottom = 10.dp)
+        )
+        //Conditions at sunset
+        Text(
+            text = stringResource(R.string.weather_condition) + stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier
+                .padding(bottom = 10.dp)
+        )
+        //Weather icon
+        Box(
+            modifier = Modifier
+                .size(70.dp)
+                .padding(bottom = 10.dp)
+        ) {
+            WeatherIconCheck(
+                weatherCondition = place.sunEvents[0].weatherIcon,
+                weather = place.sunEvents[0].conditions.weatherRating
             )
-            Divider(
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                thickness = 1.dp,
-                modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
-            )
-            //description about the place
-            Text(
-                text = place.description,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+        }
+        //description string
+        Text(
+            text = stringResource(R.string.new_place_description),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+        )
+        Divider(
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            thickness = 1.dp,
+            modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
+        )
+        //description about the place
+        Text(
+            text = place.description,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
 
-            Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
-            //close button and more information button
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 10.dp)
-            )
-            {
-                TextButton(
-                    onClick = {
-                        onDismissRequest()
-                    },
-                    contentPadding = PaddingValues(12.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.close),
-                        color = MaterialTheme.colorScheme.onTertiary,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
-                Button(
-                    onClick = {
-                        onDismissRequest()
-                        navController.navigate("placeinfoscreen/${place.id}")
-                    },
-                    contentPadding = PaddingValues(12.dp),
-                    modifier = Modifier.padding(start = 15.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-
-                    ) {
-                    Text(
-                        text = stringResource(R.string.home_more_details_button),
-                        color = MaterialTheme.colorScheme.onTertiary,
-                        style = MaterialTheme.typography.bodyLarge,
-
-                        )
-                }
-
+        //close button and more information button
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+        {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                },
+                contentPadding = PaddingValues(12.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.close),
+                    color = MaterialTheme.colorScheme.onTertiary,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+            Spacer(modifier = Modifier.width(30.dp))
+            Button(
+                onClick = {
+                    onDismissRequest()
+                    navController.navigate("placeinfoscreen/${place.id}")
+                },
+                contentPadding = PaddingValues(12.dp),
+                modifier = Modifier.padding(start = 15.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
+            ) {
+                Text(
+                    text = stringResource(R.string.home_more_details_button),
+                    color = MaterialTheme.colorScheme.onTertiary,
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
+        Spacer(modifier = Modifier.height(60.dp))
     }
 }
 
