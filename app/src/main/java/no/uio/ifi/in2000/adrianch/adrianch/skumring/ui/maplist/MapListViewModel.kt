@@ -147,6 +147,7 @@ class MapListViewModel(
             try {
                 onNewPlaceEvent(event = event, uiStateFlow = _newPlaceUiState)
             } catch (e: Exception) {
+                hideNewPlaceDialog()
                 _mapListUiState.update { currentMapListUiState ->
                     currentMapListUiState.copy(
                         showSnackbar = true,
