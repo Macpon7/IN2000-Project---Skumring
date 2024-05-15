@@ -70,18 +70,8 @@ class FavoritesViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             if (place.isFavourite) {
                 placeRepository.unmakeFavourite(placeId = place.id)
-                _favoritesUiState.update { currentFavoritesUiState ->
-                    currentFavoritesUiState.copy(
-                        places = placeRepository.getFavourites()
-                    )
-                }
             } else {
                 placeRepository.makeFavourite(placeId = place.id)
-                _favoritesUiState.update { currentFavoritesUiState ->
-                    currentFavoritesUiState.copy(
-                        places = placeRepository.getFavourites()
-                    )
-                }
             }
         }
     }
