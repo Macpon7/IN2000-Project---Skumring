@@ -1,7 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents
 
-import android.graphics.BitmapFactory
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +8,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -90,13 +86,8 @@ fun ListCard(
                             contentScale = ContentScale.Crop
                         )
                     } else {
-                        val bitmap = BitmapFactory.decodeStream(
-                            LocalContext.current.assets.open(
-                                "presetImages/${place.images[0].path}"
-                            )
-                        ).asImageBitmap()
-                        Image(
-                            bitmap,
+                        AsyncImage(
+                            model = "file:///android_asset/presetImages/${place.images[0].path}",
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -224,17 +215,12 @@ fun ListCard(
                             contentScale = ContentScale.FillWidth
                         )
                     } else {
-                        val bitmap = BitmapFactory.decodeStream(
-                            LocalContext.current.assets.open(
-                                "presetImages/${place.images[0].path}"
-                            )
-                        ).asImageBitmap()
-                        Image(
-                            bitmap,
+                        AsyncImage(
+                            model = "file:///android_asset/presetImages/${place.images[0].path}",
                             contentDescription = null,
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .fillMaxSize() // Fill the entire available space in the Box and maintain aspect ratio of the image
-                                .aspectRatio(bitmap.width.toFloat() / bitmap.height)
+                                .fillMaxSize()
                         )
                     }
                 }

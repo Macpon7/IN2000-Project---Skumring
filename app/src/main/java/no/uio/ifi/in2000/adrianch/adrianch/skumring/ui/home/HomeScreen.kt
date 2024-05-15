@@ -1,7 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import android.graphics.BitmapFactory
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +44,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -459,17 +456,12 @@ fun HorizontalInfoCardContent(
                     contentScale = ContentScale.Crop
                 )
             } else {
-                val bitmap = BitmapFactory.decodeStream(
-                    LocalContext.current.assets.open(
-                        "presetImages/${place.images[0].path}"
-                    )
-                ).asImageBitmap()
-                Image(
-                    bitmap,
+                AsyncImage(
+                    model = "file:///android_asset/presetImages/${place.images[0].path}",
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .fillMaxSize() // Fill the entire available space in the Box and maintain aspect ratio of the image
+                        .fillMaxSize()
                 )
             }
             Divider( //for dividing photo from bottom text
