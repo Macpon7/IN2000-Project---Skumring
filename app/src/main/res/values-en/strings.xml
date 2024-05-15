@@ -172,4 +172,6 @@
     <string name="new_place_use_phone_location">Use phone\'s location</string>
     <string name="new_place_pick_address">Pick the correct address:</string>
     <string name="error_message_getting_favourites">Error while getting favourites</string>
+    <string name="error_message_getting_custom_places">Error while getting your custom places</string>
+    <string name="error_message_new_place_dialog">Error adding a new place</string>
 </resources>
