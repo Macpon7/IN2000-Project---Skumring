@@ -188,7 +188,11 @@ class PlaceRepositoryImpl(
      */
     private suspend fun fetchNewForecastData (lat: String, long: String): List<SunEvent> {
         // Get the forecasted weather at this place
-        val fullForecast = locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
+        val fullForecast = try {
+            locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
+        } catch (e: Exception) {
+            throw Exception("Error fetching new weather data", e)
+        }
 
         // Group all the forecast data by date
         var forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }.toSortedMap()
@@ -197,11 +201,15 @@ class PlaceRepositoryImpl(
         forecastGroupedByDate = forecastGroupedByDate.headMap(forecastGroupedByDate.keys.elementAt(3))
 
         // Send our map to a function which will return a list of SunEvent objects
-        return forecastRepository.makeSunEvents(
-            forecastGroupedByDate = forecastGroupedByDate,
-            lat = lat,
-            long = long
-        )
+        return try {
+            forecastRepository.makeSunEvents(
+                forecastGroupedByDate = forecastGroupedByDate,
+                lat = lat,
+                long = long
+            )
+        } catch (e: Exception) {
+            throw Exception("Error while making SunEvents", e)
+        }
     }
 
     private suspend fun upsertForecastData(
