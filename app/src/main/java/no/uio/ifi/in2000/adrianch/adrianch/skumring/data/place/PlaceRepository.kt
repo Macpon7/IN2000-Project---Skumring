@@ -9,7 +9,6 @@ import android.util.Log
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao
@@ -201,7 +200,7 @@ class PlaceRepositoryImpl(
         val fullForecast = try {
             locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
         } catch (e: Exception) {
-            throw Exception("Error fetching new weather data", e)
+            throw InternetException("Could not fetch forecast data from MET", e)
         }
 
         // Group all the forecast data by date
@@ -218,7 +217,7 @@ class PlaceRepositoryImpl(
                 long = long
             )
         } catch (e: Exception) {
-            throw Exception("Error while making SunEvents", e)
+            throw InternetException("Could not fetch sunrise data from MET", e)
         }
     }
 
@@ -339,7 +338,7 @@ class PlaceRepositoryImpl(
     override suspend fun getFavourites(): List<PlaceInfo> {
         val placesFromDb = placeInfoDao.getFavourites()
 
-        // Id there are noe favourites, return an empty list
+        // Id there are no favourites, return an empty list
         if (placesFromDb.isEmpty()) {
             return emptyList()
         }
@@ -365,7 +364,7 @@ class PlaceRepositoryImpl(
                 )
             }
         } catch (e: Exception) {
-            throw Exception(R.string.error_message_getting_favourites.toString(), e)
+            throw e
         }
     }
 
