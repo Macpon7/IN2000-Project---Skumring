@@ -20,8 +20,8 @@ class LocationForecastDataSourceTest {
         val gson = Gson()
 
         val decodedResponse: LocationForecastInfo = gson.fromJson(
-            shortTestData,
-            LocationForecastInfo::class.java)
+            shortTestData, LocationForecastInfo::class.java
+        )
 
         val expected = listOf(
             WeatherPerHour(
@@ -44,13 +44,11 @@ class LocationForecastDataSourceTest {
                     wind_speed = 1.6,
                     wind_speed_of_gust = 4.1,
                     wind_speed_percentile_10 = 1.5,
-                    wind_speed_percentile_90= 1.9
-                ),
-                icon="clearsky_day"
-            ),
-            WeatherPerHour(
+                    wind_speed_percentile_90 = 1.9
+                ), icon = "clearsky_day"
+            ), WeatherPerHour(
                 //"2024-03-11T00:00:00Z"
-                time = LocalDateTime.of(2024, 3,11, 0, 0, 0),
+                time = LocalDateTime.of(2024, 3, 11, 0, 0, 0),
                 instant = WeatherDetails(
                     air_pressure_at_sea_level = 1022.7,
                     air_temperature = -0.1,
@@ -69,8 +67,7 @@ class LocationForecastDataSourceTest {
                     wind_speed_of_gust = 0.0,
                     wind_speed_percentile_10 = 1.7,
                     wind_speed_percentile_90 = 2.5
-                ),
-                icon="cloudy"
+                ), icon = "cloudy"
             )
         )
 

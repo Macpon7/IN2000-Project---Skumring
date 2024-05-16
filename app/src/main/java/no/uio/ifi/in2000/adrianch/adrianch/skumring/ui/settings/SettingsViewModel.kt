@@ -31,9 +31,7 @@ data class SettingsUiState(
     var notificationEnabled: Boolean = false,
 
     var settings: Settings = Settings(
-        Theme.FOLLOW_SYSTEM,
-        Language.FOLLOW_SYSTEM,
-        Location.PHONES_LOCATION
+        Theme.FOLLOW_SYSTEM, Language.FOLLOW_SYSTEM, Location.PHONES_LOCATION
     ),
 
     // Variables for showing dropdown menus
@@ -82,8 +80,8 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
                 Theme.DARK_MODE -> "dark"
                 Theme.LIGHT_MODE -> "light"
             }
-            val preferences = context.getSharedPreferences("user_settings",
-                ComponentActivity.MODE_PRIVATE
+            val preferences = context.getSharedPreferences(
+                "user_settings", ComponentActivity.MODE_PRIVATE
             )
             val editor = preferences.edit()
             editor.putString("theme", newSetting)
@@ -112,7 +110,7 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
     /**
      * Update the JSON setting file with settings held in the settingUiState
      */
-    fun updateJSONSettings() {
+    private fun updateJSONSettings() {
         viewModelScope.launch(Dispatchers.IO) {
             val gson = Gson()
             val jsonSettings: String = gson.toJson(settingsUiState.value.settings)

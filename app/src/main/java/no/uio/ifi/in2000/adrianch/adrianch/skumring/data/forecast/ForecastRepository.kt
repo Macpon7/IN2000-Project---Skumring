@@ -69,8 +69,10 @@ class ForecastRepositoryImpl(
                     lat = lat, long = long, date = it.key
                 )
 
-                val goldenHourBlueHour: GoldenHourBlueHour = goldenHourBlueHourDataSource.fetchGoldenHourBlueHourTime(
-                    lat = lat, long = long, date = it.key)
+                val goldenHourBlueHour: GoldenHourBlueHour =
+                    goldenHourBlueHourDataSource.fetchGoldenHourBlueHourTime(
+                        lat = lat, long = long, date = it.key
+                    )
 
                 // it.value is the list of WeatherPerHour objects for this date
                 val sunsetWeather = findClosestWeather(sunsetTime, it.value)
@@ -110,9 +112,11 @@ class ForecastRepositoryImpl(
             // pick this WeatherPerHour object as the new closest.
             // Use abs() because the difference is positive or negative depending on if
             // the time we compare with is before or after sunset
-            val diff1 = it.time.toEpochSecond(ZoneOffset.UTC) - sunsetTime.toEpochSecond(ZoneOffset.UTC)
+            val diff1 =
+                it.time.toEpochSecond(ZoneOffset.UTC) - sunsetTime.toEpochSecond(ZoneOffset.UTC)
             val diff2 = sunsetWeather.time.toEpochSecond(ZoneOffset.UTC) - sunsetTime.toEpochSecond(
-                ZoneOffset.UTC)
+                ZoneOffset.UTC
+            )
 
             if (abs(diff1) < abs(diff2)) {
                 sunsetWeather = it

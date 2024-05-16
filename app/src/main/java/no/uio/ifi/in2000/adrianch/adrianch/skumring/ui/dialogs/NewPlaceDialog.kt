@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
@@ -107,7 +106,7 @@ fun NewPlaceDialog(
 
         disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
         disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+    )
 
     // Show when the user pick a date:
     if (newPlaceUiState.showDatePicker) {
@@ -173,8 +172,7 @@ fun NewPlaceDialog(
                 )
 
                 // Input field for new place name
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
+                OutlinedTextField(modifier = Modifier.fillMaxWidth(),
                     value = newPlaceUiState.name,
                     // Take variable from newPlaceUiState
                     onValueChange = { onEvent(NewPlaceEvent.UpdateName(it)) },
@@ -210,20 +208,20 @@ fun NewPlaceDialog(
                     // If we are getting the coordinates from long pressing the map,
                     // we don't want to show the address field at all
                 } else {
-                    Row (
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(20.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
-                    ){
+                    ) {
                         Text(
                             text = stringResource(id = R.string.new_place_use_phone_location),
                             style = MaterialTheme.typography.titleSmall
                         )
                         Switch(
                             checked = newPlaceUiState.usePhoneLocation,
-                            onCheckedChange = {onEvent(NewPlaceEvent.SetUseUserLocation(it))},
+                            onCheckedChange = { onEvent(NewPlaceEvent.SetUseUserLocation(it)) },
                             colors = SwitchDefaults.colors(
                                 checkedThumbColor = MaterialTheme.colorScheme.secondary,
                                 checkedTrackColor = MaterialTheme.colorScheme.outlineVariant,
@@ -331,31 +329,24 @@ fun NewPlaceDialog(
                     } else {
                         MaterialTheme.colorScheme.onPrimaryContainer
                     }
-                    )
+                )
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // Row containing button for adding photo and date picker
                 Row {
-                    Card (
-                        modifier = Modifier
-                            .requiredSize(80.dp)
-                            .clickable(
-                                enabled = true,
-                                onClick = { launcher.launch("image/*") }
-                            ),
+                    Card(modifier = Modifier
+                        .requiredSize(80.dp)
+                        .clickable(enabled = true, onClick = { launcher.launch("image/*") }),
                         border = BorderStroke(
-                            width = 1.dp,
-                            color = if (newPlaceUiState.imageError) {
+                            width = 1.dp, color = if (newPlaceUiState.imageError) {
                                 MaterialTheme.colorScheme.error
                             } else {
                                 MaterialTheme.colorScheme.secondaryContainer
                             }
                         ),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-                    ) {
-                        Box (
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                         ) {
                             AsyncImage(
                                 model = newPlaceUiState.imageUri,
@@ -378,14 +369,11 @@ fun NewPlaceDialog(
 
                     // Input field for photo timestamp
                     // If we do not use custom image, this will look disabled
-                    OutlinedTextField(
-                        value = newPlaceUiState.imageDateString,
+                    OutlinedTextField(value = newPlaceUiState.imageDateString,
                         onValueChange = { },
                         modifier = Modifier
-                            .clickable(
-                                enabled = newPlaceUiState.useCustomImage,
-                                onClick = { onEvent(NewPlaceEvent.ShowDatePicker) }
-                            )
+                            .clickable(enabled = newPlaceUiState.useCustomImage,
+                                onClick = { onEvent(NewPlaceEvent.ShowDatePicker) })
                             .fillMaxWidth()
                             .padding(start = 8.dp),
                         enabled = false,
@@ -415,7 +403,7 @@ fun NewPlaceDialog(
                                 Text(
                                     text = stringResource(id = R.string.new_place_required),
                                     color = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
+                                )
                             }
 
                         },
@@ -456,12 +444,16 @@ fun NewPlaceDialog(
 
                 // Button to save the new location
                 Button(
-                    onClick = { onEvent(NewPlaceEvent.SaveNewPlace(
-                        getCoordinatesFromAddress = getCoordinatesFromAddress,
-                        getCoordinatesFromLocation = getCoordinatesFromLocation,
-                        addCustomPlace = addCustomPlace,
-                        hideDialog = hideDialog
-                    )) },
+                    onClick = {
+                        onEvent(
+                            NewPlaceEvent.SaveNewPlace(
+                                getCoordinatesFromAddress = getCoordinatesFromAddress,
+                                getCoordinatesFromLocation = getCoordinatesFromLocation,
+                                addCustomPlace = addCustomPlace,
+                                hideDialog = hideDialog
+                            )
+                        )
+                    },
                     enabled = !newPlaceUiState.addPlacePressed,
                     modifier = Modifier
                         .padding(vertical = 8.dp)
@@ -484,7 +476,7 @@ fun NewPlaceDialog(
  * so the user can select which address is the correct one for the new place
  */
 @Composable
-fun MultipleAddressesDialog (
+fun MultipleAddressesDialog(
     onEvent: (event: NewPlaceEvent) -> Unit,
     addCustomPlace: KSuspendFunction3<PlaceInfo, Uri, LocalDate, Unit>,
     hideDialog: () -> Unit,
@@ -496,12 +488,12 @@ fun MultipleAddressesDialog (
     )
 
     Dialog(onDismissRequest = { onEvent(NewPlaceEvent.HideAddressDialog) }) {
-        Card (
+        Card(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             )
         ) {
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 10.dp),
@@ -511,14 +503,14 @@ fun MultipleAddressesDialog (
                     text = stringResource(id = R.string.new_place_pick_address),
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     style = MaterialTheme.typography.titleMedium
-                    )
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Column containing the address options:
-                Column (modifier = Modifier.selectableGroup()) {
+                Column(modifier = Modifier.selectableGroup()) {
                     uiState.addressResults.forEach { result ->
-                        Row (
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth(0.9f)
                                 .selectable(
@@ -537,11 +529,11 @@ fun MultipleAddressesDialog (
                                 text = result.placeName,
                                 style = MaterialTheme.typography.bodyMedium,
                                 modifier = Modifier.padding(start = 16.dp)
-                                )
+                            )
                         }
                     }
                 }
-                Row (
+                Row(
                     modifier = Modifier.padding(top = 16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
@@ -554,13 +546,13 @@ fun MultipleAddressesDialog (
                     Spacer(modifier = Modifier.width(20.dp))
 
                     OutlinedButton(
-                        onClick = { onEvent(
-                            NewPlaceEvent.ConfirmSelectedAddress(
-                                addCustomPlace = addCustomPlace,
-                                hideDialog = hideDialog
+                        onClick = {
+                            onEvent(
+                                NewPlaceEvent.ConfirmSelectedAddress(
+                                    addCustomPlace = addCustomPlace, hideDialog = hideDialog
+                                )
                             )
-                        ) },
-                        colors = buttonColors
+                        }, colors = buttonColors
                     ) {
                         Text(text = stringResource(id = R.string.ok))
                     }
@@ -578,8 +570,7 @@ fun PreviewNewPlaceDialogLight() {
 
     SkumringTheme(useDarkTheme = false) {
         Surface {
-            NewPlaceDialog(
-                hideDialog = {},
+            NewPlaceDialog(hideDialog = {},
                 onEvent = {},
                 getCoordinatesFromAddress = previewFun::getCoordinatesFromAddress,
                 getCoordinatesFromLocation = previewFun::getCoordinatesFromLocation,
@@ -594,22 +585,23 @@ fun PreviewNewPlaceDialogLight() {
 @Composable
 fun PreviewMultipleAddressesLight() {
     val previewFun = PreviewFunctions()
-    val testUiStateFlow = MutableStateFlow(NewPlaceUiState(
-        addressResults = listOf(
-            GeocodeLocation(lat = "", long = "", placeName = "Alternativ 1"),
-            GeocodeLocation(lat = "", long = "", placeName = "Alternativ 2"),
-            GeocodeLocation(lat = "", long = "", placeName = "Alternativ 3"),
-            GeocodeLocation(lat = "", long = "", placeName = "Alternativ 4"),
-            GeocodeLocation(lat = "", long = "", placeName = "Alternativ 5"),
+    val testUiStateFlow = MutableStateFlow(
+        NewPlaceUiState(
+            addressResults = listOf(
+                GeocodeLocation(lat = "", long = "", placeName = "Alternativ 1"),
+                GeocodeLocation(lat = "", long = "", placeName = "Alternativ 2"),
+                GeocodeLocation(lat = "", long = "", placeName = "Alternativ 3"),
+                GeocodeLocation(lat = "", long = "", placeName = "Alternativ 4"),
+                GeocodeLocation(lat = "", long = "", placeName = "Alternativ 5"),
 
+                )
         )
-    ))
+    )
     val previewUiState by testUiStateFlow.collectAsState()
 
-    SkumringTheme (useDarkTheme = false){
+    SkumringTheme(useDarkTheme = false) {
         Surface {
-            MultipleAddressesDialog(
-                onEvent = {},
+            MultipleAddressesDialog(onEvent = {},
                 addCustomPlace = previewFun::addCustomPlace,
                 hideDialog = {},
                 uiState = previewUiState
@@ -622,19 +614,20 @@ fun PreviewMultipleAddressesLight() {
 @Composable
 fun PreviewNewPlaceDialogLightWithError() {
     val previewFun = PreviewFunctions()
-    val testUiStateFlow = MutableStateFlow(NewPlaceUiState(
-        nameError = true,
-        addressError = true,
-        imageError = true,
-        descriptionError = true,
-        dateTextFieldError = true,
-        usePhoneLocation = true
-    ))
+    val testUiStateFlow = MutableStateFlow(
+        NewPlaceUiState(
+            nameError = true,
+            addressError = true,
+            imageError = true,
+            descriptionError = true,
+            dateTextFieldError = true,
+            usePhoneLocation = true
+        )
+    )
 
     SkumringTheme(useDarkTheme = false) {
         Surface {
-            NewPlaceDialog(
-                hideDialog = {},
+            NewPlaceDialog(hideDialog = {},
                 onEvent = {},
                 getCoordinatesFromAddress = previewFun::getCoordinatesFromAddress,
                 getCoordinatesFromLocation = previewFun::getCoordinatesFromLocation,
@@ -645,23 +638,25 @@ fun PreviewNewPlaceDialogLightWithError() {
     }
 }
 
-@Preview(name = "Dark mode, engelsk, errors",
-    locale = "en")
+@Preview(
+    name = "Dark mode, engelsk, errors", locale = "en"
+)
 @Composable
 fun PreviewNewPlaceDialogDark() {
     val previewFun = PreviewFunctions()
-    val testUiStateFlow = MutableStateFlow(NewPlaceUiState(
-        nameError = true,
-        addressError = true,
-        imageError = true,
-        descriptionError = true,
-        dateTextFieldError = true
-    ))
+    val testUiStateFlow = MutableStateFlow(
+        NewPlaceUiState(
+            nameError = true,
+            addressError = true,
+            imageError = true,
+            descriptionError = true,
+            dateTextFieldError = true
+        )
+    )
 
     SkumringTheme(useDarkTheme = true) {
         Surface {
-            NewPlaceDialog(
-                hideDialog = {},
+            NewPlaceDialog(hideDialog = {},
                 onEvent = {},
                 getCoordinatesFromAddress = previewFun::getCoordinatesFromAddress,
                 getCoordinatesFromLocation = previewFun::getCoordinatesFromLocation,
@@ -672,6 +667,7 @@ fun PreviewNewPlaceDialogDark() {
     }
 }
 
+@Suppress("EmptyMethod", "RedundantSuspendModifier")
 class PreviewFunctions {
     suspend fun addCustomPlace(place: PlaceInfo, imageUri: Uri, imageTimestamp: LocalDate) {
 
@@ -683,9 +679,7 @@ class PreviewFunctions {
 
     suspend fun getCoordinatesFromLocation(): UserLocation {
         return UserLocation(
-            lat = "",
-            long = "",
-            bearing = 0.0f
+            lat = "", long = "", bearing = 0.0f
         )
     }
 

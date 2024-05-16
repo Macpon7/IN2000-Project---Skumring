@@ -89,7 +89,7 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                 if (uiStateFlow.value.useMapLocation) {
                     lat = uiStateFlow.value.mapLat
                     long = uiStateFlow.value.mapLong
-                // else, get coordinates of place either from phone's location or from address search
+                    // else, get coordinates of place either from phone's location or from address search
                 } else if (uiStateFlow.value.usePhoneLocation) {
                     Log.d(TAG, "Trying to get user location")
                     val userLocation = event.getCoordinatesFromLocation()
@@ -150,8 +150,7 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                         sunEvents = emptyList()
                     ),
                     // If imageUri is null we will never get to this code
-                    uiStateFlow.value.imageUri!!,
-                    imageDate!!
+                    uiStateFlow.value.imageUri!!, imageDate!!
                 )
                 event.hideDialog()
             }
@@ -172,13 +171,13 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
         }
 
         NewPlaceEvent.HideDatePicker -> {
-            uiStateFlow.update {currentUiState ->
+            uiStateFlow.update { currentUiState ->
                 currentUiState.copy(showDatePicker = false)
             }
         }
 
         NewPlaceEvent.SaveSelectedDate -> {
-            uiStateFlow.update {currentUiState ->
+            uiStateFlow.update { currentUiState ->
                 // Get currently selected date
                 val dateFromPicker = currentUiState.datePickerState.selectedDateMillis
 
@@ -210,25 +209,25 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
         }
 
         NewPlaceEvent.SetDescriptionError -> {
-            uiStateFlow.update {currentUiState ->
+            uiStateFlow.update { currentUiState ->
                 currentUiState.copy(descriptionError = true)
             }
         }
 
         NewPlaceEvent.SetImageDateError -> {
-            uiStateFlow.update {currentUiState ->
+            uiStateFlow.update { currentUiState ->
                 currentUiState.copy(dateTextFieldError = true)
             }
         }
 
         NewPlaceEvent.SetNameError -> {
-            uiStateFlow.update {currentUiState ->
+            uiStateFlow.update { currentUiState ->
                 currentUiState.copy(nameError = true)
             }
         }
 
         NewPlaceEvent.ShowDatePicker -> {
-            uiStateFlow.update {currentUiState ->
+            uiStateFlow.update { currentUiState ->
                 currentUiState.copy(showDatePicker = true)
             }
         }
@@ -255,10 +254,9 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
         is NewPlaceEvent.UpdateImageUri -> {
             if (event.uri != null) {
                 // Save the image in the ui state
-                uiStateFlow.update {currentUiState ->
+                uiStateFlow.update { currentUiState ->
                     currentUiState.copy(
-                        imageUri = event.uri,
-                        useCustomImage = true
+                        imageUri = event.uri, useCustomImage = true
                     )
                 }
             }
@@ -286,7 +284,8 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                     )
                 }
 
-                val selectedAddress = uiStateFlow.value.addressResults.find { it.placeName == uiStateFlow.value.selectedAddress }
+                val selectedAddress =
+                    uiStateFlow.value.addressResults.find { it.placeName == uiStateFlow.value.selectedAddress }
 
                 // Add the new place to database
                 Log.d(TAG, "Trying to add new custom place to DB")
@@ -310,8 +309,7 @@ suspend fun onNewPlaceEvent(event: NewPlaceEvent, uiStateFlow: MutableStateFlow<
                         sunEvents = emptyList()
                     ),
                     // If imageUri is null we will never get to this code
-                    uiStateFlow.value.imageUri!!,
-                    imageDate!!
+                    uiStateFlow.value.imageUri!!, imageDate!!
                 )
                 event.hideDialog()
             }

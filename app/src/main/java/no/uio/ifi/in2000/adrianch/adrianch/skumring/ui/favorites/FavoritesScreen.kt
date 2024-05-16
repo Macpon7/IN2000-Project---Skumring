@@ -38,8 +38,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
-private const val logTag = "FavoritesScreen"
-
 object FavoritesDestination : NavigationDestination {
     override val icon = Icons.Outlined.FavoriteBorder
     override val buttonTitle = R.string.nav_fav_button
@@ -94,18 +92,15 @@ fun FavoritesScreen(
             }
         }
     }
-    Scaffold(
-        topBar = {
-            SkumringTopBar(
-                title = stringResource(id = FavoritesDestination.titleRes),
-                canNavigateBack = false,
-                scrollBehavior = scrollBehavior
-            )
-        },
-        bottomBar = {
-            SkumringBottomBar(navController = navController)
-        }
-    ) { innerPadding ->
+    Scaffold(topBar = {
+        SkumringTopBar(
+            title = stringResource(id = FavoritesDestination.titleRes),
+            canNavigateBack = false,
+            scrollBehavior = scrollBehavior
+        )
+    }, bottomBar = {
+        SkumringBottomBar(navController = navController)
+    }) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -132,10 +127,8 @@ fun FavoriteListContent(
     favoritesUiState: FavoritesUiState
 ) {
     if (favoritesUiState.showDeleteDialog) {
-        DeletePlaceDialog(
-            onDismissRequest = {favoritesViewModel.hideDeleteDialog()},
-            onConfirmClick = {favoritesViewModel.deleteCustomPlace()}
-        )
+        DeletePlaceDialog(onDismissRequest = { favoritesViewModel.hideDeleteDialog() },
+            onConfirmClick = { favoritesViewModel.deleteCustomPlace() })
     }
 
     Column(Modifier.verticalScroll(rememberScrollState())) {
@@ -148,8 +141,7 @@ fun FavoriteListContent(
             )
         } else {
             favoritesUiState.places.forEach { place ->
-                ListCard(
-                    place = place,
+                ListCard(place = place,
                     onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                         navController.navigate("placeinfoscreen/${place.id}")
                     },
@@ -158,8 +150,7 @@ fun FavoriteListContent(
                     },
                     onDeleteClick = {
                         favoritesViewModel.showDeleteDialog(placeId = place.id)
-                    }
-                )
+                    })
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }

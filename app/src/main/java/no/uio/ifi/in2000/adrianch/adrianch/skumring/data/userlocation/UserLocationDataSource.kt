@@ -14,7 +14,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocat
 /**
  * Main object that keeps track of device location when asked
  */
-class UserLocationDataSource (private val context: Context) {
+class UserLocationDataSource(private val context: Context) {
 
     //Constant for logcatting
     private val logTag = "UserLocationDataSource"
@@ -49,28 +49,27 @@ class UserLocationDataSource (private val context: Context) {
 
         // Gathers data on whether or not we have necessary permissions
         val isFineEnabled = ContextCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
+            context, android.Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
 
         val isCourseEnabled = ContextCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION
+            context, android.Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
 
         val locationManager = context.getSystemService(
             Context.LOCATION_SERVICE
         ) as LocationManager
 
-        val isGpsEnabled = locationManager
-            .isProviderEnabled(LocationManager.NETWORK_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val isGpsEnabled =
+            locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || locationManager.isProviderEnabled(
+                LocationManager.GPS_PROVIDER
+            )
 
         // If we don't have permissions, return null object
-return if (!isGpsEnabled && !(isCourseEnabled || isFineEnabled)) {
+        return if (!isGpsEnabled && !(isCourseEnabled || isFineEnabled)) {
             null
-            } else {
-                // Else, return updated or last recorded location of user
+        } else {
+            // Else, return updated or last recorded location of user
             suspendCancellableCoroutine { cont ->
                 fusedLocationClient.lastLocation.apply {
                     if (isComplete) {

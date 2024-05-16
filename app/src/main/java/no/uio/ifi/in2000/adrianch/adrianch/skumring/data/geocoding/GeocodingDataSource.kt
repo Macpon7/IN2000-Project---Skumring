@@ -35,6 +35,7 @@ class GeocodingDataSource {
         val apiResponse: ReverseGeocoding = fetchReverseGeocodeResponse(lat = lat, long = long)
         return convertReverseGeocodingResponse(apiResponse)
     }
+
     /*
     Split up and made public for testing purposes
      */
@@ -53,15 +54,14 @@ class GeocodingDataSource {
         Log.d(logTag, "Got place: $placeName from coords: $lat, $long")
         return GeocodeLocation(lat = lat, long = long, placeName = placeName)
     }
+
     /*
     Private function that fetches the reverse geocode body
      */
     private suspend fun fetchReverseGeocodeResponse(lat: String, long: String): ReverseGeocoding {
         try {
-            val path = "https://api.mapbox.com/search/geocode/v6/reverse?" +
-                    "longitude=$long,&" +
-                    "latitude=$lat&" +
-                    "access_token=sk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0dTZmMjZ3MWF6NzJpcGNtajBqaWUxMSJ9.A7ntsS5LTvXYD5hnjYjEXQ"
+            val path =
+                "https://api.mapbox.com/search/geocode/v6/reverse?" + "longitude=$long,&" + "latitude=$lat&" + "access_token=sk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0dTZmMjZ3MWF6NzJpcGNtajBqaWUxMSJ9.A7ntsS5LTvXYD5hnjYjEXQ"
             val response: HttpResponse = client.get(path)
             return response.body()
         } catch (e: Exception) {
@@ -94,11 +94,8 @@ class GeocodingDataSource {
      */
     private suspend fun fetchForwardGeocodeResponse(address: String): ForwardGeocoding {
         try {
-            val path = FORWARD_PATH +
-                    "q=$address&" +
-                    "permanent=true&" +
-                    "types=address&" +
-                    "access_token=sk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0dTZmMjZ3MWF6NzJpcGNtajBqaWUxMSJ9.A7ntsS5LTvXYD5hnjYjEXQ"
+            val path =
+                FORWARD_PATH + "q=$address&" + "permanent=true&" + "types=address&" + "access_token=sk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0dTZmMjZ3MWF6NzJpcGNtajBqaWUxMSJ9.A7ntsS5LTvXYD5hnjYjEXQ"
             val response: HttpResponse = client.get(path)
             return response.body()
         } catch (e: Exception) {

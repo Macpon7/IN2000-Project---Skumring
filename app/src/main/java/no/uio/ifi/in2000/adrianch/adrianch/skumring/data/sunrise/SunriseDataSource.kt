@@ -14,9 +14,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 // Constant for logging:
-private const val logTag : String = "SunriseDataSource"
+private const val logTag: String = "SunriseDataSource"
 
-class SunriseDataSource() {
+class SunriseDataSource {
     private val client = HttpClient {
         install(ContentNegotiation) {
             gson()
@@ -36,7 +36,7 @@ class SunriseDataSource() {
             }
             return response.body()
         } catch (e: Exception) {
-            Log.e(logTag, "Unexpected error: ${e.message} in fetchSunriseData" , e)
+            Log.e(logTag, "Unexpected error: ${e.message} in fetchSunriseData", e)
             throw e
         }
     }
@@ -58,10 +58,13 @@ class SunriseDataSource() {
     suspend fun fetchSunsetTime(lat: String, long: String, date: LocalDate): LocalDateTime {
         try {
             val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
-            val path = "https://api.met.no/weatherapi/sunrise/3.0/edr/collections/sun/position?coords=POINT%28${long}%20${lat}%29&datetime=${dateString}"
+            val path =
+                "https://api.met.no/weatherapi/sunrise/3.0/edr/collections/sun/position?coords=POINT%28${long}%20${lat}%29&datetime=${dateString}"
             val response = fetchSunriseData(path)
-            val sunsetTime: String = response.properties.sunset.time  //output: 2024-03-07T17:03+00:00
-            val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME //Offset is in timezone 0, so add 2 hour in the line below (we are in summer time now)
+            val sunsetTime: String =
+                response.properties.sunset.time  //output: 2024-03-07T17:03+00:00
+            val formatter =
+                DateTimeFormatter.ISO_OFFSET_DATE_TIME //Offset is in timezone 0, so add 2 hour in the line below (we are in summer time now)
             // When the sun never sets (like in the north of Norway in summer) the response from API will be null
             // We save these sunsets as midnight, jan 1 2000, so it's easy for us to detect in code if the sun will never set
             val timeFormatted = if (sunsetTime == null) {

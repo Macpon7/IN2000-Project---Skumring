@@ -1,5 +1,5 @@
-
 @file:Suppress("DEPRECATION")
+
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -49,8 +49,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
  */
 @Composable
 fun UserInstructionsDialog(
-    closeDialog: () -> Unit,
-    finishDialog: () -> Unit
+    closeDialog: () -> Unit, finishDialog: () -> Unit
 ) {
     var currentScreen by remember { mutableIntStateOf(0) }
     val totalScreens = 8
@@ -58,8 +57,7 @@ fun UserInstructionsDialog(
     Dialog(
         properties = DialogProperties(
             usePlatformDefaultWidth = false
-        ),
-        onDismissRequest = closeDialog
+        ), onDismissRequest = closeDialog
     ) {
         Card(
             modifier = Modifier

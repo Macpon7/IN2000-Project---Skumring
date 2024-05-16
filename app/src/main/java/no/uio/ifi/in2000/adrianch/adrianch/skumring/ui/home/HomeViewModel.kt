@@ -64,8 +64,7 @@ private const val logTag = "HomeViewModel" //for logging
  */
 @SuppressLint("StaticFieldLeak")
 class HomeViewModel(
-    private val placeRepository: PlaceRepository,
-    private val context: Context
+    private val placeRepository: PlaceRepository, private val context: Context
 ) : ViewModel() {
 
     private val userLocationRepository: UserLocationRepository =
@@ -105,7 +104,7 @@ class HomeViewModel(
                         showSnackbar = true,
                         errorMessage = context.getString(R.string.error_message_no_forecast)
 
-                        )
+                    )
                 } catch (e: Exception) {
                     currentHomeUiState.copy(
                         showSnackbar = true,
@@ -139,13 +138,11 @@ class HomeViewModel(
                     long = newLong
 
                     val userPlaceName = geocodingRepository.getPlaceNameFromCoordinates(
-                        lat = location.lat,
-                        long = location.long
+                        lat = location.lat, long = location.long
                     )
 
                     val userPlace = placeRepository.getUserLocationPlace(
-                        lat = location.lat,
-                        long = location.long
+                        lat = location.lat, long = location.long
                     )
 
 
@@ -165,8 +162,7 @@ class HomeViewModel(
                             blueHour = userPlace.sunEvents[0].blueHourTime.toLocalTime().format(
                                 DateTimeFormatter.ofPattern("HH':'mm")
                             ),
-                            goldenHour = userPlace.sunEvents[0].goldenHourTime.toLocalTime()
-                                .format(
+                            goldenHour = userPlace.sunEvents[0].goldenHourTime.toLocalTime().format(
                                     DateTimeFormatter.ofPattern("HH':'mm")
                                 ),
                             isLoading = false
@@ -248,8 +244,7 @@ class HomeViewModel(
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as ApplicationSkumring
 
                 return HomeViewModel(
-                    placeRepository = application.dbRepository,
-                    context = application.context
+                    placeRepository = application.dbRepository, context = application.context
                 ) as T
             }
         }

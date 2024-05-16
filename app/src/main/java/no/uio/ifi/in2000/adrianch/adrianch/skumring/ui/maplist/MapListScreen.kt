@@ -165,18 +165,15 @@ fun MapListScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            SkumringTopBar(
-                title = stringResource(id = MapListDestination.titleRes),
-                canNavigateBack = false,
-                scrollBehavior = scrollBehavior
-            )
-        },
-        bottomBar = {
-            SkumringBottomBar(navController = navController)
-        }
-    ) { innerPadding ->
+    Scaffold(topBar = {
+        SkumringTopBar(
+            title = stringResource(id = MapListDestination.titleRes),
+            canNavigateBack = false,
+            scrollBehavior = scrollBehavior
+        )
+    }, bottomBar = {
+        SkumringBottomBar(navController = navController)
+    }) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -195,8 +192,7 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
     val mapListUiState: MapListUiState by mapListViewModel.mapListUiState.collectAsState()
 
     if (mapListUiState.showNewPlaceDialog) {
-        NewPlaceDialog(
-            hideDialog = { mapListViewModel.hideNewPlaceDialog() },
+        NewPlaceDialog(hideDialog = { mapListViewModel.hideNewPlaceDialog() },
             onEvent = { mapListViewModel.onNewPlaceDialogEvent(it) },
             getCoordinatesFromAddress = mapListViewModel.getCoordinatesFromAddress,
             getCoordinatesFromLocation = mapListViewModel.getCoordinatesFromUserLocation,
@@ -206,20 +202,15 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
     }
 
     if (mapListUiState.showDeleteDialog) {
-        DeletePlaceDialog(
-            onDismissRequest = {mapListViewModel.hideDeleteDialog()},
-            onConfirmClick = {mapListViewModel.deleteCustomPlace()}
-        )
+        DeletePlaceDialog(onDismissRequest = { mapListViewModel.hideDeleteDialog() },
+            onConfirmClick = { mapListViewModel.deleteCustomPlace() })
     }
 
-    ToggleButtonThemeSwitcher(
-        mapTheme = mapListUiState.mapListToggle.stateAsBool,
-        onClick = { mapListViewModel.toggleMapListState() }
-    )
+    ToggleButtonThemeSwitcher(mapTheme = mapListUiState.mapListToggle.stateAsBool,
+        onClick = { mapListViewModel.toggleMapListState() })
     Surface {
         MapArea(
-            mapListUiState = mapListUiState,
-            mapListViewModel = mapListViewModel
+            mapListUiState = mapListUiState, mapListViewModel = mapListViewModel
         )
         if (mapListUiState.showBottomSheet) {
             ModalBottomSheet(
@@ -239,9 +230,10 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
             Surface(color = MaterialTheme.colorScheme.background) {
 
                 if (mapListUiState.places.isEmpty()) {
-                    Column (modifier = Modifier
-                        .padding(top = 12.dp)
-                        .fillMaxSize()
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 12.dp)
+                            .fillMaxSize()
                     ) {
                         Text(
                             text = stringResource(R.string.no_places),
@@ -252,19 +244,18 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
                     }
                 } else {
                     // Column for list view
-                    Column(modifier = Modifier
-                        .padding(top = 12.dp)
-                        .verticalScroll(rememberScrollState())
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 12.dp)
+                            .verticalScroll(rememberScrollState())
                     ) {
                         mapListUiState.places.forEach { place ->
-                            ListCard(
-                                place = place,
+                            ListCard(place = place,
                                 onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                                     navController.navigate("placeinfoscreen/${place.id}")
                                 },
                                 onFavouriteClick = { mapListViewModel.toggleFavourite(place) },
-                                onDeleteClick = { mapListViewModel.showDeleteDialog(placeId = place.id) }
-                            )
+                                onDeleteClick = { mapListViewModel.showDeleteDialog(placeId = place.id) })
                             Spacer(modifier = Modifier.height(12.dp))
                         }
                     }
@@ -295,26 +286,26 @@ fun ToggleButtonThemeSwitcher(
     //how much the togglebutton should offset to the side based on size of the screen
     val offsetSmallScreen by animateDpAsState(
         targetValue = if (mapTheme) 0.dp else (screenWidth / 2 - screenWidth / 24),
-        animationSpec = animationSpec, label = ""
+        animationSpec = animationSpec,
+        label = ""
     )
 
     //how much the togglebutton should offset to the side based on size of the screen
     val offsetLargeScreen by animateDpAsState(
         targetValue = if (mapTheme) 0.dp else (screenWidth / 2 - screenWidth / 50),
-        animationSpec = animationSpec, label = ""
+        animationSpec = animationSpec,
+        label = ""
     )
 
     BoxWithConstraints {
         if (maxWidth < 400.dp) {
             // button container
-            Box(
-                modifier = Modifier
-                    .width(screenWidth)
-                    .height(buttonHeight)
-                    .clip(shape = parentShape)
-                    .clickable { onClick() }
-                    .background(MaterialTheme.colorScheme.tertiary)
-            ) {
+            Box(modifier = Modifier
+                .width(screenWidth)
+                .height(buttonHeight)
+                .clip(shape = parentShape)
+                .clickable { onClick() }
+                .background(MaterialTheme.colorScheme.tertiary)) {
                 // toggle animation
                 Box(
                     modifier = Modifier
@@ -327,15 +318,11 @@ fun ToggleButtonThemeSwitcher(
                 )
                 // the icons and text representing list and map views
                 Row(
-                    modifier = Modifier
-                        .border(
+                    modifier = Modifier.border(
                             border = BorderStroke(
-                                width = borderWidth,
-                                color = MaterialTheme.colorScheme.onTertiary
-                            ),
-                            shape = parentShape
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
+                                width = borderWidth, color = MaterialTheme.colorScheme.onTertiary
+                            ), shape = parentShape
+                        ), verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
                         //List and list icon
@@ -346,8 +333,7 @@ fun ToggleButtonThemeSwitcher(
                             .padding(start = 80.dp),
                     ) {
                         Icon(
-                            modifier = Modifier
-                                .offset((-30).dp),
+                            modifier = Modifier.offset((-30).dp),
                             imageVector = Icons.Default.Menu,
                             contentDescription = stringResource(R.string.toggle_list_icon),
                             tint = if (mapTheme) MaterialTheme.colorScheme.tertiary
@@ -368,8 +354,7 @@ fun ToggleButtonThemeSwitcher(
                             .height(buttonHeight)
                     ) {
                         Icon(
-                            modifier = Modifier
-                                .offset((-30).dp, 0.dp),
+                            modifier = Modifier.offset((-30).dp, 0.dp),
                             imageVector = Icons.Default.Place,
                             contentDescription = stringResource(R.string.toggle_map_icon),
                             tint = if (mapTheme) MaterialTheme.colorScheme.onTertiary
@@ -386,14 +371,12 @@ fun ToggleButtonThemeSwitcher(
                 }
             }
         } else { //if screen is bigger
-            Box(
-                modifier = Modifier
-                    .width(screenWidth)
-                    .height(buttonHeight / 2)
-                    .clip(shape = parentShape)
-                    .clickable { onClick() }
-                    .background(MaterialTheme.colorScheme.tertiary)
-            ) {
+            Box(modifier = Modifier
+                .width(screenWidth)
+                .height(buttonHeight / 2)
+                .clip(shape = parentShape)
+                .clickable { onClick() }
+                .background(MaterialTheme.colorScheme.tertiary)) {
                 // toggle animation
                 Box(
                     modifier = Modifier
@@ -405,15 +388,11 @@ fun ToggleButtonThemeSwitcher(
                 )
                 // the icons and text representing list and map views
                 Row(
-                    modifier = Modifier
-                        .border(
+                    modifier = Modifier.border(
                             border = BorderStroke(
-                                width = borderWidth,
-                                color = MaterialTheme.colorScheme.onTertiary
-                            ),
-                            shape = parentShape
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
+                                width = borderWidth, color = MaterialTheme.colorScheme.onTertiary
+                            ), shape = parentShape
+                        ), verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
                         //List and list icon
@@ -423,8 +402,7 @@ fun ToggleButtonThemeSwitcher(
                             .height(buttonHeight)
                     ) {
                         Icon(
-                            modifier = Modifier
-                                .offset((-30).dp, 0.dp),
+                            modifier = Modifier.offset((-30).dp, 0.dp),
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Theme Icon",
                             tint = if (mapTheme) MaterialTheme.colorScheme.tertiary
@@ -445,8 +423,7 @@ fun ToggleButtonThemeSwitcher(
                             .height(buttonHeight)
                     ) {
                         Icon(
-                            modifier = Modifier
-                                .offset((-30).dp, 0.dp),
+                            modifier = Modifier.offset((-30).dp, 0.dp),
                             imageVector = Icons.Default.Place,
                             contentDescription = stringResource(R.string.toggle_map_icon),
                             tint = if (mapTheme) MaterialTheme.colorScheme.onTertiary
@@ -486,16 +463,13 @@ fun BottomSheetContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 15.dp)
-        )
-        {
+        ) {
             Text(
                 text = place.name,
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            IconButton(
-                onClick = { toggleFavourite(place) }
-            ) {
+            IconButton(onClick = { toggleFavourite(place) }) {
                 Icon(
                     imageVector = if (place.isFavourite) {
                         Icons.Filled.Favorite
@@ -514,8 +488,7 @@ fun BottomSheetContent(
             text = stringResource(id = R.string.home_sunset),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Divider(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -538,16 +511,14 @@ fun BottomSheetContent(
             text = stringResource(R.string.temp_at_sunset) + ": ${place.sunEvents[0].tempAtEvent} °C",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier
-                .padding(bottom = 10.dp)
+            modifier = Modifier.padding(bottom = 10.dp)
         )
         //Conditions at sunset
         Text(
             text = stringResource(R.string.weather_condition) + stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier
-                .padding(bottom = 10.dp)
+            modifier = Modifier.padding(bottom = 10.dp)
         )
         //Weather icon
         Box(
@@ -565,8 +536,7 @@ fun BottomSheetContent(
             text = stringResource(R.string.new_place_description),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Divider(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -585,11 +555,8 @@ fun BottomSheetContent(
 
         //close button and more information button
         Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-        {
+            horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()
+        ) {
             TextButton(
                 onClick = {
                     onDismissRequest()
@@ -610,7 +577,7 @@ fun BottomSheetContent(
                 },
                 contentPadding = PaddingValues(12.dp),
                 modifier = Modifier.padding(start = 15.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text(
                     text = stringResource(R.string.home_more_details_button),
@@ -630,8 +597,7 @@ fun BottomSheetContent(
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapArea(
-    mapListUiState: MapListUiState,
-    mapListViewModel: MapListViewModel
+    mapListUiState: MapListUiState, mapListViewModel: MapListViewModel
 ) {
     // Loading in user location, checking that it has been updated from default.
     // If not, handling so we get a nice display over Norway.
@@ -653,11 +619,10 @@ fun MapArea(
         Style.OUTDOORS
     }
 
-    MapboxMap(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 12.dp)
-            .clip(RoundedCornerShape(16.dp)),
+    MapboxMap(modifier = Modifier
+        .fillMaxSize()
+        .padding(top = 12.dp)
+        .clip(RoundedCornerShape(16.dp)),
         mapInitOptionsFactory = { context ->
             MapInitOptions(
                 context = context,
@@ -666,69 +631,57 @@ fun MapArea(
         },
         onMapLongClickListener = {
             Log.d(logTag, "Long pressed. Long: ${it.longitude()}, Lat: ${it.latitude()}")
-            mapListViewModel.showNewPlaceDialog(lat = it.latitude().toString(), long = it.longitude().toString())
+            mapListViewModel.showNewPlaceDialog(
+                lat = it.latitude().toString(), long = it.longitude().toString()
+            )
             true
         },
         compassSettings = CompassSettings {
             enabled = true
             visibility = true
             fadeWhenFacingNorth = false
-        }
-    ) {
+        }) {
         if (mapListUiState.userLocUpdated) {
             MapEffect { mapView ->
                 Log.d(logTag, "userloc updated")
                 mapView.camera.flyTo(
-                    cameraOptions = CameraOptions.Builder()
-                        .center(userPoint)
-                        .zoom(userZoom)
-                        .build()
+                    cameraOptions = CameraOptions.Builder().center(userPoint).zoom(userZoom).build()
                 )
             }
         }
 
-        PointAnnotationGroup(
-            annotations = mapListUiState.pins.map { pinInfo ->
-                val long = pinInfo.long.toDouble()
-                val lat = pinInfo.lat.toDouble()
-                val point = Point.fromLngLat(long, lat)
+        PointAnnotationGroup(annotations = mapListUiState.pins.map { pinInfo ->
+            val long = pinInfo.long.toDouble()
+            val lat = pinInfo.lat.toDouble()
+            val point = Point.fromLngLat(long, lat)
 
-                val iconImageBitmap =
-                    AppCompatResources.getDrawable(context, R.drawable.place_location_pin)!!
-                        .toBitmap()
+            val iconImageBitmap =
+                AppCompatResources.getDrawable(context, R.drawable.place_location_pin)!!.toBitmap()
 
-                PointAnnotationOptions()
-                    .withPoint(point)
-                    .withIconImage(iconImageBitmap)
-                    .withData(JsonPrimitive(pinInfo.id.toString()))
-                    .withIconAnchor(IconAnchor.BOTTOM)
-            },
-            annotationConfig = AnnotationConfig(
-                annotationSourceOptions = AnnotationSourceOptions(
-                    clusterOptions = ClusterOptions(
-                        colorLevels = listOf(Pair(0, Color.RED)),
-                        textSize = 16.0,
-                    )
+            PointAnnotationOptions().withPoint(point).withIconImage(iconImageBitmap)
+                .withData(JsonPrimitive(pinInfo.id.toString())).withIconAnchor(IconAnchor.BOTTOM)
+        }, annotationConfig = AnnotationConfig(
+            annotationSourceOptions = AnnotationSourceOptions(
+                clusterOptions = ClusterOptions(
+                    colorLevels = listOf(Pair(0, Color.RED)),
+                    textSize = 16.0,
                 )
-            ),
-            onClick = {
-                val lat = it.point.latitude().toString()
-                val long = it.point.longitude().toString()
-                val id = it.getData()!!.asString
-                Log.d(logTag, "Clicked on pin with id: $id")
-                mapListViewModel.showBottomSheet(id.toInt())
-                //navController.navigate("infoscreen/${lat}/${long}/${id}")
-                true
-            }
-        )
+            )
+        ), onClick = {
+            val lat = it.point.latitude().toString()
+            val long = it.point.longitude().toString()
+            val id = it.getData()!!.asString
+            Log.d(logTag, "Clicked on pin with id: $id")
+            mapListViewModel.showBottomSheet(id.toInt())
+            //navController.navigate("infoscreen/${lat}/${long}/${id}")
+            true
+        })
         // User location
         // If userloc hasn't been updated from default, we don't bother creating user location icon
         if (userLong != 0.0 && userLat != 0.0) {
             PointAnnotation(
-                point = userPoint,
-                iconImageBitmap = AppCompatResources.getDrawable(
-                    context,
-                    R.drawable.user_location_puck
+                point = userPoint, iconImageBitmap = AppCompatResources.getDrawable(
+                    context, R.drawable.user_location_puck
                 )!!.toBitmap()
             )
         }
@@ -743,10 +696,7 @@ fun MapArea(
 @Composable
 fun ToggleButtonThemeSwitcherPreview() {
     var isMapTheme by remember { mutableStateOf(false) }
-    ToggleButtonThemeSwitcher(
-        mapTheme = isMapTheme,
-        onClick = { isMapTheme = !isMapTheme }
-    )
+    ToggleButtonThemeSwitcher(mapTheme = isMapTheme, onClick = { isMapTheme = !isMapTheme })
 }
 
 /**
@@ -768,38 +718,33 @@ fun BottomSheetPreview(navController: NavHostController = rememberNavController(
     )
     SkumringTheme {
         Surface {
-            BottomSheetContent(
-                place = PlaceInfo(
-                    id = 123,
-                    name = "Monrads gate 33",
-                    description = "godt sted å ta bilde på en solrik dag",
-                    lat = "",
-                    long = "",
-                    isFavourite = false,
-                    isCustomPlace = false,
-                    hasNotification = false,
-                    images = emptyList(),
-                    sunEvents = listOf(
-                        SunEvent(
-                            time = LocalDateTime.now(),
-                            tempAtEvent = "20",
-                            weatherIcon = ":)",
-                            conditions = WeatherConditions(
-                                weatherRating = WeatherConditionsRating.EXCELLENT,
-                                cloudConditionLow = CloudConditions.CLEAR,
-                                cloudConditionHigh = CloudConditions.CLEAR,
-                                cloudConditionMedium = CloudConditions.CLEAR,
-                                airCondition = AirConditions.LOW
-                            ),
-                            blueHourTime = LocalDateTime.now(),
-                            goldenHourTime = LocalDateTime.now()
-                        )
+            BottomSheetContent(place = PlaceInfo(
+                id = 123,
+                name = "Monrads gate 33",
+                description = "godt sted å ta bilde på en solrik dag",
+                lat = "",
+                long = "",
+                isFavourite = false,
+                isCustomPlace = false,
+                hasNotification = false,
+                images = emptyList(),
+                sunEvents = listOf(
+                    SunEvent(
+                        time = LocalDateTime.now(),
+                        tempAtEvent = "20",
+                        weatherIcon = ":)",
+                        conditions = WeatherConditions(
+                            weatherRating = WeatherConditionsRating.EXCELLENT,
+                            cloudConditionLow = CloudConditions.CLEAR,
+                            cloudConditionHigh = CloudConditions.CLEAR,
+                            cloudConditionMedium = CloudConditions.CLEAR,
+                            airCondition = AirConditions.LOW
+                        ),
+                        blueHourTime = LocalDateTime.now(),
+                        goldenHourTime = LocalDateTime.now()
                     )
-                ),
-                navController = navController,
-                onDismissRequest = {},
-                toggleFavourite = {}
-            )
+                )
+            ), navController = navController, onDismissRequest = {}, toggleFavourite = {})
         }
     }
 }
