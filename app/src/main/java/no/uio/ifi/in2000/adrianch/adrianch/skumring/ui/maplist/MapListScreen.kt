@@ -610,7 +610,7 @@ fun BottomSheetContent(
                 },
                 contentPadding = PaddingValues(12.dp),
                 modifier = Modifier.padding(start = 15.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text(
                     text = stringResource(R.string.home_more_details_button),

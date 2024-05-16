@@ -525,7 +525,7 @@ fun HorizontalInfoCardContent(
                         .align(Alignment.BottomStart)
                 ) {//Conditions at sunset
                     Text(
-                        text = stringResource(R.string.weather_condition) + " ",
+                        text = stringResource(R.string.weather_condition),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold
@@ -537,20 +537,6 @@ fun HorizontalInfoCardContent(
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold
                     )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 10.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.double_arrow),
-                            contentDescription = stringResource(R.string.double_arrow),
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .size(25.dp)
-                        )
-                    }
                 }
             }
         }

@@ -40,6 +40,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherCondit
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherConditionsRating
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 import java.io.File
 import java.time.LocalDateTime
 
@@ -60,7 +61,7 @@ fun ListCard(
                     .fillMaxWidth()
                     .clickable(onClick = onItemClick), //Click to infoscreen
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
 
@@ -283,35 +284,37 @@ fun ListCard(
 @Preview
 @Composable
 fun ListCardPreview() {
-    ListCard(
-        place = PlaceInfo(
-            id = 0,
-            name = "Holmenkollen",
-            description = "Et fantastisk fint sted å ta bilde av dine nære og kjære under en solnedgang som ikke kan sammenlignes med noe annet",
-            lat = "",
-            long = "",
-            isFavourite = false,
-            isCustomPlace = true,
-            hasNotification = false,
-            images = emptyList(),
-            sunEvents = listOf(
-                SunEvent(
-                    time = LocalDateTime.now(),
-                    tempAtEvent = "4.7",
-                    weatherIcon = "suncloudy",
-                    conditions = WeatherConditions(
-                        weatherRating = WeatherConditionsRating.EXCELLENT,
-                        cloudConditionLow = CloudConditions.CLEAR,
-                        cloudConditionHigh = CloudConditions.CLEAR,
-                        cloudConditionMedium = CloudConditions.CLEAR,
-                        airCondition = AirConditions.LOW,
-                    ),
-                    blueHourTime = LocalDateTime.now(),
-                    goldenHourTime = LocalDateTime.now()
+    SkumringTheme (useDarkTheme = true) {
+        ListCard(
+            place = PlaceInfo(
+                id = 0,
+                name = "Holmenkollen",
+                description = "Et fantastisk fint sted å ta bilde av dine nære og kjære under en solnedgang som ikke kan sammenlignes med noe annet",
+                lat = "",
+                long = "",
+                isFavourite = false,
+                isCustomPlace = true,
+                hasNotification = false,
+                images = emptyList(),
+                sunEvents = listOf(
+                    SunEvent(
+                        time = LocalDateTime.now(),
+                        tempAtEvent = "4.7",
+                        weatherIcon = "suncloudy",
+                        conditions = WeatherConditions(
+                            weatherRating = WeatherConditionsRating.EXCELLENT,
+                            cloudConditionLow = CloudConditions.CLEAR,
+                            cloudConditionHigh = CloudConditions.CLEAR,
+                            cloudConditionMedium = CloudConditions.CLEAR,
+                            airCondition = AirConditions.LOW,
+                        ),
+                        blueHourTime = LocalDateTime.now(),
+                        goldenHourTime = LocalDateTime.now()
+                    )
                 )
-            )
-        ),
-        onItemClick = {},
-        onFavouriteClick = {}
-    )
+            ),
+            onItemClick = {},
+            onFavouriteClick = {}
+        )
+    }
 }
