@@ -109,7 +109,7 @@ fun ListCard(
                         modifier = Modifier
                             .padding(vertical = 2.dp),
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         style = MaterialTheme.typography.headlineSmall,
                     )
                     Row {
@@ -118,7 +118,7 @@ fun ListCard(
                                 Icon(
                                     imageVector = Icons.Outlined.Delete,
                                     contentDescription = "",
-                                    tint = MaterialTheme.colorScheme.onSecondaryContainer)
+                                    tint = MaterialTheme.colorScheme.secondary)
                             }
                         }
                         IconButton(onClick = onFavouriteClick) {
@@ -126,13 +126,13 @@ fun ListCard(
                                 Icon(
                                     imageVector = Icons.Filled.Favorite,
                                     contentDescription = "",
-                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    tint = MaterialTheme.colorScheme.secondary
                                 )
                             } else {
                                 Icon(
                                     imageVector = Icons.Filled.FavoriteBorder,
                                     contentDescription = "",
-                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    tint = MaterialTheme.colorScheme.secondary
                                 )
 
                             }
@@ -150,14 +150,14 @@ fun ListCard(
                     Text(
                         text = stringResource(R.string.weather_condition),
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold,
                     )
                     Text(
                         //text changing based on weather conditions, in different textbox because of change of color
                         text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
 
                     )
                 }
@@ -168,7 +168,7 @@ fun ListCard(
                     .fillMaxWidth()
                     .clickable(onClick = onItemClick), //Click to infoscreen
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
 
@@ -218,8 +218,8 @@ fun ListCard(
                             modifier = Modifier
                                 .padding(vertical = 2.dp),
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            style = MaterialTheme.typography.headlineMedium,
                         )
                         Row {
                             if (place.isCustomPlace) {
@@ -227,7 +227,7 @@ fun ListCard(
                                     Icon(
                                         imageVector = Icons.Outlined.Delete,
                                         contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer)
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer)
                                 }
                             }
                             IconButton(onClick = onFavouriteClick) {
@@ -235,13 +235,13 @@ fun ListCard(
                                     Icon(
                                         imageVector = Icons.Filled.Favorite,
                                         contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
                                 } else {
                                     Icon(
                                         imageVector = Icons.Filled.FavoriteBorder,
                                         contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
 
                                 }
@@ -258,16 +258,17 @@ fun ListCard(
                     ) {//Conditions at sunset
                         Text(
                             text = stringResource(R.string.weather_condition),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            ,
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
                             //text changing based on weather conditions, in different textbox because of change of color
                             text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontWeight = FontWeight.Bold
                             )
                     }
                 }

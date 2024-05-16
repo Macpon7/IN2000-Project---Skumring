@@ -135,7 +135,7 @@ fun HomeScreen(
             SkumringTopBar(
                 title = homeUiState.placeName,
                 canNavigateBack = false,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         },
         bottomBar = {
@@ -147,7 +147,7 @@ fun HomeScreen(
             modifier = Modifier
                 .verticalScroll(rememberScrollState()) //makes the column scrollable
                 .padding(innerPadding)
-                .background(color = MaterialTheme.colorScheme.background),
+                .background(color = MaterialTheme.colorScheme.surface),
         ) {
             SunsetInfoCard(
                 homeUiState = homeUiState,
@@ -156,7 +156,7 @@ fun HomeScreen(
             Text(
                 text = stringResource(R.string.home_favourite_places),
                 style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.padding(start = 10.dp)
             )
             HorizontalInfoCardRow(
@@ -205,9 +205,9 @@ fun SunsetInfoCard(
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            MaterialTheme.colorScheme.scrim,
-                            MaterialTheme.colorScheme.surfaceTint,
-                            MaterialTheme.colorScheme.outlineVariant, //outlineVariant
+                            MaterialTheme.colorScheme.inverseSurface,
+                            MaterialTheme.colorScheme.inverseOnSurface,
+                            MaterialTheme.colorScheme.inversePrimary, //outlineVariant
                         )
                     )
                 )
@@ -221,7 +221,7 @@ fun SunsetInfoCard(
             ) {
                 Text(
                     text = stringResource(R.string.home_sunset),
-                    color = MaterialTheme.colorScheme.onPrimary, //outline
+                    color = MaterialTheme.colorScheme.primary, //outline
                     style = MaterialTheme.typography.headlineLarge,
                 )
                 Box { //Sunset icon and time of sunset, in box because it needs to overlap
@@ -247,7 +247,7 @@ fun SunsetInfoCard(
                     Text(
                         text = homeUiState.sunsetTime,
                         style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
@@ -261,13 +261,13 @@ fun SunsetInfoCard(
                         text = "${stringResource(R.string.weather_condition)} ",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         textAlign = TextAlign.Center,
                     )
                     if (homeUiState.weatherConditionsRating == null) {
                         Text(text = "N/A",
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
@@ -276,7 +276,7 @@ fun SunsetInfoCard(
                             //text changing based on weather conditions, in different textbox because of change of color
                             text = stringResource(id = homeUiState.weatherConditionsRating!!.stringResourceId),
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
                         )
@@ -286,7 +286,7 @@ fun SunsetInfoCard(
                     Icon(
                         Icons.Default.Info,
                         contentDescription = stringResource(id = R.string.information),
-                        tint = MaterialTheme.colorScheme.onPrimary,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
                             .clickable { showPopUp = true }
                             .size(30.dp)
@@ -309,7 +309,7 @@ fun SunsetInfoCard(
                 Text(
                     text = "${homeUiState.temp} °C",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier
                         // .align(Alignment.BottomCenter)
                         .padding(bottom = 5.dp)
@@ -337,7 +337,7 @@ fun SunsetInfoCard(
                             text = stringResource(R.string.golden_hour),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(bottom = 0.dp)
                         )
@@ -353,7 +353,7 @@ fun SunsetInfoCard(
                         Text(
                             text = goldenHourTimeString,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -367,7 +367,7 @@ fun SunsetInfoCard(
                             text = stringResource(R.string.blue_hour),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             textAlign = TextAlign.Center,
                         )//Blue hour icon and time
                         Icon(
@@ -381,7 +381,7 @@ fun SunsetInfoCard(
                         Text(
                             text = blueHourTimeString,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(
                                 start = 25.dp, bottom = 22.dp, top = 22.dp, end = 22.dp
@@ -409,7 +409,7 @@ fun HorizontalInfoCardRow(homeUiState: HomeUiState, navHostController: NavHostCo
         Text(
             text = stringResource(R.string.no_places),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
@@ -481,7 +481,7 @@ fun HorizontalInfoCardContent(
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .fillMaxHeight(0.35f) //set the height of the box
-                    .background(MaterialTheme.colorScheme.secondaryContainer),
+                    .background(MaterialTheme.colorScheme.primaryContainer),
 
                 ) {
                 Text(
@@ -492,7 +492,7 @@ fun HorizontalInfoCardContent(
                     text = place.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Row(
                     //For displaying weather conditions and information popup
@@ -509,14 +509,14 @@ fun HorizontalInfoCardContent(
                     Text(
                         text = stringResource(R.string.weather_condition) + " ",
                         style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         //text changing based on weather conditions, in different textbox because of change of color
                         text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold
                     )
                     Box(

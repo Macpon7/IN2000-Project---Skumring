@@ -224,7 +224,7 @@ fun MapListContent(navController: NavController, mapListViewModel: MapListViewMo
             ModalBottomSheet(
                 onDismissRequest = { mapListViewModel.hideBottomSheet() },
                 sheetState = mapListUiState.sheetState,
-                containerColor = MaterialTheme.colorScheme.primaryContainer
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
             ) {
                 BottomSheetContent(
                     place = mapListUiState.places.find { it.id == mapListUiState.clickedId }!!,
@@ -312,7 +312,7 @@ fun ToggleButtonThemeSwitcher(
                     .height(buttonHeight)
                     .clip(shape = parentShape)
                     .clickable { onClick() }
-                    .background(MaterialTheme.colorScheme.onSecondary)
+                    .background(MaterialTheme.colorScheme.tertiary)
             ) {
                 // toggle animation
                 Box(
@@ -321,7 +321,7 @@ fun ToggleButtonThemeSwitcher(
                         .height(buttonHeight)
                         .offset(x = offsetSmallScreen)
                         .clip(shape = parentShape)
-                        .background(MaterialTheme.colorScheme.secondary)
+                        .background(MaterialTheme.colorScheme.onTertiary)
 
                 )
                 // the icons and text representing list and map views
@@ -330,7 +330,7 @@ fun ToggleButtonThemeSwitcher(
                         .border(
                             border = BorderStroke(
                                 width = borderWidth,
-                                color = MaterialTheme.colorScheme.secondary
+                                color = MaterialTheme.colorScheme.onTertiary
                             ),
                             shape = parentShape
                         ),
@@ -348,16 +348,16 @@ fun ToggleButtonThemeSwitcher(
                             modifier = Modifier
                                 .offset((-30).dp),
                             imageVector = Icons.Default.Menu,
-                            contentDescription = stringResource(R.string.theme_icon),
-                            tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                            else MaterialTheme.colorScheme.secondary
+                            contentDescription = stringResource(R.string.toggle_list_icon),
+                            tint = if (mapTheme) MaterialTheme.colorScheme.tertiary
+                            else MaterialTheme.colorScheme.onTertiary
                         )
                         Text(
                             modifier = Modifier.padding(start = 5.dp),
                             text = stringResource(R.string.toggle_list),
                             style = MaterialTheme.typography.headlineSmall,
-                            color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                            else MaterialTheme.colorScheme.secondary
+                            color = if (mapTheme) MaterialTheme.colorScheme.tertiary
+                            else MaterialTheme.colorScheme.onTertiary
                         )
                     }
                     Box( //map and map icon
@@ -370,16 +370,16 @@ fun ToggleButtonThemeSwitcher(
                             modifier = Modifier
                                 .offset((-30).dp, 0.dp),
                             imageVector = Icons.Default.Place,
-                            contentDescription = stringResource(R.string.place_icon),
-                            tint = if (mapTheme) MaterialTheme.colorScheme.secondary
-                            else MaterialTheme.colorScheme.onSecondary
+                            contentDescription = stringResource(R.string.toggle_map_icon),
+                            tint = if (mapTheme) MaterialTheme.colorScheme.onTertiary
+                            else MaterialTheme.colorScheme.tertiary
                         )
                         Text(
                             modifier = Modifier.padding(start = 15.dp),
                             text = stringResource(R.string.toggle_map),
                             style = MaterialTheme.typography.headlineSmall,
-                            color = if (mapTheme) MaterialTheme.colorScheme.secondary
-                            else MaterialTheme.colorScheme.onSecondary
+                            color = if (mapTheme) MaterialTheme.colorScheme.onTertiary
+                            else MaterialTheme.colorScheme.tertiary
                         )
                     }
                 }
@@ -391,7 +391,7 @@ fun ToggleButtonThemeSwitcher(
                     .height(buttonHeight / 2)
                     .clip(shape = parentShape)
                     .clickable { onClick() }
-                    .background(MaterialTheme.colorScheme.onSecondary)
+                    .background(MaterialTheme.colorScheme.tertiary)
             ) {
                 // toggle animation
                 Box(
@@ -400,7 +400,7 @@ fun ToggleButtonThemeSwitcher(
                         .height(buttonHeight / 2)
                         .offset(x = offsetLargeScreen)
                         .clip(shape = parentShape)
-                        .background(MaterialTheme.colorScheme.secondary)
+                        .background(MaterialTheme.colorScheme.onTertiary)
                 )
                 // the icons and text representing list and map views
                 Row(
@@ -408,7 +408,7 @@ fun ToggleButtonThemeSwitcher(
                         .border(
                             border = BorderStroke(
                                 width = borderWidth,
-                                color = MaterialTheme.colorScheme.secondary
+                                color = MaterialTheme.colorScheme.onTertiary
                             ),
                             shape = parentShape
                         ),
@@ -426,15 +426,15 @@ fun ToggleButtonThemeSwitcher(
                                 .offset((-30).dp, 0.dp),
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Theme Icon",
-                            tint = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                            else MaterialTheme.colorScheme.secondary
+                            tint = if (mapTheme) MaterialTheme.colorScheme.tertiary
+                            else MaterialTheme.colorScheme.onTertiary
                         )
                         Text(
                             modifier = Modifier.padding(start = 15.dp),
                             text = stringResource(R.string.toggle_list),
                             style = MaterialTheme.typography.headlineSmall,
-                            color = if (mapTheme) MaterialTheme.colorScheme.onSecondary
-                            else MaterialTheme.colorScheme.secondary
+                            color = if (mapTheme) MaterialTheme.colorScheme.tertiary
+                            else MaterialTheme.colorScheme.onTertiary
                         )
                     }
                     Box( //map and map icon
@@ -447,16 +447,16 @@ fun ToggleButtonThemeSwitcher(
                             modifier = Modifier
                                 .offset((-30).dp, 0.dp),
                             imageVector = Icons.Default.Place,
-                            contentDescription = stringResource(R.string.place_icon),
-                            tint = if (mapTheme) MaterialTheme.colorScheme.secondary
-                            else MaterialTheme.colorScheme.onSecondary
+                            contentDescription = stringResource(R.string.toggle_map_icon),
+                            tint = if (mapTheme) MaterialTheme.colorScheme.onTertiary
+                            else MaterialTheme.colorScheme.tertiary
                         )
                         Text(
                             modifier = Modifier.padding(start = 15.dp),
                             text = stringResource(R.string.toggle_map),
                             style = MaterialTheme.typography.headlineSmall,
-                            color = if (mapTheme) MaterialTheme.colorScheme.secondary
-                            else MaterialTheme.colorScheme.onSecondary
+                            color = if (mapTheme) MaterialTheme.colorScheme.onTertiary
+                            else MaterialTheme.colorScheme.tertiary
                         )
                     }
                 }
@@ -465,12 +465,6 @@ fun ToggleButtonThemeSwitcher(
     }
 }
 
-
-/**
- * Bottomsheet pop up that displays information about the pin you click.
- * can add as favourite and decide to go to PlaceInfoScreen for more information about the place by clicking
- * "more information" button
- */
 @Composable
 fun BottomSheetContent(
     place: PlaceInfo,
@@ -496,7 +490,7 @@ fun BottomSheetContent(
             Text(
                 text = place.name,
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             IconButton(
                 onClick = { toggleFavourite(place) }
@@ -508,7 +502,7 @@ fun BottomSheetContent(
                         Icons.Filled.FavoriteBorder
                     },
                     contentDescription = stringResource(id = R.string.favourite_icon),
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(60.dp)
 
                 )
@@ -518,12 +512,12 @@ fun BottomSheetContent(
         Text(
             text = stringResource(id = R.string.home_sunset),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
         )
         Divider(
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             thickness = 1.dp,
             modifier = Modifier.padding(start = 80.dp, end = 80.dp)
         )
@@ -535,14 +529,14 @@ fun BottomSheetContent(
                 )
             }",
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 10.dp)
         )
         //temerature at sunset
         Text(
             text = stringResource(R.string.temp_at_sunset) + ": ${place.sunEvents[0].tempAtEvent} °C",
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier
                 .padding(bottom = 10.dp)
         )
@@ -550,7 +544,7 @@ fun BottomSheetContent(
         Text(
             text = stringResource(R.string.weather_condition) + stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier
                 .padding(bottom = 10.dp)
         )
@@ -569,12 +563,12 @@ fun BottomSheetContent(
         Text(
             text = stringResource(R.string.new_place_description),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
         )
         Divider(
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             thickness = 1.dp,
             modifier = Modifier.padding(start = 80.dp, end = 80.dp, bottom = 10.dp)
         )
@@ -582,7 +576,7 @@ fun BottomSheetContent(
         Text(
             text = place.description,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
@@ -603,7 +597,7 @@ fun BottomSheetContent(
             ) {
                 Text(
                     text = stringResource(R.string.close),
-                    color = MaterialTheme.colorScheme.onTertiary,
+                    color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -619,7 +613,7 @@ fun BottomSheetContent(
             ) {
                 Text(
                     text = stringResource(R.string.home_more_details_button),
-                    color = MaterialTheme.colorScheme.onTertiary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.bodyLarge
                 )
             }

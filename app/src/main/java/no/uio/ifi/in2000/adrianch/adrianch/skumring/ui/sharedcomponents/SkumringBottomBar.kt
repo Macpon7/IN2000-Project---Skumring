@@ -33,7 +33,7 @@ fun SkumringBottomBar(
 
     NavigationBar(
         modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = MaterialTheme.colorScheme.scrim,
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -67,8 +67,11 @@ fun SkumringBottomBar(
                     }
                 },
                colors = NavigationBarItemDefaults.colors(
-                 unselectedTextColor = MaterialTheme.colorScheme.inverseOnSurface,
-                   selectedTextColor = MaterialTheme.colorScheme.inverseOnSurface,
+                 unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                   selectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                   selectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                   indicatorColor = MaterialTheme.colorScheme.inversePrimary,
+
                 ),
             )
         }
