@@ -22,6 +22,10 @@ Views sin oppgave er å følge med på tilstandene lagret i ViewModels og vise d
 
 I det store og hele har vi forsøkt å holde objektene så spesifikke som mulig, dette for å sikre høy kohesjon slik at de ikke blir for store og vanskelige å vedlikeholde i tilfelle vi skulle ønske å endre informasjonen de bærer. Den lave koblingen er noe diskuterbar - Som nevnt er noen av objektene som inneholder informasjonen vi ønsker å vise sammensatte av reponsdataen fra forskjellige API-er og noe mer komplekse, men dette er av nødvendighet i at appens oppgave er å presentere brukeren en tolkning av sammensatt data. Vi vil fortsatt si at vi har klart å holde koblingen så lav som praktisk mulig siden appen fortsatt funker, kjører og displayer det den kan selv om den skulle mangle informasjon.
 
+## Kommentering
+
+Docstrings og kommentering av kode er delvis mangelfull da vi mot slutten av prosjektet måtte legge 100 % fokus på å få kodeoppgavene vi var tildelte til å fungere som de skulle.
+
 ## Androidversjon
 
 Skumring kjører på minimum API level 26 da dette kreves for brukerlokasjon, en sentral funksjonalitet for løsningen. Mesteparten av testingen har foregått på API level 28 og 31 med Android Version 12.0.
@@ -32,4 +36,20 @@ Nye versjoner
 
 Long vector name
 
-Leaks context i mypageviewmodel
+Leaks context i mypageviewmodel - Suppressed, vi må ha den
+
+Image defined in density-independent drawable for preset images - Kun én oppløsning, antar at DPI holder seg konsekvent nok til at det ikke blir prob
+
+Monochrome not defined - Suppressed, vi har bar een variant av ikonet med flere farger - Lager ikke monokrom
+
+Suspend er redundant: Nei det er det ikke, hvorfor sier du dette
+
+Mangler docstrings
+
+Empty functions: Dummyfunksjoner som brukes som parametre til previews
+
+Kjører du analyser vil Java klage på en del, men alt dette er tatt hånd om
+
+Responsklassene får weak warnings på navnekonvensjon i Kotlin, men de må være identiske med hvordan json presenterer de
+
+Settings: Språk - Forsøk på å la bruker endre språk manuelt, men dette ble for vrient så sent. Ubrukt, men del av enumklassen som ikke brukes, men vi tør ikke kødde med denå
