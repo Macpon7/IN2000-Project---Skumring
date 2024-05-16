@@ -28,18 +28,22 @@ Følgende diagrammer beskriver use caset fra ulike perspektiver.
 
 ## Use case diagram
 Use case-diagrammet viser en bruker interagere med appeni henhold til usecaset.
+<br>
 ![img.png](Modeling/Usecasediagram.png)
 
 ## Klassediagram
 Klassediagrammet viser alle objektene som er involvert for å finne og vise infoskjermen til lokasjon ved å navigere gjennom MapListScreen.
+<br>
 ![img.png](Modeling/Klassediagram.png)
 
 ## Sekvensdiagram
 Sekvensdiagrammet viser spesielt i denne use casen hvordan appen henter informasjon om brukers lokasjon og om værforholdene, slik at de kan displayes i infoskjermen til en gitt lokasjon. I vår app kalles nemlig på følgende funksjoner, som sjekker om værdata er gyldig (mindre enn én time gang), kommunikasjon med database og henting av brukers lokasjon. Vi har mange repositories og data sources som er involvert, men vi abstraherte datasourcen til ett objekt, og samlet alle API'ene i et API-objekt da det ble komplisert og uoversiktelig å definere alle disse objektene som ett i akkurat sekvensdiagrammet.
+<br>
 ![img.png](Modeling/Sekvensdiagram.png)
 
 ## Aktivitetsdiagram
 Diagrammet viser generell flyt i appen. Ettersom use case vi bruker handler om at bruker skal komme seg til infoskjermen til en gitt lokasjon, er dermed slutten definert der hvor bruker har kommet seg frem til PlaceInfoScreen.
+<br>
 ![img.png](Modeling/Aktivitetsdiagram.png)
 
 
