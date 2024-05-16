@@ -6,11 +6,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao
@@ -76,9 +74,7 @@ class PlaceRepositoryImpl(
             val fileName = "$placeId.jpg"
             val file = File(fileDir, fileName)
 
-            outputStream = withContext(Dispatchers.IO) {
-                FileOutputStream(file)
-            }
+            outputStream = FileOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
 
             // Insert the image details into the database
@@ -93,12 +89,9 @@ class PlaceRepositoryImpl(
             Log.e(TAG, "Error saving image", e)
             e.printStackTrace()
         } finally {
-            inputStream?.withContext(Dispatchers.IO) {
-                close()
-            }
-            outputStream?.withContext(Dispatchers.IO) {
-                close()
-            }
+            inputStream?.close()
+
+            outputStream?.close()
         }
     }
 
