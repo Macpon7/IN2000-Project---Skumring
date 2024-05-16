@@ -1,4 +1,4 @@
-#Modeling
+# Modeling
 
 I use-caset har vi valgt: se informasjon om solnedgang og skydekke på lokasjon x
 
@@ -25,15 +25,15 @@ For å begrense caset har vi dermed følgende forhåndsbetingelser:
 - lokasjonen som bruker vil se eksisterer i appen, enten som en lokasjon de selv har lagt til eller lokasjonene
 som fulgte med appen.
 
-##Use case diagram
+## Use case diagram
 ![img.png](Modeling/Usecasediagram.png)
 
-##Klassediagram
+## Klassediagram
 
 ![img.png](Modeling/Klassediagram.png)
 
-##Sekvensdiagram
+## Sekvensdiagram
 ![img.png](Modeling/Sekvensdiagram.png)
 
-##Flytdiagram
+## Flytdiagram
 ![img.png](Modeling/Aktivitetsdiagram.png)
