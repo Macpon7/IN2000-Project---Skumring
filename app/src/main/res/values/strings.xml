@@ -45,6 +45,7 @@
     <string name="favourites">Favoritter</string>
 
     <!-- PlaceInfoScreen -->
+
     <string name="picture_taken">Bilde tatt</string>
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
@@ -71,6 +72,7 @@
     <string name="drive">Kjøre</string>
 
     <!-- MyPageScreen -->
+
     <string name="new_place_add_photo">Legg til bilde</string>
     <string name="new_place_location_name">Navn</string>
     <string name="new_place_address">Adresse</string>
@@ -149,6 +151,7 @@
     <string name="golden_hour">Gylne time</string>
     <string name="blue_hour">Blåtime</string>
     <string name="app_version" translatable="false">0.3</string>
+
     <string name="distance_hour">t</string>
     <string name="distance_minutes">m</string>
     <string name="distance_kilometers">km</string>
@@ -165,7 +168,6 @@
     <string name="delete_place_confirmation">Er du sikker?</string>
     <string name="delete_place_info">Stedet vil bli permanent slettet!</string>
     <string name="delete_place_confirm_button">Slett</string>
-    <string name="double_arrow">dobbelt pil ikon</string>
     <string name="find_loaction">"Finn lokasjon "</string>
     <string name="new_place_required">*påkrevd</string>
     <string name="new_place_use_phone_location">Bruk telefonens posisjon</string>

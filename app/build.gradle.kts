@@ -21,7 +21,7 @@ android {
     }
     defaultConfig {
         applicationId = "no.uio.ifi.in2000.adrianch.adrianch.skumring"
-        minSdk = 26
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -139,7 +139,7 @@ dependencies {
 
     //to test  Room
 
-   // androidTestCompile("junit:junit:4.12")
+    // androidTestCompile("junit:junit:4.12")
     //androidTestImplementation("androidx.test:runner:$testRunnerVersion")
     //androidTestImplementation("androidx.test:rules:$testRulesVersion")
 
