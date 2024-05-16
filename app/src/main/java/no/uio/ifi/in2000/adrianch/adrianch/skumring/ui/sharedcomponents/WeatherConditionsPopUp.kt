@@ -36,9 +36,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 fun WeatherIconPopUp(
     onClose: () -> Unit,
 ) {
-    val textColor = MaterialTheme.colorScheme.onPrimaryContainer
-    val dividerColor = MaterialTheme.colorScheme.onTertiaryContainer
-
     Dialog(
         onDismissRequest = onClose
     ) {
@@ -75,7 +72,7 @@ fun WeatherIconPopUp(
                         Text(
                             text = stringResource(R.string.conditions_excellent),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
