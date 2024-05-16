@@ -22,6 +22,9 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 data class FavoritesUiState(
     val places: List<PlaceInfo> = emptyList(),
 
+    var showDeleteDialog: Boolean = false,
+    var deleteId: Int = 0,
+
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
     // Variable that change according to the error message we get:
@@ -70,8 +73,31 @@ class FavoritesViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             if (place.isFavourite) {
                 placeRepository.unmakeFavourite(placeId = place.id)
+                _favoritesUiState.update { currentFavouritesUiState ->
+                    currentFavouritesUiState.copy(
+                        places = currentFavouritesUiState.places.map {
+                            if (it.id == place.id) {
+                                it.copy(isFavourite = false)
+                            } else {
+                                it.copy()
+                            }
+                        }
+                    )
+                }
             } else {
                 placeRepository.makeFavourite(placeId = place.id)
+                _favoritesUiState.update { currentFavouritesUiState ->
+                    currentFavouritesUiState.copy(
+                        places = currentFavouritesUiState.places.map {
+                            if (it.id == place.id) {
+                                it.copy(isFavourite = true)
+                            } else {
+                                it.copy()
+                            }
+                        }
+                    )
+                }
+
             }
         }
     }
@@ -96,6 +122,41 @@ class FavoritesViewModel(
         }
         viewModelScope.launch(Dispatchers.IO) {
             loadList()
+        }
+    }
+
+    fun showDeleteDialog(placeId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _favoritesUiState.update { currentFavouritesUiState ->
+                currentFavouritesUiState.copy(
+                    deleteId = placeId,
+                    showDeleteDialog = true
+                )
+            }
+        }
+    }
+
+    fun hideDeleteDialog() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _favoritesUiState.update { currentFavouritesUiState ->
+                currentFavouritesUiState.copy(
+                    showDeleteDialog = false
+                )
+            }
+        }
+    }
+
+    fun deleteCustomPlace() {
+        viewModelScope.launch (Dispatchers.IO) {
+            placeRepository.removeCustomPlace(placeId = favoritesUiState.value.deleteId)
+            _favoritesUiState.update { currentFavouritesUiState ->
+                currentFavouritesUiState.copy(
+                    showDeleteDialog = false,
+                    places = currentFavouritesUiState.places.filter {
+                        it.id != favoritesUiState.value.deleteId
+                    }
+                )
+            }
         }
     }
 

@@ -2,8 +2,10 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -13,7 +15,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFloatingActionButton
@@ -67,6 +68,7 @@ fun MyPageScreen(
 
     // Load the list of custom places every time the user navigates to this screen
     LaunchedEffect(Unit) {
+        myPageViewModel.snackbarDismissed()
         myPageViewModel.loadCustomPlaces()
     }
 
@@ -188,7 +190,7 @@ fun ContentMyPage(
     Column(Modifier.verticalScroll(rememberScrollState())) {
         if (myPageUiState.places.isEmpty()) {
             Text(
-                text = stringResource(R.string.no_location),
+                text = stringResource(R.string.no_places),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -203,6 +205,7 @@ fun ContentMyPage(
                     onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) },
                     onDeleteClick = { myPageViewModel.showDeleteDialog(place.id) }
                 )
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

@@ -2,8 +2,10 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -30,6 +32,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.DeletePlaceDialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
@@ -62,6 +65,7 @@ fun FavoritesScreen(
 
     // Load the list of favourites every time the user navigates to this screen
     LaunchedEffect(Unit) {
+        favoritesViewModel.snackbarDismissed()
         favoritesViewModel.loadList()
     }
 
@@ -111,7 +115,7 @@ fun FavoritesScreen(
         ) {
             FavoriteListContent(
                 navController = navController,
-                favoriteViewModel = favoritesViewModel,
+                favoritesViewModel = favoritesViewModel,
                 favoritesUiState = favoritesUiState
             )
         }
@@ -124,9 +128,16 @@ fun FavoritesScreen(
 @Composable
 fun FavoriteListContent(
     navController: NavController,
-    favoriteViewModel: FavoritesViewModel,
+    favoritesViewModel: FavoritesViewModel,
     favoritesUiState: FavoritesUiState
 ) {
+    if (favoritesUiState.showDeleteDialog) {
+        DeletePlaceDialog(
+            onDismissRequest = {favoritesViewModel.hideDeleteDialog()},
+            onConfirmClick = {favoritesViewModel.deleteCustomPlace()}
+        )
+    }
+
     Column(Modifier.verticalScroll(rememberScrollState())) {
         if (favoritesUiState.places.isEmpty()) {
             Text(
@@ -143,9 +154,13 @@ fun FavoriteListContent(
                         navController.navigate("placeinfoscreen/${place.id}")
                     },
                     onFavouriteClick = {
-                        favoriteViewModel.toggleFavourite(place = place)
+                        favoritesViewModel.toggleFavourite(place = place)
+                    },
+                    onDeleteClick = {
+                        favoritesViewModel.showDeleteDialog(placeId = place.id)
                     }
                 )
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

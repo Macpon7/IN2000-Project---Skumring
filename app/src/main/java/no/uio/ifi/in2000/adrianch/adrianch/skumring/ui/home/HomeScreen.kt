@@ -1,7 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
-import android.graphics.BitmapFactory
-import androidx.compose.foundation.Image
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +45,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -66,6 +64,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.UserInstructionsDialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
@@ -104,6 +103,7 @@ fun HomeScreen(
 
     //Load the favourites every time the user navigates to this screen
     LaunchedEffect(Unit) {
+        homeViewModel.snackbarDismissed()
         homeViewModel.loadHomeScreen()
     }
 
@@ -152,6 +152,21 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.surface),
         ) {
+            val preferences = LocalContext.current.getSharedPreferences("user_settings", ComponentActivity.MODE_PRIVATE)
+            val editor = preferences.edit()
+            val isFirstLaunch = preferences.getBoolean("first_launch", false)
+
+            if (homeUiState.showFirstTimeDialog && isFirstLaunch) {
+                UserInstructionsDialog(
+                    closeDialog = { homeViewModel.hideFirstTimeDialog() },
+                    finishDialog = {
+                        editor.putBoolean("first_launch", false).apply()
+                        homeViewModel.hideFirstTimeDialog()
+                    }
+                )
+            }
+
+
             SunsetInfoCard(
                 homeUiState = homeUiState,
                 homeViewModel = homeViewModel
@@ -409,13 +424,13 @@ fun SunsetInfoCard(
 @Composable
 fun HorizontalInfoCardRow(homeUiState: HomeUiState, navHostController: NavHostController) {
     if (homeUiState.favoritePlaces.isEmpty()) {
-        Text(text = stringResource(R.string.no_favourites),
-            style = MaterialTheme.typography.bodyMedium,
+        Text(
+            text = stringResource(R.string.no_places),
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
-            modifier = Modifier.padding(start = 10.dp, top = 5.dp)
-
-
-            )
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
     } else {
         LazyRow {
             items(homeUiState.favoritePlaces) { place ->
@@ -465,17 +480,12 @@ fun HorizontalInfoCardContent(
                     contentScale = ContentScale.Crop
                 )
             } else {
-                val bitmap = BitmapFactory.decodeStream(
-                    LocalContext.current.assets.open(
-                        "presetImages/${place.images[0].path}"
-                    )
-                ).asImageBitmap()
-                Image(
-                    bitmap,
+                AsyncImage(
+                    model = "file:///android_asset/presetImages/${place.images[0].path}",
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .fillMaxSize() // Fill the entire available space in the Box and maintain aspect ratio of the image
+                        .fillMaxSize()
                 )
             }
             Divider( //for dividing photo from bottom text

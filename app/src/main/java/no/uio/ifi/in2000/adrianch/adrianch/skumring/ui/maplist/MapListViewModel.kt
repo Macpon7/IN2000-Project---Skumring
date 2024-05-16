@@ -41,14 +41,16 @@ data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val places: List<PlaceInfo> = emptyList(),
     var clickedId: Int = 1,
     var mapListToggle: MapListToggleState = MapListToggleState.MAP,
-    var sheetState: SheetState = SheetState(skipPartiallyExpanded = false),
+    var sheetState: SheetState = SheetState(skipPartiallyExpanded = true),
     var showBottomSheet: Boolean = false,
     var userLat: String = "0",
     var userLong: String = "0",
     var userBearing: Float = 0.0f,
     var userLocUpdated: Boolean = false,
 
-    val showNewPlaceDialog: Boolean = false,
+    var showNewPlaceDialog: Boolean = false,
+    var showDeleteDialog: Boolean = false,
+    var deleteId: Int = 0,
 
     // Variable for checking if there is an error:
     var showSnackbar: Boolean = false,
@@ -218,14 +220,26 @@ class MapListViewModel(
                 placeRepository.unmakeFavourite(placeId = place.id)
                 _mapListUiState.update { currentMapListUiState ->
                     currentMapListUiState.copy(
-                        places = placeRepository.getAllPlaces()
+                        places = currentMapListUiState.places.map {
+                            if (it.id == place.id) {
+                                it.copy(isFavourite = false)
+                            } else {
+                                it.copy()
+                            }
+                        }
                     )
                 }
             } else {
                 placeRepository.makeFavourite(placeId = place.id)
                 _mapListUiState.update { currentMapListUiState ->
                     currentMapListUiState.copy(
-                        places = placeRepository.getAllPlaces()
+                        places = currentMapListUiState.places.map {
+                            if (it.id == place.id) {
+                                it.copy(isFavourite = true)
+                            } else {
+                                it.copy()
+                            }
+                        }
                     )
                 }
             }
@@ -267,6 +281,42 @@ class MapListViewModel(
                 }
             } catch (e: Exception) {
                 Log.e(logTag, "Error updating user location", e)
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun showDeleteDialog(placeId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _mapListUiState.update { currentMapListUiState ->
+                currentMapListUiState.copy(
+                    deleteId = placeId,
+                    showDeleteDialog = true
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun hideDeleteDialog() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _mapListUiState.update { currentMapListUiState ->
+                currentMapListUiState.copy(
+                    showDeleteDialog = false
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun deleteCustomPlace() {
+        viewModelScope.launch (Dispatchers.IO) {
+            placeRepository.removeCustomPlace(placeId = mapListUiState.value.deleteId)
+            _mapListUiState.update { currentMapListUiState ->
+                currentMapListUiState.copy(
+                    showDeleteDialog = false,
+                    places = placeRepository.getAllPlaces()
+                )
             }
         }
     }
