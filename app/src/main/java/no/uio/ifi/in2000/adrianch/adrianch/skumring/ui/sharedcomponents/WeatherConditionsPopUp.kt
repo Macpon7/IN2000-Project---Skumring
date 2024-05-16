@@ -1,8 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents
 
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,11 +13,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,22 +29,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 
 
 @Composable
 fun WeatherIconPopUp(
     onClose: () -> Unit,
 ) {
-    val textColor = MaterialTheme.colorScheme.primary
-    val dividerColor = MaterialTheme.colorScheme.onSecondaryContainer
-
     Dialog(
         onDismissRequest = onClose
     ) {
-        Surface(
-            shape = MaterialTheme.shapes.medium, modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
+
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
@@ -53,15 +53,15 @@ fun WeatherIconPopUp(
                 ) {
                     Icon(
                         Icons.Default.Info,
-                        contentDescription = "Info",
-                        tint = textColor,
+                        contentDescription = stringResource(id = R.string.information),
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(30.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = stringResource(id = R.string.weather_condition),
                         style = MaterialTheme.typography.titleLarge,
-                        color = textColor,
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -71,19 +71,19 @@ fun WeatherIconPopUp(
                         Text(
                             text = stringResource(R.string.conditions_excellent),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
                         Divider(
                             modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 5.dp),
-                            color = dividerColor,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
                             thickness = 1.dp
                         )
                         Text(
                             stringResource(id = R.string.weather_conditions_excellent_explanation),
                             style = MaterialTheme.typography.bodySmall,
-                            color = textColor
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -93,19 +93,19 @@ fun WeatherIconPopUp(
                         Text(
                             text = stringResource(R.string.conditions_decent),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
                         Divider(
                             modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 5.dp),
-                            color = dividerColor,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
                             thickness = 1.dp
                         )
                         Text(
                             stringResource(id = R.string.weather_conditions_decent_explanation),
                             style = MaterialTheme.typography.bodySmall,
-                            color = textColor
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -115,20 +115,20 @@ fun WeatherIconPopUp(
                         Text(
                             text = stringResource(R.string.conditions_poor),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
 
                         )
                         Divider(
                             modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 5.dp),
-                            color = dividerColor,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
                             thickness = 1.dp
                         )
                         Text(
                             stringResource(id = R.string.weather_conditions_poor_explanation),
                             style = MaterialTheme.typography.bodySmall,
-                            color = textColor
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -141,9 +141,9 @@ fun WeatherIconPopUp(
                         onClick = onClose
                     ) {
                         Text(
-                            stringResource(id = R.string.weather_conditions_popUp_dismiss),
+                            stringResource(id = R.string.close),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = textColor,
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -156,8 +156,18 @@ fun WeatherIconPopUp(
 
 @Preview
 @Composable
-fun CustomDialogPreview() {
-    MaterialTheme {
+fun PreviewWeatherConditionsDialog() {
+    SkumringTheme(useDarkTheme = true) {
+        WeatherIconPopUp(
+            onClose = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewWeatherConditionsDialogLight() {
+    SkumringTheme(useDarkTheme = false) {
         WeatherIconPopUp(
             onClose = {},
         )

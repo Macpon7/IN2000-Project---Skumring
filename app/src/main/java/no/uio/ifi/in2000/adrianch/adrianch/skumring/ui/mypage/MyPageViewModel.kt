@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
@@ -24,8 +25,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceUiState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.onNewPlaceEvent
 
-private const val TAG = "MyPageViewModel"
-
 data class MyPageUiState(
     val places: List<PlaceInfo> = emptyList(),
 
@@ -38,10 +37,10 @@ data class MyPageUiState(
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
 
     // Variables for deleting custom places
-    var showDeleteDialog: Boolean = false,
-    var deleteId: Int = 0
+    var showDeleteDialog: Boolean = false, var deleteId: Int = 0
 )
 
+@SuppressLint("StaticFieldLeak")
 class MyPageViewModel(
     private val placeRepository: PlaceRepository,
     private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl(),
@@ -53,6 +52,7 @@ class MyPageViewModel(
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
 
+    @Suppress("OPT_IN_USAGE_FUTURE_ERROR")
     private val _newPlaceUiState = MutableStateFlow(NewPlaceUiState())
     val newPlaceUiState: StateFlow<NewPlaceUiState> = _newPlaceUiState
 
@@ -77,8 +77,7 @@ class MyPageViewModel(
                         errorMessage = context.getString(R.string.error_message_no_forecast)
                     )
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 // If an exception occurs, hide the dialog and show a snackbar
                 hideNewPlaceDialog()
                 _myPageUiState.update { currentMyPageUiState ->
@@ -183,8 +182,7 @@ class MyPageViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _myPageUiState.update { currentMyPageUiState ->
                 currentMyPageUiState.copy(
-                    deleteId = placeId,
-                    showDeleteDialog = true
+                    deleteId = placeId, showDeleteDialog = true
                 )
             }
         }
@@ -201,12 +199,12 @@ class MyPageViewModel(
     }
 
     fun deleteCustomPlace() {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             placeRepository.removeCustomPlace(placeId = myPageUiState.value.deleteId)
             _myPageUiState.update { currentMyPageUiState ->
                 currentMyPageUiState.copy(
-                    showDeleteDialog = false,
-                    places = placeRepository.getCustomPlaces())
+                    showDeleteDialog = false, places = placeRepository.getCustomPlaces()
+                )
             }
         }
     }
@@ -222,8 +220,7 @@ class MyPageViewModel(
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as ApplicationSkumring
 
                 return MyPageViewModel(
-                    placeRepository = application.dbRepository,
-                    context = application.context
+                    placeRepository = application.dbRepository, context = application.context
                 ) as T
             }
         }

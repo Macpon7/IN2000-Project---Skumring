@@ -2,9 +2,12 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -12,9 +15,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -42,8 +45,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
-private const val TAG = "MyPageScreen"
-
 object MyPageDestination : NavigationDestination {
     override val icon = Icons.Outlined.AccountCircle
     override val buttonTitle = R.string.nav_personal_button
@@ -65,6 +66,7 @@ fun MyPageScreen(
 
     // Load the list of custom places every time the user navigates to this screen
     LaunchedEffect(Unit) {
+        myPageViewModel.snackbarDismissed()
         myPageViewModel.loadCustomPlaces()
     }
 
@@ -92,47 +94,44 @@ fun MyPageScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            SkumringTopBar(
-                title = stringResource(id = MyPageDestination.titleRes),
-                canNavigateBack = false,
-                // Button to navigate to settings-page
-                actions = {
-                    IconButton(
-                        onClick = {
-                            navController.navigate(route = "settings")
-                        },
-                        modifier = Modifier.padding(end = 16.dp)
-                    ) {
-                        Icon(
-                            Icons.Default.Settings,
-                            contentDescription = stringResource(id = R.string.settings)
-                        )
-                    }
+    Scaffold(topBar = {
+        SkumringTopBar(title = stringResource(id = MyPageDestination.titleRes),
+            canNavigateBack = false,
+            // Button to navigate to settings-page
+            actions = {
+                IconButton(
+                    onClick = {
+                        navController.navigate(route = "settings")
+                    }, modifier = Modifier.padding(end = 16.dp)
+                ) {
+                    Icon(
+                        Icons.Default.Settings,
+                        contentDescription = stringResource(id = R.string.settings),
+                        modifier = Modifier.size(40.dp)
+                    )
                 }
-            )
-        }, bottomBar = {
-            SkumringBottomBar(navController = navController)
-        },
-        snackbarHost = { SnackbarHost(hostState = myPageUiState.snackbarHostState) },
+            })
+    }, bottomBar = {
+        SkumringBottomBar(navController = navController)
+    }, snackbarHost = { SnackbarHost(hostState = myPageUiState.snackbarHostState) },
         // Button to add custom locations:
         floatingActionButton = {
-            FloatingActionButton(
+            LargeFloatingActionButton(
                 onClick = {
                     // Show the form:
                     myPageViewModel.showNewPlaceDialog()
                 },
-                modifier = Modifier.padding(end = 16.dp)
+                modifier = Modifier.padding(end = 16.dp),
+                containerColor = MaterialTheme.colorScheme.primary
+
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(id = R.string.new_place_add_location)
+                    contentDescription = stringResource(id = R.string.new_place_add_location),
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
-        }
-    )
-    { innerPadding -> //Here is what will be shown inside the scaffold of the screen
+        }) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -155,47 +154,41 @@ fun MyPageScreen(
  */
 @Composable
 fun ContentMyPage(
-    navController: NavController,
-    myPageViewModel: MyPageViewModel,
-    myPageUiState: MyPageUiState
+    navController: NavController, myPageViewModel: MyPageViewModel, myPageUiState: MyPageUiState
 ) {
     if (myPageUiState.showDeleteDialog) {
-        DeletePlaceDialog(
-            onDismissRequest = {myPageViewModel.hideDeleteDialog()},
-            onConfirmClick = {myPageViewModel.deleteCustomPlace()}
-        )
+        DeletePlaceDialog(onDismissRequest = { myPageViewModel.hideDeleteDialog() },
+            onConfirmClick = { myPageViewModel.deleteCustomPlace() })
     }
 
     //When the user click AddLocationButton this is shown
     if (myPageUiState.showNewPlaceDialog) {
-        NewPlaceDialog(
-            hideDialog = { myPageViewModel.hideNewPlaceDialog() },
+        NewPlaceDialog(hideDialog = { myPageViewModel.hideNewPlaceDialog() },
             onEvent = { myPageViewModel.onNewPlaceDialogEvent(it) },
             getCoordinatesFromAddress = myPageViewModel.getCoordsFromAddress,
             getCoordinatesFromLocation = myPageViewModel.getCoordinatesFromUserLocation,
             addCustomPlace = myPageViewModel.addPlace,
             uiStateFlow = myPageViewModel.newPlaceUiState
-            )
+        )
     }
 
     Column(Modifier.verticalScroll(rememberScrollState())) {
         if (myPageUiState.places.isEmpty()) {
             Text(
-                text = stringResource(R.string.no_location),
+                text = stringResource(R.string.no_places),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
         } else {
             myPageUiState.places.forEach { place ->
-                ListCard(
-                    place = place,
+                ListCard(place = place,
                     onItemClick = { //Navigate when it is clicked on
                         navController.navigate(route = "placeinfoscreen/${place.id}")
                     },
                     onFavouriteClick = { myPageViewModel.toggleFavourite(place = place) },
-                    onDeleteClick = { myPageViewModel.showDeleteDialog(place.id) }
-                )
+                    onDeleteClick = { myPageViewModel.showDeleteDialog(place.id) })
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

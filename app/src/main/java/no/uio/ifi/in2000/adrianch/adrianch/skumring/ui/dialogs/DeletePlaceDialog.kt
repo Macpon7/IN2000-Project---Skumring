@@ -27,8 +27,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 
 @Composable
 fun DeletePlaceDialog(
-    onDismissRequest: () -> Unit,
-    onConfirmClick: () -> Unit
+    onDismissRequest: () -> Unit, onConfirmClick: () -> Unit
 ) {
     val buttonColors = ButtonDefaults.outlinedButtonColors(
         containerColor = MaterialTheme.colorScheme.primary,
@@ -36,12 +35,12 @@ fun DeletePlaceDialog(
     )
 
     Dialog(onDismissRequest = onDismissRequest) {
-        Card (
+        Card(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             )
-        ){
-            Column (
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
@@ -59,20 +58,18 @@ fun DeletePlaceDialog(
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     OutlinedButton(
-                        onClick = onDismissRequest,
-                        colors = buttonColors
+                        onClick = onDismissRequest, colors = buttonColors
                     ) {
                         Text(text = stringResource(id = R.string.cancel))
                     }
                     Spacer(modifier = Modifier.width(20.dp))
 
                     OutlinedButton(
-                        onClick = onConfirmClick,
-                        colors = buttonColors
+                        onClick = onConfirmClick, colors = buttonColors
                     ) {
                         Text(text = stringResource(id = R.string.delete_place_confirm_button))
                     }
@@ -87,22 +84,19 @@ fun DeletePlaceDialog(
 fun PreviewDeletePlaceDialog() {
     SkumringTheme(useDarkTheme = false) {
         Surface {
-            DeletePlaceDialog(
-                onDismissRequest = {},
-                onConfirmClick = {})
+            DeletePlaceDialog(onDismissRequest = {}, onConfirmClick = {})
         }
     }
 }
 
-@Preview(name = "Dark mode, engelsk",
-    locale = "en")
+@Preview(
+    name = "Dark mode, engelsk", locale = "en"
+)
 @Composable
 fun PreviewDeletePlaceDialogDark() {
     SkumringTheme(useDarkTheme = true) {
         Surface {
-            DeletePlaceDialog(
-                onDismissRequest = {},
-                onConfirmClick = {})
+            DeletePlaceDialog(onDismissRequest = {}, onConfirmClick = {})
         }
     }
 }

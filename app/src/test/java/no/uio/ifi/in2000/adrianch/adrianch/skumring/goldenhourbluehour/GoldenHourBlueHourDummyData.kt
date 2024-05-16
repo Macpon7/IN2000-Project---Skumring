@@ -1,6 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.goldenhourbluehour
 
-val osloTestCall = """ {
+const val osloTestCall = """ {
     "results": {
         "date":"2000-01-01",
         "sunrise":"9:23:45 AM",
@@ -18,7 +18,7 @@ val osloTestCall = """ {
     "status":"OK"
 }"""
 
-val northPoleTestCall = """{
+const val northPoleTestCall = """{
     "results": {
         "date": "2000-01-01",
         "sunrise": null,

@@ -220,10 +220,3 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.geocoding
         }
     """.trimIndent()
 
-    val nullIslandReverseGeo: String = """
-        {
-        "type": "FeatureCollection",
-        "features": [],
-        "attribution": "NOTICE: © 2024 Mapbox and its suppliers. All rights reserved. Use of this data is subject to the Mapbox Terms of Service (https://www.mapbox.com/about/maps/). This response and the information it contains may not be retained."
-        }
-    """.trimIndent()

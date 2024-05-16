@@ -2,7 +2,6 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
@@ -27,7 +26,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTran
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.Theme
 
 private const val logTag = "PlaceInfoViewModel"
 
@@ -70,18 +68,21 @@ class PlaceInfoViewModel(
     private val userLocationRepository: UserLocationRepository =
         UserLocationRepositoryImpl(context = context)
 
-    private val blueHourIconLightMode = R.drawable.bluesunlightmode
-    private val blueHourIconDarkMode = R.drawable.bluesundarkmode
-
-    fun addFavourite(placeId: Int) {
+    fun toggleFavourite() {
         viewModelScope.launch(Dispatchers.IO) {
-            placeRepository.makeFavourite(placeId)
-        }
-    }
-
-    fun removeFavourite(placeId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            placeRepository.unmakeFavourite(placeId)
+            _placeInfoUiState.update { currentPlaceInfoUiState ->
+                if (currentPlaceInfoUiState.placeInfo.isFavourite) {
+                    placeRepository.unmakeFavourite(currentPlaceInfoUiState.placeInfo.id)
+                    currentPlaceInfoUiState.copy(
+                        placeInfo = currentPlaceInfoUiState.placeInfo.copy(isFavourite = false)
+                    )
+                } else {
+                    placeRepository.makeFavourite(currentPlaceInfoUiState.placeInfo.id)
+                    currentPlaceInfoUiState.copy(
+                        placeInfo = currentPlaceInfoUiState.placeInfo.copy(isFavourite = true)
+                    )
+                }
+            }
         }
     }
 
@@ -120,7 +121,7 @@ class PlaceInfoViewModel(
         }
     }
 
-    fun loadTimeDistance() {
+    private fun loadTimeDistance() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val userLoc: UserLocation = userLocationRepository.getUserLocation()
@@ -177,20 +178,6 @@ class PlaceInfoViewModel(
         }
     }
 
-    fun updateBlueHourIcon(): Int {
-        return when (getCurrentSystemTheme(context)) {
-            Theme.DARK_MODE -> blueHourIconDarkMode
-            Theme.LIGHT_MODE -> blueHourIconLightMode
-            else -> blueHourIconDarkMode
-        }
-    }
-
-    private fun getCurrentSystemTheme(context: Context): Theme {
-        return when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> Theme.DARK_MODE
-            else -> Theme.LIGHT_MODE
-        }
-    }
 }
 
 

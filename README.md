@@ -25,3 +25,15 @@ Ved å laste ned appen, kan den kjøres i emulator i Android Studio. SKRIV OM EM
 
 ## Biblioteket
 
+Vi benytter oss av standardbiblioteket som følger med Android. Core, Navigation, Viewmodel og Testing. 
+I tillegg bruker vi Ktor til håndtering av API-kall og -responser som anbefalt i kurset. 
+Mapbox brukes til å håndtere posisjonsdata, i tillegg til:
+- Kart
+- Lokasjoner
+- Geocoding
+- Avstandsberegning
+- Reisetidsberegning
+
+Room brukes som intern database med SQLite
+Location brukes til å håndetre brukerlokasjon.
+Splashscreen for å la os slage splasshcreen. 

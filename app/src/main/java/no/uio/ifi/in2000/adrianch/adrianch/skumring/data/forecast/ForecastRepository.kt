@@ -12,6 +12,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.Gol
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.SunEvent
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.SortedMap
 import kotlin.math.abs
 
@@ -68,8 +69,10 @@ class ForecastRepositoryImpl(
                     lat = lat, long = long, date = it.key
                 )
 
-                val goldenHourBlueHour: GoldenHourBlueHour = goldenHourBlueHourDataSource.fetchGoldenHourBlueHourTime(
-                    lat = lat, long = long, date = it.key)
+                val goldenHourBlueHour: GoldenHourBlueHour =
+                    goldenHourBlueHourDataSource.fetchGoldenHourBlueHourTime(
+                        lat = lat, long = long, date = it.key
+                    )
 
                 // it.value is the list of WeatherPerHour objects for this date
                 val sunsetWeather = findClosestWeather(sunsetTime, it.value)
@@ -107,9 +110,15 @@ class ForecastRepositoryImpl(
             // if the time between this WeatherPerHour object and sunsetTime is less than
             // the time between the currently selected closest WeatherPerHour and sunsetTime,
             // pick this WeatherPerHour object as the new closest.
-            // Use abs() because the difference int is positive or negative depending on if
+            // Use abs() because the difference is positive or negative depending on if
             // the time we compare with is before or after sunset
-            if (abs(it.time.compareTo(sunsetTime)) < abs(sunsetWeather.time.compareTo(sunsetTime))) {
+            val diff1 =
+                it.time.toEpochSecond(ZoneOffset.UTC) - sunsetTime.toEpochSecond(ZoneOffset.UTC)
+            val diff2 = sunsetWeather.time.toEpochSecond(ZoneOffset.UTC) - sunsetTime.toEpochSecond(
+                ZoneOffset.UTC
+            )
+
+            if (abs(diff1) < abs(diff2)) {
                 sunsetWeather = it
             }
         }

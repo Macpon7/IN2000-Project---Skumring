@@ -11,11 +11,9 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.forecast.WeatherCondit
 import java.time.LocalDateTime
 
 @Entity(
-    tableName = "forecasts",
-    foreignKeys = [
-        ForeignKey(entity = PlaceInfoEntity::class, parentColumns = ["id"], childColumns = ["place_id"])
-    ],
-    indices = [Index("place_id")]
+    tableName = "forecasts", foreignKeys = [ForeignKey(
+        entity = PlaceInfoEntity::class, parentColumns = ["id"], childColumns = ["place_id"]
+    )], indices = [Index("place_id")]
 )
 data class ForecastEntity(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,

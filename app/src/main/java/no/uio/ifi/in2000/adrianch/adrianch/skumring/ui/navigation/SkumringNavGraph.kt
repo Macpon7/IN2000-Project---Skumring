@@ -22,13 +22,10 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.SettingsScreenDe
 
 @Composable
 fun SkumringNavHost(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
+    navController: NavHostController, modifier: Modifier = Modifier
 ) {
     NavHost(
-        navController = navController,
-        startDestination = HomeDestination.route,
-        modifier = modifier
+        navController = navController, startDestination = HomeDestination.route, modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
             HomeScreen(navController = navController)
@@ -39,23 +36,18 @@ fun SkumringNavHost(
         composable(route = MyPageDestination.route) {
             MyPageScreen(navController = navController)
         }
-        composable(route = FavoritesDestination.route){
+        composable(route = FavoritesDestination.route) {
             FavoritesScreen(navController = navController)
         }
         composable(route = SettingsScreenDestination.route) {
             SettingsScreen(navController = navController)
         }
-        composable(
-            route = PlaceInfoScreenDestination.route,
-            arguments = listOf(
-                navArgument("id") { type = NavType.IntType }
-                )
-            ) {backStackEntry ->
+        composable(route = PlaceInfoScreenDestination.route,
+            arguments = listOf(navArgument("id") { type = NavType.IntType })) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
             if (id != null) {
                 PlaceInfoScreen(
-                    navController = navController,
-                    id = id
+                    navController = navController, id = id
                 )
             }
         }

@@ -9,34 +9,34 @@ import kotlin.reflect.KSuspendFunction0
 import kotlin.reflect.KSuspendFunction1
 import kotlin.reflect.KSuspendFunction3
 
-sealed interface NewPlaceEvent{
-    data class UpdateName(val newName: String): NewPlaceEvent
-    data class UpdateDescription(val newDescription: String): NewPlaceEvent
-    data class UpdateAddress(val newAddress: String): NewPlaceEvent
-    data class UpdateImageUri(val uri: Uri?): NewPlaceEvent
-    data class SetUseUserLocation(val usePhoneLocation: Boolean): NewPlaceEvent
+sealed interface NewPlaceEvent {
+    data class UpdateName(val newName: String) : NewPlaceEvent
+    data class UpdateDescription(val newDescription: String) : NewPlaceEvent
+    data class UpdateAddress(val newAddress: String) : NewPlaceEvent
+    data class UpdateImageUri(val uri: Uri?) : NewPlaceEvent
+    data class SetUseUserLocation(val usePhoneLocation: Boolean) : NewPlaceEvent
 
-    data class SetSelectedAddress(val address: String): NewPlaceEvent
+    data class SetSelectedAddress(val address: String) : NewPlaceEvent
     data class ConfirmSelectedAddress(
         val addCustomPlace: KSuspendFunction3<PlaceInfo, Uri, LocalDate, Unit>,
         val hideDialog: () -> Unit
-    ): NewPlaceEvent
+    ) : NewPlaceEvent
 
-    data object SaveSelectedDate: NewPlaceEvent
-    data object ResetUiState: NewPlaceEvent
+    data object SaveSelectedDate : NewPlaceEvent
+    data object ResetUiState : NewPlaceEvent
     data class SaveNewPlace(
         val getCoordinatesFromAddress: KSuspendFunction1<String, List<GeocodeLocation>>,
         val getCoordinatesFromLocation: KSuspendFunction0<UserLocation>,
         val addCustomPlace: KSuspendFunction3<PlaceInfo, Uri, LocalDate, Unit>,
         val hideDialog: () -> Unit
-    ): NewPlaceEvent
+    ) : NewPlaceEvent
 
 
-    data object ShowAddressesDialog: NewPlaceEvent
-    data object HideAddressDialog: NewPlaceEvent
-    data object ShowDatePicker: NewPlaceEvent
-    data object HideDatePicker: NewPlaceEvent
-    data object SetNameError: NewPlaceEvent
-    data object SetDescriptionError: NewPlaceEvent
-    data object SetImageDateError: NewPlaceEvent
+    data object ShowAddressesDialog : NewPlaceEvent
+    data object HideAddressDialog : NewPlaceEvent
+    data object ShowDatePicker : NewPlaceEvent
+    data object HideDatePicker : NewPlaceEvent
+    data object SetNameError : NewPlaceEvent
+    data object SetDescriptionError : NewPlaceEvent
+    data object SetImageDateError : NewPlaceEvent
 }

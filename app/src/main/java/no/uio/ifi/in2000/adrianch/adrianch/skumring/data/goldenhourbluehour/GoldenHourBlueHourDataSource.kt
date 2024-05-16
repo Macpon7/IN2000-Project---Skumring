@@ -9,7 +9,6 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.GoldenHourBlueHour
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour.SunriseSunset
-import org.jetbrains.annotations.VisibleForTesting
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -53,11 +52,14 @@ class GoldenHourBlueHourDataSource {
      *
      * date: String - ISO formatted date (YYYY-MM-DD)
      */
-    suspend fun fetchGoldenHourBlueHourTime(lat: String, long: String, date: LocalDate): GoldenHourBlueHour {
+    suspend fun fetchGoldenHourBlueHourTime(
+        lat: String, long: String, date: LocalDate
+    ): GoldenHourBlueHour {
         try {
             val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
             // Fetches info for Central European TZ
-            val path = "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&date=$dateString"
+            val path =
+                "https://api.sunrisesunset.io/json?lat=$lat&lng=$long&timezone=CET&date=$dateString"
             val response = fetchSunriseSunset(path)
 
             return convertResponseToGoldenHourBlueHour(response)
@@ -68,6 +70,7 @@ class GoldenHourBlueHourDataSource {
         }
 
     }
+
     /*
     Function that does the conversion, separated and made public for testing purposes
      */
@@ -75,11 +78,11 @@ class GoldenHourBlueHourDataSource {
         response: SunriseSunset,
     ): GoldenHourBlueHour {
         val goldenHourDateTime: LocalDateTime = formatTime(
-            time = response.results.golden_hour ?: "",
-            date = response.results.date)
+            time = response.results.golden_hour ?: "", date = response.results.date
+        )
         val blueHourDateTime: LocalDateTime = formatTime(
-            time = response.results.dusk ?: "",
-            date = response.results.date)
+            time = response.results.dusk ?: "", date = response.results.date
+        )
         Log.d(logTag, "Golden hour: $goldenHourDateTime, Blue hour: $blueHourDateTime")
         return GoldenHourBlueHour(goldenHour = goldenHourDateTime, blueHour = blueHourDateTime)
     }
@@ -113,8 +116,7 @@ class GoldenHourBlueHourDataSource {
             }
         } catch (e: IndexOutOfBoundsException) {
             time
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Log.e(logTag, "Error handling time", e)
             throw e
         }
