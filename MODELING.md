@@ -25,6 +25,8 @@ For å begrense caset har vi dermed følgende forhåndsbetingelser:
 - lokasjonen som bruker vil se eksisterer i appen, enten som en lokasjon de selv har lagt til eller lokasjonene
 som fulgte med appen.
 
+Følgende diagrammer beskriver use caset fra ulike perspektiver.
+
 ## Use case diagram
 ![img.png](Modeling/Usecasediagram.png)
 
