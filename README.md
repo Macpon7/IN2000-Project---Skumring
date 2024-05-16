@@ -19,8 +19,6 @@ Appen kan hentes under “releases” i github-repoet hvor man kan laste ned en 
 All kode og ressurser er lastet opp i github-repoet, slik at om en ønsker kan man klone prosjektet, åpne det i Android Studio, og kompilere appen selv.
 
 ## Kjøre appen
-Ved å laste ned appen som APK-fil, kan bruker kjøre appen på sin Android-telefon.
-
 Ved å laste ned appen, kan den kjøres i emulator i Android Studio. Emulatoren må kjøpe på emulator med API-nivå minst 31.
 
 ## Biblioteket
