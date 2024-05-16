@@ -107,7 +107,7 @@ fun ListCard(
                 Box( //Box for content description
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Column (
                         modifier = Modifier.padding(8.dp)
@@ -125,7 +125,7 @@ fun ListCard(
                                 modifier = Modifier
                                     .padding(vertical = 2.dp),
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 style = MaterialTheme.typography.headlineSmall,
                             )
                             Row {
@@ -134,7 +134,7 @@ fun ListCard(
                                         Icon(
                                             imageVector = Icons.Outlined.Delete,
                                             contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer)
+                                            tint = MaterialTheme.colorScheme.secondary)
                                     }
                                 }
                                 IconButton(onClick = onFavouriteClick) {
@@ -142,13 +142,13 @@ fun ListCard(
                                         Icon(
                                             imageVector = Icons.Filled.Favorite,
                                             contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                            tint = MaterialTheme.colorScheme.secondary
                                         )
                                     } else {
                                         Icon(
                                             imageVector = Icons.Filled.FavoriteBorder,
                                             contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                            tint = MaterialTheme.colorScheme.secondary
                                         )
 
                                     }
@@ -169,14 +169,14 @@ fun ListCard(
                             Text(
                                 text = stringResource(R.string.weather_condition),
                                 style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 fontWeight = FontWeight.Bold,
                             )
                             Text(
                                 //text changing based on weather conditions, in different textbox because of change of color
                                 text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
                                 style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
 
                             )
 
@@ -242,7 +242,7 @@ fun ListCard(
                     modifier = Modifier
                         .height(100.dp)
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Column (
 
@@ -260,7 +260,7 @@ fun ListCard(
                                 modifier = Modifier
                                     .padding(vertical = 2.dp),
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 style = MaterialTheme.typography.headlineMedium
                             )
                             Spacer(modifier = Modifier.width(20.dp))
@@ -270,13 +270,13 @@ fun ListCard(
                                         Icon(
                                             imageVector = Icons.Filled.Favorite,
                                             contentDescription = stringResource(id = R.string.favourite_unfilled_icon),
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                                         )
                                     } else {
                                         Icon(
                                             imageVector = Icons.Filled.FavoriteBorder,
                                             contentDescription = stringResource(id = R.string.favourite_filled_icon),
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                                         )
                                     }
                                 }
@@ -297,14 +297,14 @@ fun ListCard(
                             Text(
                                 text = stringResource(R.string.weather_condition),
                                 style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 fontWeight = FontWeight.Bold,
                             )
                             Text(
                                 //text changing based on weather conditions, in different textbox because of change of color
                                 text = stringResource(id = place.sunEvents[0].conditions.weatherRating.stringResourceId),
                                 style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 fontWeight = FontWeight.Bold,
                             )
                             Box(
