@@ -21,7 +21,7 @@ All kode og ressurser er lastet opp i github-repoet, slik at om en ønsker kan m
 ## Kjøre appen
 Ved å laste ned appen som APK-fil, kan bruker kjøre appen på sin Android-telefon.
 
-Ved å laste ned appen, kan den kjøres i emulator i Android Studio. SKRIV OM EMULATOR
+Ved å laste ned appen, kan den kjøres i emulator i Android Studio. Emulatoren må kjøpe på emulator med API-nivå minst 31.
 
 ## Biblioteket
 
@@ -35,6 +35,6 @@ Mapbox brukes til å håndtere posisjonsdata, i tillegg til:
 - Reisetidsberegning
 
 Ellers bruker vi følgende:
-Room - brukes som intern database 
-Location - brukes til å håndetere brukerlokasjon.
-Splashscreen - brukes for å lage splashscreen. 
+<br>Room - brukes som intern database 
+<br> Location - brukes til å håndetere brukerlokasjon.
+<br>SplashScreen - brukes for å lage splashscreen. 
