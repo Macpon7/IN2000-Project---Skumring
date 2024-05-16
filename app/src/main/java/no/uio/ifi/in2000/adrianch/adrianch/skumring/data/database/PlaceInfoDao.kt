@@ -15,10 +15,6 @@ interface PlaceInfoDao {
 
     @Query("SELECT * FROM placeInfo WHERE id!=0")
     fun getAllPlaces(): List<PlaceInfoEntity>
-    // for tester: fun getAllPlaces(): List<PlaceInfoEntity>
-
-    //@Query("SELECT * FROM placeInfo WHERE id = :placeId")
-    //suspend fun getPlace(placeId: Int)
 
     @Query("SELECT * FROM placeInfo WHERE id=:placeId")
     fun getOnePlace(placeId: Int): PlaceInfoEntity
@@ -32,7 +28,6 @@ interface PlaceInfoDao {
     @Query("SELECT * FROM placeInfo WHERE is_custom_place = 1")
     fun getCustomPlaces(): List<PlaceInfoEntity>
 
-    //@Insert(onConflict = OnConflictStrategy.REPLACE) use this?
     @Insert
     fun insertCustomPlace(place: PlaceInfoEntity)
 
