@@ -16,13 +16,15 @@ Dokumentasjonen til appen finnes i ARCHIECUTRE.md, og er også beskrevet i rappo
 
 ## Aksessere appen
 
-Under "Releases" finner man den aktuelle versjonen. 
+Under "Releases" finner man den aktuelle versjonen.
 
 All kode og ressurser er lastet opp i github-repoet, slik at om en ønsker kan man klone prosjektet, åpne det i Android Studio, og kompilere appen selv.
 
 ## Kjøre appen
 
 Ved å laste ned appen, kan den kjøres i emulator i Android Studio. Emulatoren må kjøpe på emulator med API-nivå minst 31.
+
+Merk at emulator kan ha problemer med å oppdatere og gi aksess til brukerlokasjon som gjør at hjemskjerm ikke kan laste informasjon, men forhåndsinnstilte og egne lokasjoner funker som normalt. Vår app er i hovedsak testet på fysiske enheter.
 
 ## Biblioteket
 
