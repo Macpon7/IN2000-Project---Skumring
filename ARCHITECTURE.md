@@ -2,7 +2,7 @@
 
 ## MVVM
 
-Vi har basert oss på “MVVM”-arkitektur i at vi har lagt vekt på et tydelig skille mellom datalaget, logikken som virker på dem, logikken som holder styr på tilstanden deres og funksjonene som bringer de til skjermen. Lagret i forskjellige pakker og med en oversiktlig mappestruktur er det meget enkelt å navigere seg frem til delene av appen man ønsker å jobbe med, enten det er logikken som bestemmer hvorvidt været er bra eller hvordan det presenteres på skjermen. Alle Views har sin egen ViewModel, og en ViewModel kan kalle på flere repositories. Repositories kan kalle på flere DataSources som lager klasser basert på Models, og lage sine egne klasser ut av å kombinere dataen den tar inn.
+Vi har basert oss på “MVVM”-arkitektur i at vi har lagt vekt på et tydelig skille mellom datalaget, logikken som virker på dem, logikken som holder styr på tilstanden deres og funksjonene som bringer de til skjermen. Lagret i forskjellige pakker og med en oversiktlig mappestruktur er det meget enkelt å navigere seg frem til delene av appen man ønsker å jobbe med, enten det er logikken som bestemmer hvorvidt været er bra eller hvordan det presenteres på skjermen. Alle Views har sin egen ViewModel, og en ViewModel kan kalle på flere repositories. Repositories kan kalle på flere DataSources som lager klasser basert på Models, og lager sine egne klasser ved å kombinere dataen den tar inn.
 Cluet med MVVM for oss var at vi satte opp interfaces og tomme klasser slik at vi kunne kode parallelt i alle lag da vi hadde laget klassene med hva de skulle inneholde og tomme funksjoner med parametre og returverdi. Da trenger ikke logikken skrives med én gang, men man kan fortsatt skrive Views som displayer dummydata.
 
 ## Model
@@ -24,7 +24,7 @@ I det store og hele har vi forsøkt å holde objektene så spesifikke som mulig,
 
 ## Kommentering
 
-Docstrings og kommentering av kode er delvis mangelfull da vi mot slutten av prosjektet måtte legge 100 % fokus på å få kodeoppgavene vi var tildelte til å fungere som de skulle. Vi har også kjørt autoformatter på alle filer. Vi er ikke enige i alt den har foreslått, men har gått med på det meste da dette er anbefalt at vi gjør. 
+Docstrings og kommentering av kode er delvis mangelfull da vi mot slutten av prosjektet måtte legge 100 % fokus på å få kodeoppgavene vi var tildelte til å fungere som de skulle. Vi har også kjørt autoformatter på alle filer. Vi er ikke enige i alt den har foreslått, men har gått med på det meste da dette er anbefalt at vi gjør.
 
 ## Androidversjon
 
@@ -32,7 +32,7 @@ Skumring kjører på minimum API level 31 da dette kreves for stabilitet i MapBo
 
 # Errors og Warnings
 
-Her har vi benyttet oss av Android Studio sin "Problems" for å finne og håndtere. 
+Her har vi benyttet oss av Android Studio sin "Problems" for å finne og håndtere.
 
 ## Errors
 
@@ -64,4 +64,3 @@ Naming conventions: Den klager på dårlig navnekonvensjon i responsklassene til
 ### Proofreading
 
 Android Studio liker ikke norsk, pluss et par stavefeil i noen variabler.
-
