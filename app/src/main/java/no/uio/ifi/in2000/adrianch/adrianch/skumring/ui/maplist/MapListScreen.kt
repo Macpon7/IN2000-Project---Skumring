@@ -625,7 +625,7 @@ fun BottomSheetContent(
 
 
 /**
- * Placeholder for the map display area
+ * Map display area
  */
 @OptIn(MapboxExperimental::class)
 @Composable
@@ -633,9 +633,19 @@ fun MapArea(
     mapListUiState: MapListUiState,
     mapListViewModel: MapListViewModel
 ) {
-
-    val userPoint =
-        Point.fromLngLat(mapListUiState.userLong.toDouble(), mapListUiState.userLat.toDouble())
+    // Loading in user location, checking that it has been updated from default.
+    // If not, handling so we get a nice display over Norway.
+    val userLong = mapListUiState.userLong.toDouble()
+    val userLat = mapListUiState.userLat.toDouble()
+    val userPoint: Point
+    val userZoom: Double
+    if (userLong == 0.0 && userLat == 0.0) {
+        userPoint = Point.fromLngLat(10.0, 60.0)
+        userZoom = 3.0
+    } else {
+        userPoint = Point.fromLngLat(userLong, userLat)
+        userZoom = 10.0
+    }
     val context = LocalContext.current
     val style: String = if (isSystemInDarkTheme()) {
         Style.DARK
@@ -671,7 +681,7 @@ fun MapArea(
                 mapView.camera.flyTo(
                     cameraOptions = CameraOptions.Builder()
                         .center(userPoint)
-                        .zoom(10.0)
+                        .zoom(userZoom)
                         .build()
                 )
             }
@@ -712,13 +722,16 @@ fun MapArea(
             }
         )
         // User location
-        PointAnnotation(
-            point = userPoint,
-            iconImageBitmap = AppCompatResources.getDrawable(
-                context,
-                R.drawable.user_location_puck
-            )!!.toBitmap()
-        )
+        // If userloc hasn't been updated from default, we don't bother creating user location icon
+        if (userLong != 0.0 && userLat != 0.0) {
+            PointAnnotation(
+                point = userPoint,
+                iconImageBitmap = AppCompatResources.getDrawable(
+                    context,
+                    R.drawable.user_location_puck
+                )!!.toBitmap()
+            )
+        }
 
     }
 }
