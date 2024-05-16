@@ -34,6 +34,7 @@ Mapbox brukes til å håndtere posisjonsdata, i tillegg til:
 - Avstandsberegning
 - Reisetidsberegning
 
-Room brukes som intern database med SQLite
-Location brukes til å håndetre brukerlokasjon.
-Splashscreen for å la os slage splasshcreen. 
+Ellers bruker vi følgende:
+Room - brukes som intern database 
+Location - brukes til å håndetere brukerlokasjon.
+Splashscreen - brukes for å lage splashscreen. 
