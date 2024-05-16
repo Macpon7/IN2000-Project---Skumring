@@ -28,29 +28,38 @@ Docstrings og kommentering av kode er delvis mangelfull da vi mot slutten av pro
 
 ## Androidversjon
 
-Skumring kjører på minimum API level 26 da dette kreves for brukerlokasjon, en sentral funksjonalitet for løsningen. Mesteparten av testingen har foregått på API level 28 og 31 med Android Version 12.0.
+Skumring kjører på minimum API level 31 da dette kreves for stabilitet i MapBox og måten vi løste slpashscreen på. MapBox ble brukt for å løse lokasjonstjenester brukerne våre ønsket.Mesteparten av testingen har foregått på API level 31 med Android Version 12.0.
+
+## Errors
+
+Det er et par errors, men disse er suppressed da vi har drevet med eksperimentelle API-er.
 
 ## Warnings
 
-Nye versjoner
+### Android Lint
 
-Long vector name
+- **Redundant Label:** Lar vi stå fordi vi liker den
+- **Long Vector Paths:** Disse er autogenererte og skal ikke endres i kode, vi lar de stå.
+- **Obsolete SDKs:** Vi måtte bruke et eldre bibliotek på for å håndtere info om appen lokalt, for eksempel når den starter for første gang og hvilket språk bruker vil ha. Sistnevnte endte vi med å ikke implementere.
+- **Static Field Leaks:** MyPageViewModel trenger context, så denne blir ignorert. Design feature.
+- **Image defined in density-independent drawable folder:** Vi la alle ikoner i drawable-mappen selv om de er PNG-er. Vi anser dette som trygt nok for nå da vi antar at DPI holder seg jevnt på tvers av bruk, og ikke vil bli utsatt for store sprik.
+- **Monochrome icon is not defined:** Vi har bare en variant av ikonet, og den er ikke monokrom.
 
-Leaks context i mypageviewmodel - Suppressed, vi må ha den
+### JVM Languages
 
-Image defined in density-independent drawable for preset images - Kun én oppløsning, antar at DPI holder seg konsekvent nok til at det ikke blir prob
+- **Possibly blocking call in non-blocking context:** Vi prøvde å justere på denne uten suksess. Den dukket opp helt til slutt, og vi har ikke rukket å fikse den.
 
-Monochrome not defined - Suppressed, vi har bar een variant av ikonet med flere farger - Lager ikke monokrom
+### Java
 
-Suspend er redundant: Nei det er det ikke, hvorfor sier du dette
+Feilene her er ikke feil og ignoreres. Den forstår ikke event handling parametre og hevder noen funksjoner ikke krever suspend når de gjør det. I tillegg tror den at diverse andre parametre og variable ikke blir brukt når de gjør det. "Empty methods" er dummyfunksjoner som brukes i previews til composables som krever event handlers.
 
-Mangler docstrings
+### Kotlin
 
-Empty functions: Dummyfunksjoner som brukes som parametre til previews
+Naming conventions: Den klager på dårlig navnekonvensjon i responsklassene til API. Disse blir ignorert da disse klasenavnene må være identiske til det de tilsvarer i JSON-filen vi får.
 
-Kjører du analyser vil Java klage på en del, men alt dette er tatt hånd om. Gjelder parametre, f eks egne exceptions
+### Proofreading
 
-Responsklassene får weak warnings på navnekonvensjon i Kotlin, men de må være identiske med hvordan json presenterer de
+Android Studio liker ikke norsk, pluss et par stavefeil i noen variable. 
 
 Settings: Språk - Forsøk på å la bruker endre språk manuelt, men dette ble for vrient så sent. Ubrukt, men del av enumklassen som ikke brukes, men vi tør ikke kødde med denå
 
@@ -58,7 +67,7 @@ Redundant Suspend: Jo, de må suspendes
 
 Unused parameter: Jo, den er used
 
-command + shift + l - Kjørt autoformatter, ikke alt vi er enige med, men er anbefalt at vi gjøre det. Et par veldig oversiktlige linebreaks den automatisk gikk gjennom 
+command + shift + l - Kjørt autoformatter, ikke alt vi er enige med, men er anbefalt at vi gjøre det. Et par veldig oversiktlige linebreaks den automatisk gikk gjennom
 
 Vector 200x200 to keep it fast - Det er moderikonet, trenger ikkev ære kjapt
 

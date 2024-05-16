@@ -21,8 +21,7 @@ android {
     }
     defaultConfig {
         applicationId = "no.uio.ifi.in2000.adrianch.adrianch.skumring"
-        minSdk = 26
-        targetSdk = 34
+        minSdk = 31
         versionCode = 1
         versionName = "1.0"
 
