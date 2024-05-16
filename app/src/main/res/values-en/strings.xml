@@ -20,7 +20,6 @@
     <string name="information">Information</string>
     <string name="home_sunset">Sunset today</string>
     <string name="home_favourite_places">Favourite places</string>
-    <string name="no_favourites">No favourites!</string>
 
     <string name="conditions_poor">Poor</string>
     <string name="conditions_decent">Decent</string>
@@ -68,7 +67,6 @@
     <string name="drive">Drive</string>
 
     <!-- MyPageScreen -->
-    <string name="no_location">You have no locations saved yet</string>
     <string name="new_place_add_photo">Add photo</string>
     <string name="new_place_location_name">Name</string>
     <string name="new_place_address">Address</string>
@@ -89,9 +87,6 @@
     <string name="weather_conditions_excellent_explanation">There should be some clouds in the middle to high levels, low moisture and excellent visibility!</string>
     <string name="weather_conditions_decent_explanation">A little cloudy, but hopefully still makes for a nice photo!</string>
     <string name="weather_conditions_poor_explanation">The clouds are hanging low, visibility is not good and does not make for good picture taking conditions</string>
-    <string name="means_of_transport_walking">Walking</string>
-    <string name="means_of_transportation_biking">Biking</string>
-    <string name="means_of_transportation_driving">Driving</string>
 
     <string name="placeInfo_less_details_button">Show less</string>
     <string name="placeInfo_more_details_button">Show more</string>
@@ -122,7 +117,6 @@
     <string name="delete_place_confirmation">Are you sure?</string>
     <string name="delete_place_info">This place will be permanently deleted!</string>
     <string name="delete_place_confirm_button">Delete</string>
-    <string name="double_arrow">double arrow icon</string>
     <string name="find_loaction">Find location</string>
     <string name="new_place_required">*required</string>
     <string name="new_place_use_phone_location">Use phone\'s location</string>

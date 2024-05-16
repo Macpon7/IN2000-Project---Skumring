@@ -24,11 +24,15 @@ I det store og hele har vi forsøkt å holde objektene så spesifikke som mulig,
 
 ## Kommentering
 
-Docstrings og kommentering av kode er delvis mangelfull da vi mot slutten av prosjektet måtte legge 100 % fokus på å få kodeoppgavene vi var tildelte til å fungere som de skulle.
+Docstrings og kommentering av kode er delvis mangelfull da vi mot slutten av prosjektet måtte legge 100 % fokus på å få kodeoppgavene vi var tildelte til å fungere som de skulle. Vi har også kjørt autoformatter på alle filer. Vi er ikke enige i alt den har foreslått, men har gått med på det meste da dette er anbefalt at vi gjør. 
 
 ## Androidversjon
 
 Skumring kjører på minimum API level 31 da dette kreves for stabilitet i MapBox og måten vi løste slpashscreen på. MapBox ble brukt for å løse lokasjonstjenester brukerne våre ønsket.Mesteparten av testingen har foregått på API level 31 med Android Version 12.0.
+
+# Errors og Warnings
+
+Her har vi benyttet oss av Android Studio sin "Problems" for å finne og håndtere. 
 
 ## Errors
 
@@ -59,22 +63,5 @@ Naming conventions: Den klager på dårlig navnekonvensjon i responsklassene til
 
 ### Proofreading
 
-Android Studio liker ikke norsk, pluss et par stavefeil i noen variable. 
+Android Studio liker ikke norsk, pluss et par stavefeil i noen variabler.
 
-Settings: Språk - Forsøk på å la bruker endre språk manuelt, men dette ble for vrient så sent. Ubrukt, men del av enumklassen som ikke brukes, men vi tør ikke kødde med denå
-
-Redundant Suspend: Jo, de må suspendes
-
-Unused parameter: Jo, den er used
-
-command + shift + l - Kjørt autoformatter, ikke alt vi er enige med, men er anbefalt at vi gjøre det. Et par veldig oversiktlige linebreaks den automatisk gikk gjennom
-
-Vector 200x200 to keep it fast - Det er moderikonet, trenger ikkev ære kjapt
-
-typos: Lol
-
-Android studio problems tool
-
-Runblocking: For irriterende å fikse
-
-Old voersion of androidx activity: For å få user settings
