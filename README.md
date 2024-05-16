@@ -21,7 +21,7 @@ All kode og ressurser er lastet opp i github-repoet, slik at om en ønsker kan m
 ## Kjøre appen
 Ved å laste ned appen som APK-fil, kan bruker kjøre appen på sin Android-telefon.
 
-Ved å laste ned appen, kan den kjøres i emulator i Android Studio.
+Ved å laste ned appen, kan den kjøres i emulator i Android Studio. SKRIV OM EMULATOR
 
 ## Biblioteket
 
