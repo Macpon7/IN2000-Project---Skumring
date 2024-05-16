@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFloatingActionButton
@@ -69,6 +68,7 @@ fun MyPageScreen(
 
     // Load the list of custom places every time the user navigates to this screen
     LaunchedEffect(Unit) {
+        myPageViewModel.snackbarDismissed()
         myPageViewModel.loadCustomPlaces()
     }
 

@@ -101,6 +101,7 @@ fun HomeScreen(
 
     //Load the favourites every time the user navigates to this screen
     LaunchedEffect(Unit) {
+        homeViewModel.snackbarDismissed()
         homeViewModel.loadHomeScreen()
     }
 

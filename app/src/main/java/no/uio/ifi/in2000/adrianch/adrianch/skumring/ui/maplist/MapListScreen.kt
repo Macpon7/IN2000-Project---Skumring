@@ -134,6 +134,7 @@ fun MapListScreen(
 
     // Load all places every time the user navigates to this screen
     LaunchedEffect(Unit) {
+        mapListViewModel.snackbarDismissed()
         mapListViewModel.loadPlaces()
         mapListViewModel.updateUserLocation()
     }

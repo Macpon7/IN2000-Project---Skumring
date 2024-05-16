@@ -125,6 +125,7 @@ fun PlaceInfoScreen(
 
     LaunchedEffect(Unit) {
         Log.d(TAG, "LaunchedEffect called, loading place with id: $id")
+        placeInfoViewModel.snackbarDismissed()
         placeInfoViewModel.loadPlaceInfo(id = id)
     }
 

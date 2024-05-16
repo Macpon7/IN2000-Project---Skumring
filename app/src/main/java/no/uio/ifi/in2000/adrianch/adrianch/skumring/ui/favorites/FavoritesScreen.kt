@@ -65,6 +65,7 @@ fun FavoritesScreen(
 
     // Load the list of favourites every time the user navigates to this screen
     LaunchedEffect(Unit) {
+        favoritesViewModel.snackbarDismissed()
         favoritesViewModel.loadList()
     }
 
