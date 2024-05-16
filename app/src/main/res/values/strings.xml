@@ -224,4 +224,5 @@
     <string name="error_message_fetching_directions">Feil med å hente avstand fra stedet</string>
     <string name="error_message_no_forecast">Kan ikke hente værdata uten internett</string>
     <string name="app_icon">app ikonet</string>
+    <string name="new_user_dialog_finished">Ferdig</string>
 </resources>

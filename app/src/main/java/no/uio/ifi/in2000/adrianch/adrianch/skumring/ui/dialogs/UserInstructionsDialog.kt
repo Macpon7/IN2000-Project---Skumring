@@ -38,6 +38,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 
@@ -47,74 +49,94 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
  */
 @Composable
 fun UserInstructionsDialog(
-    closeDialog: () -> Unit
+    closeDialog: () -> Unit,
+    finishDialog: () -> Unit
 ) {
     var currentScreen by remember { mutableIntStateOf(0) }
     val totalScreens = 8
 
-    Card(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp), colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        )
+    Dialog(
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        ),
+        onDismissRequest = closeDialog
     ) {
-        Column(
-            modifier = Modifier.padding(10.dp)
-        ) {
-            //goes through each screen
-            when (currentScreen) {
-                0 -> FirstScreenInstructions()
-                1 -> HomeScreenInstructions()
-                2 -> HomeScreenInstructionsFavourite()
-                3 -> MapListInstructions()
-                4 -> MapListInstructionsPopUp()
-                5 -> PlaceInfoInstructions()
-                6 -> NewPlaceDialogInstructions()
-                7 -> LastScreenInstructions()
-            }
-        }
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.End,
+        Card(
             modifier = Modifier
-                .padding(end = 15.dp, top = 10.dp, bottom = 20.dp)
                 .fillMaxSize()
+                .padding(20.dp), colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            )
         ) {
-            TextButton(
-                onClick = {
-                    closeDialog()
-                },
-                contentPadding = PaddingValues(10.dp),
+            Column(
+                modifier = Modifier.padding(10.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.close),
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    style = MaterialTheme.typography.titleLarge,
-                )
+                //goes through each screen
+                when (currentScreen) {
+                    0 -> FirstScreenInstructions()
+                    1 -> HomeScreenInstructions()
+                    2 -> HomeScreenInstructionsFavourite()
+                    3 -> MapListInstructions()
+                    4 -> MapListInstructionsPopUp()
+                    5 -> PlaceInfoInstructions()
+                    6 -> NewPlaceDialogInstructions()
+                    7 -> LastScreenInstructions()
+                }
             }
-            //button for clicking next
-            Button(
-                onClick = {
-                    currentScreen++
-                    if (currentScreen >= totalScreens) {
-                        currentScreen = 0
-                        closeDialog()
-                    }
-                },
-                contentPadding = PaddingValues(
-                    top = 8.dp, bottom = 10.dp, start = 20.dp, end = 20.dp
-                ),
-                modifier = Modifier.padding(start = 15.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .padding(end = 15.dp, top = 10.dp, bottom = 20.dp)
+                    .fillMaxSize()
             ) {
-                Text(
-                    text = stringResource(id = R.string.UserInstructionsDialog_next_button),
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
+                TextButton(
+                    onClick = if (currentScreen == 0) {
+                        { closeDialog() }
+                    } else {
+                        { currentScreen-- }
+                    },
+                    contentPadding = PaddingValues(10.dp),
+                ) {
+                    Text(
+                        text = if (currentScreen == 0) {
+                            stringResource(id = R.string.close)
+                        } else {
+                            stringResource(id = R.string.back_button)
+                        },
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
+                //button for clicking next
+                Button(
+                    onClick = {
+                        if (currentScreen == 7) {
+                            currentScreen = 0
+                            finishDialog()
+                        } else {
+                            currentScreen++
+                        }
 
+                    },
+                    contentPadding = PaddingValues(
+                        top = 8.dp, bottom = 10.dp, start = 20.dp, end = 20.dp
+                    ),
+                    modifier = Modifier.padding(start = 15.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+                ) {
+                    Text(
+                        text = if (currentScreen != 7) {
+                            stringResource(id = R.string.UserInstructionsDialog_next_button)
+                        } else {
+                            stringResource(id = R.string.new_user_dialog_finished)
+                        },
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+
+            }
         }
     }
 }
@@ -132,7 +154,7 @@ fun FirstScreenInstructions() {
         Text(
             text = stringResource(R.string.firstscreen_instructions_welcome_skumring),
             style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.outlineVariant,
             modifier = Modifier.padding(top = 35.dp, bottom = 35.dp)
         )
         Icon(
@@ -146,14 +168,14 @@ fun FirstScreenInstructions() {
         Text(
             text = stringResource(R.string.firstscreen_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.outlineVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 30.dp)
         )
         Text(
             text = stringResource(R.string.firstscreen_moreinfo_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.outlineVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 65.dp)
         )
@@ -178,7 +200,7 @@ fun HomeScreenInstructions() {
         Text(
             text = stringResource(R.string.homescreen_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.outlineVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 15.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
@@ -194,28 +216,28 @@ fun HomeScreenInstructions() {
             Text(
                 text = "1." + stringResource(R.string.homescreen_instructions_1),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
                 text = "2." + stringResource(R.string.homescreen_instructions_2),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "3." + stringResource(R.string.homescreen_instructions_3),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "4." + stringResource(R.string.homescreen_instructions_4),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
@@ -257,7 +279,7 @@ fun HomeScreenInstructionsFavourite() {
         Text(
             text = stringResource(R.string.homescreen_favourite_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.outlineVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 25.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
@@ -269,7 +291,7 @@ fun HomeScreenInstructionsFavourite() {
             Text(
                 text = "1." + stringResource(R.string.homescreen_favourite_instruction),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
@@ -310,7 +332,7 @@ fun MapListInstructions() {
         Text(
             text = stringResource(R.string.maplistscreen_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.outlineVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 15.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
@@ -322,21 +344,21 @@ fun MapListInstructions() {
             Text(
                 text = "1." + stringResource(R.string.maplistscreen_instructions_1),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
                 text = "2." + stringResource(R.string.maplistscreen_instructions_2),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "3." + stringResource(R.string.maplistscreen_instructions_3),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
@@ -378,7 +400,7 @@ fun MapListInstructionsPopUp() {
         Text(
             text = stringResource(R.string.maplistscreen_popup_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.outlineVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 25.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
@@ -390,21 +412,21 @@ fun MapListInstructionsPopUp() {
             Text(
                 text = "1." + stringResource(R.string.maplist_popup_instructions_1),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
                 text = "2." + stringResource(R.string.maplist_popup_instructions_2),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "3." + stringResource(R.string.maplist_popup_instructions_3),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
@@ -447,7 +469,7 @@ fun PlaceInfoInstructions() {
         Text(
             text = stringResource(R.string.placeinfoscreen_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.outlineVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 15.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
@@ -459,21 +481,21 @@ fun PlaceInfoInstructions() {
             Text(
                 text = "1." + stringResource(R.string.placeinfoscreen_instructions_1),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
                 text = "2." + stringResource(R.string.placeinfoscreen_instructions_2),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "3." + stringResource(R.string.placeinfoscreen_instructions_3),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
@@ -515,7 +537,7 @@ fun NewPlaceDialogInstructions() {
         Text(
             text = stringResource(R.string.mypagescreen_instructions_skumring),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.outlineVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 25.dp, start = 10.dp, end = 10.dp, bottom = 15.dp)
         )
@@ -527,21 +549,21 @@ fun NewPlaceDialogInstructions() {
             Text(
                 text = "1." + stringResource(R.string.newplacedialog_instructions_1),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 35.dp)
             )
             Text(
                 text = "2." + stringResource(R.string.newplacedialog_instructions_2),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Text(
                 text = "3." + stringResource(R.string.newplacedialog_instructions_3),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(top = 20.dp)
             )
@@ -579,7 +601,7 @@ fun LastScreenInstructions() {
         Text(
             text = stringResource(R.string.lastdialog_instructions_skumring),
             style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.outlineVariant,
             modifier = Modifier.padding(top = 35.dp, bottom = 35.dp)
         )
         Icon(
@@ -601,8 +623,7 @@ fun UserInstructionsDialogTest(
 ) {
     SkumringTheme(useDarkTheme = true) {
         Surface {
-            val closeDialog: () -> Unit = {}
-            UserInstructionsDialog(closeDialog)
+            UserInstructionsDialog(closeDialog = {}, finishDialog = {})
         }
     }
 }

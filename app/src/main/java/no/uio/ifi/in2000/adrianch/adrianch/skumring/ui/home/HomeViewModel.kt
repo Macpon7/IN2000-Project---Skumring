@@ -44,6 +44,9 @@ data class HomeUiState(
     // Variable to check if we are loading weather info
     var isLoading: Boolean = true,
 
+    // Variable to check if we need to show the intro dialog
+    val showFirstTimeDialog: Boolean = true,
+
     var favoritePlaces: List<PlaceInfo> = emptyList(),
 
     // Variable for checking if there is an error:
@@ -214,6 +217,16 @@ class HomeViewModel(
             Theme.DARK_MODE -> blueHourIconDarkMode
             Theme.LIGHT_MODE -> blueHourIconLightMode
             else -> blueHourIconDarkMode
+        }
+    }
+
+    fun hideFirstTimeDialog() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _homeUiState.update { currentHomeUiState ->
+                currentHomeUiState.copy(
+                    showFirstTimeDialog = false
+                )
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.home
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -63,6 +64,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.UserInstructionsDialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
@@ -150,6 +152,21 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.surface),
         ) {
+            val preferences = LocalContext.current.getSharedPreferences("user_settings", ComponentActivity.MODE_PRIVATE)
+            val editor = preferences.edit()
+            val isFirstLaunch = preferences.getBoolean("first_launch", false)
+
+            if (homeUiState.showFirstTimeDialog && isFirstLaunch) {
+                UserInstructionsDialog(
+                    closeDialog = { homeViewModel.hideFirstTimeDialog() },
+                    finishDialog = {
+                        editor.putBoolean("first_launch", false).apply()
+                        homeViewModel.hideFirstTimeDialog()
+                    }
+                )
+            }
+
+
             SunsetInfoCard(
                 homeUiState = homeUiState,
                 homeViewModel = homeViewModel

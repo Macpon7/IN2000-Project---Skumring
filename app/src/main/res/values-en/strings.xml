@@ -208,4 +208,5 @@
     <string name="error_message_new_place_dialog">Error adding a new place</string>
     <string name="error_message_fetching_directions">Error fetching distance from place</string>
     <string name="error_message_no_forecast">Cannot fetch weather data without internet</string>
+    <string name="new_user_dialog_finished">Finish</string>
 </resources>
