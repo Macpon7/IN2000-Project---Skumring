@@ -7,10 +7,9 @@ import androidx.room.PrimaryKey
 import java.time.LocalDate
 
 @Entity(
-    tableName = "images",
-    foreignKeys = [
-        ForeignKey(entity = PlaceInfoEntity::class, parentColumns = ["id"], childColumns = ["place_id"])
-    ]
+    tableName = "images", foreignKeys = [ForeignKey(
+        entity = PlaceInfoEntity::class, parentColumns = ["id"], childColumns = ["place_id"]
+    )]
 )
 data class ImageEntity(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,

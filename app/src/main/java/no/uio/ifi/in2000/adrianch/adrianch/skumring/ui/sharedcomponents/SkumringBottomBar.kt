@@ -23,8 +23,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.SettingsScreenDe
 
 @Composable
 fun SkumringBottomBar(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
+    navController: NavHostController, modifier: Modifier = Modifier
 ) {
     // List with the screens, will be updated when we have more screens:
     val screens = listOf(
@@ -42,8 +41,10 @@ fun SkumringBottomBar(
 
             NavigationBarItem(
                 label = {
-                    Text(text = stringResource(screen.buttonTitle!!),
-                        style = MaterialTheme.typography.bodyMedium) // Have to use StringResource to make the resource to String
+                    Text(
+                        text = stringResource(screen.buttonTitle!!),
+                        style = MaterialTheme.typography.bodyMedium
+                    ) // Have to use StringResource to make the resource to String
                 },
                 icon = {
                     screen.icon?.let { Icon(imageVector = it, contentDescription = "") }
@@ -57,8 +58,7 @@ fun SkumringBottomBar(
                     if (currentRoute == PlaceInfoScreenDestination.route || currentRoute == SettingsScreenDestination.route) {
                         navController.popBackStack()
                     }
-                    navController.navigate(screen.route)
-                    {
+                    navController.navigate(screen.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
@@ -66,13 +66,13 @@ fun SkumringBottomBar(
                         restoreState = true
                     }
                 },
-               colors = NavigationBarItemDefaults.colors(
-                 unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                   selectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                   selectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                   indicatorColor = MaterialTheme.colorScheme.inversePrimary,
+                colors = NavigationBarItemDefaults.colors(
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    selectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    selectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    indicatorColor = MaterialTheme.colorScheme.inversePrimary,
 
-                ),
+                    ),
             )
         }
     }

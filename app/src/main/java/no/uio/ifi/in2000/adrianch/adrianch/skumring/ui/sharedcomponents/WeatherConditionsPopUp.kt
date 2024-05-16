@@ -49,8 +49,7 @@ fun WeatherIconPopUp(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top
+                    modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top
                 ) {
                     Icon(
                         Icons.Default.Info,
@@ -142,7 +141,7 @@ fun WeatherIconPopUp(
                         onClick = onClose
                     ) {
                         Text(
-                            stringResource(id =  R.string.close),
+                            stringResource(id = R.string.close),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold

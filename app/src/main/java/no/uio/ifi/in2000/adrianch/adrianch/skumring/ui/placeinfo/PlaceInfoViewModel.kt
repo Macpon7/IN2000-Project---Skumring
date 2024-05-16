@@ -2,7 +2,6 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.placeinfo
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
@@ -27,7 +26,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTran
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.place.PlaceInfo
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.userlocation.UserLocation
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings.Theme
 
 private const val logTag = "PlaceInfoViewModel"
 
@@ -123,7 +121,7 @@ class PlaceInfoViewModel(
         }
     }
 
-    fun loadTimeDistance() {
+    private fun loadTimeDistance() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val userLoc: UserLocation = userLocationRepository.getUserLocation()
@@ -180,12 +178,6 @@ class PlaceInfoViewModel(
         }
     }
 
-    private fun getCurrentSystemTheme(context: Context): Theme {
-        return when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> Theme.DARK_MODE
-            else -> Theme.LIGHT_MODE
-        }
-    }
 }
 
 

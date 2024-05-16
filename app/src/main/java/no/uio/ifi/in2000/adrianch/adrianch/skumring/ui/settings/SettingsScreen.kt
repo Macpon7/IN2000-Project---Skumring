@@ -116,8 +116,7 @@ fun ChooseTheme(
 
     val settingsUiState: SettingsUiState by settingsViewModel.settingsUiState.collectAsState()
 
-    ExposedDropdownMenuBox(
-        expanded = settingsUiState.isThemeDropdownExpanded,
+    ExposedDropdownMenuBox(expanded = settingsUiState.isThemeDropdownExpanded,
         onExpandedChange = { settingsViewModel.toggleThemeDropdown() }) {
         TextField(
             modifier = Modifier
@@ -148,11 +147,9 @@ fun ChooseTheme(
                 unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer
             ),
         )
-        ExposedDropdownMenu(
-            modifier = Modifier.fillMaxWidth(),
+        ExposedDropdownMenu(modifier = Modifier.fillMaxWidth(),
             expanded = settingsUiState.isThemeDropdownExpanded,
-            onDismissRequest = { settingsViewModel.toggleThemeDropdown() }
-        ) {
+            onDismissRequest = { settingsViewModel.toggleThemeDropdown() }) {
             DropdownMenuItem(
                 modifier = Modifier,
                 text = {
@@ -168,36 +165,28 @@ fun ChooseTheme(
                     )
                 },
             )
-            DropdownMenuItem(
-                modifier = Modifier,
-                text = {
-                    Text(
-                        text = stringResource(R.string.light_mode),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                },
-                onClick = {
-                    settingsViewModel.updateTheme(
-                        theme = Theme.LIGHT_MODE
-                    )
-                }
-            )
-            DropdownMenuItem(
-                modifier = Modifier,
-                text = {
-                    Text(
-                        text = stringResource(R.string.dark_mode),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                },
-                onClick = {
-                    settingsViewModel.updateTheme(
-                        theme = Theme.DARK_MODE
-                    )
-                }
-            )
+            DropdownMenuItem(modifier = Modifier, text = {
+                Text(
+                    text = stringResource(R.string.light_mode),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }, onClick = {
+                settingsViewModel.updateTheme(
+                    theme = Theme.LIGHT_MODE
+                )
+            })
+            DropdownMenuItem(modifier = Modifier, text = {
+                Text(
+                    text = stringResource(R.string.dark_mode),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }, onClick = {
+                settingsViewModel.updateTheme(
+                    theme = Theme.DARK_MODE
+                )
+            })
         }
     }
 }

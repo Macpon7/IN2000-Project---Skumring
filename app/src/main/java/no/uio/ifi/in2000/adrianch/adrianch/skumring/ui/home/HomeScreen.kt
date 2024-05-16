@@ -145,31 +145,30 @@ fun HomeScreen(
             SkumringBottomBar(navController = navController)
         },
         snackbarHost = { SnackbarHost(hostState = homeUiState.snackbarHostState) },
-        ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
+    ) { innerPadding -> //Here is what will be shown inside the scaffold of the screen
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState()) //makes the column scrollable
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.surface),
         ) {
-            val preferences = LocalContext.current.getSharedPreferences("user_settings", ComponentActivity.MODE_PRIVATE)
+            val preferences = LocalContext.current.getSharedPreferences(
+                "user_settings", ComponentActivity.MODE_PRIVATE
+            )
             val editor = preferences.edit()
             val isFirstLaunch = preferences.getBoolean("first_launch", false)
 
             if (homeUiState.showFirstTimeDialog && isFirstLaunch) {
-                UserInstructionsDialog(
-                    closeDialog = { homeViewModel.hideFirstTimeDialog() },
+                UserInstructionsDialog(closeDialog = { homeViewModel.hideFirstTimeDialog() },
                     finishDialog = {
                         editor.putBoolean("first_launch", false).apply()
                         homeViewModel.hideFirstTimeDialog()
-                    }
-                )
+                    })
             }
 
 
             SunsetInfoCard(
-                homeUiState = homeUiState,
-                homeViewModel = homeViewModel
+                homeUiState = homeUiState, homeViewModel = homeViewModel
             )
             Text(
                 text = stringResource(R.string.home_favourite_places),
@@ -178,8 +177,7 @@ fun HomeScreen(
                 modifier = Modifier.padding(start = 10.dp)
             )
             HorizontalInfoCardRow(
-                homeUiState = homeUiState,
-                navHostController = navController
+                homeUiState = homeUiState, navHostController = navController
             )
         }
     }
@@ -190,8 +188,7 @@ fun HomeScreen(
  */
 @Composable
 fun SunsetInfoCard(
-    homeUiState: HomeUiState,
-    homeViewModel: HomeViewModel
+    homeUiState: HomeUiState, homeViewModel: HomeViewModel
 ) { //, add goldenHourTime: String, blueHourTime: String later
 
 
@@ -213,14 +210,12 @@ fun SunsetInfoCard(
     }
 
     Card(
-        shape = RoundedCornerShape(15.dp),
-        modifier = Modifier
+        shape = RoundedCornerShape(15.dp), modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
     ) {
         Box( //Need box as an overlay over card for color gradient
-            modifier = Modifier
-                .background(
+            modifier = Modifier.background(
                     Brush.verticalGradient(
                         listOf(
                             MaterialTheme.colorScheme.inverseSurface,
@@ -229,8 +224,7 @@ fun SunsetInfoCard(
                         )
                     )
                 )
-        )
-        {
+        ) {
 
             //Displaying the information in the card
             Column(
@@ -244,9 +238,8 @@ fun SunsetInfoCard(
                 )
                 Box { //Sunset icon and time of sunset, in box because it needs to overlap
                     if (homeUiState.isLoading) {
-                        Box (
-                            modifier = Modifier.size(140.dp),
-                            contentAlignment = Alignment.Center
+                        Box(
+                            modifier = Modifier.size(140.dp), contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(100.dp),
@@ -258,8 +251,7 @@ fun SunsetInfoCard(
                             painter = painterResource(id = R.drawable.sunsetsymbol),
                             contentDescription = stringResource(id = R.string.homescreen_icon_sunset),
                             tint = Color.Unspecified,
-                            modifier = Modifier
-                                .size(140.dp)
+                            modifier = Modifier.size(140.dp)
                         )
                     }
                     Text(
@@ -283,7 +275,8 @@ fun SunsetInfoCard(
                         textAlign = TextAlign.Center,
                     )
                     if (homeUiState.weatherConditionsRating == null) {
-                        Text(text = "N/A",
+                        Text(
+                            text = "N/A",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontWeight = FontWeight.Bold,
@@ -301,15 +294,13 @@ fun SunsetInfoCard(
                     }
 
                     //Clickable icon for showing more info about the weather conditions
-                    Icon(
-                        Icons.Default.Info,
+                    Icon(Icons.Default.Info,
                         contentDescription = stringResource(id = R.string.information),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
                             .clickable { showPopUp = true }
                             .size(30.dp)
-                            .padding(start = 5.dp, bottom = 10.dp)
-                    )
+                            .padding(start = 5.dp, bottom = 10.dp))
                 }
                 if (homeUiState.sunsetWeatherIcon != null && homeUiState.weatherConditionsRating != null) {
                     WeatherIconCheck(
@@ -334,13 +325,8 @@ fun SunsetInfoCard(
                 )
                 Divider( // For dividing sunset today info from golden hour and blue hour times
                     modifier = Modifier.padding(
-                        start = 18.dp,
-                        end = 18.dp,
-                        top = 10.dp,
-                        bottom = 15.dp
-                    ),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    thickness = 1.dp
+                        start = 18.dp, end = 18.dp, top = 10.dp, bottom = 15.dp
+                    ), color = MaterialTheme.colorScheme.onSecondaryContainer, thickness = 1.dp
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -436,11 +422,9 @@ fun HorizontalInfoCardRow(homeUiState: HomeUiState, navHostController: NavHostCo
             items(homeUiState.favoritePlaces) { place ->
 
                 HorizontalInfoCardContent(
-                    place = place,
-                    onItemClick = {
+                    place = place, onItemClick = {
                         navHostController.navigate("placeinfoscreen/${place.id}")
-                    },
-                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
+                    }, modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 5.dp)
                 )
             }
         }
@@ -452,17 +436,14 @@ fun HorizontalInfoCardRow(homeUiState: HomeUiState, navHostController: NavHostCo
  */
 @Composable
 fun HorizontalInfoCardContent(
-    place: PlaceInfo,
-    onItemClick: () -> Unit,
-    modifier: Modifier
+    place: PlaceInfo, onItemClick: () -> Unit, modifier: Modifier
 ) {
     Card(
         modifier = modifier
             .width(220.dp)
             .height(220.dp)
             .clickable(onClick = onItemClick), //Click to infoscreen
-        shape = RoundedCornerShape(15.dp),
-        elevation = 5.dp
+        shape = RoundedCornerShape(15.dp), elevation = 5.dp
     ) {
         Box( //displays the image and the information under the image
             modifier = Modifier.fillMaxSize()
@@ -472,9 +453,7 @@ fun HorizontalInfoCardContent(
                 val context = LocalContext.current
                 val imageFile = File(context.filesDir, place.images[0].path)
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(imageFile)
-                        .build(),
+                    model = ImageRequest.Builder(LocalContext.current).data(imageFile).build(),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -484,8 +463,7 @@ fun HorizontalInfoCardContent(
                     model = "file:///android_asset/presetImages/${place.images[0].path}",
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 )
             }
             Divider( //for dividing photo from bottom text
@@ -518,14 +496,12 @@ fun HorizontalInfoCardContent(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .padding(
-                            bottom = 2.dp,
-                            start = 8.dp,
-                            end = 8.dp
+                            bottom = 2.dp, start = 8.dp, end = 8.dp
                         )
                         .align(Alignment.BottomStart)
                 ) {//Conditions at sunset
                     Text(
-                        text = stringResource(R.string.weather_condition) + " ",
+                        text = stringResource(R.string.weather_condition),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold
@@ -537,20 +513,6 @@ fun HorizontalInfoCardContent(
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontWeight = FontWeight.Bold
                     )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 10.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.double_arrow),
-                            contentDescription = stringResource(R.string.double_arrow),
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .size(25.dp)
-                        )
-                    }
                 }
             }
         }

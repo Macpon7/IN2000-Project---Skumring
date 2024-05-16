@@ -5,40 +5,26 @@
     <string name="nav_map_button">Kart</string>
     <string name="nav_home_button">Hjem</string>
     <string name="nav_fav_button">Favoritter</string>
-    <string name="nav_info_button">Info</string>
     <string name="nav_personal_button">Min side</string>
-    <string name="nav_settings_button">Instillinger</string>
 
     <!-- SnackBar -->
     <string name="refresh">Last inn på nytt</string>
 
     <!-- ErrorMessages: -->
-    <string name="error_message_no_error">Ingen feil</string>
 
     <string name="error_message_loadUserLocation">Kan ikke hente posisjon</string>
-    <string name="error_message_getting_sunset">Feil med å laste ned data om solnedgang</string>
-    <string name="error_message_loading_list">Feil med å laste inn liste</string>
     <string name="error_message_getting_places_from_database">Feil med å laste inn steder fra databasen</string>
     <string name="error_message_getting_placeinfo">Feil med å laste inn info om stedet</string>
 
     <!-- HomeScreen -->
     <string name="information">Info</string>
-    <string name="conditions_are_good">Det blir gode forhold i kveld!</string>
-    <string name="conditions_are_bad">Det blir dårlige forhold i kveld.</string>
     <string name="home_sunset">Solnedgang i dag</string>
-    <string name="list_title">Fine steder i dag</string>
     <string name="home_more_details_button">Mer informasjon</string>
     <string name="home_favourite_places">Favorittsteder</string>
-    <string name="error_sunset">Feil med å få data</string>
-    <string name="error_place_info">Feil med å laste inn stedsinfo</string>
-
-    <string name="loading_user_location">Loading user location</string>
 
     <string name="conditions_poor">Dårlig</string>
     <string name="conditions_decent">Grei nok</string>
     <string name="conditions_excellent">Fantastisk</string>
-
-    <string name="homescreen_sunset_image">Solnedgang bilde</string>
 
     <string name="homescreen_icon_cloudy">Vær ikon skyete</string>
     <string name="homescreen_icon_sunset">Solnedgang ikon</string>
@@ -47,7 +33,6 @@
 
 
     <!-- MapListScreen -->
-    <string name="map_list">Liste og Kart</string>
 
     <string name="toggle_list">Liste</string>
     <string name="toggle_list_icon">Liste ikon</string>
@@ -55,36 +40,23 @@
     <string name="toggle_map">Kart</string>
     <string name="toggle_map_icon">Kart ikon</string>
 
-    <string name="places_nearby">Steder i nærheten</string>
-    <string name="search_hint">Søk</string>
-
     <!-- FavoritesScreen -->
     <string name="no_places">Ingen steder</string>
     <string name="favourites">Favoritter</string>
 
     <!-- PlaceInfoScreen -->
     <string name="picture_taken">Bilde tatt</string>
-    <string name="walking_distance">Gangavstand</string>
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
-    <string name="place_display_placeholder" translatable="false">Place display placeholder</string>
     <string name="placeInfo_less_details_button">Vis mindre</string>
     <string name="placeInfo_more_details_button">Vis mer</string>
-
-    <string name="bad_conditions">Det blir dårlige forhold</string>
-    <string name="ok_conditions">Det blir OK forhold</string>
-    <string name="good_conditions">Det blir fantastiske forhold</string>
-
-    <string name="sundown">Solnedgang</string>
 
     <!-- SettingsScreen -->
     <string name="settings">Innstillinger</string>
 
     <string name="choose_theme">Velg tema</string>
-    <string name="theme">Tema</string>
     <string name="follow_system">Følg systemet</string>
 
-    <string name="choose_default_location">Velg standard lokasjon</string>
     <string name="costum_location">Egendefinert sted</string>
     <string name="phones_location">Mobilens lokasjon</string>
 
@@ -93,9 +65,7 @@
 
     <string name="norwegian">Norsk</string>
     <string name="english">Engelsk</string>
-    <string name="choose_language">Velg språk</string>
 
-    <string name="means_of_transportation">Velg fremkomstmiddel</string>
     <string name="walk">Gå</string>
     <string name="bike">Sykle</string>
     <string name="drive">Kjøre</string>
@@ -110,30 +80,22 @@
     <string name="new_place_add_location">Legg til sted</string>
     <string name="ok" translatable="false">OK</string>
     <string name="cancel">Avbryt</string>
-    <string name="error_location_name">Skriv et navn</string>
-    <string name="error_address">Skriv inn en addresse</string>
-    <string name="error_description">Skriv en beskrivelse</string>
-    <string name="new_place_missing_fields">Skriv inn de manglende feltene</string>
     <string name="new_place_fill_in_fields">Fyll inn felt for å legge til et nytt sted</string>
 
     <!--WeatherConditionsPopUp-->
     <string name="weather_conditions_excellent_explanation">Det bør være noen skyer i midten til høye nivåer, lav fuktighet og utmerket sikt!</string>
     <string name="weather_conditions_decent_explanation">Litt overskyet, men det blir forhåpentligvis et fint bilde likevel!</string>
     <string name="weather_conditions_poor_explanation">Skyene henger lavt, sikten er ikke god og gir ikke gode bildeforhold</string>
-    <string name="weather_conditions_popUp_dismiss">Lukk</string>
 
 
     <!--Descriptions of Icons and Images-->
     <string name="favourite_icon">Favorittikon</string>
-    <string name="favourite_filled_icon">Favorittikon fylt</string>
-    <string name="favourite_unfilled_icon">Favorittikon uten fyll</string>
 
     <!--WeatherIconCheck-->
     <string name="weather_icon_thunder">Værikon torden</string>
     <string name="weather_icon_rain">Værikon regn</string>
     <string name="weather_icon_snow">Værikon snø</string>
     <string name="weather_icon_clear">Værikon klart vær</string>
-    <string name="weather_icon_partly_sun">Værikon delvis skyet med sol</string>
     <string name="weather_icon_partly_cloudy">Værikon delvis skyet</string>
     <string name="weather_icon_cloudy_sun">Værikon skyet og sol</string>
     <string name="weather_icon_cloudy">Værikon skyet</string>
@@ -186,23 +148,13 @@
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
     <string name="golden_hour">Gylne time</string>
     <string name="blue_hour">Blåtime</string>
-    <string name="home_distance">Avstand:</string>
     <string name="app_version" translatable="false">0.3</string>
-    <string name="home_user_loc">Din posisjon</string>
-    <string name="from">Fra</string>
-    <string name="reverse_geocode_unknown_place">Ukjent sted</string>
-    <string name="means_of_transport_walking">Gange</string>
-    <string name="means_of_transportation_biking">Sykkel</string>
-    <string name="means_of_transportation_driving">Bil</string>
     <string name="distance_hour">t</string>
     <string name="distance_minutes">m</string>
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Avstand fra din posisjon</string>
     <string name="time">Tid</string>
     <string name="close">LUKK</string>
-    <string name="place_icon">Stedsikon</string>
-    <string name="theme_icon">Tema ikon</string>
-    <string name="no_route_available">Fant ikke vei</string>
     <string name="dropdown_arrow_icon">pilikon</string>
     <string name="bike_icon">sykkelikon</string>
     <string name="walk_icon">gåikon</string>
@@ -219,7 +171,6 @@
     <string name="new_place_use_phone_location">Bruk telefonens posisjon</string>
     <string name="new_place_pick_address">Velg riktig adresse:</string>
     <string name="error_message_getting_favourites">Feil med å hente favoritter</string>
-    <string name="error_message_getting_custom_places">Feil med å laste inn dine steder</string>
     <string name="error_message_new_place_dialog">Feil med å legge til nytt sted</string>
     <string name="error_message_fetching_directions">Feil med å hente avstand fra stedet</string>
     <string name="error_message_no_forecast">Kan ikke hente værdata uten internett</string>

@@ -166,7 +166,7 @@ fun PlaceInfoScreen(
                 .fillMaxSize()
                 .padding(innerPadding) // Padding for topbar
         ) {
-            PlaceInfoContent(placeUiState, placeInfoViewModel)
+            PlaceInfoContent(placeUiState, placeInfoViewModel::toggleFavourite)
         }
     }
 }
@@ -177,7 +177,7 @@ fun PlaceInfoScreen(
  */
 @Composable
 fun PlaceInfoContent(
-    placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel
+    placeInfoUiState: PlaceInfoUiState, toggleFavourite: () -> Unit
 ) {
 
     Column(
@@ -190,14 +190,14 @@ fun PlaceInfoContent(
     ) {
         if (placeInfoUiState.isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier.size(100.dp),
-                color = MaterialTheme.colorScheme.onPrimary)
+                modifier = Modifier.size(100.dp), color = MaterialTheme.colorScheme.onPrimary
+            )
         } else {
             // Show information about tonight's sunset
             TodayInfoCard(
                 placeInfo = placeInfoUiState.placeInfo,
                 mapTimeDistance = placeInfoUiState.mapTimeDistance,
-                onFavouriteClick = placeInfoViewModel::toggleFavourite
+                onFavouriteClick = toggleFavourite
             )
 
             //space between the cards
@@ -268,9 +268,7 @@ fun TodayInfoCard(
                     val context = LocalContext.current
                     val imageFile = File(context.filesDir, placeInfo.images[0].path)
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageFile)
-                            .build(),
+                        model = ImageRequest.Builder(LocalContext.current).data(imageFile).build(),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
@@ -280,8 +278,7 @@ fun TodayInfoCard(
                         model = "file:///android_asset/presetImages/${placeInfo.images[0].path}",
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
@@ -371,8 +368,9 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = mapTimeDistance[MeansOfTransportation.WALKING]?.distance +
-                                " " + stringResource(R.string.distance_kilometers),
+                        text = mapTimeDistance[MeansOfTransportation.WALKING]?.distance + " " + stringResource(
+                            R.string.distance_kilometers
+                        ),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -381,10 +379,11 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = mapTimeDistance[MeansOfTransportation.WALKING]?.durationHours +
-                                stringResource(id = R.string.distance_hour) + " " +
-                                mapTimeDistance[MeansOfTransportation.WALKING]?.durationMinutes +
-                                stringResource(id = R.string.distance_minutes),
+                        text = mapTimeDistance[MeansOfTransportation.WALKING]?.durationHours + stringResource(
+                            id = R.string.distance_hour
+                        ) + " " + mapTimeDistance[MeansOfTransportation.WALKING]?.durationMinutes + stringResource(
+                            id = R.string.distance_minutes
+                        ),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -408,8 +407,9 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = mapTimeDistance[MeansOfTransportation.BIKING]?.distance +
-                                " " + stringResource(R.string.distance_kilometers),
+                        text = mapTimeDistance[MeansOfTransportation.BIKING]?.distance + " " + stringResource(
+                            R.string.distance_kilometers
+                        ),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -418,11 +418,11 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = mapTimeDistance[MeansOfTransportation.BIKING]?.durationHours +
-                                stringResource(id = R.string.distance_hour) +
-                                " " +
-                                mapTimeDistance[MeansOfTransportation.BIKING]?.durationMinutes +
-                                stringResource(id = R.string.distance_minutes),
+                        text = mapTimeDistance[MeansOfTransportation.BIKING]?.durationHours + stringResource(
+                            id = R.string.distance_hour
+                        ) + " " + mapTimeDistance[MeansOfTransportation.BIKING]?.durationMinutes + stringResource(
+                            id = R.string.distance_minutes
+                        ),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -449,8 +449,9 @@ fun TodayInfoCard(
                         )
                     }
                     Text(
-                        text = mapTimeDistance[MeansOfTransportation.DRIVING]?.distance +
-                                " " + stringResource(R.string.distance_kilometers),
+                        text = mapTimeDistance[MeansOfTransportation.DRIVING]?.distance + " " + stringResource(
+                            R.string.distance_kilometers
+                        ),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -459,11 +460,11 @@ fun TodayInfoCard(
                         )
                     )
                     Text(
-                        text = mapTimeDistance[MeansOfTransportation.DRIVING]?.durationHours +
-                                stringResource(id = R.string.distance_hour) +
-                                " " +
-                                mapTimeDistance[MeansOfTransportation.DRIVING]?.durationMinutes +
-                                stringResource(id = R.string.distance_minutes),
+                        text = mapTimeDistance[MeansOfTransportation.DRIVING]?.durationHours + stringResource(
+                            id = R.string.distance_hour
+                        ) + " " + mapTimeDistance[MeansOfTransportation.DRIVING]?.durationMinutes + stringResource(
+                            id = R.string.distance_minutes
+                        ),
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -471,10 +472,11 @@ fun TodayInfoCard(
                 }
             }
             Divider(
-                modifier = Modifier
-                    .padding(top = 20.dp, bottom = 17.dp) //start = 18.dp, end = 18.dp
-                        ,
-                 color = MaterialTheme.colorScheme.onSurfaceVariant, thickness = 1.dp
+                modifier = Modifier.padding(
+                        top = 20.dp,
+                        bottom = 17.dp
+                    ) //start = 18.dp, end = 18.dp
+                , color = MaterialTheme.colorScheme.onSurfaceVariant, thickness = 1.dp
             )
 
             //For showing todays date
@@ -591,8 +593,11 @@ fun TodayInfoCard(
                         text = if (placeInfo.sunEvents[0].goldenHourTime == nullTime) {
                             "--N/A--"
                         } else {
-                            "${placeInfo.sunEvents[0].goldenHourTime.format(formatter)} " +
-                                    "- ${placeInfo.sunEvents[0].time.format(formatter)}"
+                            "${placeInfo.sunEvents[0].goldenHourTime.format(formatter)} " + "- ${
+                                placeInfo.sunEvents[0].time.format(
+                                    formatter
+                                )
+                            }"
                         },
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -627,8 +632,11 @@ fun TodayInfoCard(
                         text = if (placeInfo.sunEvents[0].blueHourTime == nullTime) {
                             "--N/A--"
                         } else {
-                            "${placeInfo.sunEvents[0].time.format(formatter)} " +
-                                    "- ${placeInfo.sunEvents[0].blueHourTime.format(formatter)}"
+                            "${placeInfo.sunEvents[0].time.format(formatter)} " + "- ${
+                                placeInfo.sunEvents[0].blueHourTime.format(
+                                    formatter
+                                )
+                            }"
                         },
                         style = typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -654,7 +662,6 @@ fun TodayInfoCard(
  * Displays information about the sun events for tomorrow and the following days.
  * Date, time and weather conditions
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SunEventInfoCard(
     sunEvent: SunEvent
@@ -665,10 +672,11 @@ fun SunEventInfoCard(
     // Code for formatting the date is here, all other string formatting happens inside each Text component
     val dateString = if (sunEvent.time.dayOfYear == LocalDateTime.now().plusDays(1).dayOfYear) {
         // The current date we are formatting is tomorrow
-        "${stringResource(id = R.string.tomorrow)} " +
-                sunEvent.time.format(DateTimeFormatter.ofPattern(
-                    "d'.' MMMM':'", Locale.getDefault())
-                )
+        "${stringResource(id = R.string.tomorrow)} " + sunEvent.time.format(
+            DateTimeFormatter.ofPattern(
+                "d'.' MMMM':'", Locale.getDefault()
+            )
+        )
     } else {
         // The current date we are formatting is after tomorrow
         sunEvent.time.format(DateTimeFormatter.ofPattern("eeee d'.' MMMM':'", Locale.getDefault()))
@@ -683,7 +691,8 @@ fun SunEventInfoCard(
         targetValue = if (expandedState) 180f else 0f, label = ""
     )
 
-    Card(elevation = CardDefaults.cardElevation(10.dp),
+    Card(
+        elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier
             .fillMaxWidth()
@@ -762,7 +771,7 @@ fun SunEventInfoCard(
                         .fillMaxWidth()
                         .padding(start = 0.dp, end = 0.dp)
                 ) {
-                    Row (
+                    Row(
                         modifier = Modifier.width(130.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -826,7 +835,11 @@ fun SunEventInfoCard(
                             text = if (sunEvent.goldenHourTime == nullTime) {
                                 "--N/A--"
                             } else {
-                                "${sunEvent.goldenHourTime.format(formatter)} - ${sunEvent.time.format(formatter)}"
+                                "${sunEvent.goldenHourTime.format(formatter)} - ${
+                                    sunEvent.time.format(
+                                        formatter
+                                    )
+                                }"
                             },
                             style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -850,8 +863,7 @@ fun SunEventInfoCard(
                                 ImageVector.vectorResource(id = R.drawable.bluesundarkmode)
                             } else {
                                 ImageVector.vectorResource(id = R.drawable.bluesunlightmode)
-                            }
-                            ,
+                            },
                             contentDescription = stringResource(R.string.homescreen_icon_blue_sun),
                             tint = Color.Unspecified,
                             modifier = Modifier.padding(
@@ -862,7 +874,11 @@ fun SunEventInfoCard(
                             text = if (sunEvent.blueHourTime == nullTime) {
                                 "--N/A--"
                             } else {
-                                "${sunEvent.time.format(formatter)} - ${sunEvent.blueHourTime.format(formatter)}"
+                                "${sunEvent.time.format(formatter)} - ${
+                                    sunEvent.blueHourTime.format(
+                                        formatter
+                                    )
+                                }"
                             },
                             style = typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -890,41 +906,40 @@ fun PreviewSunEventInfoScreen() {
     val forecastDao = database.forecastDao()
     val placeInfoDao = database.placeInfoDao()
     val placeRepository = PlaceRepositoryImpl(
-        placeInfoDao = placeInfoDao, forecastDao = forecastDao, imageDao = imageDao, context = context
+        placeInfoDao = placeInfoDao,
+        forecastDao = forecastDao,
+        imageDao = imageDao,
+        context = context
     )
     Surface {
-        PlaceInfoContent(
-            placeInfoUiState = PlaceInfoUiState(
-                placeInfo = PlaceInfo(
-                    id = 0,
-                    name = "Holmenkollen",
-                    description = "Et fantastisk fint sted å ta bilde av dine nære og kjære under en solnedgang som ikke kan sammenlignes med noe annet",
-                    lat = "",
-                    long = "",
-                    isFavourite = false,
-                    isCustomPlace = false,
-                    hasNotification = false,
-                    images = emptyList(),
-                    sunEvents = listOf(
-                        SunEvent(
-                            time = LocalDateTime.now(),
-                            tempAtEvent = "4.7",
-                            weatherIcon = "suncloudy",
-                            conditions = WeatherConditions(
-                                weatherRating = WeatherConditionsRating.EXCELLENT,
-                                cloudConditionLow = CloudConditions.CLEAR,
-                                cloudConditionHigh = CloudConditions.CLEAR,
-                                cloudConditionMedium = CloudConditions.CLEAR,
-                                airCondition = AirConditions.LOW,
-                            ),
-                            blueHourTime = LocalDateTime.now(),
-                            goldenHourTime = LocalDateTime.now()
-                        )
+        PlaceInfoContent(placeInfoUiState = PlaceInfoUiState(
+            placeInfo = PlaceInfo(
+                id = 0,
+                name = "Holmenkollen",
+                description = "Et fantastisk fint sted å ta bilde av dine nære og kjære under en solnedgang som ikke kan sammenlignes med noe annet",
+                lat = "",
+                long = "",
+                isFavourite = false,
+                isCustomPlace = false,
+                hasNotification = false,
+                images = emptyList(),
+                sunEvents = listOf(
+                    SunEvent(
+                        time = LocalDateTime.now(),
+                        tempAtEvent = "4.7",
+                        weatherIcon = "suncloudy",
+                        conditions = WeatherConditions(
+                            weatherRating = WeatherConditionsRating.EXCELLENT,
+                            cloudConditionLow = CloudConditions.CLEAR,
+                            cloudConditionHigh = CloudConditions.CLEAR,
+                            cloudConditionMedium = CloudConditions.CLEAR,
+                            airCondition = AirConditions.LOW,
+                        ),
+                        blueHourTime = LocalDateTime.now(),
+                        goldenHourTime = LocalDateTime.now()
                     )
                 )
-            ), placeInfoViewModel = PlaceInfoViewModel(
-                context = context, placeRepository = placeRepository
             )
-        )
+        ), toggleFavourite = {})
     }
 }

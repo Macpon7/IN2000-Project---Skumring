@@ -12,12 +12,10 @@ class GoldenHourBlueHourDataSourceTest {
     private val source: GoldenHourBlueHourDataSource = GoldenHourBlueHourDataSource()
 
     private val osloTestData: SunriseSunset = gson.fromJson(
-        osloTestCall,
-        SunriseSunset::class.java
+        osloTestCall, SunriseSunset::class.java
     )
-    private val northPoleTestData: SunriseSunset  = gson.fromJson(
-        northPoleTestCall,
-        SunriseSunset::class.java
+    private val northPoleTestData: SunriseSunset = gson.fromJson(
+        northPoleTestCall, SunriseSunset::class.java
     )
 
     /*
@@ -42,7 +40,8 @@ class GoldenHourBlueHourDataSourceTest {
     @Test
     fun checkNoGoldenOrBlueHour() {
         val expected = "2000-01-01T00:00"
-        val responseDateTime = source.convertResponseToGoldenHourBlueHour(northPoleTestData).blueHour
+        val responseDateTime =
+            source.convertResponseToGoldenHourBlueHour(northPoleTestData).blueHour
         val result = responseDateTime.toString()
 
         assert(expected == result)
