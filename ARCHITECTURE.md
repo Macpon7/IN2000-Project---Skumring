@@ -48,8 +48,24 @@ Mangler docstrings
 
 Empty functions: Dummyfunksjoner som brukes som parametre til previews
 
-Kjører du analyser vil Java klage på en del, men alt dette er tatt hånd om
+Kjører du analyser vil Java klage på en del, men alt dette er tatt hånd om. Gjelder parametre, f eks egne exceptions
 
 Responsklassene får weak warnings på navnekonvensjon i Kotlin, men de må være identiske med hvordan json presenterer de
 
 Settings: Språk - Forsøk på å la bruker endre språk manuelt, men dette ble for vrient så sent. Ubrukt, men del av enumklassen som ikke brukes, men vi tør ikke kødde med denå
+
+Redundant Suspend: Jo, de må suspendes
+
+Unused parameter: Jo, den er used
+
+command + shift + l - Kjørt autoformatter, ikke alt vi er enige med, men er anbefalt at vi gjøre det. Et par veldig oversiktlige linebreaks den automatisk gikk gjennom 
+
+Vector 200x200 to keep it fast - Det er moderikonet, trenger ikkev ære kjapt
+
+typos: Lol
+
+Android studio problems tool
+
+Runblocking: For irriterende å fikse
+
+Old voersion of androidx activity: For å få user settings
