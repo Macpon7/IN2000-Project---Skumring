@@ -48,22 +48,22 @@ class DirectionsDataSource {
             meansOfTransportation = meansOfTransportation
         )
         return convertResponseToTravelDurationDistance(
-            response = apiResponse,
-            meansOfTransportation = meansOfTransportation
+            response = apiResponse, meansOfTransportation = meansOfTransportation
         )
     }
+
     /*
     Function that converts response data to our object, separated and made public for testing purposes
      */
-    fun convertResponseToTravelDurationDistance
-                (response: Directions,
-                 meansOfTransportation: MeansOfTransportation
+    fun convertResponseToTravelDurationDistance(
+        response: Directions, meansOfTransportation: MeansOfTransportation
     ): TravelDurationDistance {
         try {
 
             val durationMinutes: String = secondsToMinutes(response.routes[0].legs[0].duration)
             val durationHours: String = secondsToHours(response.routes[0].legs[0].duration)
-            val distance: String = "%.1f".format((response.routes[0].legs[0].distance/1000).toFloat())
+            val distance: String =
+                "%.1f".format((response.routes[0].legs[0].distance / 1000).toFloat())
 
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
@@ -72,7 +72,7 @@ class DirectionsDataSource {
                 durationMinutes = durationMinutes,
             )
         } catch (e: Exception) {
-            Log.d(logTag,"Failed to calculate route - None available", e)
+            Log.d(logTag, "Failed to calculate route - None available", e)
             return TravelDurationDistance(
                 meansOfTransportation = meansOfTransportation,
                 distance = "N/A",
@@ -81,6 +81,7 @@ class DirectionsDataSource {
             )
         }
     }
+
     /*
     Function that returns the response body from the API call
      */
@@ -90,13 +91,10 @@ class DirectionsDataSource {
         toLat: String,
         toLong: String,
         meansOfTransportation: MeansOfTransportation
-    ) : Directions {
+    ): Directions {
         try {
-            val path = "https://api.mapbox.com/directions/v5/mapbox/" +
-                    "${meansOfTransportation.apiCall}/" +
-                    "$fromLong,$fromLat;" +
-                    "$toLong,$toLat?" +
-                    "geometries=geojson&access_token=sk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0dTZmMjZ3MWF6NzJpcGNtajBqaWUxMSJ9.A7ntsS5LTvXYD5hnjYjEXQ"
+            val path =
+                "https://api.mapbox.com/directions/v5/mapbox/" + "${meansOfTransportation.apiCall}/" + "$fromLong,$fromLat;" + "$toLong,$toLat?" + "geometries=geojson&access_token=sk.eyJ1IjoidmlsamFyZGgiLCJhIjoiY2x0dTZmMjZ3MWF6NzJpcGNtajBqaWUxMSJ9.A7ntsS5LTvXYD5hnjYjEXQ"
             val response: HttpResponse = client.get(path)
             return response.body()
         } catch (e: Exception) {
@@ -109,11 +107,12 @@ class DirectionsDataSource {
     Small help functions since the directions api returns duration in seconds, we
     convert it to neatly formatted strings instead
      */
-    private fun secondsToHours (duration: Double): String {
+    private fun secondsToHours(duration: Double): String {
         val hours: Int = duration.toInt() / 3600
         return hours.toString()
     }
-    private fun secondsToMinutes (duration: Double): String {
+
+    private fun secondsToMinutes(duration: Double): String {
         val minutes: Int = (duration.toInt() % 3600) / 60
         return minutes.toString()
     }

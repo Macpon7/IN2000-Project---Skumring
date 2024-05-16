@@ -17,7 +17,7 @@ interface NavigationDestination {
      * Unique title for the destination,
      * Used for the title in SkumringButtonBar
      */
-    val buttonTitle : Int?
+    val buttonTitle: Int?
 
     /**
      * Unique name to define the path for a composable

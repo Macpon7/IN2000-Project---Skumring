@@ -53,7 +53,7 @@ fun ListCard(
     onItemClick: () -> Unit,
     onFavouriteClick: () -> Unit,
     onDeleteClick: () -> Unit = {}
-    ) {
+) {
     BoxWithConstraints {
         if (maxWidth < 400.dp) {
             Card(
@@ -78,8 +78,7 @@ fun ListCard(
                             val context = LocalContext.current
                             val imageFile = File(context.filesDir, place.images[0].path)
                             AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(imageFile)
+                                model = ImageRequest.Builder(LocalContext.current).data(imageFile)
                                     .build(),
                                 contentDescription = null,
                                 modifier = Modifier.fillMaxSize(),
@@ -90,8 +89,7 @@ fun ListCard(
                                 model = "file:///android_asset/presetImages/${place.images[0].path}",
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
                     }
@@ -103,12 +101,10 @@ fun ListCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 15.dp, end = 8.dp)
-                )
-                {
+                ) {
                     Text(
                         text = place.name,
-                        modifier = Modifier
-                            .padding(vertical = 2.dp),
+                        modifier = Modifier.padding(vertical = 2.dp),
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         style = MaterialTheme.typography.headlineSmall,
@@ -119,7 +115,8 @@ fun ListCard(
                                 Icon(
                                     imageVector = Icons.Outlined.Delete,
                                     contentDescription = "",
-                                    tint = MaterialTheme.colorScheme.secondary)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                         }
                         IconButton(onClick = onFavouriteClick) {
@@ -160,7 +157,7 @@ fun ListCard(
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
 
-                    )
+                        )
                 }
             }
         } else {
@@ -186,8 +183,7 @@ fun ListCard(
                             val context = LocalContext.current
                             val imageFile = File(context.filesDir, place.images[0].path)
                             AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(imageFile)
+                                model = ImageRequest.Builder(LocalContext.current).data(imageFile)
                                     .build(),
                                 contentDescription = null,
                                 modifier = Modifier.fillMaxSize(),
@@ -198,26 +194,23 @@ fun ListCard(
                                 model = "file:///android_asset/presetImages/${place.images[0].path}",
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
                     }
                 }
 
-                Column (modifier = Modifier.fillMaxWidth(0.7f)) {
+                Column(modifier = Modifier.fillMaxWidth(0.7f)) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 15.dp, end = 8.dp)
-                    )
-                    {
+                    ) {
                         Text(
                             text = place.name,
-                            modifier = Modifier
-                                .padding(vertical = 2.dp),
+                            modifier = Modifier.padding(vertical = 2.dp),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             style = MaterialTheme.typography.headlineMedium,
@@ -228,7 +221,8 @@ fun ListCard(
                                     Icon(
                                         imageVector = Icons.Outlined.Delete,
                                         contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
                                 }
                             }
                             IconButton(onClick = onFavouriteClick) {
@@ -260,8 +254,7 @@ fun ListCard(
                         Text(
                             text = stringResource(R.string.weather_condition),
                             style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                            ,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
@@ -270,7 +263,7 @@ fun ListCard(
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontWeight = FontWeight.Bold
-                            )
+                        )
                     }
                 }
             }
@@ -284,37 +277,33 @@ fun ListCard(
 @Preview
 @Composable
 fun ListCardPreview() {
-    SkumringTheme (useDarkTheme = true) {
-        ListCard(
-            place = PlaceInfo(
-                id = 0,
-                name = "Holmenkollen",
-                description = "Et fantastisk fint sted å ta bilde av dine nære og kjære under en solnedgang som ikke kan sammenlignes med noe annet",
-                lat = "",
-                long = "",
-                isFavourite = false,
-                isCustomPlace = true,
-                hasNotification = false,
-                images = emptyList(),
-                sunEvents = listOf(
-                    SunEvent(
-                        time = LocalDateTime.now(),
-                        tempAtEvent = "4.7",
-                        weatherIcon = "suncloudy",
-                        conditions = WeatherConditions(
-                            weatherRating = WeatherConditionsRating.EXCELLENT,
-                            cloudConditionLow = CloudConditions.CLEAR,
-                            cloudConditionHigh = CloudConditions.CLEAR,
-                            cloudConditionMedium = CloudConditions.CLEAR,
-                            airCondition = AirConditions.LOW,
-                        ),
-                        blueHourTime = LocalDateTime.now(),
-                        goldenHourTime = LocalDateTime.now()
-                    )
+    SkumringTheme(useDarkTheme = true) {
+        ListCard(place = PlaceInfo(
+            id = 0,
+            name = "Holmenkollen",
+            description = "Et fantastisk fint sted å ta bilde av dine nære og kjære under en solnedgang som ikke kan sammenlignes med noe annet",
+            lat = "",
+            long = "",
+            isFavourite = false,
+            isCustomPlace = true,
+            hasNotification = false,
+            images = emptyList(),
+            sunEvents = listOf(
+                SunEvent(
+                    time = LocalDateTime.now(),
+                    tempAtEvent = "4.7",
+                    weatherIcon = "suncloudy",
+                    conditions = WeatherConditions(
+                        weatherRating = WeatherConditionsRating.EXCELLENT,
+                        cloudConditionLow = CloudConditions.CLEAR,
+                        cloudConditionHigh = CloudConditions.CLEAR,
+                        cloudConditionMedium = CloudConditions.CLEAR,
+                        airCondition = AirConditions.LOW,
+                    ),
+                    blueHourTime = LocalDateTime.now(),
+                    goldenHourTime = LocalDateTime.now()
                 )
-            ),
-            onItemClick = {},
-            onFavouriteClick = {}
-        )
+            )
+        ), onItemClick = {}, onFavouriteClick = {})
     }
 }

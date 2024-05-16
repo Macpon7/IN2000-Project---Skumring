@@ -14,20 +14,16 @@ class DirectionsDataSourceTest {
     private val driving = MeansOfTransportation.DRIVING
 
     private val walkingUioToOsloMetTestData: Directions = gson.fromJson(
-        walkingUioToOsloMet,
-        Directions::class.java
+        walkingUioToOsloMet, Directions::class.java
     )
     private val cyclingUioToOsloMetTestData: Directions = gson.fromJson(
-        cyclingUioToOsloMet,
-        Directions::class.java
+        cyclingUioToOsloMet, Directions::class.java
     )
     private val drivingUioToOsloMetTestData: Directions = gson.fromJson(
-        drivingUioToOsloMet,
-        Directions::class.java
+        drivingUioToOsloMet, Directions::class.java
     )
     private val drivingNullIslandToOsloMetTestData: Directions = gson.fromJson(
-        drivingNullIslandToOsloMet,
-        Directions::class.java
+        drivingNullIslandToOsloMet, Directions::class.java
     )
 
     /*
@@ -40,57 +36,59 @@ class DirectionsDataSourceTest {
         val expectedMinutes = "37"
         val expectedDistance = "3.3"
         val responseMinutes = source.convertResponseToTravelDurationDistance(
-            walkingUioToOsloMetTestData,
-            walking).durationMinutes
+            walkingUioToOsloMetTestData, walking
+        ).durationMinutes
         val responseHours = source.convertResponseToTravelDurationDistance(
-            walkingUioToOsloMetTestData,
-            walking).durationHours
+            walkingUioToOsloMetTestData, walking
+        ).durationHours
         val responseDistance = source.convertResponseToTravelDurationDistance(
-            walkingUioToOsloMetTestData,
-            walking).distance
-        assert((expectedDistance == responseDistance &&
-                expectedMinutes == responseMinutes &&
-                expectedHours == responseHours))
+            walkingUioToOsloMetTestData, walking
+        ).distance
+        assert(
+            (expectedDistance == responseDistance && expectedMinutes == responseMinutes && expectedHours == responseHours)
+        )
 
     }
+
     @Test
     fun checkCyclingDurationDistance() {
         val expectedHours = "0"
         val expectedMinutes = "15"
         val expectedDistance = "3.5"
         val responseMinutes = source.convertResponseToTravelDurationDistance(
-            cyclingUioToOsloMetTestData,
-            biking).durationMinutes
+            cyclingUioToOsloMetTestData, biking
+        ).durationMinutes
         val responseHours = source.convertResponseToTravelDurationDistance(
-            cyclingUioToOsloMetTestData,
-            biking).durationHours
+            cyclingUioToOsloMetTestData, biking
+        ).durationHours
         val responseDistance = source.convertResponseToTravelDurationDistance(
-            cyclingUioToOsloMetTestData,
-            biking).distance
+            cyclingUioToOsloMetTestData, biking
+        ).distance
 
-        assert((expectedDistance == responseDistance &&
-                expectedMinutes == responseMinutes &&
-                expectedHours == responseHours))
+        assert(
+            (expectedDistance == responseDistance && expectedMinutes == responseMinutes && expectedHours == responseHours)
+        )
 
     }
+
     @Test
     fun checkDrivingDurationDistance() {
         val expectedHours = "0"
         val expectedMinutes = "15"
         val expectedDistance = "4.1"
         val responseMinutes = source.convertResponseToTravelDurationDistance(
-            drivingUioToOsloMetTestData,
-            driving).durationMinutes
+            drivingUioToOsloMetTestData, driving
+        ).durationMinutes
         val responseHours = source.convertResponseToTravelDurationDistance(
-            drivingUioToOsloMetTestData,
-            driving).durationHours
+            drivingUioToOsloMetTestData, driving
+        ).durationHours
         val responseDistance = source.convertResponseToTravelDurationDistance(
-            drivingUioToOsloMetTestData,
-            driving).distance
+            drivingUioToOsloMetTestData, driving
+        ).distance
 
-        assert((expectedDistance == responseDistance &&
-                expectedMinutes == responseMinutes &&
-                expectedHours == responseHours))
+        assert(
+            (expectedDistance == responseDistance && expectedMinutes == responseMinutes && expectedHours == responseHours)
+        )
 
     }
 
@@ -105,18 +103,18 @@ class DirectionsDataSourceTest {
         val expectedDistance = "N/A"
 
         val responseMinutes = source.convertResponseToTravelDurationDistance(
-            drivingNullIslandToOsloMetTestData,
-            driving).durationMinutes
+            drivingNullIslandToOsloMetTestData, driving
+        ).durationMinutes
         val responseHours = source.convertResponseToTravelDurationDistance(
-            drivingNullIslandToOsloMetTestData,
-            driving).durationHours
+            drivingNullIslandToOsloMetTestData, driving
+        ).durationHours
         val responseDistance = source.convertResponseToTravelDurationDistance(
-            drivingNullIslandToOsloMetTestData,
-            driving).distance
+            drivingNullIslandToOsloMetTestData, driving
+        ).distance
 
-        assert((expectedDistance == responseDistance &&
-                expectedMinutes == responseMinutes &&
-                expectedHours == responseHours))
+        assert(
+            (expectedDistance == responseDistance && expectedMinutes == responseMinutes && expectedHours == responseHours)
+        )
 
     }
 }

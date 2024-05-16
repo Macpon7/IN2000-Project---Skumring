@@ -11,12 +11,13 @@ interface DirectionsRepository {
         toLong: String,
         meansOfTransportation: MeansOfTransportation
     ): TravelDurationDistance
+
     suspend fun getAllTravelDurationDistance(
         fromLat: String,
         fromLong: String,
         toLat: String,
         toLong: String,
-    ): Map<MeansOfTransportation,TravelDurationDistance>
+    ): Map<MeansOfTransportation, TravelDurationDistance>
 }
 
 /**
@@ -27,7 +28,7 @@ interface DirectionsRepository {
 
 class DirectionsRepositoryImpl(
     private val directionsDataSource: DirectionsDataSource = DirectionsDataSource()
-): DirectionsRepository {
+) : DirectionsRepository {
 
     /**
      * Function that lets viewmodels fetch suggested travel time and distance
@@ -39,7 +40,7 @@ class DirectionsRepositoryImpl(
         toLat: String,
         toLong: String,
         meansOfTransportation: MeansOfTransportation
-    ):  TravelDurationDistance {
+    ): TravelDurationDistance {
         return directionsDataSource.fetchTravelDurationDistance(
             fromLat = fromLat,
             fromLong = fromLong,
@@ -48,13 +49,14 @@ class DirectionsRepositoryImpl(
             meansOfTransportation = meansOfTransportation
         )
     }
+
     override suspend fun getAllTravelDurationDistance(
         fromLat: String,
         fromLong: String,
         toLat: String,
         toLong: String,
-    ): Map<MeansOfTransportation,TravelDurationDistance> {
-        val outMap = mutableMapOf<MeansOfTransportation,TravelDurationDistance>()
+    ): Map<MeansOfTransportation, TravelDurationDistance> {
+        val outMap = mutableMapOf<MeansOfTransportation, TravelDurationDistance>()
         MeansOfTransportation.entries.forEach { entry ->
             outMap[entry] = (getTravelDurationDistance(
                 fromLat = fromLat,
@@ -62,8 +64,7 @@ class DirectionsRepositoryImpl(
                 toLat = toLat,
                 toLong = toLong,
                 meansOfTransportation = entry
-            )
-            )
+            ))
         }
         return outMap.toMap()
     }

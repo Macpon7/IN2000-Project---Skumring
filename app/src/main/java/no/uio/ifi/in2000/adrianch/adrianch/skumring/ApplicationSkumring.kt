@@ -6,7 +6,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.AppDatabase
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepository
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.place.PlaceRepositoryImpl
 
-class ApplicationSkumring: Application() {
+class ApplicationSkumring : Application() {
     lateinit var dbRepository: PlaceRepository
     lateinit var context: Context
     override fun onCreate() {

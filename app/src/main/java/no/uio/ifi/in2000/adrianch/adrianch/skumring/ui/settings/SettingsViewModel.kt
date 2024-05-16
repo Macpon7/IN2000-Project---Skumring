@@ -31,9 +31,7 @@ data class SettingsUiState(
     var notificationEnabled: Boolean = false,
 
     var settings: Settings = Settings(
-        Theme.FOLLOW_SYSTEM,
-        Language.FOLLOW_SYSTEM,
-        Location.PHONES_LOCATION
+        Theme.FOLLOW_SYSTEM, Language.FOLLOW_SYSTEM, Location.PHONES_LOCATION
     ),
 
     // Variables for showing dropdown menus
@@ -82,8 +80,8 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
                 Theme.DARK_MODE -> "dark"
                 Theme.LIGHT_MODE -> "light"
             }
-            val preferences = context.getSharedPreferences("user_settings",
-                ComponentActivity.MODE_PRIVATE
+            val preferences = context.getSharedPreferences(
+                "user_settings", ComponentActivity.MODE_PRIVATE
             )
             val editor = preferences.edit()
             editor.putString("theme", newSetting)

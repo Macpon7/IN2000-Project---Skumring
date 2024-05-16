@@ -46,6 +46,7 @@ interface PlaceRepository {
     suspend fun saveImageToInternalStorage(contentUri: Uri, placeId: Int, timestamp: LocalDate)
 
 }
+
 class PlaceRepositoryImpl(
     //Creates and initializes the database
     //var database : AppDatabase = AppDatabase.getDatabase(context = LocalContext.current),
@@ -53,12 +54,14 @@ class PlaceRepositoryImpl(
     private val forecastDao: ForecastDao,
     private val imageDao: ImageDao,
     private val locationForecastDataSource: LocationForecastDataSource = LocationForecastDataSource(),
-    private val forecastRepository:ForecastRepository = ForecastRepositoryImpl(),
+    private val forecastRepository: ForecastRepository = ForecastRepositoryImpl(),
     private val context: Context
-): PlaceRepository {
+) : PlaceRepository {
 
 
-    override suspend fun saveImageToInternalStorage(contentUri: Uri, placeId: Int, timestamp: LocalDate) {
+    override suspend fun saveImageToInternalStorage(
+        contentUri: Uri, placeId: Int, timestamp: LocalDate
+    ) {
         var inputStream: InputStream? = null
         var outputStream: FileOutputStream? = null
         try {
@@ -78,10 +81,11 @@ class PlaceRepositoryImpl(
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
 
             // Insert the image details into the database
-            imageDao.insertImage(ImageEntity(
-                placeId = placeId,
-                imgPath = "/placeImages/$fileName",
-                timestamp = timestamp))
+            imageDao.insertImage(
+                ImageEntity(
+                    placeId = placeId, imgPath = "/placeImages/$fileName", timestamp = timestamp
+                )
+            )
 
             Log.d("MyPage", "added to database")
             Log.d("MyPage", "the new path is /placeImages/$fileName")
@@ -111,10 +115,10 @@ class PlaceRepositoryImpl(
         runBlocking {
             allPlaces = allPlaces.map {
                 async {
-                    it.copy(sunEvents = getForecastData(
-                        placeId = it.id,
-                        lat = it.lat,
-                        long = it.long)
+                    it.copy(
+                        sunEvents = getForecastData(
+                            placeId = it.id, lat = it.lat, long = it.long
+                        )
                     )
                 }
             }.awaitAll()
@@ -162,9 +166,8 @@ class PlaceRepositoryImpl(
 
             // Update Forecast objects in the DB
             upsertForecastData(
-                oldForecastData = dataFromDb,
-                sunEvents = sunEvents,
-                placeId = placeId)
+                oldForecastData = dataFromDb, sunEvents = sunEvents, placeId = placeId
+            )
 
             return sunEvents
 
@@ -193,7 +196,7 @@ class PlaceRepositoryImpl(
      * Fetches new forecast data for the given coordinates from the API and returns it
      * as a list of [SunEvent] objects. One object for each day of the forecast.
      */
-    private suspend fun fetchNewForecastData (lat: String, long: String): List<SunEvent> {
+    private suspend fun fetchNewForecastData(lat: String, long: String): List<SunEvent> {
         // Get the forecasted weather at this place
         val fullForecast = try {
             locationForecastDataSource.fetchWeatherData(lat = lat, long = long)
@@ -205,14 +208,13 @@ class PlaceRepositoryImpl(
         var forecastGroupedByDate = fullForecast.groupBy { it.time.toLocalDate() }.toSortedMap()
 
         // Remove all data that is long term forecast. This means that we only keep the data for today, tomorrow, and the day after tomorrow
-        forecastGroupedByDate = forecastGroupedByDate.headMap(forecastGroupedByDate.keys.elementAt(3))
+        forecastGroupedByDate =
+            forecastGroupedByDate.headMap(forecastGroupedByDate.keys.elementAt(3))
 
         // Send our map to a function which will return a list of SunEvent objects
         return try {
             forecastRepository.makeSunEvents(
-                forecastGroupedByDate = forecastGroupedByDate,
-                lat = lat,
-                long = long
+                forecastGroupedByDate = forecastGroupedByDate, lat = lat, long = long
             )
         } catch (e: Exception) {
             throw InternetException("Could not fetch sunrise data from MET", e)
@@ -220,9 +222,8 @@ class PlaceRepositoryImpl(
     }
 
     private fun upsertForecastData(
-        oldForecastData: List<ForecastEntity> = emptyList(),
-        sunEvents: List<SunEvent>,
-        placeId: Int) {
+        oldForecastData: List<ForecastEntity> = emptyList(), sunEvents: List<SunEvent>, placeId: Int
+    ) {
         // Convert list of SunEvent objects into list of ForecastEntity objects
         val currentTimeStamp = LocalDateTime.now()
         val forecasts = sunEvents.map {
@@ -301,9 +302,8 @@ class PlaceRepositoryImpl(
             hasNotification = placeEntity.hasNotification,
             images = getImages(placeId = placeEntity.id),
             sunEvents = getForecastData(
-                placeId = placeEntity.id,
-                lat = placeEntity.latitude,
-                long = placeEntity.longitude)
+                placeId = placeEntity.id, lat = placeEntity.latitude, long = placeEntity.longitude
+            )
         )
     }
 
@@ -325,8 +325,8 @@ class PlaceRepositoryImpl(
             hasNotification = false,
             images = emptyList(),
             sunEvents = fetchNewForecastData(
-                lat = lat,
-                long = long)
+                lat = lat, long = long
+            )
         )
     }
 
@@ -355,9 +355,7 @@ class PlaceRepositoryImpl(
                     hasNotification = false,
                     images = getImages(it.id),
                     sunEvents = getForecastData(
-                        placeId = it.id,
-                        lat = it.latitude,
-                        long = it.longitude
+                        placeId = it.id, lat = it.latitude, long = it.longitude
                     )
                 )
             }
@@ -385,9 +383,7 @@ class PlaceRepositoryImpl(
                     hasNotification = it.hasNotification,
                     images = getImages(it.id),
                     sunEvents = getForecastData(
-                        placeId = it.id,
-                        lat = it.latitude,
-                        long = it.longitude
+                        placeId = it.id, lat = it.latitude, long = it.longitude
                     )
                 )
             }
@@ -401,14 +397,13 @@ class PlaceRepositoryImpl(
      * Inserts a new place in the database, and returns the placeId value assigned to this place
      */
     override suspend fun addCustomPlace(
-        place: PlaceInfo,
-        imageUri: Uri,
-        imageTimestamp: LocalDate
-        ) {
+        place: PlaceInfo, imageUri: Uri, imageTimestamp: LocalDate
+    ) {
 
         // Check that we have an internet connection by making a request to locationforecast
         try {
-            val testForecast = locationForecastDataSource.fetchWeatherData(lat = place.lat, long = place.long)
+            val testForecast =
+                locationForecastDataSource.fetchWeatherData(lat = place.lat, long = place.long)
         } catch (e: Exception) {
             throw InternetException("Could not get weather data when adding new place to DB", e)
         }
@@ -431,7 +426,9 @@ class PlaceRepositoryImpl(
         //The newest custom place will always be the last in the list, here we fetch its ID and returns to the caller
         val newId = getCustomPlaces().last().id
 
-        saveImageToInternalStorage(contentUri = imageUri, placeId = newId, timestamp = imageTimestamp)
+        saveImageToInternalStorage(
+            contentUri = imageUri, placeId = newId, timestamp = imageTimestamp
+        )
     }
 
     /**
@@ -439,7 +436,7 @@ class PlaceRepositoryImpl(
      */
     override suspend fun removeCustomPlace(placeId: Int) {
         val customPlace: Boolean = placeInfoDao.checkIfCustomPlace(placeId)
-        if (customPlace){
+        if (customPlace) {
             // Delete all forecasts associated with this place
             forecastDao.deleteForecasts(placeId = placeId)
 
@@ -454,7 +451,7 @@ class PlaceRepositoryImpl(
     }
 
     /**
-    *This methods sets a location as favorite by setting is_custom_place = 1
+     *This methods sets a location as favorite by setting is_custom_place = 1
      *
      */
     override suspend fun makeFavourite(placeId: Int) {
@@ -479,8 +476,7 @@ class PlaceRepositoryImpl(
         } else {
             return entities.map {
                 ImageDetails(
-                    path = it.imgPath,
-                    timeStamp = it.timestamp
+                    path = it.imgPath, timeStamp = it.timestamp
                 )
             }
         }

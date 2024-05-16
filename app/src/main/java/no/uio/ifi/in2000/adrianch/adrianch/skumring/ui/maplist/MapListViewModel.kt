@@ -32,8 +32,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceUiState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.onNewPlaceEvent
 
 enum class MapListToggleState(val stateAsBool: Boolean) {
-    MAP(stateAsBool = false),
-    LIST(stateAsBool = true)
+    MAP(stateAsBool = false), LIST(stateAsBool = true)
 }
 
 data class MapListUiState @OptIn(ExperimentalMaterial3Api::class) constructor(
@@ -106,9 +105,7 @@ class MapListViewModel(
                     val places = placeRepository.getAllPlaces()
                     val pins = places.map {
                         PinInfo(
-                            id = it.id,
-                            lat = it.lat,
-                            long = it.long
+                            id = it.id, lat = it.lat, long = it.long
                         )
                     }
 
@@ -202,8 +199,7 @@ class MapListViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _mapListUiState.update { currentMapListUiState ->
                 currentMapListUiState.copy(
-                    showBottomSheet = true,
-                    clickedId = id
+                    showBottomSheet = true, clickedId = id
                 )
             }
         }
@@ -215,28 +211,24 @@ class MapListViewModel(
             if (place.isFavourite) {
                 placeRepository.unmakeFavourite(placeId = place.id)
                 _mapListUiState.update { currentMapListUiState ->
-                    currentMapListUiState.copy(
-                        places = currentMapListUiState.places.map {
-                            if (it.id == place.id) {
-                                it.copy(isFavourite = false)
-                            } else {
-                                it.copy()
-                            }
+                    currentMapListUiState.copy(places = currentMapListUiState.places.map {
+                        if (it.id == place.id) {
+                            it.copy(isFavourite = false)
+                        } else {
+                            it.copy()
                         }
-                    )
+                    })
                 }
             } else {
                 placeRepository.makeFavourite(placeId = place.id)
                 _mapListUiState.update { currentMapListUiState ->
-                    currentMapListUiState.copy(
-                        places = currentMapListUiState.places.map {
-                            if (it.id == place.id) {
-                                it.copy(isFavourite = true)
-                            } else {
-                                it.copy()
-                            }
+                    currentMapListUiState.copy(places = currentMapListUiState.places.map {
+                        if (it.id == place.id) {
+                            it.copy(isFavourite = true)
+                        } else {
+                            it.copy()
                         }
-                    )
+                    })
                 }
             }
         }
@@ -286,8 +278,7 @@ class MapListViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _mapListUiState.update { currentMapListUiState ->
                 currentMapListUiState.copy(
-                    deleteId = placeId,
-                    showDeleteDialog = true
+                    deleteId = placeId, showDeleteDialog = true
                 )
             }
         }
@@ -306,12 +297,11 @@ class MapListViewModel(
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun deleteCustomPlace() {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             placeRepository.removeCustomPlace(placeId = mapListUiState.value.deleteId)
             _mapListUiState.update { currentMapListUiState ->
                 currentMapListUiState.copy(
-                    showDeleteDialog = false,
-                    places = placeRepository.getAllPlaces()
+                    showDeleteDialog = false, places = placeRepository.getAllPlaces()
                 )
             }
         }

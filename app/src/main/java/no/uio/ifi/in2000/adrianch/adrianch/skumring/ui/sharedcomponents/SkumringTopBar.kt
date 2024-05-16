@@ -21,12 +21,11 @@ fun SkumringTopBar(
     title: String,
     canNavigateBack: Boolean,
     modifier: Modifier = Modifier,
-    actions: @Composable RowScope.()->Unit = {}, // Can add action button to topbar
+    actions: @Composable RowScope.() -> Unit = {}, // Can add action button to topbar
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigateUp: () -> Unit = {}
 ) {
-    CenterAlignedTopAppBar(
-        title = { Text(title, style = typography.headlineMedium) },
+    CenterAlignedTopAppBar(title = { Text(title, style = typography.headlineMedium) },
         modifier = modifier,
         scrollBehavior = scrollBehavior,
         actions = actions,
@@ -39,6 +38,5 @@ fun SkumringTopBar(
                     )
                 }
             }
-        }
-    )
+        })
 }

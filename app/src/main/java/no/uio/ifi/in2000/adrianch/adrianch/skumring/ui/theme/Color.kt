@@ -1,4 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 //DARKTHEME
@@ -31,7 +32,6 @@ val outlineDark = Color(0xFF8E9099)
 val outlineVariantDark = Color(0xFF858FBC) //(0xFF44474F)
 val surfaceDark = Color(0xFF121318)
 val scrimDark = Color(0xFF1E1F25)
-
 
 
 //LIGHT THEME

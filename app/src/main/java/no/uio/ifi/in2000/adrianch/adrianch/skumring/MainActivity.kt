@@ -20,14 +20,15 @@ class MainActivity : ComponentActivity() {
 
         val mainViewModel: MainViewModel by viewModels()
 
-        installSplashScreen().apply{
+        installSplashScreen().apply {
             setKeepOnScreenCondition {
                 mainViewModel.mainScreenUiState.value.splashScreenReady
             }
         }
 
         setContent {
-            val preferences = LocalContext.current.getSharedPreferences("user_settings", MODE_PRIVATE)
+            val preferences =
+                LocalContext.current.getSharedPreferences("user_settings", MODE_PRIVATE)
             val editor = preferences.edit()
             if (!preferences.contains("first_launch")) {
                 editor.putBoolean("first_launch", true)
@@ -46,11 +47,10 @@ class MainActivity : ComponentActivity() {
                 preferences.getString("theme", "system") == "dark"
             }
 
-            SkumringTheme (useDarkTheme = useDark) {
+            SkumringTheme(useDarkTheme = useDark) {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     SkumringApp()
                 }
