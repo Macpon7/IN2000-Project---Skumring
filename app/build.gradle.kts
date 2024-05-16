@@ -124,25 +124,13 @@ dependencies {
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test.ext:truth:1.5.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    //  androidTestImplementation 'com.google.truth:truth:0.42'
 
 
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    //kapt("androidx.room:room-compiler:$room_version")
     ksp("androidx.room:room-compiler:$roomVersion")
     testImplementation("androidx.room:room-testing:$roomVersion")
-
-    //androidTestImplementation("androidx.test:runner:1.4.0")
-    //androidTestImplementation("androidx.test.ext:junit:1.1.3")
-
-    //to test  Room
-
-    // androidTestCompile("junit:junit:4.12")
-    //androidTestImplementation("androidx.test:runner:$testRunnerVersion")
-    //androidTestImplementation("androidx.test:rules:$testRulesVersion")
-
 
     // Location
     implementation("com.google.android.gms:play-services-location:21.2.0")
