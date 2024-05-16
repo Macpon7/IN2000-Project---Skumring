@@ -70,8 +70,11 @@ android {
 
 dependencies {
     // Android Core
+    //noinspection GradleDependency
     implementation("androidx.core:core-ktx:1.12.0")
+    //noinspection GradleDependency
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    //noinspection GradleDependency
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2023.08.00"))
 
@@ -81,13 +84,16 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("io.coil-kt:coil-compose:2.5.0")
+    //noinspection GradleDependency
     implementation("androidx.compose.material:material-icons-core-android:1.6.1")
+    //noinspection GradleDependency
     implementation("androidx.compose.material:material:1.6.1")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Jetpack Compose ViewModel
+    //noinspection GradleDependency
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.test.ext:junit-ktx:1.1.5")
@@ -119,10 +125,13 @@ dependencies {
     // Room
     val room_version = "2.6.1"
 
+    //noinspection GradleDependency
     androidTestImplementation("androidx.test:core:1.2.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
+    //noinspection GradleDependency
     androidTestImplementation("androidx.test:rules:1.2.0")
     androidTestImplementation("androidx.test.ext:truth:1.5.0")
+    //noinspection GradleDependency
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
     //  androidTestImplementation 'com.google.truth:truth:0.42'
 

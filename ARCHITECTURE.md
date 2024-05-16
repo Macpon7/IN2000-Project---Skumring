@@ -27,3 +27,9 @@ I det store og hele har vi forsøkt å holde objektene så spesifikke som mulig,
 Skumring kjører på minimum API level 26 da dette kreves for brukerlokasjon, en sentral funksjonalitet for løsningen. Mesteparten av testingen har foregått på API level 28 og 31 med Android Version 12.0.
 
 ## Warnings
+
+Nye versjoner
+
+Long vector name
+
+Leaks context i mypageviewmodel

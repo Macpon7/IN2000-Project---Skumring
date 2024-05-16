@@ -53,6 +53,7 @@ class MyPageViewModel(
     private val _myPageUiState = MutableStateFlow(MyPageUiState())
     val myPageUiState: StateFlow<MyPageUiState> = _myPageUiState
 
+    @Suppress("OPT_IN_USAGE_FUTURE_ERROR")
     private val _newPlaceUiState = MutableStateFlow(NewPlaceUiState())
     val newPlaceUiState: StateFlow<NewPlaceUiState> = _newPlaceUiState
 
