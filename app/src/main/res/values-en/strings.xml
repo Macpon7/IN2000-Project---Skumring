@@ -20,10 +20,7 @@
     <string name="information">Information</string>
     <string name="home_sunset">Sunset today</string>
     <string name="home_favourite_places">Favourite places</string>
-<<<<<<< HEAD
     <string name="no_favourites">No favourites!</string>
-=======
->>>>>>> main
 
     <string name="conditions_poor">Poor</string>
     <string name="conditions_decent">Decent</string>
@@ -47,10 +44,7 @@
     <string name="favourites">Favourites</string>
 
     <!-- PlaceInfoScreen -->
-<<<<<<< HEAD
-=======
     <string name="picture_taken">Picture taken</string>
->>>>>>> main
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
 
@@ -74,10 +68,7 @@
     <string name="drive">Drive</string>
 
     <!-- MyPageScreen -->
-<<<<<<< HEAD
     <string name="no_location">You have no locations saved yet</string>
-=======
->>>>>>> main
     <string name="new_place_add_photo">Add photo</string>
     <string name="new_place_location_name">Name</string>
     <string name="new_place_address">Address</string>
@@ -98,12 +89,9 @@
     <string name="weather_conditions_excellent_explanation">There should be some clouds in the middle to high levels, low moisture and excellent visibility!</string>
     <string name="weather_conditions_decent_explanation">A little cloudy, but hopefully still makes for a nice photo!</string>
     <string name="weather_conditions_poor_explanation">The clouds are hanging low, visibility is not good and does not make for good picture taking conditions</string>
-<<<<<<< HEAD
     <string name="means_of_transport_walking">Walking</string>
     <string name="means_of_transportation_biking">Biking</string>
     <string name="means_of_transportation_driving">Driving</string>
-=======
->>>>>>> main
 
     <string name="placeInfo_less_details_button">Show less</string>
     <string name="placeInfo_more_details_button">Show more</string>

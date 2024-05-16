@@ -21,10 +21,7 @@
     <string name="home_sunset">Solnedgang i dag</string>
     <string name="home_more_details_button">Mer informasjon</string>
     <string name="home_favourite_places">Favorittsteder</string>
-<<<<<<< HEAD
     <string name="no_favourites">Ingen favoritter!</string>
-=======
->>>>>>> main
 
     <string name="conditions_poor">Dårlig</string>
     <string name="conditions_decent">Grei nok</string>
@@ -49,10 +46,8 @@
     <string name="favourites">Favoritter</string>
 
     <!-- PlaceInfoScreen -->
-<<<<<<< HEAD
-=======
+
     <string name="picture_taken">Bilde tatt</string>
->>>>>>> main
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
     <string name="placeInfo_less_details_button">Vis mindre</string>
@@ -78,10 +73,8 @@
     <string name="drive">Kjøre</string>
 
     <!-- MyPageScreen -->
-<<<<<<< HEAD
     <string name="no_location">Ingen lokasjon lagret</string>
-=======
->>>>>>> main
+
     <string name="new_place_add_photo">Legg til bilde</string>
     <string name="new_place_location_name">Navn</string>
     <string name="new_place_address">Adresse</string>
@@ -160,12 +153,10 @@
     <string name="golden_hour">Gylne time</string>
     <string name="blue_hour">Blåtime</string>
     <string name="app_version" translatable="false">0.3</string>
-<<<<<<< HEAD
     <string name="means_of_transport_walking">Gange</string>
     <string name="means_of_transportation_biking">Sykkel</string>
     <string name="means_of_transportation_driving">Bil</string>
-=======
->>>>>>> main
+
     <string name="distance_hour">t</string>
     <string name="distance_minutes">m</string>
     <string name="distance_kilometers">km</string>
