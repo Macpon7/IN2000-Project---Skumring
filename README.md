@@ -12,7 +12,7 @@
 
 
 ## Dokumentasjon
-Dokumentasjonen til appen finnes i ARCHIECUTRE.md, og er beskrevet i rapporten fra prosjektarbeidet.
+Dokumentasjonen til appen finnes i ARCHIECUTRE.md, og er også beskrevet i rapporten tilhørende prosjektarbeidet.
 
 ## Aksessere appen
 Appen kan hentes under “releases” i github-repoet hvor man kan laste ned en APK fil som kan installeres rett på en Androidtelefon.
