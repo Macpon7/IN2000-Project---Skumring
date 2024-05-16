@@ -3,6 +3,7 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.settings
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ApplicationSkumring
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.settings.Settings
 import java.io.File
+import java.util.Locale
 
 /**
  * Ui state for settings
@@ -75,6 +77,17 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
                     isThemeDropdownExpanded = false
                 )
             }
+            val newSetting = when (theme) {
+                Theme.FOLLOW_SYSTEM -> "system"
+                Theme.DARK_MODE -> "dark"
+                Theme.LIGHT_MODE -> "light"
+            }
+            val preferences = context.getSharedPreferences("user_settings",
+                ComponentActivity.MODE_PRIVATE
+            )
+            val editor = preferences.edit()
+            editor.putString("theme", newSetting)
+            editor.apply()
             updateJSONSettings()
         }
     }
@@ -93,62 +106,6 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
                     isThemeDropdownExpanded = !currentSettingsUiState.isThemeDropdownExpanded
                 )
             }
-        }
-    }
-
-    // Functions for StartLocation
-
-    /**
-     * Update variables depending on which dropdownmenu-item the user click:
-     * The enum-language-variable
-     * Also update the dropdownExpandedLanguage to false, which will make the dropdownmenu not visible anymore
-     */
-    fun updateLanguage(language: Language) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _settingsUiState.update { currentSettingsUiState ->
-                currentSettingsUiState.copy(
-                    settings = currentSettingsUiState.settings.copy(language = language),
-                    isLanguageDropdownExpanded = false
-                )
-            }
-            updateJSONSettings()
-        }
-    }
-
-    /**
-     * Update the dropdownExpandedLanguage boolean variable
-     * if the variable is false it will be true
-     * if it is true it will be false
-     * When the variable is false the dropdownmenu won't be visible
-     * When the variable is true the dropdownmenu will be visible
-     */
-    fun toggleLanguageDropdown() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _settingsUiState.update { currentSettingsUiState ->
-                currentSettingsUiState.copy(
-                    isLanguageDropdownExpanded = !currentSettingsUiState.isLanguageDropdownExpanded
-                )
-            }
-        }
-    }
-
-    // Functions for StartLocation:
-
-    /**
-     * Update variables depending on which dropdownmenu-item the user click:
-     * The enum-location-variable
-     * Also update the dropdownExpandedStartLocation to false, which will make the dropdownmenu not visible anymore
-     */
-    fun updateSelectedDefaultLocation(location: Location) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _settingsUiState.update { currentSettingsUiState ->
-                currentSettingsUiState.copy(
-                    settings = currentSettingsUiState.settings.copy(location = location),
-                    isLocationDropdownExpanded = false
-                )
-            }
-            //TODO oppdatere JSON fil
-            updateJSONSettings()
         }
     }
 
@@ -173,6 +130,7 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
      */
     fun readJSONSettings() {
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d(logTag, Locale.getDefault().displayLanguage)
             val gson = Gson()
 
             //settings.json files does not exist before this code is run so the first time
@@ -199,23 +157,6 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
             }
         }
 
-    }
-
-    /**
-     * Update the dropdownExpandedStartLocation boolean variable
-     * if the variable is false it will be true
-     * if it is true it will be false
-     * When the variable is false the dropdownmenu won't be visible
-     * When the variable is true the dropdownmenu will be visible
-     */
-    fun toggleDefaultLocationDropdown() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _settingsUiState.update { currentSettingsUiState ->
-                currentSettingsUiState.copy(
-                    isLocationDropdownExpanded = !currentSettingsUiState.isLocationDropdownExpanded
-                )
-            }
-        }
     }
 
     //Functions for snackbar:

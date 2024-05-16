@@ -82,8 +82,8 @@
     <string name="costum_location">Costum location</string>
     <string name="phones_location">Phone location</string>
 
-    <string name="light_mode">Dark theme</string>
-    <string name="dark_mode">Light theme</string>
+    <string name="light_mode">Light theme</string>
+    <string name="dark_mode">Dark theme</string>
 
     <string name="norwegian">Norwegian</string>
     <string name="english">English</string>
