@@ -21,7 +21,8 @@ android {
     }
     defaultConfig {
         applicationId = "no.uio.ifi.in2000.adrianch.adrianch.skumring"
-        minSdk = 31
+        minSdk = 26
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -69,11 +70,8 @@ android {
 
 dependencies {
     // Android Core
-    //noinspection GradleDependency
-    implementation("androidx.core:core-ktx:1.12.0")
-    //noinspection GradleDependency
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    //noinspection GradleDependency
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2023.08.00"))
 
@@ -83,17 +81,14 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("io.coil-kt:coil-compose:2.5.0")
-    //noinspection GradleDependency
-    implementation("androidx.compose.material:material-icons-core-android:1.6.1")
-    //noinspection GradleDependency
-    implementation("androidx.compose.material:material:1.6.1")
+    implementation("androidx.compose.material:material-icons-core-android:1.6.7")
+    implementation("androidx.compose.material:material:1.6.7")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Jetpack Compose ViewModel
-    //noinspection GradleDependency
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.test.ext:junit-ktx:1.1.5")
 
@@ -122,32 +117,29 @@ dependencies {
     implementation("com.mapbox.extension:maps-compose:$mapboxVersion")
 
     // Room
-    val room_version = "2.6.1"
+    val roomVersion = "2.6.1"
 
-    //noinspection GradleDependency
-    androidTestImplementation("androidx.test:core:1.2.0")
+    androidTestImplementation("androidx.test:core:1.5.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
-    //noinspection GradleDependency
-    androidTestImplementation("androidx.test:rules:1.2.0")
+    androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test.ext:truth:1.5.0")
-    //noinspection GradleDependency
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     //  androidTestImplementation 'com.google.truth:truth:0.42'
 
 
-    implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
     //kapt("androidx.room:room-compiler:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
-    testImplementation("androidx.room:room-testing:$room_version")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    testImplementation("androidx.room:room-testing:$roomVersion")
 
     //androidTestImplementation("androidx.test:runner:1.4.0")
     //androidTestImplementation("androidx.test.ext:junit:1.1.3")
 
     //to test  Room
 
-   // androidTestCompile("junit:junit:4.12")
+    // androidTestCompile("junit:junit:4.12")
     //androidTestImplementation("androidx.test:runner:$testRunnerVersion")
     //androidTestImplementation("androidx.test:rules:$testRulesVersion")
 

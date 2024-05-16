@@ -1,6 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.model.goldenhourbluehour
 
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class GoldenHourBlueHour(

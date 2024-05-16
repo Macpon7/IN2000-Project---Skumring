@@ -21,7 +21,10 @@
     <string name="home_sunset">Solnedgang i dag</string>
     <string name="home_more_details_button">Mer informasjon</string>
     <string name="home_favourite_places">Favorittsteder</string>
+<<<<<<< HEAD
     <string name="no_favourites">Ingen favoritter!</string>
+=======
+>>>>>>> main
 
     <string name="conditions_poor">Dårlig</string>
     <string name="conditions_decent">Grei nok</string>
@@ -42,10 +45,14 @@
     <string name="toggle_map_icon">Kart ikon</string>
 
     <!-- FavoritesScreen -->
-    <string name="no_places">Ingen steder lagret enda</string>
+    <string name="no_places">Ingen steder</string>
     <string name="favourites">Favoritter</string>
 
     <!-- PlaceInfoScreen -->
+<<<<<<< HEAD
+=======
+    <string name="picture_taken">Bilde tatt</string>
+>>>>>>> main
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
     <string name="placeInfo_less_details_button">Vis mindre</string>
@@ -57,7 +64,6 @@
     <string name="choose_theme">Velg tema</string>
     <string name="follow_system">Følg systemet</string>
 
-    <string name="choose_default_location">Velg standard lokasjon</string>
     <string name="costum_location">Egendefinert sted</string>
     <string name="phones_location">Mobilens lokasjon</string>
 
@@ -66,14 +72,16 @@
 
     <string name="norwegian">Norsk</string>
     <string name="english">Engelsk</string>
-    <string name="choose_language">Velg språk</string>
 
     <string name="walk">Gå</string>
     <string name="bike">Sykle</string>
     <string name="drive">Kjøre</string>
 
     <!-- MyPageScreen -->
+<<<<<<< HEAD
     <string name="no_location">Ingen lokasjon lagret</string>
+=======
+>>>>>>> main
     <string name="new_place_add_photo">Legg til bilde</string>
     <string name="new_place_location_name">Navn</string>
     <string name="new_place_address">Adresse</string>
@@ -93,8 +101,6 @@
 
     <!--Descriptions of Icons and Images-->
     <string name="favourite_icon">Favorittikon</string>
-    <string name="favourite_filled_icon">Favorittikon fylt</string>
-    <string name="favourite_unfilled_icon">Favorittikon uten fyll</string>
 
     <!--WeatherIconCheck-->
     <string name="weather_icon_thunder">Værikon torden</string>
@@ -108,15 +114,58 @@
     <string name="weather_icon_fog">Værikon tåke</string>
     <string name="weather_icon_not_found">Værikon ikke funnet</string>
 
+    <!-- UserInstructionsDialog -->
+    <string name="homescreen_instructions_1">Tid for solnedgang</string>
+    <string name="homescreen_instructions_2">Mer informasjon om værforholdene</string>
+    <string name="homescreen_instructions_3">Temperaturen ved solnedgang</string>
+    <string name="homescreen_instructions_4">Tid for gyllen og blåtime</string>
+    <string name="homescreen_favourite_instruction">Alle kort kan trykkes for mer informasjon</string>
+    <string name="maplistscreen_instructions_1">Trykk for liste istedenfor kart</string>
+    <string name="maplistscreen_instructions_2">Blå runding viser din posisjon</string>
+    <string name="maplistscreen_instructions_3">Røde pins viser lagrede stede</string>
+    <string name="maplist_popup_instructions_1">Ved å trykke på pinsene kan du få informasjon om værforhold i dag</string>
+    <string name="maplist_popup_instructions_2">Legg til som favoritt</string>
+    <string name="maplist_popup_instructions_3">Lyst på mer informasjon om stedet? Trykk deg videre!</string>
+    <string name="placeinfoscreen_instructions_1">Se ditt lagrede bilde og les din egen beskrivelse av stedet</string>
+    <string name="placeinfoscreen_instructions_2">Se avstand fra din posisjon</string>
+    <string name="placeinfoscreen_instructions_3">Scroll ned for flerdagsvarsel</string>
+
+    <string name="newplacedialog_instructions_1">PS! Få samme “popup” på kartet ved å trykke lenge på stedet du ønsker å legge til bilde</string>
+    <string name="newplacedialog_instructions_2">Innstillinger</string>
+    <string name="newplacedialog_instructions_3">Velg å bruke telefonens posisjon</string>
+
+    <string name="firstscreen_instructions_welcome_skumring">Velkommen til Skumring!</string>
+    <string name="firstscreen_instructions_skumring">Appen for deg som ønsker å finne og lagre steder å ta bilde av solnedganger!</string>
+    <string name="firstscreen_moreinfo_instructions_skumring">For en innføring i appen, trykk deg videre!</string>
+    <string name="homescreen_instructions_skumring">På hjemskjermen kan du se værvarselet for solnedgang på din lokasjon i dag</string>
+    <string name="homescreen_favourite_instructions_skumring">Legg til dine favoritter og få de opp på hjemskjermen!</string>
+    <string name="maplistscreen_instructions_skumring">På kartskjermen kan du se din posisjon og fine steder for solnedgang i nærheten</string>
+    <string name="maplistscreen_popup_instructions_skumring">Trykk på pinsene for mer informasjon</string>
+    <string name="placeinfoscreen_instructions_skumring">Trykk på kortene for mer informasjon om stedet og distanse fra din posisjon</string>
+    <string name="mypagescreen_instructions_skumring">På \"min side\" kan du legge til dine steder og endre på innstillinger</string>
+    <string name="lastdialog_instructions_skumring">Håper du liker appen!</string>
+
+    <string name="UserInstructionsDialog_next_button">Neste</string>
+
+    <string name="homescreen_instructions_screen">hjemskjerm instruksjonsbilde</string>
+    <string name="homescreen_favourite_instructions_picture">hjemskjerm favoritt instruksjonsbilde</string>
+    <string name="maplistscreen_instructions_picture">kartskjerm instruksjonsbilde</string>
+    <string name="maplistscreen_popup_instructions_picture">karstkjerm popup instruksjonsbilde</string>
+    <string name="placeinfoscreen_instructions_picture">placeinfoscreen instruksjonsbilde</string>
+    <string name="newplacedialog_instructions_picture">nyttsted instruksjonsbilde</string>
+
     <!-- Common strings used across multiple screens -->
-    <string name="weather_condition">Værforhold:</string>
+    <string name="weather_condition">"Værforhold: "</string>
     <string name="temp_at_sunset">Temperatur ved solnedgang</string>
     <string name="golden_hour">Gylne time</string>
     <string name="blue_hour">Blåtime</string>
     <string name="app_version" translatable="false">0.3</string>
+<<<<<<< HEAD
     <string name="means_of_transport_walking">Gange</string>
     <string name="means_of_transportation_biking">Sykkel</string>
     <string name="means_of_transportation_driving">Bil</string>
+=======
+>>>>>>> main
     <string name="distance_hour">t</string>
     <string name="distance_minutes">m</string>
     <string name="distance_kilometers">km</string>
@@ -142,4 +191,6 @@
     <string name="error_message_new_place_dialog">Feil med å legge til nytt sted</string>
     <string name="error_message_fetching_directions">Feil med å hente avstand fra stedet</string>
     <string name="error_message_no_forecast">Kan ikke hente værdata uten internett</string>
+    <string name="app_icon">app ikonet</string>
+    <string name="new_user_dialog_finished">Ferdig</string>
 </resources>

@@ -2,8 +2,10 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.favorites
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -30,12 +32,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.DeletePlaceDialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.navigation.NavigationDestination
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
-
-private const val logTag = "FavoritesScreen"
 
 object FavoritesDestination : NavigationDestination {
     override val icon = Icons.Outlined.FavoriteBorder
@@ -62,6 +63,7 @@ fun FavoritesScreen(
 
     // Load the list of favourites every time the user navigates to this screen
     LaunchedEffect(Unit) {
+        favoritesViewModel.snackbarDismissed()
         favoritesViewModel.loadList()
     }
 
@@ -90,18 +92,15 @@ fun FavoritesScreen(
             }
         }
     }
-    Scaffold(
-        topBar = {
-            SkumringTopBar(
-                title = stringResource(id = FavoritesDestination.titleRes),
-                canNavigateBack = false,
-                scrollBehavior = scrollBehavior
-            )
-        },
-        bottomBar = {
-            SkumringBottomBar(navController = navController)
-        }
-    ) { innerPadding ->
+    Scaffold(topBar = {
+        SkumringTopBar(
+            title = stringResource(id = FavoritesDestination.titleRes),
+            canNavigateBack = false,
+            scrollBehavior = scrollBehavior
+        )
+    }, bottomBar = {
+        SkumringBottomBar(navController = navController)
+    }) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -111,7 +110,7 @@ fun FavoritesScreen(
         ) {
             FavoriteListContent(
                 navController = navController,
-                favoriteViewModel = favoritesViewModel,
+                favoritesViewModel = favoritesViewModel,
                 favoritesUiState = favoritesUiState
             )
         }
@@ -124,9 +123,14 @@ fun FavoritesScreen(
 @Composable
 fun FavoriteListContent(
     navController: NavController,
-    favoriteViewModel: FavoritesViewModel,
+    favoritesViewModel: FavoritesViewModel,
     favoritesUiState: FavoritesUiState
 ) {
+    if (favoritesUiState.showDeleteDialog) {
+        DeletePlaceDialog(onDismissRequest = { favoritesViewModel.hideDeleteDialog() },
+            onConfirmClick = { favoritesViewModel.deleteCustomPlace() })
+    }
+
     Column(Modifier.verticalScroll(rememberScrollState())) {
         if (favoritesUiState.places.isEmpty()) {
             Text(
@@ -137,15 +141,17 @@ fun FavoriteListContent(
             )
         } else {
             favoritesUiState.places.forEach { place ->
-                ListCard(
-                    place = place,
+                ListCard(place = place,
                     onItemClick = { //Navigate when it is clicked on. This needs to send lat, long, id
                         navController.navigate("placeinfoscreen/${place.id}")
                     },
                     onFavouriteClick = {
-                        favoriteViewModel.toggleFavourite(place = place)
-                    }
-                )
+                        favoritesViewModel.toggleFavourite(place = place)
+                    },
+                    onDeleteClick = {
+                        favoritesViewModel.showDeleteDialog(placeId = place.id)
+                    })
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

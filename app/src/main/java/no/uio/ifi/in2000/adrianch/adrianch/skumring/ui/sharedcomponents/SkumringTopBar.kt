@@ -7,9 +7,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -23,12 +21,11 @@ fun SkumringTopBar(
     title: String,
     canNavigateBack: Boolean,
     modifier: Modifier = Modifier,
-    actions: @Composable RowScope.()->Unit = {}, // Can add action button to topbar
+    actions: @Composable RowScope.() -> Unit = {}, // Can add action button to topbar
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigateUp: () -> Unit = {}
 ) {
-    CenterAlignedTopAppBar(
-        title = { Text(title, style = typography.headlineMedium) },
+    CenterAlignedTopAppBar(title = { Text(title, style = typography.headlineMedium) },
         modifier = modifier,
         scrollBehavior = scrollBehavior,
         actions = actions,
@@ -41,6 +38,5 @@ fun SkumringTopBar(
                     )
                 }
             }
-        }
-    )
+        })
 }

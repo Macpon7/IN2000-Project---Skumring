@@ -1,4 +1,5 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database
+
 import androidx.room.TypeConverter
 import java.time.LocalDate
 import java.time.LocalDateTime

@@ -20,7 +20,10 @@
     <string name="information">Information</string>
     <string name="home_sunset">Sunset today</string>
     <string name="home_favourite_places">Favourite places</string>
+<<<<<<< HEAD
     <string name="no_favourites">No favourites!</string>
+=======
+>>>>>>> main
 
     <string name="conditions_poor">Poor</string>
     <string name="conditions_decent">Decent</string>
@@ -44,6 +47,10 @@
     <string name="favourites">Favourites</string>
 
     <!-- PlaceInfoScreen -->
+<<<<<<< HEAD
+=======
+    <string name="picture_taken">Picture taken</string>
+>>>>>>> main
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
 
@@ -53,23 +60,24 @@
     <string name="choose_theme">Choose theme</string>
     <string name="follow_system">Follow system</string>
 
-    <string name="choose_default_location">Choose default location</string>
     <string name="costum_location">Costum location</string>
     <string name="phones_location">Phone location</string>
 
-    <string name="light_mode">Dark theme</string>
-    <string name="dark_mode">Light theme</string>
+    <string name="light_mode">Light theme</string>
+    <string name="dark_mode">Dark theme</string>
 
     <string name="norwegian">Norwegian</string>
     <string name="english">English</string>
-    <string name="choose_language">Choose language</string>
 
     <string name="walk">Walk</string>
     <string name="bike">Bike</string>
     <string name="drive">Drive</string>
 
     <!-- MyPageScreen -->
+<<<<<<< HEAD
     <string name="no_location">You have no locations saved yet</string>
+=======
+>>>>>>> main
     <string name="new_place_add_photo">Add photo</string>
     <string name="new_place_location_name">Name</string>
     <string name="new_place_address">Address</string>
@@ -90,9 +98,12 @@
     <string name="weather_conditions_excellent_explanation">There should be some clouds in the middle to high levels, low moisture and excellent visibility!</string>
     <string name="weather_conditions_decent_explanation">A little cloudy, but hopefully still makes for a nice photo!</string>
     <string name="weather_conditions_poor_explanation">The clouds are hanging low, visibility is not good and does not make for good picture taking conditions</string>
+<<<<<<< HEAD
     <string name="means_of_transport_walking">Walking</string>
     <string name="means_of_transportation_biking">Biking</string>
     <string name="means_of_transportation_driving">Driving</string>
+=======
+>>>>>>> main
 
     <string name="placeInfo_less_details_button">Show less</string>
     <string name="placeInfo_more_details_button">Show more</string>
@@ -111,8 +122,6 @@
     <string name="distance_kilometers">km</string>
     <string name="distance_from_location">Distance from your location</string>
     <string name="favourite_icon">Favourite icon</string>
-    <string name="favourite_filled_icon">Favourite icon filled</string>
-    <string name="favourite_unfilled_icon">Favourite icon not filled</string>
     <string name="time">Time</string>
     <string name="close">CLOSE</string>
     <string name="new_place_address_no_results">Found no addresses, have you remembered the house number?</string>
@@ -130,8 +139,44 @@
     <string name="new_place_required">*required</string>
     <string name="new_place_use_phone_location">Use phone\'s location</string>
     <string name="new_place_pick_address">Pick the correct address:</string>
+    <string name="homescreen_instructions_1">Sunset time</string>
+    <string name="homescreen_instructions_2">More information about weather conditions</string>
+    <string name="homescreen_instructions_3">Temperature at sunset</string>
+    <string name="homescreen_instructions_4">Time for blue and golden hour</string>
+    <string name="homescreen_favourite_instruction">All cards can be clicked for more information</string>
+    <string name="maplistscreen_instructions_1">Click for list view instead of map view</string>
+    <string name="maplistscreen_instructions_2">Blue circle marks your location</string>
+    <string name="maplistscreen_instructions_3">Red pin shows saved locations</string>
+    <string name="maplist_popup_instructions_1">Get information about weather conditions today by tapping the pins</string>
+    <string name="maplist_popup_instructions_2">Add as favourite</string>
+    <string name="maplist_popup_instructions_3">For more information about the place, click the button!</string>
+    <string name="placeinfoscreen_instructions_1">View your saved photo and  read your own description of the place</string>
+    <string name="placeinfoscreen_instructions_2">See distance from your location</string>
+    <string name="placeinfoscreen_instructions_3">Scroll down for next days forecast</string>
+    <string name="newplacedialog_instructions_1">PS! Get the same \"pop-up\" on the map by long-press  on the place you want to add photo</string>
+    <string name="newplacedialog_instructions_2">Settings</string>
+    <string name="newplacedialog_instructions_3">Choose between phone\'s location and writing the location</string>
+    <string name="firstscreen_instructions_welcome_skumring">Welcome to Skumring!</string>
+    <string name="firstscreen_instructions_skumring">The app for those who want to find  and save places to take pictures of sunsets!</string>
+    <string name="firstscreen_moreinfo_instructions_skumring">Get an introduction to the app by clicking next!</string>
+    <string name="homescreen_instructions_skumring">The homescreen shows the weather forecast for the sunset at your location today</string>
+    <string name="homescreen_favourite_instructions_skumring">Add your favorite places and get them on your home screen!</string>
+    <string name="maplistscreen_instructions_skumring">You can see your location and nice places for sunset photography on the map screen</string>
+    <string name="maplistscreen_popup_instructions_skumring">Push the pins for more information</string>
+    <string name="placeinfoscreen_instructions_skumring">Click on the cards for more information about the place and distance from your location</string>
+    <string name="mypagescreen_instructions_skumring">Add your own places and change settings on my page</string>
+    <string name="lastdialog_instructions_skumring">We hope you like our app!</string>
+    <string name="UserInstructionsDialog_next_button">Next</string>
+    <string name="app_icon">app icon</string>
+    <string name="homescreen_instructions_screen">homescreen instructions picture</string>
+    <string name="homescreen_favourite_instructions_picture">homescreen favourite instructions picture</string>
+    <string name="maplistscreen_instructions_picture">maplistscreen instructions picture</string>
+    <string name="maplistscreen_popup_instructions_picture">maplistscreen popup instructions picture</string>
+    <string name="placeinfoscreen_instructions_picture">placeinfoscreen instructions picture</string>
+    <string name="newplacedialog_instructions_picture">new place dialog instructions picture</string>
     <string name="error_message_getting_favourites">Error while getting favourites</string>
     <string name="error_message_new_place_dialog">Error adding a new place</string>
     <string name="error_message_fetching_directions">Error fetching distance from place</string>
     <string name="error_message_no_forecast">Cannot fetch weather data without internet</string>
+    <string name="new_user_dialog_finished">Finish</string>
 </resources>

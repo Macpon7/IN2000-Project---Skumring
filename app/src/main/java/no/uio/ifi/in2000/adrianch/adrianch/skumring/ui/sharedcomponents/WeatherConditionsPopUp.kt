@@ -1,8 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents
 
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,11 +13,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,28 +29,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
+import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.theme.SkumringTheme
 
 
 @Composable
 fun WeatherIconPopUp(
     onClose: () -> Unit,
 ) {
-
     Dialog(
         onDismissRequest = onClose
     ) {
-        Surface(
-            shape = MaterialTheme.shapes.medium,
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
+
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top
+                    modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top
                 ) {
                     Icon(
                         Icons.Default.Info,
@@ -71,7 +71,7 @@ fun WeatherIconPopUp(
                         Text(
                             text = stringResource(R.string.conditions_excellent),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
@@ -141,7 +141,7 @@ fun WeatherIconPopUp(
                         onClick = onClose
                     ) {
                         Text(
-                            stringResource(id =  R.string.close),
+                            stringResource(id = R.string.close),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold
@@ -156,8 +156,18 @@ fun WeatherIconPopUp(
 
 @Preview
 @Composable
-fun CustomDialogPreview() {
-    MaterialTheme {
+fun PreviewWeatherConditionsDialog() {
+    SkumringTheme(useDarkTheme = true) {
+        WeatherIconPopUp(
+            onClose = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewWeatherConditionsDialogLight() {
+    SkumringTheme(useDarkTheme = false) {
         WeatherIconPopUp(
             onClose = {},
         )
