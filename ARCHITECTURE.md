@@ -44,7 +44,8 @@ Android Studio har rapportert om et par errors, men disse er suppressed da vi ha
 
 - **Redundant Label:** Lar vi stå fordi vi liker den
 - **Long Vector Paths:** Disse er autogenererte og skal ikke endres i kode, vi lar de stå.
-- **Obsolete SDKs:** Vi måtte bruke et eldre bibliotek på for å håndtere info om appen lokalt, for eksempel når den starter for første gang og hvilket språk bruker vil ha. Sistnevnte endte vi med å ikke implementere.
+- **Obsolete SDKs/Gradle Dependency:** Vi måtte bruke et eldre bibliotek på for å håndtere info om appen lokalt, for eksempel når den starter for første gang og hvilket språk bruker vil ha. Sistnevnte endte vi med å ikke implementere.
+- **Vector Image Generation:** Ikoner liker ikke å være større enn 200x200 pga tiden det tar å laste de. Vår er litt større, men dette er ikke av konsekvens da den bare vises med alle andre appene på enheten og på splash screen.
 - **Static Field Leaks:** MyPageViewModel trenger context, så denne blir ignorert. Design feature.
 - **Image defined in density-independent drawable folder:** Vi la alle ikoner i drawable-mappen selv om de er PNG-er. Vi anser dette som trygt nok for nå da vi antar at DPI holder seg jevnt på tvers av bruk, og ikke vil bli utsatt for store sprik.
 - **Monochrome icon is not defined:** Vi har bare en variant av ikonet, og den er ikke monokrom.
