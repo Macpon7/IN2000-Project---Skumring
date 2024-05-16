@@ -36,7 +36,7 @@ Her har vi benyttet oss av Android Studio sin "Problems" for å finne og håndte
 
 ## Errors
 
-Det er et par errors, men disse er suppressed da vi har drevet med eksperimentelle API-er.
+Android Studio har rapportert om et par errors, men disse er suppressed da vi har jobbet med eksperimentelle API-er.
 
 ## Warnings
 
