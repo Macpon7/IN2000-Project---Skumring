@@ -1,5 +1,6 @@
 package no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.mypage
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
@@ -24,8 +25,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceEvent
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.NewPlaceUiState
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.dialogs.onNewPlaceEvent
 
-private const val TAG = "MyPageViewModel"
-
 data class MyPageUiState(
     val places: List<PlaceInfo> = emptyList(),
 
@@ -42,7 +41,8 @@ data class MyPageUiState(
     var deleteId: Int = 0
 )
 
-class MyPageViewModel(
+@SuppressLint("StaticFieldLeak")
+class MyPageViewModel (
     private val placeRepository: PlaceRepository,
     private val geocodingRepository: GeocodingRepository = GeocodingRepositoryImpl(),
     private val context: Context

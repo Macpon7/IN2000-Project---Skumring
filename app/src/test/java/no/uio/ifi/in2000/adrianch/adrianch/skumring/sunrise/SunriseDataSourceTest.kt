@@ -13,7 +13,7 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.sunrise.When
 import org.junit.Test
 
 class SunriseDataSourceTest {
-    val expected = SunriseInfo(
+    private val expected = SunriseInfo(
         copyright = "MET Norway",
         licenseURL = "https://api.met.no/license_data.html",
         type = "Feature",
@@ -62,7 +62,7 @@ class SunriseDataSourceTest {
 
     //Checking if FetchSunriseData returns a SunriseInfo object with right instances of data classes
     @Test
-    fun checkdataClassesMatchValuesInJSON() = runBlocking(){
+    fun checkdataClassesMatchValuesInJSON() = runBlocking {
         val source = SunriseDataSource()
         val result = source.fetchSunriseData("https://api.met.no/weatherapi/sunrise/3.0/edr/collections/sun/position?coords=POINT%2810%2060%29&datetime=2024-03-07")
         assert(expected == result) { """

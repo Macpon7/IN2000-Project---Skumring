@@ -6,9 +6,11 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastDao
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ForecastEntity
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.data.database.ImageDao
@@ -56,9 +58,6 @@ class PlaceRepositoryImpl(
     private val forecastRepository:ForecastRepository = ForecastRepositoryImpl(),
     private val context: Context
 ): PlaceRepository {
-    init {
-        // If we need to do anything on initialization of DB, this is the place to do it
-    }
 
 
     override suspend fun saveImageToInternalStorage(contentUri: Uri, placeId: Int, timestamp: LocalDate) {
@@ -77,7 +76,9 @@ class PlaceRepositoryImpl(
             val fileName = "$placeId.jpg"
             val file = File(fileDir, fileName)
 
-            outputStream = FileOutputStream(file)
+            outputStream = withContext(Dispatchers.IO) {
+                FileOutputStream(file)
+            }
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
 
             // Insert the image details into the database
@@ -92,8 +93,12 @@ class PlaceRepositoryImpl(
             Log.e(TAG, "Error saving image", e)
             e.printStackTrace()
         } finally {
-            inputStream?.close()
-            outputStream?.close()
+            inputStream?.withContext(Dispatchers.IO) {
+                close()
+            }
+            outputStream?.withContext(Dispatchers.IO) {
+                close()
+            }
         }
     }
 
@@ -221,7 +226,7 @@ class PlaceRepositoryImpl(
         }
     }
 
-    private suspend fun upsertForecastData(
+    private fun upsertForecastData(
         oldForecastData: List<ForecastEntity> = emptyList(),
         sunEvents: List<SunEvent>,
         placeId: Int) {

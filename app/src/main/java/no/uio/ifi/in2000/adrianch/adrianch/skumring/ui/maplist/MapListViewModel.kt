@@ -96,10 +96,6 @@ class MapListViewModel(
     val getCoordinatesFromUserLocation = userLocationRepository::getUserLocation
     val addPlace = placeRepository::addCustomPlace
 
-    init {
-        //loadPlaces()
-    }
-
     @OptIn(ExperimentalMaterial3Api::class)
     fun loadPlaces() {
         viewModelScope.launch(Dispatchers.IO) {

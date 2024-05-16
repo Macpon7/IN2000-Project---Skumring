@@ -112,7 +112,7 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
     /**
      * Update the JSON setting file with settings held in the settingUiState
      */
-    fun updateJSONSettings() {
+    private fun updateJSONSettings() {
         viewModelScope.launch(Dispatchers.IO) {
             val gson = Gson()
             val jsonSettings: String = gson.toJson(settingsUiState.value.settings)

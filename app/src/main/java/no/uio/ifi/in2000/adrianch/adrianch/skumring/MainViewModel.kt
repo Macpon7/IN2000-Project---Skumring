@@ -3,7 +3,6 @@ package no.uio.ifi.in2000.adrianch.adrianch.skumring
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -22,7 +21,7 @@ class MainViewModel: ViewModel() {
         loadSplashScreen()
     }
 
-    fun loadSplashScreen() {
+    private fun loadSplashScreen() {
         viewModelScope.launch(Dispatchers.IO) {
             _mainScreenUiState.update {currentnewMainScreenUiState ->
                 currentnewMainScreenUiState.copy(

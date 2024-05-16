@@ -14,11 +14,6 @@ class GeoCodingDataSourceTest {
         ReverseGeocoding::class.java
     )
 
-    private val nullIslandReverseResponseData: ReverseGeocoding = gson.fromJson(
-        nullIslandReverseGeo,
-        ReverseGeocoding::class.java
-    )
-
     /*
     Testing that a response gets converted correctly to our custom object and gets
     the city correct.

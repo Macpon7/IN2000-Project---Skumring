@@ -166,7 +166,7 @@ fun PlaceInfoScreen(
                 .fillMaxSize()
                 .padding(innerPadding) // Padding for topbar
         ) {
-            PlaceInfoContent(placeUiState, placeInfoViewModel)
+            PlaceInfoContent(placeUiState, placeInfoViewModel::toggleFavourite)
         }
     }
 }
@@ -177,7 +177,7 @@ fun PlaceInfoScreen(
  */
 @Composable
 fun PlaceInfoContent(
-    placeInfoUiState: PlaceInfoUiState, placeInfoViewModel: PlaceInfoViewModel
+    placeInfoUiState: PlaceInfoUiState, toggleFavourite: () -> Unit
 ) {
 
     Column(
@@ -197,7 +197,7 @@ fun PlaceInfoContent(
             TodayInfoCard(
                 placeInfo = placeInfoUiState.placeInfo,
                 mapTimeDistance = placeInfoUiState.mapTimeDistance,
-                onFavouriteClick = placeInfoViewModel::toggleFavourite
+                onFavouriteClick = toggleFavourite
             )
 
             //space between the cards
@@ -654,7 +654,6 @@ fun TodayInfoCard(
  * Displays information about the sun events for tomorrow and the following days.
  * Date, time and weather conditions
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SunEventInfoCard(
     sunEvent: SunEvent
@@ -922,9 +921,8 @@ fun PreviewSunEventInfoScreen() {
                         )
                     )
                 )
-            ), placeInfoViewModel = PlaceInfoViewModel(
-                context = context, placeRepository = placeRepository
-            )
+            ),
+            toggleFavourite = {}
         )
     }
 }

@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
@@ -672,6 +671,7 @@ fun PreviewNewPlaceDialogDark() {
     }
 }
 
+@Suppress("EmptyMethod", "RedundantSuspendModifier")
 class PreviewFunctions {
     suspend fun addCustomPlace(place: PlaceInfo, imageUri: Uri, imageTimestamp: LocalDate) {
 

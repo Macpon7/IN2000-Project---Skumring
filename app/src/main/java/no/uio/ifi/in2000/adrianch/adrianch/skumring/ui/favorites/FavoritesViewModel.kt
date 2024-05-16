@@ -33,8 +33,6 @@ data class FavoritesUiState(
     val snackbarHostState: SnackbarHostState = SnackbarHostState()
 )
 
-private const val logTag = "FavoritesViewModel"
-
 @SuppressLint("StaticFieldLeak")
 class FavoritesViewModel(
     private val context: Context,
@@ -42,10 +40,6 @@ class FavoritesViewModel(
 ) : ViewModel() {
     private val _favoritesUiState = MutableStateFlow(FavoritesUiState())
     val favoritesUiState: StateFlow<FavoritesUiState> = _favoritesUiState.asStateFlow()
-
-    init {
-        //loadList()
-    }
 
     fun loadList() {
         viewModelScope.launch(Dispatchers.IO) {

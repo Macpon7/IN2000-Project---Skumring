@@ -7,7 +7,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.gson.gson
-import no.uio.ifi.in2000.adrianch.adrianch.skumring.R
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.Directions
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.MeansOfTransportation
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.model.directions.TravelDurationDistance

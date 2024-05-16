@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter
 // Constant for logging:
 private const val logTag : String = "SunriseDataSource"
 
-class SunriseDataSource() {
+class SunriseDataSource {
     private val client = HttpClient {
         install(ContentNegotiation) {
             gson()

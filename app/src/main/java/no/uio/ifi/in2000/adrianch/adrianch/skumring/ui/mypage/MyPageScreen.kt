@@ -45,8 +45,6 @@ import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.ListCard
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringBottomBar
 import no.uio.ifi.in2000.adrianch.adrianch.skumring.ui.sharedcomponents.SkumringTopBar
 
-private const val TAG = "MyPageScreen"
-
 object MyPageDestination : NavigationDestination {
     override val icon = Icons.Outlined.AccountCircle
     override val buttonTitle = R.string.nav_personal_button
