@@ -59,8 +59,8 @@ Feilene her er ikke feil og ignoreres. Den forstår ikke event handling parametr
 
 ### Kotlin
 
-Naming conventions: Den klager på dårlig navnekonvensjon i responsklassene til API. Disse blir ignorert da disse klasenavnene må være identiske til det de tilsvarer i JSON-filen vi får.
+Naming conventions: Den klager på dårlig navnekonvensjon i responsklassene til API. Disse blir ignorert da disse klassenavnene må være identiske til det de tilsvarer i JSON-filen vi får.
 
 ### Proofreading
 
-Android Studio liker ikke norsk, pluss et par stavefeil i noen variabler.
+Norsk dukker opp som stavefeil i Android Studio. Noen variabelnavn har kanskje ord som er feilstavet, men disse har ikke vært av konsekvens for vår arbeidsflyt eller appens funksjonalitet.
