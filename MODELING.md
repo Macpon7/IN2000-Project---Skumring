@@ -18,16 +18,17 @@ i en liste. Bruker kan trykke på én av disse og så komme til detaljskjermen.
 
 For å begrense caset har vi dermed følgende forhåndsbetingelser:
 - bruker er på en vilkårlig skjerm i appen og vil navigere fra denne til en detaljskjerm/PlaceInfoScreen
-- sist bruker var på MapListScreen var bruker så bruker på lokasjonen i listeformen, ikke kartet
+- sist bruker var på MapListScreen, valgte bruker å se lokasjonene i listeformen, ikke i kartformat
 - det er ikke første gang bruker har brukt appen.
-- lokasjonen som bruker vil se på eksisterer i appen, enten som en lokasjon de selv har lagt til.
+- lokasjonen som bruker vil se eksisterer i appen, enten som en lokasjon de selv har lagt til eller lokasjonene
+som fulgte med appen.
 
 
-Klassediagram
-![img.png](img.png)
+#Klassediagram
+![img.png](Modeling/Klassediagram.png)
 
 Use case diagram
-![img.png](Modeling/Usecase.png)
+![img.png](Modeling/Usecasediagram.png)
 
 Sekvensdiagram
 ![img.png](Modeling/Sekvensdiagram.png)
