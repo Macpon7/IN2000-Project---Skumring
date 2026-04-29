@@ -1,44 +1,4 @@
 # Skumring
 
-## En prosjektoppgave i IN2000 ved Universitet i Oslo
-
-### Gruppemedlemmer
-
-- Adrian Emil Chambe-Eng
-- Mari Svennevik Notland
-- Viljar Drevland Hardersen
-- Anna Hansgård
-- Synnøve Nordvik Helgesen
-
-## Dokumentasjon
-
-Dokumentasjonen til appen finnes i ARCHIECUTRE.md, og er også beskrevet i rapporten tilhørende prosjektarbeidet.
-
-## Aksessere appen
-
-Under "Releases" finner man den aktuelle versjonen.
-
-All kode og ressurser er lastet opp i github-repoet, slik at om en ønsker kan man klone prosjektet, åpne det i Android Studio, og kompilere appen selv.
-
-## Kjøre appen
-
-Ved å laste ned appen, kan den kjøres i emulator i Android Studio. Emulatoren må kjøpe på emulator med API-nivå minst 31.
-
-Merk at emulator kan ha problemer med å oppdatere og gi aksess til brukerlokasjon som gjør at hjemskjerm ikke kan laste informasjon, men forhåndsinnstilte og egne lokasjoner funker som normalt. Vår app er i hovedsak testet på fysiske enheter.
-
-## Biblioteket
-
-Vi benytter oss av standardbiblioteket som følger med Android. Core, Navigation, Viewmodel og Testing.
-I tillegg bruker vi Ktor til håndtering av API-kall og -responser som anbefalt i kurset.
-Mapbox brukes til å håndtere posisjonsdata, i tillegg til:
-
-- Kart
-- Lokasjoner
-- Geocoding
-- Avstandsberegning
-- Reisetidsberegning
-
-Ellers bruker vi følgende:
-<br>Room - brukes som intern database
-<br> Location - brukes til å håndetere brukerlokasjon.
-<br>SplashScreen - brukes for å lage splashscreen.
+## A semester project for the subject IN2000 at the University of Oslo
+This app project took up around 60% of my last semester at UiO. We were a group of 5 students, from several different aspects of Informatics at the university. The app no longer runs correctly, so don't try to download the code and run it in the Android Studio Emulator.
